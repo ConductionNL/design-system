@@ -328,8 +328,19 @@ window.__compdiffExtract = function () {
 		const plainLine = (e) => {
 			// A chart or picture is content, though an svg chart holds text (its axis labels).
 			if (!e || !visible(e) || !e.textContent.trim() || e.matches('svg, canvas, img, picture, figure, [role=img]') || e.querySelector(INTERACTIVE + ', [role=combobox], table, ul, ol, img, svg, canvas')) return false
+			// Facts, a row of pills or a list of rows is content: a description is plain text, at most two lines, with no
+			// boxed part (a pill or a framed row) and no term list.
+			if (e.matches('dl') || e.querySelector('dl, dt, li')) return false
+			const ecs = getComputedStyle(e)
+			const lh = px(ecs.lineHeight) || px(ecs.fontSize) * 1.25
+			if (e.getBoundingClientRect().height > lh * 2 + 2) return false
+			if ([...e.querySelectorAll('*')].some((d) => { const dcs = getComputedStyle(d); return opaque(dcs.backgroundColor) || Object.values(borders(dcs)).some((v) => v > 0) })) return false
 			const top = e.getBoundingClientRect().top - (titleBox.y + titleBox.h)
-			return top >= -1 && top <= 12 && px(getComputedStyle(e).fontSize) < px(getComputedStyle(textEl(title)).fontSize)
+			// A description reads as one: smaller than the title and either 14px or less, or muted. A 15px line in the
+			// title's own ink ("Deze zaak hangt niet onder een programma.") is the card's content.
+			const tcs = getComputedStyle(textEl(title))
+			const muted = ecs.color !== tcs.color
+			return top >= -1 && top <= 12 && px(ecs.fontSize) < px(tcs.fontSize) && (px(ecs.fontSize) <= 14 || muted)
 		}
 		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || plainLine(next)) ? next : null
 		const inHeader = (n) => (headerRow && headerRow.contains(n)) || (desc && desc.contains(n))

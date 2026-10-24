@@ -50,6 +50,18 @@ window.__compdiffExtract = function () {
 		}
 		return { width: 0, color: null }
 	}
+	// The box people see as the field: the outermost wrapper that hugs it (NcSelect draws its chevron beside the input,
+	// inside that wrapper).
+	const fieldBox = (el) => {
+		const r0 = el.getBoundingClientRect()
+		let boxEl = el
+		for (let e = el.parentElement, i = 1; e && e !== document.body && i < 5; e = e.parentElement, i++) {
+			const r = e.getBoundingClientRect()
+			if (r.height > r0.height + 12 || r.width > Math.max(r0.width + 64, r0.width * 1.6) || r.left > r0.left + 1 || r.top > r0.top + 1 || r.right < r0.right - 1 || r.bottom < r0.bottom - 1) break
+			boxEl = e
+		}
+		return boxEl
+	}
 	const box = (cs, prop) => Object.fromEntries(SIDES.map((s) => [s.toLowerCase(), px(cs[prop + s])]))
 	// The top-left corner radius as drawn: a percentage resolves against the box, and radii larger than the box
 	// shrink the way CSS shrinks them, so 50%, 18px and 999px on a 36px circle all read 18.
@@ -132,8 +144,9 @@ window.__compdiffExtract = function () {
 	const inMap = (el) => maps.some((m) => m.contains(el))
 	let cards = []
 	for (const el of all) {
-		// Links can be cards (a KPI tile is often one big <a>); other controls are not.
-		if ((el.matches(INTERACTIVE) && el.tagName !== 'A') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
+		// Links can be cards (a KPI tile is often one big <a>), and so can a framed label (a choice card, a checkbox
+		// box); other controls are not.
+		if ((el.matches(INTERACTIVE) && el.tagName !== 'A' && el.tagName !== 'LABEL') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
 		if (!visible(el) || outOfScope(el) || inMap(el)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 140 || r.height < 48) continue
@@ -243,7 +256,14 @@ window.__compdiffExtract = function () {
 			for (let p = title.parentElement; p && p !== card && card.contains(p); p = p.parentElement) {
 				const pr = p.getBoundingClientRect()
 				if (pr.height > titleBox.h + 56) break
-				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + 4)) break
+				// A wrapping header row whose actions wrapped under the title in a narrow card is still the header row.
+				const wraps = getComputedStyle(p).flexWrap === 'wrap'
+				const inAction = (l) => { const e = l.node.nodeType === 1 ? l.node : l.node.parentElement; return !!(e && e.closest('a, button, [role=button]')) }
+				// A subtitle set right under the title in the same heading block (CnTimelineManage's title + description)
+				// belongs to the title, so the row with the heading's actions is still the header row.
+				const titleSize = px(getComputedStyle(textEl(title)).fontSize)
+				const subtitle = (l) => l.text && l.y <= titleBox.y + titleBox.h + 32 && px(getComputedStyle(l.node.nodeType === 1 ? l.node : l.node.parentElement).fontSize) < titleSize
+				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + 4 && !(wraps && inAction(l)) && !subtitle(l))) break
 				headerRow = p
 			}
 			const hcs = getComputedStyle(headerRow)
@@ -260,7 +280,14 @@ window.__compdiffExtract = function () {
 		const below = titleBox ? titleBox.y + titleBox.h - 1 : -Infinity
 		// A description set beside the title rather than in a wrapper with it (NcSettingsSection's flat
 		// h2 + .settings-section__desc) belongs to the header, as it does when a wrapper holds both.
-		const desc = headerRow && headerRow.nextElementSibling && headerRow.nextElementSibling.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') ? headerRow.nextElementSibling : null
+		// So is a plain line of smaller text set right under the title (a board's h2 + p): a description, not content.
+		const next = headerRow && headerRow.nextElementSibling
+		const plainLine = (e) => {
+			if (!e || !visible(e) || !e.textContent.trim() || e.querySelector(INTERACTIVE + ', [role=combobox], table, ul, ol, img, svg')) return false
+			const top = e.getBoundingClientRect().top - (titleBox.y + titleBox.h)
+			return top >= -1 && top <= 12 && px(getComputedStyle(e).fontSize) < px(getComputedStyle(textEl(title)).fontSize)
+		}
+		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || plainLine(next)) ? next : null
 		const inHeader = (n) => (headerRow && headerRow.contains(n)) || (desc && desc.contains(n))
 		const content = leaves.filter((l) => !inHeader(l.node) && l.y >= below)
 		if (content.length) {
@@ -540,6 +567,9 @@ window.__compdiffExtract = function () {
 			}
 		}
 		if (r.height > 72 || r.width < 300) continue
+		// A list row with its open button and its row menu (the saved-views list), or the line inside one, is a row,
+		// not a toolbar.
+		if (el.closest('li, [role=listitem], [role=row], [role=option], tr')) continue
 		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24)
 		if (ctrls.length < 2) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
@@ -607,6 +637,7 @@ window.__compdiffExtract = function () {
 		const icon = host && [...host.querySelectorAll('svg, [class*=icon]')].find((i) => visible(i) && i.getBoundingClientRect().height <= 40)
 		return icon ? icon.getBoundingClientRect().height : r.height
 	}
+	const nativeToggle = (el, kind, cs) => kind === 'toggle' && el.matches('input') && cs.appearance !== 'none'
 	const elements = []
 	const elementEls = new Set()
 	const recordEls = new Set(components.filter((c) => c.record).map((c) => c.el))
@@ -654,12 +685,31 @@ window.__compdiffExtract = function () {
 		if (styled(rcs)) return null
 		return [...row.querySelectorAll('*')].find((c) => {
 			const q = c.getBoundingClientRect()
-			return q.width >= rr.width * 0.9 && q.top - rr.top < 4 && visible(c) && styled(getComputedStyle(c))
+			// The box must hold the row: a step bar at its top, or a link on its first line above a meta line, does not.
+			return q.width >= rr.width * 0.9 && q.top - rr.top < 4 && q.height >= rr.height * 0.8 && c.textContent.trim() && visible(c) && styled(getComputedStyle(c))
 				&& c.closest('li, [role=treeitem], [role=listitem], [role=option], [role=row]') === row
 		}) || null
 	}
+	// A checkbox or switch whose real input is hidden (NcCheckboxRadioSwitch) is drawn by its icon: measure that.
+	const toggleIcon = (input) => {
+		const host = input.parentElement && input.parentElement.closest('.checkbox-radio-switch, label, [class*="checkbox"], [class*="switch"]')
+		const fits = (i) => visible(i) && i.getBoundingClientRect().height >= 8 && i.getBoundingClientRect().height <= 40
+		return host ? [...host.querySelectorAll('svg')].find(fits) || [...host.querySelectorAll('[class*="icon"]')].find(fits) || null : null
+	}
 	for (const el0 of all) {
 		if (drawnBy.has(el0)) continue
+		const hiddenToggle = el0.matches('input[type=checkbox], input[type=radio]') && !visible(el0) && !outOfScope(el0) ? toggleIcon(el0) : null
+		if (hiddenToggle) {
+			drawnBy.add(hiddenToggle)
+			const ir = hiddenToggle.getBoundingClientRect()
+			elementEls.add(hiddenToggle)
+			elements.push({
+				inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr'), kind: 'toggle', label: ownLabel(el0), inControl: inRecord(el0) ? 'record card' : null,
+				interactive: true, container: containerOf(hiddenToggle), rect: rect(hiddenToggle),
+				props: { h: round(ir.height), borderRadius: radius(hiddenToggle, getComputedStyle(hiddenToggle)), border: 0, borderColor: null, background: null, color: getComputedStyle(hiddenToggle).color, fontSize: px(getComputedStyle(hiddenToggle).fontSize), fontWeight: Number(getComputedStyle(hiddenToggle).fontWeight), paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false, gapNext: null },
+			})
+			continue
+		}
 		if (!visible(el0) || ariaHidden(el0) || outOfScope(el0) || inTabStrip(el0) || el0.matches('[role=tab], th, td, tr') || cardEls.has(el0)) continue
 		const r0 = el0.getBoundingClientRect()
 		if (r0.width < 6 || r0.height < 6) continue
@@ -685,9 +735,12 @@ window.__compdiffExtract = function () {
 			container: containerOf(el), rect: rect(el),
 			props: {
 				h: round(drawnHeight(el, kind, cs, r)), borderRadius: radius(el, cs), ...elementBorder(el, kind, cs),
-				background: bgBehind(el), color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
+				// A native checkbox or radio draws its own glyph: its computed background (grey when disabled, the accent
+				// when checked) is not painted anywhere, so it has none to compare.
+				background: nativeToggle(el, kind, cs) ? null : bgBehind(el), native: nativeToggle(el, kind, cs) || undefined, color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
-				icon: [...el.querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
+				// A native select draws its own arrow.
+				icon: (el.matches('select') && cs.appearance !== 'none') || [...(kind === 'field' ? fieldBox(el) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
 				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),
 				badge: !!(kind === 'button' || kind === 'pill') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
 				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,

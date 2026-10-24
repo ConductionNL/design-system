@@ -328,3 +328,92 @@ test('a settings-section description beside its title is part of the header, as 
 	const inset = (r) => r.components.find((c) => c.title === 'Koppelingen').content.firstRowInsetLeft
 	assert.equal(inset(live), inset(board))
 })
+
+test('a native radio or checkbox has no background to compare, checked, disabled or not', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;display:flex;gap:20px">
+		<label><input type="radio" name="a" checked> Openbaar</label><label><input type="checkbox" disabled> Deels</label>
+		<label><input type="checkbox" style="appearance:none;width:18px;height:18px;background:#3669a5"> Eigen</label></div>`)
+	const t = Object.fromEntries(r.elements.filter((e) => e.kind === 'toggle').map((e) => [e.label, e.props]))
+	assert.equal(t.Openbaar.background, null)
+	assert.equal(t.Deels.background, null)
+	assert.notEqual(t.Eigen.background, null)
+})
+
+test('a bordered or filled label (a choice card) is a card', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:400px;top:200px;width:592px;display:flex;flex-direction:column;gap:12px">
+		<label style="display:flex;gap:12px;padding:12px 14px;border:1px solid #828a95;border-radius:10px"><input type="radio" name="s"><span><strong>Opschorten</strong><br>De termijn staat stil</span></label>
+		<label style="display:flex;gap:12px;padding:12px 14px;min-height:52px;border-radius:10px;background:#eaf0f7"><input type="checkbox"><span>Sanne de Vries laten weten dat de zaak is overgedragen</span></label></div>`)
+	assert.equal(r.components.filter((c) => c.role === 'card').length, 2, JSON.stringify(r.components.map((c) => c.role)))
+	assert.ok(!r.unmeasured.some((u) => u.tag === 'label' || /^label/.test(u.tag || u.el || '')), JSON.stringify(r.unmeasured))
+})
+
+test('a row is not measured on a bar or a first-line link that does not hold the whole row', { skip }, async () => {
+	const r = await measure(`<ol style="position:absolute;left:300px;top:200px;width:660px;display:flex;gap:8px;list-style:none;margin:0;padding:0">
+		<li style="flex:1;display:flex;flex-direction:column;gap:6px;height:40px"><span style="height:6px;background:#cc0000;border-radius:3px"></span><span>Beoordeling</span></li></ol>
+		<ul style="position:absolute;left:300px;top:400px;width:600px;list-style:none;margin:0;padding:0">
+		<li style="height:63px"><a href="#" style="display:block;padding:0 12px;border-radius:8px;background:#eaf0f7;height:34px">Advies verlichting fietspad</a><span>PDF · 1,2 MB</span></li></ul>`)
+	const step = r.elements.find((e) => e.label === 'Beoordeling')
+	assert.equal(step.props.h, 40)
+	const file = r.elements.find((e) => e.kind === 'row' && /Advies/.test(e.label))
+	assert.equal(file.props.h, 63)
+})
+
+test('a link that wrapped under the title in a narrow card is still a header action', { skip }, async () => {
+	const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:316px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:6px">
+		<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:10px 16px"><div style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:3px"><h2 style="margin:0;font-size:17px;font-weight:700">Vastgelopen zaken</h2></div>
+		<div style="flex:none;display:flex;flex-wrap:wrap;gap:8px"><a href="#" style="font-size:14px;font-weight:600">Alles bekijken</a></div></div>
+		<ul style="margin:0;padding:0;list-style:none"><li>Zaak 1</li><li>Zaak 2</li></ul></section>`)
+	const card = r.components.find((c) => c.title === 'Vastgelopen zaken')
+	assert.equal(card.header.actions, 1)
+})
+
+test('a heading block with a subtitle under the title still makes the row with its actions the header', { skip }, async () => {
+	const r = await measure(`<section style="position:absolute;left:292px;top:200px;width:800px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px">
+		<div class="cn-timeline-manage__header" style="display:flex;justify-content:space-between;align-items:flex-start">
+			<div class="cn-timeline-manage__heading"><h3 style="margin:0;font-size:17px">Historie van de zaak</h3><p style="margin:4px 0 0;font-size:13px">Alles wat er met deze zaak is gebeurd</p></div>
+			<div style="display:flex;gap:8px">${btn('Een notitie toevoegen')}${btn('Exporteren')}</div></div>
+		<ul style="margin:16px 0 0;padding:0;list-style:none"><li>Zaak aangemaakt</li><li>Status gewijzigd</li></ul></section>`)
+	const card = r.components.find((c) => c.title === 'Historie van de zaak')
+	assert.equal(card.header.actions, 2)
+})
+
+test('a list row holding its open button and row menu is not a toolbar', { skip }, async () => {
+	const row = (name) => `<li style="display:flex;align-items:center;gap:4px;height:40px">${btn(name).replace('height:38px', 'height:34px;flex:1')}<button aria-label="Acties" style="width:34px;height:34px">…</button></li>`
+	const r = await measure(`<section style="position:absolute;left:1100px;top:200px;width:310px"><ul style="list-style:none;margin:0;padding:0">
+		${row('Aan mij toegewezen')}${row('AVG-verzoeken')}${row('Mijn zaken, deze week')}</ul>
+		<ul style="list-style:none;margin:0;padding:0"><li style="display:flex;flex-direction:column"><div style="display:flex;align-items:center;gap:8px;width:300px">${btn('Wacht op inwoner')}<button aria-label="Beheer" style="width:34px;height:34px">…</button></div></li></ul></section>`)
+	assert.deepEqual(r.components.filter((c) => c.role === 'toolbar'), [])
+})
+
+test('a select field has the chevron its wrapper draws beside the input as its icon', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:400px">
+		<div class="v-select" style="display:flex;align-items:center;width:360px;height:40px;border:1px solid #828a95;border-radius:8px">
+		<input role="combobox" aria-label="Register" style="flex:1;border:0;height:36px">
+		<span class="vs__actions" style="display:flex"><svg width="20" height="20"><path d="M7 10l5 5 5-5z"/></svg></span></div></div>`)
+	assert.equal(r.elements.find((e) => e.label === 'Register').props.icon, true)
+	const native = await measure(`<label style="position:absolute;left:300px;top:200px">Soort bericht <select style="width:280px;height:40px"><option>Bericht</option></select></label>`)
+	assert.equal(native.elements.find((e) => e.kind === 'field').props.icon, true)
+})
+
+test('a switch whose real input is hidden is measured on the icon that draws it', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:400px">
+		<span class="checkbox-radio-switch" style="position:relative;display:flex;align-items:center;gap:8px">
+		<input id="besluit" class="checkbox-radio-switch__input" type="checkbox" style="position:absolute;opacity:0;width:20px;height:34px;margin:0">
+		<label for="besluit" style="display:flex;gap:8px;align-items:center"><span class="checkbox-content__icon"><svg width="20" height="20"><rect width="20" height="20"/></svg></span><span>Dit is een besluit</span></label></span></div>`)
+	const t = r.elements.filter((e) => e.kind === 'toggle')
+	assert.deepEqual(t.map((e) => e.label), ['Dit is een besluit'])
+	assert.equal(t[0].props.h, 20)
+	// The glyph is the switch itself, as a native checkbox is: it has no icon of its own.
+	assert.equal(t[0].props.icon, false)
+})
+
+test('a plain line of smaller text right under a card title is its description on both sides', { skip }, async () => {
+	const field = '<div style="margin-top:10px"><span>Register</span><div role="combobox" aria-label="Register" style="height:40px;border:1px solid #888"></div></div>'
+	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 24px;display:flex;flex-direction:column;gap:6px">
+		<h2 style="margin:0;font-size:17px">Configuratie</h2><p style="margin:0;font-size:14px">In welk register Dossiq zaken bewaart.</p>${field}</section>`)
+	const live = await measure(`<div class="settings-section" style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 24px">
+		<h2 style="margin:0 0 6px;font-size:17px">Configuratie</h2><p class="settings-section__desc" style="margin:0;padding-bottom:6px;font-size:14px">In welk register Dossiq zaken bewaart.</p>${field}</div>`)
+	const gap = (r) => r.components.find((c) => c.title === 'Configuratie').content.gapBelowTitle
+	assert.ok(gap(board) > 30, `board gap ${gap(board)}`)
+	assert.ok(Math.abs(gap(board) - gap(live)) <= 4, `board ${gap(board)} vs live ${gap(live)}`)
+})

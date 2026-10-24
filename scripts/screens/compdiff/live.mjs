@@ -66,3 +66,64 @@ export async function waitForTables(page, { timeout = 20000, still = 1000, inter
 	}
 	return false
 }
+
+/**
+ * Runs in the page: a signature of what is laid out, the size and place of every element in the document. It
+ * changes while widgets render, load data or animate in, and holds still once the page has settled.
+ *
+ * @return {string} The layout signature.
+ */
+export function layoutSignature() {
+	let n = 0, sum = 0
+	for (const el of document.body.querySelectorAll('*')) {
+		const r = el.getBoundingClientRect()
+		if (!r.width && !r.height) continue
+		n++
+		sum = (sum + Math.round(r.x) * 3 + Math.round(r.y) * 7 + Math.round(r.width) * 11 + Math.round(r.height) * 13) % 1000000007
+	}
+	return `${n}:${sum}:${document.body.scrollHeight}`
+}
+
+/**
+ * Tracks a page's requests, so a wait can tell a quiet page from a busy one. A request open longer than `longPoll`
+ * ms is a long poll (notifications, push) that never ends: it does not keep the page busy.
+ *
+ * @param {object} page A playwright page.
+ * @param {{longPoll?: number}} [opts] The long-poll age in milliseconds.
+ * @return {{lastActivity: () => number, busy: () => boolean}} The tracker.
+ */
+export function trackRequests(page, { longPoll = 4000 } = {}) {
+	const open = new Map()
+	let last = Date.now()
+	page.on('request', (r) => { open.set(r, Date.now()); last = Date.now() })
+	const done = (r) => { open.delete(r); last = Date.now() }
+	page.on('requestfinished', done)
+	page.on('requestfailed', done)
+	return {
+		lastActivity: () => last,
+		busy: () => [...open.values()].some((t) => Date.now() - t < longPoll),
+	}
+}
+
+/**
+ * Waits until the page is quiet: no request in flight (long polls aside) and the layout unchanged, both for `quiet`
+ * ms, after at least `min` ms and never longer than `max` ms. A quiet page is measured within seconds; a page that
+ * keeps changing waits the full `max`, as the fixed settle did.
+ *
+ * @param {object} page A playwright page.
+ * @param {{lastActivity: () => number, busy: () => boolean}} requests The page's request tracker (trackRequests).
+ * @param {{min?: number, max?: number, quiet?: number, interval?: number}} [opts] Limits in milliseconds.
+ * @return {Promise<{quiet: boolean, waited: number}>} Whether it went quiet before `max`, and how long it waited.
+ */
+export async function waitForQuiet(page, requests, { min = 1000, max = 8000, quiet = 1500, interval = 250 } = {}) {
+	const start = Date.now()
+	let sig = null, since = start
+	while (Date.now() - start < max) {
+		const s = await page.evaluate(layoutSignature).catch(() => null)
+		if (s !== sig) { sig = s; since = Date.now() }
+		const now = Date.now()
+		if (now - start >= min && !requests.busy() && now - requests.lastActivity() >= quiet && now - since >= quiet) return { quiet: true, waited: now - start }
+		await page.waitForTimeout(interval)
+	}
+	return { quiet: false, waited: Date.now() - start }
+}

@@ -288,6 +288,8 @@ export function pairElements (B = [], L = [], H = 2000) {
 			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind] || !sameRole(b.rep, l.rep)) continue
 			// Two lone elements with different labels are two different controls, not one control restyled.
 			if (b.count === 1 && l.count === 1 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
+			// Nor do two buttons with different labels, unless both are a list's per-row action (three or more copies).
+			if (b.rep.kind === 'button' && l.rep.kind === 'button' && Math.min(b.count, l.count) < 3 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
 			const cost = Math.abs(b.rep.rect.x - l.rep.rect.x) / 1440 + 0.5 * Math.abs(b.rep.rect.y - l.rep.rect.y) / H + (b.rep.kind === l.rep.kind ? 0 : 0.05)
 			if (cost <= 0.12) cand.push({ b, l, cost })
 		}
@@ -327,7 +329,7 @@ export function compareElement (b, l, by = 'label') {
 	}
 	add('border', pb.border, pl.border, (pb.border > 0) !== (pl.border > 0) ? `border ${pb.border > 0 ? 'absent' : 'extra'} on live` : Math.abs(pl.border - pb.border) > 0.5 ? 'border' : null)
 	if (pb.border > 0 && pl.border > 0) add('borderColor', pb.borderColor, pl.borderColor, colourDiff(pb.borderColor, pl.borderColor, THRESHOLDS.color) ? 'color' : null)
-	add('background', pb.background, pl.background, !semantic && colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
+	add('background', pb.background, pl.background, !semantic && !pb.native && !pl.native && colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
 	if (!textless) {
 		add('color', pb.color, pl.color, !semantic && colourDiff(pb.color, pl.color, THRESHOLDS.color) ? 'color' : null)
 		add('fontSize', pb.fontSize, pl.fontSize, Math.abs(pl.fontSize - pb.fontSize) > THRESHOLDS.font ? 'font' : null)

@@ -474,6 +474,17 @@ test('an icon set beside the first line, a few px lower than its text, still lea
 	assert.equal(inset(live), inset(board))
 })
 
+test('a rule drawn above the first row is the separator under the title, as a header border is', { skip }, async () => {
+	const rows = (first) => ['Woo-verzoek Lindelaan', 'Bezwaar Kerkplein', 'Melding Molenweg'].map((t, i) => `<li style="padding:10px 0;${i === 0 ? first : 'border-top:1px solid #e4e6ea'}">${t}</li>`).join('')
+	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0;padding-bottom:12px;border-bottom:1px solid #e4e6ea">Zaken die u volgt</h2><ul style="margin:0;padding:0;list-style:none">${rows('')}</ul></section>`)
+	const live = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0 0 12px">Zaken die u volgt</h2><ul style="margin:0;padding:0;list-style:none">${rows('border-top:1px solid #e4e6ea')}</ul></section>`)
+	const sep = (r) => r.components.find((c) => c.title === 'Zaken die u volgt').header.separator
+	assert.equal(sep(board), 1)
+	assert.equal(sep(live), 1)
+})
+
 test('a dialog\'s close button is not a header action, wherever each side places it', { skip }, async () => {
 	const x = (style) => `<button aria-label="Sluiten" style="width:36px;height:36px;${style}">×</button>`
 	const dialog = (close, extra = '') => `<div role="dialog" aria-modal="true" style="position:absolute;left:400px;top:90px;width:600px;background:#fff;border-radius:12px;padding:20px">

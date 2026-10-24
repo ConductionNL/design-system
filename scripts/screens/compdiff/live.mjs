@@ -40,6 +40,30 @@ export function sessionEntries(raw) {
 }
 
 /**
+ * The POST requests a spec declares as reads (--read-post, path globs joined by `|`, `*` for one path segment): a
+ * duplicate check or a search that asks with a POST body but writes nothing. Those pass through; every other write
+ * stays refused, so a step that reaches a save still cannot create anything. The path is matched without
+ * `/index.php` and without the query.
+ *
+ * @param {string|undefined} raw The --read-post value.
+ * @return {(method: string, url: string) => boolean} Whether a request may pass as a read.
+ */
+export function readPosts(raw) {
+	const globs = (raw || '').split('|').map((x) => x.trim()).filter(Boolean)
+	const patterns = globs.map((g) => new RegExp('^' + g.split('*').map((part) => part.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('[^/]+') + '$'))
+	return (method, url) => {
+		if (method !== 'POST' || patterns.length === 0) return false
+		let pathName
+		try {
+			pathName = new URL(url).pathname.replace(/^\/index\.php(?=\/)/, '')
+		} catch {
+			return false
+		}
+		return patterns.some((re) => re.test(pathName))
+	}
+}
+
+/**
  * Marks the elements a spec leaves out (--ignore, selectors joined by `|`), so the extractor treats them as chrome.
  *
  * @param {object} page A playwright page.

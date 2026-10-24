@@ -520,3 +520,25 @@ test('a chart right under a card title is content, not its description, as an sv
 	assert.ok(svg < 40, `svg gap ${svg}`)
 	assert.ok(Math.abs(svg - canvas) <= 2, `svg ${svg} vs canvas ${canvas}`)
 })
+
+test('facts, a pill row or a list of rows right under a card title is content, not its description', { skip }, async () => {
+	const bodies = {
+		facts: '<dl style="margin:0;display:grid;grid-template-columns:130px 1fr;gap:8px 16px;font-size:14px"><dt>Prioriteit</dt><dd style="margin:0">Hoog</dd><dt>Reden</dt><dd style="margin:0">Raadsvraag</dd></dl>',
+		pills: '<div style="font-size:13px"><span style="padding:2px 8px;border-radius:10px;background:#eaf0f7">Programma Fietsroutes</span> <span style="padding:2px 8px;border-radius:10px;background:#eaf0f7">3 zaken</span></div>',
+		rows: '<div style="font-size:14px"><div style="display:flex;justify-content:space-between;padding:8px 0">Woo-verzoek<span>12</span></div><div style="display:flex;justify-content:space-between;padding:8px 0">Bezwaar<span>4</span></div><div style="display:flex;justify-content:space-between;padding:8px 0">Melding<span>9</span></div></div>',
+	}
+	for (const [name, body] of Object.entries(bodies)) {
+		const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:400px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:10px">
+			<div><h2 style="margin:0;font-size:17px">Kaart</h2></div>${body}<span style="font-size:13px;color:#5e6168">Voetnoot onder de kaart.</span></section>`)
+		const gap = r.components.find((c) => c.title === 'Kaart').content.gapBelowTitle
+		assert.ok(gap < 20, `${name}: gap ${gap}`)
+	}
+	// A plain line of smaller text right under the title is still the description.
+	const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:400px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:6px">
+		<div><h2 style="margin:0;font-size:17px">Kaart</h2></div><p style="margin:0;font-size:14px">Wie wat mag bij dit zaaktype</p><div style="margin-top:20px">Inhoud</div></section>`)
+	assert.ok(r.components.find((c) => c.title === 'Kaart').content.gapBelowTitle > 30)
+	// A 15px line in the title's own ink is content (an empty-state sentence), not a description.
+	const empty = await measure(`<section style="position:absolute;left:300px;top:200px;width:400px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+		<h2 style="margin:0;font-size:17px">Programma</h2><p style="margin:0;font-size:15px">Deze zaak hangt niet onder een programma.</p><div>${btn('Aan een programma koppelen')}</div></section>`)
+	assert.ok(empty.components.find((c) => c.title === 'Programma').content.gapBelowTitle < 20)
+})

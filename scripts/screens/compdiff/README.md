@@ -30,6 +30,7 @@ Options:
 - `--steps '<JSON array>'` (or `--steps @file.json`) plays steps in their order, after the options above: `{"click": sel}`, `{"fill": sel, "value": text}`, `{"type": sel, "value": text}` (key by key, for a field that searches as you type), `{"press": sel, "key": "Enter"}`, `{"wait": ms}` and `{"waitFor": sel}`. A step can rest on the one before it: type a team into a search, then click the option it found. `--clicks` and `--fills` cannot, because every click runs before every fill. A failed click stops the run; a failed fill is reported and skipped.
 - `--login none` measures the live page without logging in, as a visitor sees it. `--login viewer` logs in as `COMPDIFF_VIEWER_USER` and `COMPDIFF_VIEWER_PASSWORD` (any role name works the same way), for a page that looks different to an editor, such as a site that shows "Deze site bewerken" to its editors.
 - `--ignore "<sel>|<sel>"` leaves elements out on both sides, as chrome.
+- `--session '<JSON object>'` seeds the live page's session storage before it loads, for state a browser session keeps. CnDetailPage asks once per session why the reader opens a record with special categories of personal data, and compdiff refuses the write that records the answer, so a spec seeds `cn-access-purposes` instead of answering. A string value is stored as is, any other value as its JSON.
 - `--width <px>` measures both the board and the live page at that viewport width (320 to 2560, default 1440), for a phone board such as MobielZaak at 390.
 
 The live page is opened at its load event, not at network idle: Nextcloud keeps polling, so the network rarely goes idle and that wait ran into its timeout on most pages. Each report holds a `timings` object with the time spent per phase.
@@ -70,7 +71,7 @@ It applies the current comparison rules to the stored measurements again. After 
 `node verdict.mjs <rundir> [--inventory <inventory.tsv> --tag "<branch and build>"]` decides per board: MATCH or NO-MATCH. A board matches only when all of these hold:
 
 - every board component pairs with one on live, and live has no extra components
-- every pair sits within 4 px in x and y of its board position, measured from the content area, and within 8 px in width. Height is data, so it does not count
+- every pair sits within 4 px in x and y of its board position, measured from the content area, and within 8 px in width. Height is data, so it does not count. A dialog counts by its x only: Nextcloud fixes a dialog's top, and the boards put it anywhere from 88 to 120 px. What sits inside a dialog is placed from the dialog's own top
 - no pair has a flagged styling property, and the page background behind the cards is the same colour (channel delta 4 or less)
 
 It writes `verdicts.tsv` and `verdicts.md`. With `--inventory` it appends one row per board to a screens inventory, with notes that start with `layout match: component-measured` or `no layout match: component-measured`. The status and the page mismatch % come from the board's last row there.
@@ -90,6 +91,8 @@ With a modal dialog open (`aria-modal="true"`, on the dialog box or on the mask 
 A tab strip is a `[role=tablist]`, or a `nav[aria-label]` (or an element with a `page-tabs` class) whose links sit on one row and mark the current page with `aria-current`: nc-vue's page tabs navigate between pages, so they are links, not `role=tab`. A breadcrumb trail is not a tab strip. Both kinds are measured the same way and pair with each other, the current item as the active tab. A tab strip's underline is read where it is drawn: on the tablist or on a bar around it whose bottom is the strip's bottom (such as `.cn-tabs__bar`), as a border, a thin pseudo-element or an inset shadow. A field's border is the one people see: its own, a `box-shadow` ring, or that of a wrapper that hugs it (NcInputField, NcSelect). A card's or an element's border is read the same way: a ring in the border's own colour thickens it, so a 1px border with a 1px inset ring reads as the 2px border a board draws (a chosen choice row), and a ring alone reads as a border.
 
 A toolbar is a row of two or more controls. A wrapping flex bar whose row wrappers are `display: contents` (the board layout of CnActionsBar) draws its first line as a toolbar though no element boxes that line: the line takes the bar's width and holds the items on it. A table's head is read from its first header cell with a label, so an empty selection column does not stand for the head's type. Run the extractor's tests with `node --test scripts/screens/compdiff/extract.test.mjs` and the live side's with `live.test.mjs` (they need `PLAYWRIGHT_MODULE` and Chrome, and skip without them). The pairing rules' tests are `compare.test.mjs`.
+
+A card's header actions are the buttons in its title row, and any button set on the title's line to the right of the title from outside that row, as NcSettingsSection places its actions. A button lower in the card is not one.
 
 Every board element with a box of its own that nothing above accounts for is listed under "not measured", with a count in `verdicts.tsv`. A board with unmeasured elements never counts as a match.
 

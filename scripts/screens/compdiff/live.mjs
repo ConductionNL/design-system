@@ -18,6 +18,28 @@ export function accountFor(login, env) {
 }
 
 /**
+ * The session storage a spec seeds on the live page before it loads (--session, a JSON object of key to value), for
+ * state a browser session keeps: a detail page that asks once per session why the reader opens a record
+ * (CnDetailPage's access purpose) cannot be answered by a step, because compdiff refuses the write that records it.
+ * A string value is stored as is; any other value as its JSON.
+ *
+ * @param {string|undefined} raw The --session value.
+ * @return {Array<[string, string]>} The entries, in order.
+ * @throws {Error} When the value is not a JSON object.
+ */
+export function sessionEntries(raw) {
+	if (!raw) return []
+	let parsed
+	try {
+		parsed = JSON.parse(raw)
+	} catch {
+		throw new Error('--session needs a JSON object of key to value')
+	}
+	if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('--session needs a JSON object of key to value')
+	return Object.entries(parsed).map(([k, v]) => [k, typeof v === 'string' ? v : JSON.stringify(v)])
+}
+
+/**
  * Marks the elements a spec leaves out (--ignore, selectors joined by `|`), so the extractor treats them as chrome.
  *
  * @param {object} page A playwright page.

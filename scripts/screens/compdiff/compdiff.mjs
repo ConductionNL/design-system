@@ -26,7 +26,7 @@ import { pairComponents, compareProps, scoreComponent, pairElements, compareElem
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { parseSteps, parseWidth, playSteps } from './steps.mjs'
-import { accountFor, markIgnored, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -118,6 +118,12 @@ try {
 			try { for (const a of list) { localStorage.setItem(`cn-support-dialog-shown:${a}`, '1'); localStorage.setItem(`cn-walkthrough-seen:${a}`, '999.0.0') } } catch (e) {}
 		}, apps)
 		for (const a of apps) await lctx.route(new RegExp(`/apps/${a}/api/setup/status`), (route) => route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"skip-first-run"}' }))
+	}
+	const session = sessionEntries(args.session)
+	if (session.length) {
+		await lctx.addInitScript((entries) => {
+			try { for (const [k, v] of entries) sessionStorage.setItem(k, v) } catch (e) {}
+		}, session)
 	}
 	const blocked = []
 	// Read-only: refuse any write request to the live instance (login is the one allowed POST).

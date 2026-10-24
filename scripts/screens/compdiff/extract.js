@@ -284,6 +284,14 @@ window.__compdiffExtract = function () {
 			}
 			const hcs = getComputedStyle(headerRow)
 			const actions = [...headerRow.querySelectorAll('a, button, [role=button]')].filter((a) => visible(a) && !title.contains(a) && ownedBy(a, card))
+			// A button set on the title's line from outside the title's row (NcSettingsSection puts its actions in a
+			// sibling placed in the title row) is a header action too: what counts is the line it sits on.
+			const titleMid = titleBox.y + titleBox.h / 2
+			for (const a of card.querySelectorAll('a, button, [role=button]')) {
+				if (actions.includes(a) || !visible(a) || title.contains(a) || !ownedBy(a, card) || actions.some((b) => b.contains(a) || a.contains(b))) continue
+				const ar = a.getBoundingClientRect()
+				if (ar.left >= titleBox.x + titleBox.w && Math.abs((ar.top + ar.bottom) / 2 - titleMid) <= Math.max(ar.height, titleBox.h) / 2) actions.push(a)
+			}
 			comp.header = {
 				...font(textEl(title)),
 				titleInsetLeft: round(titleBox.x - cr.left), titleInsetTop: round(titleBox.y - cr.top),

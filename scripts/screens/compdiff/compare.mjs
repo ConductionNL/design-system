@@ -388,3 +388,37 @@ export function markListElements (r) {
 	}
 	return r
 }
+
+/**
+ * Where a pair sits against its board position, as verdict reasons ("x +6", "y -10"), past `limit` px.
+ *
+ * A page component is placed from the content origin of its side. A dialog is placed in the viewport, by its x only:
+ * the boards put a dialog's top anywhere from 88 to 120 px and Nextcloud fixes it, so its vertical position does not
+ * count. What sits inside a dialog is placed from that dialog's top, so it still counts within the dialog.
+ *
+ * @param {{board: object, live: object}} c The pair.
+ * @param {{x: number, y: number}} ob The board's content origin.
+ * @param {{x: number, y: number}} ol The live content origin.
+ * @param {{board: object, live: object}|null} dialog The paired dialog, if one is open.
+ * @param {number} [limit] The tolerance in px.
+ * @return {Array<string>} The reasons, empty when the pair sits within the tolerance.
+ */
+export function positionReasons(c, ob, ol, dialog, limit = 4) {
+	const reasons = []
+	const r1 = (v) => Math.round(v * 10) / 10
+	const push = (axis, d) => { if (Math.abs(d) > limit) reasons.push(`${axis} ${d > 0 ? '+' : ''}${d}`) }
+	const role = c.role || c.board.role
+	if (role === 'page' || role === 'pageHeader') return reasons
+	if (role === 'dialog') {
+		push('x', r1(c.live.rect.x - c.board.rect.x))
+		return reasons
+	}
+	if (role === 'dialog-card') {
+		push('x', r1(c.live.rect.x - c.board.rect.x))
+		if (dialog) push('y', r1((c.live.rect.y - dialog.live.rect.y) - (c.board.rect.y - dialog.board.rect.y)))
+		return reasons
+	}
+	push('x', r1((c.live.rect.x - ol.x) - (c.board.rect.x - ob.x)))
+	push('y', r1((c.live.rect.y - ol.y) - (c.board.rect.y - ob.y)))
+	return reasons
+}

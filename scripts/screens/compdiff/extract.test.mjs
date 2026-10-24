@@ -449,3 +449,14 @@ test('a button lower in the card is not a header action', { skip }, async () => 
 		<h2 style="margin:0">Legesregels</h2><p style="margin:14px 0">Bouwen</p>${btn('Regel toevoegen')}</div>`)
 	assert.equal(r.components.find((c) => c.title === 'Legesregels').header.actions, 0)
 })
+
+test('an icon set beside the first line, a few px lower than its text, still leads the first row', { skip }, async () => {
+	const icon = (top) => `<svg width="20" height="20" style="flex:none;margin-top:${top}px"><rect width="20" height="20"/></svg>`
+	const card = (top) => `<div style="position:absolute;left:300px;top:200px;width:600px;border:1px solid #ddd;padding:12px 14px">
+		<h3 style="margin:0 0 10px">Let op</h3>
+		<div style="display:flex;gap:10px;align-items:flex-start;line-height:1.5">${icon(top)}<p style="margin:0">Heeft iemand zich afgemeld voor berichten, dan krijgt die alleen nog wat de wet verplicht.</p></div></div>`
+	const board = await measure(card(0))
+	const live = await measure(card(9))
+	const inset = (r) => r.components.find((c) => c.title === 'Let op').content.firstRowInsetLeft
+	assert.equal(inset(live), inset(board))
+})

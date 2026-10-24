@@ -325,7 +325,10 @@ window.__compdiffExtract = function () {
 		const content = leaves.filter((l) => !inHeader(l.node) && l.y >= below)
 		if (content.length) {
 			const top = Math.min(...content.map((l) => l.y))
-			const firstRow = content.filter((l) => l.y <= top + 6)
+			// An icon set beside the first line, a few px lower than its text (centred on a taller line), is still part
+			// of that row: it starts inside the line's box.
+			const lineBottom = Math.min(...content.filter((l) => l.y <= top + 6).map((l) => l.b))
+			const firstRow = content.filter((l) => l.y <= top + 6 || (!l.text && l.y < lineBottom))
 			comp.content = {
 				firstRowInsetLeft: round(Math.min(...firstRow.map((l) => l.x)) - cr.left),
 				minInsetLeft: round(Math.min(...content.map((l) => l.x)) - cr.left),

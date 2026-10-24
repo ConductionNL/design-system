@@ -91,6 +91,8 @@ A tab strip is a `[role=tablist]`, or a `nav[aria-label]` (or an element with a 
 
 A toolbar is a row of two or more controls. A wrapping flex bar whose row wrappers are `display: contents` (the board layout of CnActionsBar) draws its first line as a toolbar though no element boxes that line: the line takes the bar's width and holds the items on it. A table's head is read from its first header cell with a label, so an empty selection column does not stand for the head's type. Run the extractor's tests with `node --test scripts/screens/compdiff/extract.test.mjs` and the live side's with `live.test.mjs` (they need `PLAYWRIGHT_MODULE` and Chrome, and skip without them). The pairing rules' tests are `compare.test.mjs`.
 
+A card's header actions are the buttons in its title row, and any button set on the title's line to the right of the title from outside that row, as NcSettingsSection places its actions. A button lower in the card is not one.
+
 Every board element with a box of its own that nothing above accounts for is listed under "not measured", with a count in `verdicts.tsv`. A board with unmeasured elements never counts as a match.
 
 ## What it compares

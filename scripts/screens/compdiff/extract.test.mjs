@@ -427,6 +427,8 @@ test('a 1px border with a 1px ring of the same colour reads as the 2px border pe
 	const chosen = (r) => r.components.find((c) => c.role === 'card' && /Briefsjabloon/.test(c.title || JSON.stringify(c.elements || '')) ) || r.components.filter((c) => c.role === 'card')[0]
 	assert.deepEqual(chosen(live).props.border, chosen(board).props.border)
 	assert.equal(chosen(live).props.border.top, 2)
+	// The ring is the border, not a shadow: no "shadow extra on live".
+	assert.equal(chosen(live).props.boxShadow, 'none')
 })
 
 test('a button set on the title line outside the title\'s own row is a header action (NcSettingsSection)', { skip }, async () => {

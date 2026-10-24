@@ -49,6 +49,15 @@ window.__compdiffExtract = function () {
 			return [key, b[key] > 0 && same(cs['border' + side + 'Color']) ? b[key] + g.width : b[key]]
 		}))
 	}
+	// The box shadow left once a ring that seenBorders() read as border is taken out: 'none' when the ring was all of it.
+	const shadowBeyondRing = (cs) => {
+		if (cs.boxShadow === 'none') return 'none'
+		const g = ring(cs)
+		if (!g) return cs.boxShadow
+		const parts = cs.boxShadow.split(/,(?![^(]*\))/).map((x) => x.trim())
+		const rest = parts.filter((x) => !/^\S.*\)\s+0px\s+0px\s+0px\s+[\d.]+px(\s+inset)?$|^(inset\s+)?\S.*\)\s+0px\s+0px\s+0px\s+[\d.]+px$/.test(x))
+		return rest.length ? rest.join(', ') : 'none'
+	}
 	// The colour of the border people see: the border's own, or the ring's when only a ring draws one.
 	const seenBorderColour = (cs) => (Object.values(borders(cs)).some((v) => v > 0) || !ring(cs) ? cs.borderTopColor : ring(cs).color)
 	// The border people see around a field: its own (3+ sides) or ring, else that of a wrapper that hugs it (NcInputField
@@ -258,7 +267,7 @@ window.__compdiffExtract = function () {
 		for (let e = ownerCard(card); e; e = ownerCard(e)) comp.depth++
 		comp.props = {
 			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: seenBorders(cs), borderColor: seenBorderColour(cs),
-			borderRadius: radius(card, cs), background: bgBehind(card), boxShadow: cs.boxShadow === 'none' ? 'none' : cs.boxShadow,
+			borderRadius: radius(card, cs), background: bgBehind(card), boxShadow: shadowBeyondRing(cs),
 			gap: /flex|grid/.test(cs.display) ? px(cs.rowGap) : null,
 		}
 		const leaves = leavesOf(card)

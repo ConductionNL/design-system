@@ -417,3 +417,22 @@ test('a plain line of smaller text right under a card title is its description o
 	assert.ok(gap(board) > 30, `board gap ${gap(board)}`)
 	assert.ok(Math.abs(gap(board) - gap(live)) <= 4, `board ${gap(board)} vs live ${gap(live)}`)
 })
+
+test('a button set on the title line outside the title\'s own row is a header action (NcSettingsSection)', { skip }, async () => {
+	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Inspectiechecklists</h2>${btn('Checklist toevoegen')}</div>
+		<p style="margin:14px 0 0">Brandveiligheid</p></section>`)
+	const live = await measure(`<div class="settings-section" style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0">Inspectiechecklists</h2>
+		<div class="actions" style="position:absolute;right:22px;top:16px">${btn('Checklist toevoegen')}</div>
+		<p style="margin:14px 0 0">Brandveiligheid</p></div>`)
+	const actions = (r) => r.components.find((c) => c.title === 'Inspectiechecklists').header.actions
+	assert.equal(actions(board), 1)
+	assert.equal(actions(live), 1)
+})
+
+test('a button lower in the card is not a header action', { skip }, async () => {
+	const r = await measure(`<div class="settings-section" style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0">Legesregels</h2><p style="margin:14px 0">Bouwen</p>${btn('Regel toevoegen')}</div>`)
+	assert.equal(r.components.find((c) => c.title === 'Legesregels').header.actions, 0)
+})

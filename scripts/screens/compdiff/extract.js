@@ -165,14 +165,22 @@ window.__compdiffExtract = function () {
 	// and size only: tiles, a placeholder's tint and its corners are not styling to compare.
 	const MAPLIB = '.leaflet-container, .maplibregl-map, .mapboxgl-map, .ol-viewport'
 	const isMap = (el) => el.matches(MAPLIB) || (el.matches('[role=img]') && /^kaart\b|\bmap\b/i.test(el.getAttribute('aria-label') || ''))
-	const maps = all.filter((el) => visible(el) && !outOfScope(el) && isMap(el) && !all.some((o) => o !== el && o.contains(el) && isMap(o)))
+	// A drawn map is often an svg (role=img), which `all` leaves out, so those are looked at too.
+	const mapCandidates = [...all, ...document.querySelectorAll('svg[role=img]')]
+	const maps = mapCandidates.filter((el) => visible(el) && !outOfScope(el) && isMap(el) && !mapCandidates.some((o) => o !== el && o.contains(el) && isMap(o)))
 	const inMap = (el) => maps.some((m) => m.contains(el))
+	// The frame around a map that holds nothing else is the map's own edge, not a card.
+	const framesMap = (el) => maps.some((m) => {
+		if (!el.contains(m) || el === m) return false
+		const a = el.getBoundingClientRect(), b = m.getBoundingClientRect()
+		return Math.abs(a.left - b.left) <= 4 && Math.abs(a.top - b.top) <= 4 && Math.abs(a.right - b.right) <= 4 && Math.abs(a.bottom - b.bottom) <= 4
+	})
 	let cards = []
 	for (const el of all) {
 		// Links can be cards (a KPI tile is often one big <a>), and so can a framed label (a choice card, a checkbox
 		// box); other controls are not.
 		if ((el.matches(INTERACTIVE) && el.tagName !== 'A' && el.tagName !== 'LABEL') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
-		if (!visible(el) || outOfScope(el) || inMap(el)) continue
+		if (!visible(el) || outOfScope(el) || inMap(el) || framesMap(el)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 140 || r.height < 48) continue
 		const cs = getComputedStyle(el)

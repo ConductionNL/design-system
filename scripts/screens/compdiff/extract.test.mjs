@@ -450,6 +450,19 @@ test('a button lower in the card is not a header action', { skip }, async () => 
 	assert.equal(r.components.find((c) => c.title === 'Legesregels').header.actions, 0)
 })
 
+test('a grid of bordered tiles under a card title is content, whether or not a tile reads as a card of its own', { skip }, async () => {
+	const tile = (t) => `<li style="display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid #e4e6ea;border-radius:8px;min-width:0"><span style="width:14px;height:14px;border-radius:7px;background:#369"></span><span style="flex:1">${t}</span><span style="color:#5e6168">Start</span></li>`
+	const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:800px;border:1px solid #ddd;padding:20px 22px">
+		<div style="display:flex;flex-direction:column;gap:14px">
+			<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:17px">Statussen</h2>${btn('Bewerken')}</div>
+			<ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px">${tile('Ontvangen')}${tile('Aanvullende gegevens gevraagd voor de beoordeling van de aanvraag')}${tile('In behandeling')}${tile('Besluit')}</ul>
+		</div><p style="margin:14px 0 0;font-size:13px">Kleur en volgorde gelden in lijsten.</p></section>`)
+	const card = r.components.find((c) => c.title === 'Statussen')
+	assert.ok(card.content.gapBelowTitle < 40, `gap ${card.content.gapBelowTitle}`)
+	// The tile whose name wraps to two lines is as much a row as the others.
+	assert.equal(r.components.filter((c) => c.role === 'card').length, 1, JSON.stringify(r.components.map((c) => [c.role, c.rect.h])))
+})
+
 test('an icon set beside the first line, a few px lower than its text, still leads the first row', { skip }, async () => {
 	const icon = (top) => `<svg width="20" height="20" style="flex:none;margin-top:${top}px"><rect width="20" height="20"/></svg>`
 	const card = (top) => `<div style="position:absolute;left:300px;top:200px;width:600px;border:1px solid #ddd;padding:12px 14px">
@@ -470,4 +483,18 @@ test('a rule drawn above the first row is the separator under the title, as a he
 	const sep = (r) => r.components.find((c) => c.title === 'Zaken die u volgt').header.separator
 	assert.equal(sep(board), 1)
 	assert.equal(sep(live), 1)
+})
+
+test('a dialog\'s close button is not a header action, wherever each side places it', { skip }, async () => {
+	const x = (style) => `<button aria-label="Sluiten" style="width:36px;height:36px;${style}">×</button>`
+	const dialog = (close, extra = '') => `<div role="dialog" aria-modal="true" style="position:absolute;left:400px;top:90px;width:600px;background:#fff;border-radius:12px;padding:20px">
+		<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Overdragen</h2>${extra}${close.inRow ? x('') : ''}</div>
+		${close.inRow ? '' : x('position:absolute;right:8px;top:8px')}<p>Aan wie geeft u de zaak?</p><input style="height:40px;width:400px">${btn('Overdragen')}</div>`
+	const inRow = await measure(dialog({ inRow: true }))
+	const corner = await measure(dialog({ inRow: false }))
+	const actions = (r) => r.components.find((c) => c.role === 'dialog').header.actions
+	assert.equal(actions(inRow), 0)
+	assert.equal(actions(corner), 0)
+	// Another button in the title row still counts.
+	assert.equal(actions(await measure(dialog({ inRow: true }, btn('Help')))), 1)
 })

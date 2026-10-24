@@ -182,6 +182,10 @@ window.__compdiffExtract = function () {
 		if (!kind) continue
 		cards.push({ el, kind })
 	}
+	// A framed item among framed siblings of the same kind that are too short to be cards is a row of that list, not
+	// a card: whether one tile reaches 48px depends on how its text wraps (a long status name), not on what it is.
+	const rowSibling = (el) => [...el.parentElement.children].some((s) => s !== el && s.tagName === el.tagName && visible(s) && framed(s, getComputedStyle(s)) && s.getBoundingClientRect().height < 48)
+	cards = cards.filter((c) => !c.el.parentElement || !rowSibling(c.el))
 	// Collapse wrappers that draw the same box (grid item around widget wrapper): keep the one with the most border sides, else the inner one.
 	const same = (a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect(); return Math.abs(p.x - q.x) <= 3 && Math.abs(p.y - q.y) <= 3 && Math.abs(p.right - q.right) <= 3 && Math.abs(p.bottom - q.bottom) <= 3 }
 	const nBorders = (el) => Object.values(borders(getComputedStyle(el))).filter((v) => v > 0).length
@@ -300,6 +304,12 @@ window.__compdiffExtract = function () {
 				if (actions.includes(a) || !visible(a) || title.contains(a) || !ownedBy(a, card) || actions.some((b) => b.contains(a) || a.contains(b))) continue
 				const ar = a.getBoundingClientRect()
 				if (ar.left >= titleBox.x + titleBox.w && Math.abs((ar.top + ar.bottom) / 2 - titleMid) <= Math.max(ar.height, titleBox.h) / 2) actions.push(a)
+			}
+			// A dialog's close button is the dialog's own chrome, drawn by both sides in their own place (in the title
+			// row, or in the corner by NcDialog): it is not a header action of the dialog's content.
+			if (role === 'dialog' || role === 'dialog-card') {
+				const closing = (a) => /^(sluiten|close|dialoog sluiten|close dialog|annuleren|cancel)$/i.test((a.getAttribute('aria-label') || a.getAttribute('title') || '').trim()) || /(^|[_-])close\b/i.test(String(a.className))
+				for (let i = actions.length - 1; i >= 0; i--) if (closing(actions[i])) actions.splice(i, 1)
 			}
 			comp.header = {
 				...font(textEl(title)),

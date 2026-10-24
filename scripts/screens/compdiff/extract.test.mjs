@@ -474,6 +474,15 @@ test('an icon set beside the first line, a few px lower than its text, still lea
 	assert.equal(inset(live), inset(board))
 })
 
+test('chips on a toolbar row are not counted as its controls, as buttons or as spans', { skip }, async () => {
+	const chip = (t, tag) => `<${tag} style="height:34px;padding:0 12px;border-radius:17px;border:1px solid #ccc;display:inline-flex;align-items:center">${t}</${tag}>`
+	const bar = (tag) => `<div style="position:absolute;left:300px;top:200px;width:900px;display:flex;gap:8px;align-items:center">
+		${btn('Lijst')}${btn('Kaarten')}${chip('Vandaag', tag)}${chip('Deze week', tag)}${chip('Later', tag)}</div>`
+	const controls = (r) => r.components.find((c) => c.role === 'toolbar').controls
+	assert.equal(controls(await measure(bar('button'))), 2)
+	assert.equal(controls(await measure(bar('span'))), 2)
+})
+
 test('a rule drawn above the first row is the separator under the title, as a header border is', { skip }, async () => {
 	const rows = (first) => ['Woo-verzoek Lindelaan', 'Bezwaar Kerkplein', 'Melding Molenweg'].map((t, i) => `<li style="padding:10px 0;${i === 0 ? first : 'border-top:1px solid #e4e6ea'}">${t}</li>`).join('')
 	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">

@@ -549,6 +549,9 @@ window.__compdiffExtract = function () {
 		return { controlBorder: b.width, controlBorderColor: b.color }
 	}
 	const ctrl = 'button, input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
+	// A chip (a fully rounded pill of 36px or less: a quick filter, a shortcut or an active-filter tag) is not a toolbar control: which chips a
+	// bar shows follows the data, and a board draws them as buttons where the library may draw spans.
+	const chip = (c) => { const r = c.getBoundingClientRect(); return r.height <= 36 && radius(c, getComputedStyle(c)) >= r.height / 2 - 1 }
 	const headerBox = window.__compdiffPageHeader
 	const used = new Set()
 	// Pager rows: the row around a pagination nav (its page links or buttons and the count beside them). Measured as a
@@ -594,7 +597,7 @@ window.__compdiffExtract = function () {
 		if (r.width >= 300 && /flex/.test(cs.display) && cs.flexWrap === 'wrap' && [...el.children].some((c) => getComputedStyle(c).display === 'contents')
 			&& ![...used].some((u) => u.contains(el)) && !(headerBox && (headerBox.contains(el) || el.contains(headerBox)))) {
 			const line = firstLine(el)
-			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24) : []
+			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c)) : []
 			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
 				line.items.forEach((i) => lineItems.add(i))
 				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
@@ -606,7 +609,7 @@ window.__compdiffExtract = function () {
 		// A list row with its open button and its row menu (the saved-views list), or the line inside one, is a row,
 		// not a toolbar.
 		if (el.closest('li, [role=listitem], [role=row], [role=option], tr')) continue
-		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24)
+		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c))
 		if (ctrls.length < 2) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (tabStrips.some((s) => el.contains(s))) continue

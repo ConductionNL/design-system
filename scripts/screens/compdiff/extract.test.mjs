@@ -460,3 +460,12 @@ test('an icon set beside the first line, a few px lower than its text, still lea
 	const inset = (r) => r.components.find((c) => c.title === 'Let op').content.firstRowInsetLeft
 	assert.equal(inset(live), inset(board))
 })
+
+test('chips on a toolbar row are not counted as its controls, as buttons or as spans', { skip }, async () => {
+	const chip = (t, tag) => `<${tag} style="height:34px;padding:0 12px;border-radius:17px;border:1px solid #ccc;display:inline-flex;align-items:center">${t}</${tag}>`
+	const bar = (tag) => `<div style="position:absolute;left:300px;top:200px;width:900px;display:flex;gap:8px;align-items:center">
+		${btn('Lijst')}${btn('Kaarten')}${chip('Vandaag', tag)}${chip('Deze week', tag)}${chip('Later', tag)}</div>`
+	const controls = (r) => r.components.find((c) => c.role === 'toolbar').controls
+	assert.equal(controls(await measure(bar('button'))), 2)
+	assert.equal(controls(await measure(bar('span'))), 2)
+})

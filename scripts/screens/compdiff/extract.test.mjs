@@ -418,6 +418,19 @@ test('a plain line of smaller text right under a card title is its description o
 	assert.ok(Math.abs(gap(board) - gap(live)) <= 4, `board ${gap(board)} vs live ${gap(live)}`)
 })
 
+test('a 1px border with a 1px ring of the same colour reads as the 2px border people see', { skip }, async () => {
+	const row = (style) => `<div style="position:absolute;left:400px;top:200px;width:592px;display:flex;flex-direction:column;gap:12px">
+		<label style="display:flex;gap:12px;padding:12px 14px;border-radius:10px;${style}"><input type="radio" name="s" checked><span><strong>Briefsjabloon</strong><br>Met huisstijl</span></label>
+		<label style="display:flex;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid #828a95"><input type="radio" name="s"><span><strong>Leeg</strong><br>Zonder sjabloon</span></label></div>`
+	const board = await measure(row('border:2px solid rgb(54, 105, 165)'))
+	const live = await measure(row('border:1px solid rgb(54, 105, 165);box-shadow:inset 0 0 0 1px rgb(54, 105, 165)'))
+	const chosen = (r) => r.components.find((c) => c.role === 'card' && /Briefsjabloon/.test(c.title || JSON.stringify(c.elements || '')) ) || r.components.filter((c) => c.role === 'card')[0]
+	assert.deepEqual(chosen(live).props.border, chosen(board).props.border)
+	assert.equal(chosen(live).props.border.top, 2)
+	// The ring is the border, not a shadow: no "shadow extra on live".
+	assert.equal(chosen(live).props.boxShadow, 'none')
+})
+
 test('a button set on the title line outside the title\'s own row is a header action (NcSettingsSection)', { skip }, async () => {
 	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
 		<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Inspectiechecklists</h2>${btn('Checklist toevoegen')}</div>
@@ -448,4 +461,15 @@ test('a grid of bordered tiles under a card title is content, whether or not a t
 	assert.ok(card.content.gapBelowTitle < 40, `gap ${card.content.gapBelowTitle}`)
 	// The tile whose name wraps to two lines is as much a row as the others.
 	assert.equal(r.components.filter((c) => c.role === 'card').length, 1, JSON.stringify(r.components.map((c) => [c.role, c.rect.h])))
+})
+
+test('an icon set beside the first line, a few px lower than its text, still leads the first row', { skip }, async () => {
+	const icon = (top) => `<svg width="20" height="20" style="flex:none;margin-top:${top}px"><rect width="20" height="20"/></svg>`
+	const card = (top) => `<div style="position:absolute;left:300px;top:200px;width:600px;border:1px solid #ddd;padding:12px 14px">
+		<h3 style="margin:0 0 10px">Let op</h3>
+		<div style="display:flex;gap:10px;align-items:flex-start;line-height:1.5">${icon(top)}<p style="margin:0">Heeft iemand zich afgemeld voor berichten, dan krijgt die alleen nog wat de wet verplicht.</p></div></div>`
+	const board = await measure(card(0))
+	const live = await measure(card(9))
+	const inset = (r) => r.components.find((c) => c.title === 'Let op').content.firstRowInsetLeft
+	assert.equal(inset(live), inset(board))
 })

@@ -77,7 +77,22 @@ export function pairComponents (board, live, H) {
 	cand.sort((x, y) => x.cost - y.cost)
 	for (const { b, l } of cand) if (!usedB.has(b) && !usedL.has(l)) take(b, l, 'position')
 	const counted = (c) => !c.record || c.record.index === 0
-	return { pairs, missing: board.filter((c) => !usedB.has(c) && counted(c)), extra: live.filter((c) => !usedL.has(c) && counted(c)) }
+	// An untitled card that only frames a paired table (and its pager) is that table's frame: one side may draw the
+	// frame as a card, the other as the table's own border. It is neither missing nor extra.
+	const hugs = (o, i) => i.x >= o.x - 4 && i.x + i.w <= o.x + o.w + 4 && i.y >= o.y - 4 && i.y + i.h <= o.y + o.h + 4
+	const frameOnly = (c, side) => {
+		if (c.role !== 'card' || c.title) return false
+		const inner = pairs.map((p) => p[side]).filter((x) => hugs(c.rect, x.rect))
+		const table = inner.find((x) => x.role === 'table')
+		if (!table || inner.some((x) => !['table', 'pager', 'toolbar'].includes(x.role))) return false
+		const bottom = Math.max(...inner.map((x) => x.rect.y + x.rect.h))
+		return table.rect.w >= c.rect.w - 8 && table.rect.y - c.rect.y <= 24 && c.rect.y + c.rect.h - bottom <= 24
+	}
+	return {
+		pairs,
+		missing: board.filter((c) => !usedB.has(c) && counted(c) && !frameOnly(c, 'board')),
+		extra: live.filter((c) => !usedL.has(c) && counted(c) && !frameOnly(c, 'live')),
+	}
 }
 
 function flatten (obj, prefix = '', out = {}) {

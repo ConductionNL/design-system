@@ -35,6 +35,31 @@ window.__compdiffExtract = function () {
 		}
 		return null
 	}
+	// The border people see: a ring of the border's own colour (or with no border at all) thickens it, so a 1px border
+	// with a 1px inset ring reads as the 2px border a board draws (a chosen choice row).
+	const seenBorders = (cs) => {
+		const b = borders(cs)
+		const g = ring(cs)
+		if (!g) return b
+		const same = (c) => { const x = rgba(c), y = rgba(g.color); return !!x && !!y && x.slice(0, 3).every((v, i) => Math.abs(v - y[i]) <= 4) }
+		const none = Object.values(b).every((v) => v === 0)
+		return Object.fromEntries(SIDES.map((side) => {
+			const key = side.toLowerCase()
+			if (none) return [key, g.width]
+			return [key, b[key] > 0 && same(cs['border' + side + 'Color']) ? b[key] + g.width : b[key]]
+		}))
+	}
+	// The box shadow left once a ring that seenBorders() read as border is taken out: 'none' when the ring was all of it.
+	const shadowBeyondRing = (cs) => {
+		if (cs.boxShadow === 'none') return 'none'
+		const g = ring(cs)
+		if (!g) return cs.boxShadow
+		const parts = cs.boxShadow.split(/,(?![^(]*\))/).map((x) => x.trim())
+		const rest = parts.filter((x) => !/^\S.*\)\s+0px\s+0px\s+0px\s+[\d.]+px(\s+inset)?$|^(inset\s+)?\S.*\)\s+0px\s+0px\s+0px\s+[\d.]+px$/.test(x))
+		return rest.length ? rest.join(', ') : 'none'
+	}
+	// The colour of the border people see: the border's own, or the ring's when only a ring draws one.
+	const seenBorderColour = (cs) => (Object.values(borders(cs)).some((v) => v > 0) || !ring(cs) ? cs.borderTopColor : ring(cs).color)
 	// The border people see around a field: its own (3+ sides) or ring, else that of a wrapper that hugs it (NcInputField
 	// and NcSelect draw theirs on a wrapper, not on the inner input).
 	const fieldBorder = (el) => {
@@ -245,8 +270,8 @@ window.__compdiffExtract = function () {
 		const comp = { el: card, role, rect: rect(card), frame: framed(card, cs), depth: 0 }
 		for (let e = ownerCard(card); e; e = ownerCard(e)) comp.depth++
 		comp.props = {
-			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: borders(cs), borderColor: cs.borderTopColor,
-			borderRadius: radius(card, cs), background: bgBehind(card), boxShadow: cs.boxShadow === 'none' ? 'none' : cs.boxShadow,
+			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: seenBorders(cs), borderColor: seenBorderColour(cs),
+			borderRadius: radius(card, cs), background: bgBehind(card), boxShadow: shadowBeyondRing(cs),
 			gap: /flex|grid/.test(cs.display) ? px(cs.rowGap) : null,
 		}
 		const leaves = leavesOf(card)
@@ -304,7 +329,10 @@ window.__compdiffExtract = function () {
 		const content = leaves.filter((l) => !inHeader(l.node) && l.y >= below)
 		if (content.length) {
 			const top = Math.min(...content.map((l) => l.y))
-			const firstRow = content.filter((l) => l.y <= top + 6)
+			// An icon set beside the first line, a few px lower than its text (centred on a taller line), is still part
+			// of that row: it starts inside the line's box.
+			const lineBottom = Math.min(...content.filter((l) => l.y <= top + 6).map((l) => l.b))
+			const firstRow = content.filter((l) => l.y <= top + 6 || (!l.text && l.y < lineBottom))
 			comp.content = {
 				firstRowInsetLeft: round(Math.min(...firstRow.map((l) => l.x)) - cr.left),
 				minInsetLeft: round(Math.min(...content.map((l) => l.x)) - cr.left),
@@ -636,8 +664,9 @@ window.__compdiffExtract = function () {
 	}
 	const elementBorder = (el, kind, cs) => {
 		if (kind === 'field') { const b = fieldBorder(el); return { border: b.width, borderColor: b.width ? b.color : null } }
-		const three = Object.values(borders(cs)).filter((v) => v > 0).length >= 3
-		return { border: three ? borders(cs).top : 0, borderColor: three ? cs.borderTopColor : null }
+		const seen = seenBorders(cs)
+		const three = Object.values(seen).filter((v) => v > 0).length >= 3
+		return { border: three ? seen.top : 0, borderColor: three ? seenBorderColour(cs) : null }
 	}
 	// The switch people see. A native checkbox or radio draws a square glyph centred in its box, so a box stretched by
 	// its row is not the switch; an unstyled input stretched over its label (NcCheckboxRadioSwitch) is drawn by the

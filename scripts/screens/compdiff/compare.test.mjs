@@ -137,3 +137,19 @@ test('a page component is placed from the content origin', () => {
 	const c = (x, y) => ({ role: 'card', rect: { x, y, w: 800, h: 100 } })
 	assert.deepEqual(positionReasons({ board: c(292, 300), live: c(292, 310) }, { x: 292, y: 90 }, { x: 292, y: 90 }, null), ['y +10'])
 })
+
+test('an untitled card that only frames a paired table is that table\'s frame, not an extra card', () => {
+	const table = (y) => ({ role: 'table', rect: { x: 293, y, w: 1118, h: 440 } })
+	const pager = (y) => ({ role: 'pager', rect: { x: 293, y, w: 1118, h: 61 } })
+	const frame = { role: 'card', rect: { x: 292, y: 292.5, w: 1120, h: 504 } }
+	const board = [table(309), pager(921)]
+	const live = [table(293.5), pager(734.5), frame]
+	const { pairs, extra } = pairComponents(board, live, 1400)
+	assert.equal(pairs.length, 2)
+	assert.deepEqual(extra, [])
+	// A titled card, or one holding more than the table, still counts.
+	const titled = { ...frame, title: 'Organisaties' }
+	assert.equal(pairComponents(board, [table(293.5), pager(734.5), titled], 1400).extra.length, 1)
+	const wide = { role: 'card', rect: { x: 292, y: 100, w: 1120, h: 900 } }
+	assert.equal(pairComponents(board, [table(293.5), pager(734.5), wide], 1400).extra.length, 1)
+})

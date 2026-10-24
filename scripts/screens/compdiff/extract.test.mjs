@@ -460,3 +460,17 @@ test('an icon set beside the first line, a few px lower than its text, still lea
 	const inset = (r) => r.components.find((c) => c.title === 'Let op').content.firstRowInsetLeft
 	assert.equal(inset(live), inset(board))
 })
+
+test('a dialog\'s close button is not a header action, wherever each side places it', { skip }, async () => {
+	const x = (style) => `<button aria-label="Sluiten" style="width:36px;height:36px;${style}">×</button>`
+	const dialog = (close, extra = '') => `<div role="dialog" aria-modal="true" style="position:absolute;left:400px;top:90px;width:600px;background:#fff;border-radius:12px;padding:20px">
+		<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Overdragen</h2>${extra}${close.inRow ? x('') : ''}</div>
+		${close.inRow ? '' : x('position:absolute;right:8px;top:8px')}<p>Aan wie geeft u de zaak?</p><input style="height:40px;width:400px">${btn('Overdragen')}</div>`
+	const inRow = await measure(dialog({ inRow: true }))
+	const corner = await measure(dialog({ inRow: false }))
+	const actions = (r) => r.components.find((c) => c.role === 'dialog').header.actions
+	assert.equal(actions(inRow), 0)
+	assert.equal(actions(corner), 0)
+	// Another button in the title row still counts.
+	assert.equal(actions(await measure(dialog({ inRow: true }, btn('Help')))), 1)
+})

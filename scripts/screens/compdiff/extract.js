@@ -305,6 +305,12 @@ window.__compdiffExtract = function () {
 				const ar = a.getBoundingClientRect()
 				if (ar.left >= titleBox.x + titleBox.w && Math.abs((ar.top + ar.bottom) / 2 - titleMid) <= Math.max(ar.height, titleBox.h) / 2) actions.push(a)
 			}
+			// A dialog's close button is the dialog's own chrome, drawn by both sides in their own place (in the title
+			// row, or in the corner by NcDialog): it is not a header action of the dialog's content.
+			if (role === 'dialog' || role === 'dialog-card') {
+				const closing = (a) => /^(sluiten|close|dialoog sluiten|close dialog|annuleren|cancel)$/i.test((a.getAttribute('aria-label') || a.getAttribute('title') || '').trim()) || /(^|[_-])close\b/i.test(String(a.className))
+				for (let i = actions.length - 1; i >= 0; i--) if (closing(actions[i])) actions.splice(i, 1)
+			}
 			comp.header = {
 				...font(textEl(title)),
 				titleInsetLeft: round(titleBox.x - cr.left), titleInsetTop: round(titleBox.y - cr.top),

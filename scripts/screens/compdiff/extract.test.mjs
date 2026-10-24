@@ -542,3 +542,10 @@ test('facts, a pill row or a list of rows right under a card title is content, n
 		<h2 style="margin:0;font-size:17px">Programma</h2><p style="margin:0;font-size:15px">Deze zaak hangt niet onder een programma.</p><div>${btn('Aan een programma koppelen')}</div></section>`)
 	assert.ok(empty.components.find((c) => c.title === 'Programma').content.gapBelowTitle < 20)
 })
+
+test('a drawn map as an svg named as a map is measured as a map, not as the card around it', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:311px;top:327px;width:655px;height:601px;border:1px solid #ddd;border-radius:12px;overflow:hidden">
+		<svg viewBox="0 0 640 520" width="100%" height="100%" role="img" aria-label="Kaart van Zuiddrecht met 5 genummerde zaken"><rect width="640" height="520" fill="#f1efe9"/></svg></div>`)
+	assert.equal(r.components.filter((c) => c.role === 'map').length, 1, JSON.stringify(r.components.map((c) => c.role)))
+	assert.equal(r.components.filter((c) => c.role === 'card').length, 0)
+})

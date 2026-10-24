@@ -165,14 +165,22 @@ window.__compdiffExtract = function () {
 	// and size only: tiles, a placeholder's tint and its corners are not styling to compare.
 	const MAPLIB = '.leaflet-container, .maplibregl-map, .mapboxgl-map, .ol-viewport'
 	const isMap = (el) => el.matches(MAPLIB) || (el.matches('[role=img]') && /^kaart\b|\bmap\b/i.test(el.getAttribute('aria-label') || ''))
-	const maps = all.filter((el) => visible(el) && !outOfScope(el) && isMap(el) && !all.some((o) => o !== el && o.contains(el) && isMap(o)))
+	// A drawn map is often an svg (role=img), which `all` leaves out, so those are looked at too.
+	const mapCandidates = [...all, ...document.querySelectorAll('svg[role=img]')]
+	const maps = mapCandidates.filter((el) => visible(el) && !outOfScope(el) && isMap(el) && !mapCandidates.some((o) => o !== el && o.contains(el) && isMap(o)))
 	const inMap = (el) => maps.some((m) => m.contains(el))
+	// The frame around a map that holds nothing else is the map's own edge, not a card.
+	const framesMap = (el) => maps.some((m) => {
+		if (!el.contains(m) || el === m) return false
+		const a = el.getBoundingClientRect(), b = m.getBoundingClientRect()
+		return Math.abs(a.left - b.left) <= 4 && Math.abs(a.top - b.top) <= 4 && Math.abs(a.right - b.right) <= 4 && Math.abs(a.bottom - b.bottom) <= 4
+	})
 	let cards = []
 	for (const el of all) {
 		// Links can be cards (a KPI tile is often one big <a>), and so can a framed label (a choice card, a checkbox
 		// box); other controls are not.
 		if ((el.matches(INTERACTIVE) && el.tagName !== 'A' && el.tagName !== 'LABEL') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
-		if (!visible(el) || outOfScope(el) || inMap(el)) continue
+		if (!visible(el) || outOfScope(el) || inMap(el) || framesMap(el)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 140 || r.height < 48) continue
 		const cs = getComputedStyle(el)
@@ -328,8 +336,19 @@ window.__compdiffExtract = function () {
 		const plainLine = (e) => {
 			// A chart or picture is content, though an svg chart holds text (its axis labels).
 			if (!e || !visible(e) || !e.textContent.trim() || e.matches('svg, canvas, img, picture, figure, [role=img]') || e.querySelector(INTERACTIVE + ', [role=combobox], table, ul, ol, img, svg, canvas')) return false
+			// Facts, a row of pills or a list of rows is content: a description is plain text, at most two lines, with no
+			// boxed part (a pill or a framed row) and no term list.
+			if (e.matches('dl') || e.querySelector('dl, dt, li')) return false
+			const ecs = getComputedStyle(e)
+			const lh = px(ecs.lineHeight) || px(ecs.fontSize) * 1.25
+			if (e.getBoundingClientRect().height > lh * 2 + 2) return false
+			if ([...e.querySelectorAll('*')].some((d) => { const dcs = getComputedStyle(d); return opaque(dcs.backgroundColor) || Object.values(borders(dcs)).some((v) => v > 0) })) return false
 			const top = e.getBoundingClientRect().top - (titleBox.y + titleBox.h)
-			return top >= -1 && top <= 12 && px(getComputedStyle(e).fontSize) < px(getComputedStyle(textEl(title)).fontSize)
+			// A description reads as one: smaller than the title and either 14px or less, or muted. A 15px line in the
+			// title's own ink ("Deze zaak hangt niet onder een programma.") is the card's content.
+			const tcs = getComputedStyle(textEl(title))
+			const muted = ecs.color !== tcs.color
+			return top >= -1 && top <= 12 && px(ecs.fontSize) < px(tcs.fontSize) && (px(ecs.fontSize) <= 14 || muted)
 		}
 		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || plainLine(next)) ? next : null
 		const inHeader = (n) => (headerRow && headerRow.contains(n)) || (desc && desc.contains(n))

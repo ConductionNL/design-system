@@ -9,11 +9,13 @@
 //   { "press": "<selector>", "key": "<key>" }        one key, such as Enter or ArrowDown
 //   { "wait": <milliseconds> }
 //   { "waitFor": "<selector>" }
+//   { "dragFiles": "<selector>", "files": ["<name>", ...] }   drags files over a drop zone and holds them there,
+//                                                            without dropping (a board that draws the drop state)
 // Nothing here writes: compdiff refuses every write request to the live instance, and a step that would submit a
 // form only meets that refusal.
 import fs from 'node:fs'
 
-const KINDS = ['click', 'fill', 'type', 'press', 'wait', 'waitFor']
+const KINDS = ['click', 'fill', 'type', 'press', 'wait', 'waitFor', 'dragFiles']
 
 /**
  * Check one step and return it in its plain form.
@@ -43,6 +45,11 @@ export function normaliseStep(step, index = 0) {
 	if (kind === 'fill' || kind === 'type') {
 		if (typeof step.value !== 'string') throw new Error(`step ${index + 1}: ${kind} needs a value`)
 		return { kind, selector, value: step.value }
+	}
+	if (kind === 'dragFiles') {
+		const files = Array.isArray(step.files) ? step.files.filter((f) => typeof f === 'string' && f !== '') : []
+		if (files.length === 0) throw new Error(`step ${index + 1}: dragFiles needs files, a list of file names`)
+		return { kind, selector, files }
 	}
 	if (kind === 'press') {
 		if (typeof step.key !== 'string' || step.key === '') throw new Error(`step ${index + 1}: press needs a key`)
@@ -109,6 +116,17 @@ export async function playSteps(page, steps, warn = (m) => console.error(m)) {
 			await page.waitForTimeout(step.ms)
 		} else if (step.kind === 'waitFor') {
 			await page.waitForSelector(step.selector, { timeout: 60000 })
+		} else if (step.kind === 'dragFiles') {
+			// dragenter and dragover with a DataTransfer of empty files; never drop, so nothing is uploaded.
+			await page.$eval(step.selector, (el, names) => {
+				const data = new DataTransfer()
+				for (const name of names) data.items.add(new File([''], name))
+				const r = el.getBoundingClientRect()
+				const at = { bubbles: true, cancelable: true, dataTransfer: data, clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }
+				el.dispatchEvent(new DragEvent('dragenter', at))
+				el.dispatchEvent(new DragEvent('dragover', at))
+			}, step.files)
+			await page.waitForTimeout(1000)
 		}
 	}
 }

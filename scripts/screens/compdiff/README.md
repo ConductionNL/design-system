@@ -27,7 +27,7 @@ Options:
 - `--settle 8000` sets the longest wait before measuring. The page is measured as soon as no request is in flight (long polls aside) and its layout has held still for 1.5 seconds. `--settle-mode fixed` waits the full time instead.
 - `--storage <path>` keeps the login in `<path>-<user>.json`, so the boards of a batch log in once. `runall.sh` sets it to a private directory that it removes when the batch ends.
 - `--wait-for "<css>"` waits for an element.
-- `--steps '<JSON array>'` (or `--steps @file.json`) plays steps in their order, after the options above: `{"click": sel}`, `{"fill": sel, "value": text}`, `{"type": sel, "value": text}` (key by key, for a field that searches as you type), `{"press": sel, "key": "Enter"}`, `{"wait": ms}` and `{"waitFor": sel}`. A step can rest on the one before it: type a team into a search, then click the option it found. `--clicks` and `--fills` cannot, because every click runs before every fill. A failed click stops the run; a failed fill is reported and skipped.
+- `--steps '<JSON array>'` (or `--steps @file.json`) plays steps in their order, after the options above: `{"click": sel}`, `{"fill": sel, "value": text}`, `{"type": sel, "value": text}` (key by key, for a field that searches as you type), `{"press": sel, "key": "Enter"}`, `{"wait": ms}`, `{"waitFor": sel}` and `{"dragFiles": sel, "files": [names]}` (drags empty files over a drop zone and holds them there, never dropping, for a board that draws the drop state). A step can rest on the one before it: type a team into a search, then click the option it found. `--clicks` and `--fills` cannot, because every click runs before every fill. A failed click stops the run; a failed fill is reported and skipped.
 - `--login none` measures the live page without logging in, as a visitor sees it. `--login viewer` logs in as `COMPDIFF_VIEWER_USER` and `COMPDIFF_VIEWER_PASSWORD` (any role name works the same way), for a page that looks different to an editor, such as a site that shows "Deze site bewerken" to its editors.
 - `--ignore "<sel>|<sel>"` leaves elements out on both sides, as chrome.
 - `--session '<JSON object>'` seeds the live page's session storage before it loads, for state a browser session keeps. CnDetailPage asks once per session why the reader opens a record with special categories of personal data, and compdiff refuses the write that records the answer, so a spec seeds `cn-access-purposes` instead of answering. A string value is stored as is, any other value as its JSON.
@@ -66,6 +66,16 @@ It applies the current comparison rules to the stored measurements again. After 
 | `COMPDIFF_SLICE` | runs each browser in that systemd user slice, capped at 2 GB |
 | `COMPDIFF_SKIP_FIRST_RUN` | suppresses the first-run dialogs of these app ids, except on `/settings/` routes |
 
+## How large a difference counts
+
+Insets, gaps and heights flag past 2px; font sizes past 0.5px; widths past 8px. The 2px is not a guess at noise:
+`node noise.mjs <runA> <runB>` compares the live values of two runs of the same boards on the same build, and on
+24 Oct (DqMijnWerk, DqOverdragen, DqOrganisaties, measured hours apart) all 194 inset, gap and height values read
+the same, 0.0px apart. The board side is static HTML and reads the same every time. A difference of 3 or 4px is
+therefore a real rendered difference, such as a 34px title-row button against a 40px one or a row padded 8px
+instead of 11px. It is fixed in the code or the board, not hidden behind a wider threshold. Run `noise.mjs` again
+after a change to the extractor or the browser, before you change a threshold.
+
 ## Layout verdict
 
 `node verdict.mjs <rundir> [--inventory <inventory.tsv> --tag "<branch and build>"]` decides per board: MATCH or NO-MATCH. A board matches only when all of these hold:
@@ -84,15 +94,21 @@ It writes `verdicts.tsv` and `verdicts.md`. With `--inventory` it appends one ro
 
 Besides the components, the extractor lists every visible UI element in the page: buttons, links styled as buttons, fields, toggles, chips and pills, badges and tags, and list rows. Elements pair by label first. A label leaves out the text of a nested count badge, so "Filter" pairs with "Filter". A field is named by its `aria-label`, its `aria-labelledby`, a `<label for>` or a wrapping `<label>`, before its placeholder, so a textarea is not named by the text typed into it. Page links pair in order inside their pager, because the page count follows the data. A map is compared for its place and size only, and its attribution is left out. A corner radius is read as drawn, so 50% and 18px on a 36px circle are the same. The rest pair as repeated groups (same container, same style) in order, because the number of rows or chips follows the data. Per pair it compares radius, border, background, text colour, font size and weight, padding, height, icon, badge and the gap to the next sibling. An element whose crop differs by more than 30% while no property fired gets the flag "visually differs, property not identified". Board elements with no counterpart are listed as missing. Live elements with no counterpart, such as an extra sort select, are listed as extra.
 
+An untitled card that only frames a paired table (with its pager or toolbar) is that table's frame. One side may draw the frame as a card and the other as the table's own border, so such a card is neither missing nor extra.
+
+A framed item whose framed siblings of the same kind are too short to be cards (under 48px) is a row of that list, not a card: whether one tile reaches 48px depends on how its text wraps.
+
 A deck is three or more sibling cards of the same width: a row of record cards, or a column of widgets. Every card of a deck pairs and is compared, including its structure: the order and rows of its parts (pill, number, title, meta, divider, deadline). A card past a deck's first that finds no counterpart is not reported as missing or extra, because how many cards a deck holds follows the data.
 
 With a modal dialog open (`aria-modal="true"`, on the dialog box or on the mask around it), only what is inside the dialog is measured. The page under the scrim is ignored on both sides.
 
 A tab strip is a `[role=tablist]`, or a `nav[aria-label]` (or an element with a `page-tabs` class) whose links sit on one row and mark the current page with `aria-current`: nc-vue's page tabs navigate between pages, so they are links, not `role=tab`. A breadcrumb trail is not a tab strip. Both kinds are measured the same way and pair with each other, the current item as the active tab. A tab strip's underline is read where it is drawn: on the tablist or on a bar around it whose bottom is the strip's bottom (such as `.cn-tabs__bar`), as a border, a thin pseudo-element or an inset shadow. A field's border is the one people see: its own, a `box-shadow` ring, or that of a wrapper that hugs it (NcInputField, NcSelect). A card's or an element's border is read the same way: a ring in the border's own colour thickens it, so a 1px border with a 1px inset ring reads as the 2px border a board draws (a chosen choice row), and a ring alone reads as a border.
 
-A toolbar is a row of two or more controls. A wrapping flex bar whose row wrappers are `display: contents` (the board layout of CnActionsBar) draws its first line as a toolbar though no element boxes that line: the line takes the bar's width and holds the items on it. A table's head is read from its first header cell with a label, so an empty selection column does not stand for the head's type. Run the extractor's tests with `node --test scripts/screens/compdiff/extract.test.mjs` and the live side's with `live.test.mjs` (they need `PLAYWRIGHT_MODULE` and Chrome, and skip without them). The pairing rules' tests are `compare.test.mjs`.
+A toolbar is a row of two or more controls. A chip on it (a fully rounded pill of 36px or less: a quick filter, a shortcut, an active-filter tag) is not counted as a control: which chips a bar shows follows the data, and a board draws them as buttons where the library may draw links or spans. A wrapping flex bar whose row wrappers are `display: contents` (the board layout of CnActionsBar) draws its first line as a toolbar though no element boxes that line: the line takes the bar's width and holds the items on it. A table's head is read from its first header cell with a label, so an empty selection column does not stand for the head's type. Run the extractor's tests with `node --test scripts/screens/compdiff/extract.test.mjs` and the live side's with `live.test.mjs` (they need `PLAYWRIGHT_MODULE` and Chrome, and skip without them). The pairing rules' tests are `compare.test.mjs`.
 
-A card's header actions are the buttons in its title row, and any button set on the title's line to the right of the title from outside that row, as NcSettingsSection places its actions. A button lower in the card is not one.
+A line of smaller text right under a card title is its description, but a chart or picture there (an svg, which holds its axis labels as text, a canvas, an image) is content.
+
+A card's header actions are the buttons in its title row, and any button set on the title's line to the right of the title from outside that row, as NcSettingsSection places its actions. A button lower in the card is not one. A dialog's close button (named Sluiten or Close, or with a `close` class) is the dialog's own chrome and never a header action: the boards put it in the title row, NcDialog in the corner.
 
 Every board element with a box of its own that nothing above accounts for is listed under "not measured", with a count in `verdicts.tsv`. A board with unmeasured elements never counts as a match.
 
@@ -105,6 +121,7 @@ It compares look and feel only:
 - typography: size, weight, line height, colour, letter spacing, case
 - sizes and background colours
 - whether the chrome is there and in what order: title rows, header actions, buttons, tabs
+- the separator under a card title: a header's bottom border, a rule, or the first row's own top border (a record list's rule above its first row), which reads the same
 
 Text, values, row counts and empty or filled lists are never compared. The rules that keep data out:
 

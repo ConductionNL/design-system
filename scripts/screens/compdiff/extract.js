@@ -182,6 +182,10 @@ window.__compdiffExtract = function () {
 		if (!kind) continue
 		cards.push({ el, kind })
 	}
+	// A framed item among framed siblings of the same kind that are too short to be cards is a row of that list, not
+	// a card: whether one tile reaches 48px depends on how its text wraps (a long status name), not on what it is.
+	const rowSibling = (el) => [...el.parentElement.children].some((s) => s !== el && s.tagName === el.tagName && visible(s) && framed(s, getComputedStyle(s)) && s.getBoundingClientRect().height < 48)
+	cards = cards.filter((c) => !c.el.parentElement || !rowSibling(c.el))
 	// Collapse wrappers that draw the same box (grid item around widget wrapper): keep the one with the most border sides, else the inner one.
 	const same = (a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect(); return Math.abs(p.x - q.x) <= 3 && Math.abs(p.y - q.y) <= 3 && Math.abs(p.right - q.right) <= 3 && Math.abs(p.bottom - q.bottom) <= 3 }
 	const nBorders = (el) => Object.values(borders(getComputedStyle(el))).filter((v) => v > 0).length
@@ -301,6 +305,12 @@ window.__compdiffExtract = function () {
 				const ar = a.getBoundingClientRect()
 				if (ar.left >= titleBox.x + titleBox.w && Math.abs((ar.top + ar.bottom) / 2 - titleMid) <= Math.max(ar.height, titleBox.h) / 2) actions.push(a)
 			}
+			// A dialog's close button is the dialog's own chrome, drawn by both sides in their own place (in the title
+			// row, or in the corner by NcDialog): it is not a header action of the dialog's content.
+			if (role === 'dialog' || role === 'dialog-card') {
+				const closing = (a) => /^(sluiten|close|dialoog sluiten|close dialog|annuleren|cancel)$/i.test((a.getAttribute('aria-label') || a.getAttribute('title') || '').trim()) || /(^|[_-])close\b/i.test(String(a.className))
+				for (let i = actions.length - 1; i >= 0; i--) if (closing(actions[i])) actions.splice(i, 1)
+			}
 			comp.header = {
 				...font(textEl(title)),
 				titleInsetLeft: round(titleBox.x - cr.left), titleInsetTop: round(titleBox.y - cr.top),
@@ -316,7 +326,8 @@ window.__compdiffExtract = function () {
 		// So is a plain line of smaller text set right under the title (a board's h2 + p): a description, not content.
 		const next = headerRow && headerRow.nextElementSibling
 		const plainLine = (e) => {
-			if (!e || !visible(e) || !e.textContent.trim() || e.querySelector(INTERACTIVE + ', [role=combobox], table, ul, ol, img, svg')) return false
+			// A chart or picture is content, though an svg chart holds text (its axis labels).
+			if (!e || !visible(e) || !e.textContent.trim() || e.matches('svg, canvas, img, picture, figure, [role=img]') || e.querySelector(INTERACTIVE + ', [role=combobox], table, ul, ol, img, svg, canvas')) return false
 			const top = e.getBoundingClientRect().top - (titleBox.y + titleBox.h)
 			return top >= -1 && top <= 12 && px(getComputedStyle(e).fontSize) < px(getComputedStyle(textEl(title)).fontSize)
 		}
@@ -325,7 +336,10 @@ window.__compdiffExtract = function () {
 		const content = leaves.filter((l) => !inHeader(l.node) && l.y >= below)
 		if (content.length) {
 			const top = Math.min(...content.map((l) => l.y))
-			const firstRow = content.filter((l) => l.y <= top + 6)
+			// An icon set beside the first line, a few px lower than its text (centred on a taller line), is still part
+			// of that row: it starts inside the line's box.
+			const lineBottom = Math.min(...content.filter((l) => l.y <= top + 6).map((l) => l.b))
+			const firstRow = content.filter((l) => l.y <= top + 6 || (!l.text && l.y < lineBottom))
 			comp.content = {
 				firstRowInsetLeft: round(Math.min(...firstRow.map((l) => l.x)) - cr.left),
 				minInsetLeft: round(Math.min(...content.map((l) => l.x)) - cr.left),
@@ -346,9 +360,16 @@ window.__compdiffExtract = function () {
 				if (el !== card && !ownedBy(el, card)) continue
 				// A control's own border (a dashed "Toon meer" button under the title) is not a separator.
 				if (!visible(el) || (el !== card && el.closest(CONTROL_BOX))) continue
-				// A list row's own border is not a header separator: skip boxes holding some but not all of the body.
-				if (el !== card && content.length) { const n = content.filter((l) => el.contains(l.node)).length; if (n > 0 && n < content.length) continue }
+				// A list row's own border is not a header separator: skip boxes holding some but not all of the body. The
+				// first row's rule above it is the exception: it is drawn where a header's bottom border would be, and
+				// reads the same (a record list's ruleAbove).
 				const r = el.getBoundingClientRect()
+				if (el !== card && content.length) {
+					const n = content.filter((l) => el.contains(l.node)).length
+					const firstTop = Math.min(...content.map((l) => l.y))
+					const ruleAbove = borders(getComputedStyle(el)).top > 0 && r.top >= lo && r.top <= hi && content.some((l) => l.y <= firstTop + 1 && el.contains(l.node))
+					if (n > 0 && n < content.length && !ruleAbove) continue
+				}
 				if (r.width < cr.width * 0.6) continue
 				const ecs = getComputedStyle(el)
 				const b = borders(ecs)
@@ -546,6 +567,9 @@ window.__compdiffExtract = function () {
 		return { controlBorder: b.width, controlBorderColor: b.color }
 	}
 	const ctrl = 'button, input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
+	// A chip (a fully rounded pill of 36px or less: a quick filter, a shortcut or an active-filter tag) is not a toolbar control: which chips a
+	// bar shows follows the data, and a board draws them as buttons where the library may draw spans.
+	const chip = (c) => { const r = c.getBoundingClientRect(); return r.height <= 36 && radius(c, getComputedStyle(c)) >= r.height / 2 - 1 }
 	const headerBox = window.__compdiffPageHeader
 	const used = new Set()
 	// Pager rows: the row around a pagination nav (its page links or buttons and the count beside them). Measured as a
@@ -591,7 +615,7 @@ window.__compdiffExtract = function () {
 		if (r.width >= 300 && /flex/.test(cs.display) && cs.flexWrap === 'wrap' && [...el.children].some((c) => getComputedStyle(c).display === 'contents')
 			&& ![...used].some((u) => u.contains(el)) && !(headerBox && (headerBox.contains(el) || el.contains(headerBox)))) {
 			const line = firstLine(el)
-			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24) : []
+			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c)) : []
 			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
 				line.items.forEach((i) => lineItems.add(i))
 				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
@@ -603,7 +627,7 @@ window.__compdiffExtract = function () {
 		// A list row with its open button and its row menu (the saved-views list), or the line inside one, is a row,
 		// not a toolbar.
 		if (el.closest('li, [role=listitem], [role=row], [role=option], tr')) continue
-		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24)
+		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c))
 		if (ctrls.length < 2) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (tabStrips.some((s) => el.contains(s))) continue

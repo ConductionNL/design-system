@@ -449,3 +449,74 @@ test('a button lower in the card is not a header action', { skip }, async () => 
 		<h2 style="margin:0">Legesregels</h2><p style="margin:14px 0">Bouwen</p>${btn('Regel toevoegen')}</div>`)
 	assert.equal(r.components.find((c) => c.title === 'Legesregels').header.actions, 0)
 })
+
+test('a grid of bordered tiles under a card title is content, whether or not a tile reads as a card of its own', { skip }, async () => {
+	const tile = (t) => `<li style="display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid #e4e6ea;border-radius:8px;min-width:0"><span style="width:14px;height:14px;border-radius:7px;background:#369"></span><span style="flex:1">${t}</span><span style="color:#5e6168">Start</span></li>`
+	const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:800px;border:1px solid #ddd;padding:20px 22px">
+		<div style="display:flex;flex-direction:column;gap:14px">
+			<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:17px">Statussen</h2>${btn('Bewerken')}</div>
+			<ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px">${tile('Ontvangen')}${tile('Aanvullende gegevens gevraagd voor de beoordeling van de aanvraag')}${tile('In behandeling')}${tile('Besluit')}</ul>
+		</div><p style="margin:14px 0 0;font-size:13px">Kleur en volgorde gelden in lijsten.</p></section>`)
+	const card = r.components.find((c) => c.title === 'Statussen')
+	assert.ok(card.content.gapBelowTitle < 40, `gap ${card.content.gapBelowTitle}`)
+	// The tile whose name wraps to two lines is as much a row as the others.
+	assert.equal(r.components.filter((c) => c.role === 'card').length, 1, JSON.stringify(r.components.map((c) => [c.role, c.rect.h])))
+})
+
+test('an icon set beside the first line, a few px lower than its text, still leads the first row', { skip }, async () => {
+	const icon = (top) => `<svg width="20" height="20" style="flex:none;margin-top:${top}px"><rect width="20" height="20"/></svg>`
+	const card = (top) => `<div style="position:absolute;left:300px;top:200px;width:600px;border:1px solid #ddd;padding:12px 14px">
+		<h3 style="margin:0 0 10px">Let op</h3>
+		<div style="display:flex;gap:10px;align-items:flex-start;line-height:1.5">${icon(top)}<p style="margin:0">Heeft iemand zich afgemeld voor berichten, dan krijgt die alleen nog wat de wet verplicht.</p></div></div>`
+	const board = await measure(card(0))
+	const live = await measure(card(9))
+	const inset = (r) => r.components.find((c) => c.title === 'Let op').content.firstRowInsetLeft
+	assert.equal(inset(live), inset(board))
+})
+
+test('chips on a toolbar row are not counted as its controls, as buttons or as spans', { skip }, async () => {
+	const chip = (t, tag) => `<${tag} style="height:34px;padding:0 12px;border-radius:17px;border:1px solid #ccc;display:inline-flex;align-items:center">${t}</${tag}>`
+	const bar = (tag) => `<div style="position:absolute;left:300px;top:200px;width:900px;display:flex;gap:8px;align-items:center">
+		${btn('Lijst')}${btn('Kaarten')}${chip('Vandaag', tag)}${chip('Deze week', tag)}${chip('Later', tag)}</div>`
+	const controls = (r) => r.components.find((c) => c.role === 'toolbar').controls
+	assert.equal(controls(await measure(bar('button'))), 2)
+	assert.equal(controls(await measure(bar('span'))), 2)
+})
+
+test('a rule drawn above the first row is the separator under the title, as a header border is', { skip }, async () => {
+	const rows = (first) => ['Woo-verzoek Lindelaan', 'Bezwaar Kerkplein', 'Melding Molenweg'].map((t, i) => `<li style="padding:10px 0;${i === 0 ? first : 'border-top:1px solid #e4e6ea'}">${t}</li>`).join('')
+	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0;padding-bottom:12px;border-bottom:1px solid #e4e6ea">Zaken die u volgt</h2><ul style="margin:0;padding:0;list-style:none">${rows('')}</ul></section>`)
+	const live = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0 0 12px">Zaken die u volgt</h2><ul style="margin:0;padding:0;list-style:none">${rows('border-top:1px solid #e4e6ea')}</ul></section>`)
+	const sep = (r) => r.components.find((c) => c.title === 'Zaken die u volgt').header.separator
+	assert.equal(sep(board), 1)
+	assert.equal(sep(live), 1)
+})
+
+test('a dialog\'s close button is not a header action, wherever each side places it', { skip }, async () => {
+	const x = (style) => `<button aria-label="Sluiten" style="width:36px;height:36px;${style}">×</button>`
+	const dialog = (close, extra = '') => `<div role="dialog" aria-modal="true" style="position:absolute;left:400px;top:90px;width:600px;background:#fff;border-radius:12px;padding:20px">
+		<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Overdragen</h2>${extra}${close.inRow ? x('') : ''}</div>
+		${close.inRow ? '' : x('position:absolute;right:8px;top:8px')}<p>Aan wie geeft u de zaak?</p><input style="height:40px;width:400px">${btn('Overdragen')}</div>`
+	const inRow = await measure(dialog({ inRow: true }))
+	const corner = await measure(dialog({ inRow: false }))
+	const actions = (r) => r.components.find((c) => c.role === 'dialog').header.actions
+	assert.equal(actions(inRow), 0)
+	assert.equal(actions(corner), 0)
+	// Another button in the title row still counts.
+	assert.equal(actions(await measure(dialog({ inRow: true }, btn('Help')))), 1)
+})
+
+test('a chart right under a card title is content, not its description, as an svg or a canvas', { skip }, async () => {
+	const chart = (kind) => kind === 'svg'
+		? '<svg viewBox="0 0 900 250" width="100%" height="250" role="img" aria-label="Doorlooptijd per maand"><line x1="40" x2="880" y1="40" y2="40" stroke="#eee"/><text x="40" y="244" font-size="13">jan</text></svg>'
+		: '<canvas width="900" height="250" style="width:100%;height:250px"></canvas>'
+	const card = (kind) => `<section style="position:absolute;left:300px;top:200px;width:900px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:8px">
+		<div><h2 style="margin:0;font-size:17px">Gemiddelde doorlooptijd per maand</h2></div>${chart(kind)}<span style="font-size:13px">Grafiek van de analyselaag.</span></section>`
+	const gap = (r) => r.components.find((c) => /per maand/.test(c.title || '')).content.gapBelowTitle
+	const svg = gap(await measure(card('svg')))
+	const canvas = gap(await measure(card('canvas')))
+	assert.ok(svg < 40, `svg gap ${svg}`)
+	assert.ok(Math.abs(svg - canvas) <= 2, `svg ${svg} vs canvas ${canvas}`)
+})

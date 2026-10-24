@@ -107,6 +107,7 @@ It compares look and feel only:
 - typography: size, weight, line height, colour, letter spacing, case
 - sizes and background colours
 - whether the chrome is there and in what order: title rows, header actions, buttons, tabs
+- the separator under a card title: a header's bottom border, a rule, or the first row's own top border (a record list's rule above its first row), which reads the same
 
 Text, values, row counts and empty or filled lists are never compared. The rules that keep data out:
 

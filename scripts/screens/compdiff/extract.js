@@ -349,9 +349,16 @@ window.__compdiffExtract = function () {
 				if (el !== card && !ownedBy(el, card)) continue
 				// A control's own border (a dashed "Toon meer" button under the title) is not a separator.
 				if (!visible(el) || (el !== card && el.closest(CONTROL_BOX))) continue
-				// A list row's own border is not a header separator: skip boxes holding some but not all of the body.
-				if (el !== card && content.length) { const n = content.filter((l) => el.contains(l.node)).length; if (n > 0 && n < content.length) continue }
+				// A list row's own border is not a header separator: skip boxes holding some but not all of the body. The
+				// first row's rule above it is the exception: it is drawn where a header's bottom border would be, and
+				// reads the same (a record list's ruleAbove).
 				const r = el.getBoundingClientRect()
+				if (el !== card && content.length) {
+					const n = content.filter((l) => el.contains(l.node)).length
+					const firstTop = Math.min(...content.map((l) => l.y))
+					const ruleAbove = borders(getComputedStyle(el)).top > 0 && r.top >= lo && r.top <= hi && content.some((l) => l.y <= firstTop + 1 && el.contains(l.node))
+					if (n > 0 && n < content.length && !ruleAbove) continue
+				}
 				if (r.width < cr.width * 0.6) continue
 				const ecs = getComputedStyle(el)
 				const b = borders(ecs)

@@ -460,3 +460,14 @@ test('an icon set beside the first line, a few px lower than its text, still lea
 	const inset = (r) => r.components.find((c) => c.title === 'Let op').content.firstRowInsetLeft
 	assert.equal(inset(live), inset(board))
 })
+
+test('a rule drawn above the first row is the separator under the title, as a header border is', { skip }, async () => {
+	const rows = (first) => ['Woo-verzoek Lindelaan', 'Bezwaar Kerkplein', 'Melding Molenweg'].map((t, i) => `<li style="padding:10px 0;${i === 0 ? first : 'border-top:1px solid #e4e6ea'}">${t}</li>`).join('')
+	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0;padding-bottom:12px;border-bottom:1px solid #e4e6ea">Zaken die u volgt</h2><ul style="margin:0;padding:0;list-style:none">${rows('')}</ul></section>`)
+	const live = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0 0 12px">Zaken die u volgt</h2><ul style="margin:0;padding:0;list-style:none">${rows('border-top:1px solid #e4e6ea')}</ul></section>`)
+	const sep = (r) => r.components.find((c) => c.title === 'Zaken die u volgt').header.separator
+	assert.equal(sep(board), 1)
+	assert.equal(sep(live), 1)
+})

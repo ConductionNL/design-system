@@ -66,6 +66,16 @@ It applies the current comparison rules to the stored measurements again. After 
 | `COMPDIFF_SLICE` | runs each browser in that systemd user slice, capped at 2 GB |
 | `COMPDIFF_SKIP_FIRST_RUN` | suppresses the first-run dialogs of these app ids, except on `/settings/` routes |
 
+## How large a difference counts
+
+Insets, gaps and heights flag past 2px; font sizes past 0.5px; widths past 8px. The 2px is not a guess at noise:
+`node noise.mjs <runA> <runB>` compares the live values of two runs of the same boards on the same build, and on
+24 Oct (DqMijnWerk, DqOverdragen, DqOrganisaties, measured hours apart) all 194 inset, gap and height values read
+the same, 0.0px apart. The board side is static HTML and reads the same every time. A difference of 3 or 4px is
+therefore a real rendered difference, such as a 34px title-row button against a 40px one or a row padded 8px
+instead of 11px. It is fixed in the code or the board, not hidden behind a wider threshold. Run `noise.mjs` again
+after a change to the extractor or the browser, before you change a threshold.
+
 ## Layout verdict
 
 `node verdict.mjs <rundir> [--inventory <inventory.tsv> --tag "<branch and build>"]` decides per board: MATCH or NO-MATCH. A board matches only when all of these hold:

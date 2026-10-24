@@ -507,3 +507,16 @@ test('a dialog\'s close button is not a header action, wherever each side places
 	// Another button in the title row still counts.
 	assert.equal(actions(await measure(dialog({ inRow: true }, btn('Help')))), 1)
 })
+
+test('a chart right under a card title is content, not its description, as an svg or a canvas', { skip }, async () => {
+	const chart = (kind) => kind === 'svg'
+		? '<svg viewBox="0 0 900 250" width="100%" height="250" role="img" aria-label="Doorlooptijd per maand"><line x1="40" x2="880" y1="40" y2="40" stroke="#eee"/><text x="40" y="244" font-size="13">jan</text></svg>'
+		: '<canvas width="900" height="250" style="width:100%;height:250px"></canvas>'
+	const card = (kind) => `<section style="position:absolute;left:300px;top:200px;width:900px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:8px">
+		<div><h2 style="margin:0;font-size:17px">Gemiddelde doorlooptijd per maand</h2></div>${chart(kind)}<span style="font-size:13px">Grafiek van de analyselaag.</span></section>`
+	const gap = (r) => r.components.find((c) => /per maand/.test(c.title || '')).content.gapBelowTitle
+	const svg = gap(await measure(card('svg')))
+	const canvas = gap(await measure(card('canvas')))
+	assert.ok(svg < 40, `svg gap ${svg}`)
+	assert.ok(Math.abs(svg - canvas) <= 2, `svg ${svg} vs canvas ${canvas}`)
+})

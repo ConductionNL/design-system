@@ -96,6 +96,8 @@ A tab strip is a `[role=tablist]`, or a `nav[aria-label]` (or an element with a 
 
 A toolbar is a row of two or more controls. A chip on it (a fully rounded pill of 36px or less: a quick filter, a shortcut, an active-filter tag) is not counted as a control: which chips a bar shows follows the data, and a board draws them as buttons where the library may draw links or spans. A wrapping flex bar whose row wrappers are `display: contents` (the board layout of CnActionsBar) draws its first line as a toolbar though no element boxes that line: the line takes the bar's width and holds the items on it. A table's head is read from its first header cell with a label, so an empty selection column does not stand for the head's type. Run the extractor's tests with `node --test scripts/screens/compdiff/extract.test.mjs` and the live side's with `live.test.mjs` (they need `PLAYWRIGHT_MODULE` and Chrome, and skip without them). The pairing rules' tests are `compare.test.mjs`.
 
+A line of smaller text right under a card title is its description, but a chart or picture there (an svg, which holds its axis labels as text, a canvas, an image) is content.
+
 A card's header actions are the buttons in its title row, and any button set on the title's line to the right of the title from outside that row, as NcSettingsSection places its actions. A button lower in the card is not one. A dialog's close button (named Sluiten or Close, or with a `close` class) is the dialog's own chrome and never a header action: the boards put it in the title row, NcDialog in the corner.
 
 Every board element with a box of its own that nothing above accounts for is listed under "not measured", with a count in `verdicts.tsv`. A board with unmeasured elements never counts as a match.

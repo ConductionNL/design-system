@@ -3,7 +3,7 @@
 // compared where both sides draw that border.
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { compareElement, compareProps, pairComponents, pairElements } from './compare.mjs'
+import { compareElement, compareProps, pairComponents, pairElements, positionReasons } from './compare.mjs'
 
 const card = (title, y, record) => ({ role: 'card', title, rect: { x: 292, y, w: 800, h: 100 }, depth: 0, header: { fontSize: 18 }, ...(record ? { record } : {}) })
 
@@ -118,4 +118,22 @@ test('buttons with different labels do not pair by position or group, unless the
 	const rows = (n, y0) => Array.from({ length: n }, (_, i) => button(`Acties voor zaak ${i}`, 1300, y0 + i * 50))
 	const listed = pairElements(rows(4, 300), rows(5, 320), 1200)
 	assert.ok(listed.pairs.length >= 1)
+})
+
+test('a dialog is not placed by its top: the boards disagree on it and Nextcloud fixes it', () => {
+	const dialog = (y) => ({ role: 'dialog', rect: { x: 520, y, w: 400, h: 300 } })
+	const inner = (y) => ({ role: 'dialog-card', rect: { x: 544, y, w: 352, h: 80 } })
+	const boardDialog = dialog(120), liveDialog = dialog(88)
+	const origin = { x: 292, y: 90 }
+	assert.deepEqual(positionReasons({ board: boardDialog, live: liveDialog }, origin, origin, { board: boardDialog, live: liveDialog }), [])
+	// What sits inside the dialog is placed from the dialog's own top.
+	assert.deepEqual(positionReasons({ board: inner(180), live: inner(148) }, origin, origin, { board: boardDialog, live: liveDialog }), [])
+	assert.deepEqual(positionReasons({ board: inner(180), live: inner(158) }, origin, origin, { board: boardDialog, live: liveDialog }), ['y +10'])
+	// Its x still counts.
+	assert.deepEqual(positionReasons({ board: dialog(120), live: { ...dialog(88), rect: { x: 540, y: 88, w: 400, h: 300 } } }, origin, origin, null), ['x +20'])
+})
+
+test('a page component is placed from the content origin', () => {
+	const c = (x, y) => ({ role: 'card', rect: { x, y, w: 800, h: 100 } })
+	assert.deepEqual(positionReasons({ board: c(292, 300), live: c(292, 310) }, { x: 292, y: 90 }, { x: 292, y: 90 }, null), ['y +10'])
 })

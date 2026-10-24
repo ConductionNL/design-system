@@ -4,14 +4,16 @@
 //   1. every board component is paired on live, and live has no extra components (app top bar and navigation are
 //      out of scope already);
 //   2. every pair sits within 4px in x and y of its board position, both measured from the content area's origin
-//      (the page header's box, else the top-left of all components), and is within 8px in width; height is data;
+//      (the page header's box, else the top-left of all components), and is within 8px in width; height is data.
+//      A dialog counts by its x only (Nextcloud fixes its top; the boards disagree on it), and what sits inside it
+//      is placed from the dialog's top;
 //   3. no pair has a flagged styling property (spacing 2px, font size 0.5px, border presence, weight, colour, chrome).
 // Writes <rundir>/verdicts.tsv and verdicts.md. With --inventory it appends one row per board in the screens
 // inventory format (board, kind, route, status, mismatchPct, notes); later rows win, so earlier rows stay as history.
 // The status and page mismatch % are carried over from the board's last valid row there.
 import fs from 'node:fs'
 import path from 'node:path'
-import { compareProps, normalizeLegacy, addPage, elementRows, isRepeated, markListElements } from './compare.mjs'
+import { compareProps, normalizeLegacy, addPage, elementRows, isRepeated, markListElements, positionReasons } from './compare.mjs'
 
 const POS = 4, WIDTH = 8
 const argv = process.argv.slice(2)
@@ -34,22 +36,11 @@ for (const f of files) {
 	if (!r.components || (r.components.filter((c) => c.role !== 'page').length === 0 && r.missingOnLive.length === 0)) continue
 	const ob = origin(r, 'board'), ol = origin(r, 'live')
 	const failing = []
+	const dialog = r.components.find((c) => c.role === 'dialog') || null
 	for (const c of r.components) {
-		const reasons = []
 		// The page header defines the origin; its own position is its title's, already compared as titleX/titleY.
-		if (c.role === 'page') {
-			// The page itself has no position; only its styling counts.
-		} else if (c.role !== 'pageHeader' && c.role !== 'dialog' && c.role !== 'dialog-card') {
-			const dx = Math.round(((c.live.rect.x - ol.x) - (c.board.rect.x - ob.x)) * 10) / 10
-			const dy = Math.round(((c.live.rect.y - ol.y) - (c.board.rect.y - ob.y)) * 10) / 10
-			if (Math.abs(dx) > POS) reasons.push(`x ${dx > 0 ? '+' : ''}${dx}`)
-			if (Math.abs(dy) > POS) reasons.push(`y ${dy > 0 ? '+' : ''}${dy}`)
-		} else if (c.role !== 'pageHeader') {
-			// A dialog is placed in the viewport, not in the content area.
-			const dx = Math.round((c.live.rect.x - c.board.rect.x) * 10) / 10, dy = Math.round((c.live.rect.y - c.board.rect.y) * 10) / 10
-			if (Math.abs(dx) > POS) reasons.push(`x ${dx > 0 ? '+' : ''}${dx}`)
-			if (Math.abs(dy) > POS) reasons.push(`y ${dy > 0 ? '+' : ''}${dy}`)
-		}
+		// The page itself has no position; only its styling counts.
+		const reasons = positionReasons(c, ob, ol, dialog, POS)
 		const rows = compareProps(c.board, c.live)
 		for (const x of rows) {
 			if (x.prop === 'rect.w' && Math.abs(x.delta) > WIDTH) { reasons.push(`width ${x.board}>${x.live}`); continue }

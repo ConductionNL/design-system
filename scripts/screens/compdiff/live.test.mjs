@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -110,4 +110,14 @@ test('a request in flight keeps the page busy, a long poll does not', { skip }, 
 	} finally {
 		await browser.close()
 	}
+})
+
+test('--session seeds the live page\'s session storage: a string as is, anything else as JSON', () => {
+	assert.deepEqual(sessionEntries(undefined), [])
+	assert.deepEqual(sessionEntries('{"cn-access-purposes":["cn-access-purpose:dossiq-case:e0b3"],"tab":"vth"}'), [
+		['cn-access-purposes', '["cn-access-purpose:dossiq-case:e0b3"]'],
+		['tab', 'vth'],
+	])
+	assert.throws(() => sessionEntries('[1,2]'), /--session/)
+	assert.throws(() => sessionEntries('not json'), /--session/)
 })

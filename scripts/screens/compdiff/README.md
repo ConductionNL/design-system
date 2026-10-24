@@ -86,6 +86,8 @@ Besides the components, the extractor lists every visible UI element in the page
 
 An untitled card that only frames a paired table (with its pager or toolbar) is that table's frame. One side may draw the frame as a card and the other as the table's own border, so such a card is neither missing nor extra.
 
+A framed item whose framed siblings of the same kind are too short to be cards (under 48px) is a row of that list, not a card: whether one tile reaches 48px depends on how its text wraps.
+
 A deck is three or more sibling cards of the same width: a row of record cards, or a column of widgets. Every card of a deck pairs and is compared, including its structure: the order and rows of its parts (pill, number, title, meta, divider, deadline). A card past a deck's first that finds no counterpart is not reported as missing or extra, because how many cards a deck holds follows the data.
 
 With a modal dialog open (`aria-modal="true"`, on the dialog box or on the mask around it), only what is inside the dialog is measured. The page under the scrim is ignored on both sides.

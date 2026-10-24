@@ -25,9 +25,9 @@ class Component extends DCLogic {
     // flows and departments are records and stay in the app under Instellingen. The page goes on below with ZGW API
     // mapping, AWB terms, mandate matrix, DMN tables, StUF-ZKN and tenant onboarding.
     const apps = ['Decidiq', 'Openregister', 'Pipelinq', 'Portaliq'];
-    const tabs = [['Algemeen', ''], ['Systeem', ''], ['Integraties', '9'], ['Mail', ''], ['Kaartlagen', '4'], ['VTH', ''], ['Vervanging', '']];
+    const tabs = [['Algemeen', ''], ['Systeem', ''], ['Integraties', '9'], ['Mail', ''], ['Kaartlagen', '4'], ['VTH', ''], ['Vervanging', ''], ['Geavanceerd', '']];
     const sections = [
-      { name: 'Configuratie', desc: 'In welk register Dossiq zaken bewaart, en met welke schema\'s.', rows: [
+      { name: 'Configuratie', help: true, desc: 'In welk register Dossiq zaken bewaart, en met welke schema\'s.', rows: [
         { select: 'Register', value: 'dossiq (12 schema\'s, alle aanwezig)' },
         { pair: [{ label: 'Zaakschema', value: 'Zaak', select: true }, { label: 'Zaaktypeschema', value: 'Zaaktype', select: true }, { label: 'Statusschema', value: 'Status', select: true }] },
         { pair: [{ label: 'Rolschema', value: 'Rol', select: true }, { label: 'Resultaatschema', value: 'Resultaat', select: true }, { label: 'Besluitschema', value: 'Besluit', select: true }] },
@@ -38,13 +38,15 @@ class Component extends DCLogic {
         { radios: 'Menu', options: [['Eenvoudig', 'Dashboard, Mijn werk, zaken en relaties', true], ['Uitgebreid', 'Ook rapportages, beheer en elke module']] }
       ] },
       { name: 'Serviceaccount voor achtergrondtaken', desc: 'Het account waarmee Dossiq werkt als er niemand is ingelogd, zoals bij termijnbewaking en mail ophalen.', rows: [
-        { text: 'Nextcloud-gebruikersnaam', value: 'svc-dossiq', action: 'Dit account gebruiken', hint: 'Het account moet schrijfrecht hebben op het register dossiq.' }
+        { text: 'Nextcloud-gebruikersnaam', value: 'svc-dossiq', action: 'Dit account gebruiken', hint: 'Het account wordt lid van de groep dossiq-background-service. Kies een account waarmee niemand inlogt.' }
       ] },
       { name: 'Zaak-e-mail: gedeelde mailbox', desc: 'Mail aan zaken@zuiddrecht.nl komt binnen als zaak of bij een bestaande zaak.', rows: [
+        { link: 'Uitleg tonen' },
         { pair: [{ label: 'Mailaccount voor intake', value: 'zaken@zuiddrecht.nl', select: true }, { label: 'Map', value: 'INBOX' }] },
         { pair: [{ label: 'Ophalen elke', value: '300 seconden' }, { label: 'Berichten per keer', value: '50' }] },
         { select: 'Zaaktype voor mail die niemand oppakt', value: 'In de mailbox laten staan' },
         { switch: 'Mail op zaaknummer aan zaken koppelen', hint: 'Patroon ZD-\\d{4}-\\d{4} in het onderwerp.', on: true },
+        { disclosure: 'Geavanceerd' },
         { buttons: [['Opslaan', 'primary']] }
       ] },
       { name: 'AI-ondersteunde verwerking', desc: 'Samenvatten, classificeren en anonimiseren met een taalmodel dat jij kiest.', rows: [
@@ -53,14 +55,15 @@ class Component extends DCLogic {
         { pair: [{ label: 'Adres van het model', value: 'http://ollama.intern:11434' }, { label: 'Modelnaam', value: 'llama3.1:8b' }] },
         { buttons: [['Opslaan', 'primary'], ['Verbinding testen', '']] }
       ] },
-      { name: 'Adviseringsbeheer', desc: 'Standaarden voor adviesvragen aan andere afdelingen en organisaties.', rows: [
+      { name: 'Adviseringsbeheer', help: true, desc: 'Standaarden voor adviesvragen aan andere afdelingen en organisaties.', rows: [
         { pair: [{ label: 'Standaardtermijn in dagen', value: '28' }, { label: 'Waarschuwen, dagen vooraf', value: '5' }] },
         { text: 'Adres voor externe reacties', value: 'https://loket.zuiddrecht.nl/advies' },
+        { disclosure: 'Geavanceerd' },
         { buttons: [['Opslaan', 'primary']] }
       ] },
       { name: 'Zoekindex', desc: 'Zaken, documenten en contacten in de zoekbalk van Dossiq.', rows: [
-        { facts: [['Zaken', '18.402'], ['Documenten', '96.115'], ['Laatst bijgewerkt', 'vandaag om 06.00']] },
-        { buttons: [['Opnieuw opbouwen zonder vergrendelen', '']] }
+        { figures: [['Tabellen in bereik', '1688'], ['Indexen daarop', '26351'], ['Laatst gelopen', 'vandaag om 06.00'], ['Herbouwen zonder vergrendelen', 'Ja']] },
+        { para: 'Draai occ openregister:tables:search-index status op de server voor dezelfde cijfers, en occ openregister:tables:search-index rebuild --apply na een schemawijziging.' }
       ] }
     ];
     return { apps, tabs, sections };

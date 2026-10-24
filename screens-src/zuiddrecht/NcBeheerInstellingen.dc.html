@@ -23,7 +23,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         <dc-import name="NcBeheerKop" app="{{ app }}" title="{{ title }}" section="{{ section }}" scope="{{ scope }}" tabs="{{ tabs }}" hint-size="100%,96px"></dc-import>
         <sc-for list="{{ cards }}" as="s" hint-placeholder-count="3">
           <section aria-labelledby="{{ s.id }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; gap: 6px">
-            <h2 id="{{ s.id }}" style="margin: 0; font-size: 17px; font-weight: 700; line-height: 1.3">{{ s.name }}</h2>
+            <h2 id="{{ s.id }}" style="margin: 0; font-size: 17px; font-weight: 700; line-height: 1.3">{{ s.name }}<sc-if value="{{ s.help }}"><span role="img" aria-label="Documentatie" style="display: inline-flex; margin-left: 6px; vertical-align: -4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3669a5" aria-hidden="true"><path d="M15.07,11.25L14.17,12.17C13.45,12.89 13,13.5 13,15H11V14.5C11,13.39 11.45,12.39 12.17,11.67L13.41,10.41C13.78,10.05 14,9.55 14,9C14,7.89 13.1,7 12,7A2,2 0 0,0 10,9H8A4,4 0 0,1 12,5A4,4 0 0,1 16,9C16,9.88 15.64,10.67 15.07,11.25M13,19H11V17H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,6.47 17.5,2 12,2Z"></path></svg></span></sc-if></h2>
             <sc-if value="{{ s.hasDesc }}"><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 1.5">{{ s.desc }}</p></sc-if>
             <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px">
               <sc-for list="{{ s.rows }}" as="r" hint-placeholder-count="2">
@@ -54,6 +54,21 @@ a{color:#3669a5}a:hover{color:#234a78}
                 <sc-if value="{{ r.isFacts }}">
                   <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 6px 24px; font-size: 15px"><sc-for list="{{ r.facts }}" as="d" hint-placeholder-count="2"><dt style="color: #5e6168">{{ d.k }}</dt><dd style="margin: 0; font-weight: 500">{{ d.v }}</dd></sc-for></dl>
                 </sc-if>
+                <sc-if value="{{ r.isTable }}">
+                  <div style="overflow-x: auto"><table style="width: 100%; border-collapse: collapse; font-size: 14px"><thead><tr><sc-for list="{{ r.head }}" as="h" hint-placeholder-count="3"><th scope="col" style="text-align: left; padding: 10px 12px; font-weight: 600; color: #5e6168; background: #fafbfc; border-bottom: 1px solid #e4e6ea; white-space: nowrap">{{ h }}</th></sc-for></tr></thead><tbody><sc-for list="{{ r.lines }}" as="l" hint-placeholder-count="3"><tr><sc-for list="{{ l.cells }}" as="c" hint-placeholder-count="3"><td style="padding: 10px 12px; border-bottom: 1px solid #eef0f3; vertical-align: middle"><sc-if value="{{ c.isText }}"><span style="{{ c.style }}">{{ c.text }}</span></sc-if><sc-if value="{{ c.isPill }}"><span style="{{ c.style }}">{{ c.text }}</span></sc-if><sc-if value="{{ c.isButtons }}"><span style="display: inline-flex; gap: 8px"><sc-for list="{{ c.buttons }}" as="b" hint-placeholder-count="1"><button type="button" style="{{ b.style }}">{{ b.label }}</button></sc-for></span></sc-if></td></sc-for></tr></sc-for><sc-if value="{{ r.hasEmpty }}"><tr><td colspan="{{ r.span }}" style="padding: 16px 12px; text-align: center; color: #5e6168">{{ r.empty }}</td></tr></sc-if></tbody></table></div>
+                </sc-if>
+                <sc-if value="{{ r.isFigures }}">
+                  <dl style="margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px 24px; font-size: 14px"><sc-for list="{{ r.figures }}" as="d" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 4px"><dt style="color: #5e6168">{{ d.k }}</dt><dd style="margin: 0; font-size: 15px; font-weight: 600">{{ d.v }}</dd></div></sc-for></dl>
+                </sc-if>
+                <sc-if value="{{ r.isPara }}">
+                  <p style="margin: 0; font-size: 15px; line-height: 1.5">{{ r.text }}</p>
+                </sc-if>
+                <sc-if value="{{ r.isLink }}">
+                  <div style="display: flex; justify-content: flex-end"><button type="button" aria-expanded="false" style="border: 0; background: transparent; padding: 4px 0; font: 600 14px 'Fira Sans', sans-serif; color: #3669a5">{{ r.text }}</button></div>
+                </sc-if>
+                <sc-if value="{{ r.isDisclosure }}">
+                  <button type="button" aria-expanded="false" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; padding: 4px 0; font: 600 14px 'Fira Sans', sans-serif; color: #3669a5"><svg width="16" height="16" viewBox="0 0 24 24" fill="#3669a5" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg>{{ r.text }}</button>
+                </sc-if>
                 <sc-if value="{{ r.isNote }}">
                   <p style="{{ r.noteStyle }}">{{ r.text }}</p>
                 </sc-if>
@@ -76,6 +91,8 @@ class Component extends DCLogic {
     // draw (PtBeheerinstellingen, ShInstellingen, VqInstellingen): Beheerinstellingen in the top bar, Persoonlijk and
     // Beheer on the left with the app's section selected, the app's NcSettingsSections as cards on the right.
     // sections takes the same rows as NcAppInstellingen; a buttons row whose first button is primary sits right.
+    // A section with `help: true` draws the documentation "?" after its title. Rows also take `figures`, `para`,
+    // `link` and `disclosure` (see row() below).
     // The left navigation is NcBeheerZijbalk, the head with the breadcrumb and the optional tab strip is NcBeheerKop:
     // pass `tabs` ([label, count] pairs) and `section` (the open tab) for an admin page with tabs, `title` for an h1
     // other than the app name.
@@ -109,7 +126,7 @@ class Component extends DCLogic {
       (kind === 'primary' ? 'border: 1px solid #3669a5; background: #3669a5; color: #ffffff' : kind === 'danger' ? 'border: 1px solid #cc0000; background: #ffffff; color: #a30000' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d');
     const note = (tone) => 'margin: 0; padding: 10px 12px; border-radius: 8px; font-size: 14px; line-height: 1.5; ' +
       (tone === 'warn' ? 'background: #fff4e5; color: #1b1c1d' : tone === 'plain' ? 'padding: 0; color: #5e6168' : 'background: #eaf0f7; color: #1b1c1d');
-    const blank = { isSwitch: false, isCheck: false, isSelect: false, isText: false, isPair: false, isRadios: false, isItems: false, isMatrix: false, isFacts: false, isNote: false, isButtons: false };
+    const blank = { isSwitch: false, isCheck: false, isSelect: false, isText: false, isPair: false, isRadios: false, isItems: false, isMatrix: false, isFacts: false, isFigures: false, isTable: false, isPara: false, isLink: false, isDisclosure: false, isNote: false, isButtons: false };
     let n = 0;
     const row = (r) => {
       const hint = r.hint || '';
@@ -123,12 +140,34 @@ class Component extends DCLogic {
         style: 'display: flex; align-items: center; gap: 12px; padding: 10px 12px;' + (i < all.length - 1 ? ' border-bottom: 1px solid #eef0f3' : '') })) };
       if ('matrix' in r) return { ...blank, isMatrix: true, label: r.matrix, cols: r.cols, lines: r.lines.map(([label, cells]) => ({ label, cells: cells.map((on, i) => ({ on: !!on, box: box(!!on) + '; display: inline-flex', aria: label + ', ' + r.cols[i] })) })) };
       if ('facts' in r) return { ...blank, isFacts: true, facts: r.facts.map(([k, v]) => ({ k, v })) };
+      // table: { table: [headings], lines: [[cell, ...]], empty? } where a cell is a text, { strong }, { pill, tone }
+      // or { buttons: [[label, kind]] }; without lines the empty text spans the table.
+      if ('table' in r) {
+        const pillStyle = (tone) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; ' +
+          (tone === 'success' ? 'background: #e7f3ea; color: #1e6b2a' : tone === 'warning' ? 'background: #fff4e5; color: #7a4a00' : 'background: #eef0f3; color: #3d4047');
+        const small = (kind) => btn(kind).replace('height: 40px', 'height: 34px').replace('padding: 0 16px', 'padding: 0 12px');
+        const cell = (c) => {
+          const base = { isText: false, isPill: false, isButtons: false };
+          if (c && typeof c === 'object' && 'pill' in c) return { ...base, isPill: true, text: c.pill, style: pillStyle(c.tone) };
+          if (c && typeof c === 'object' && 'buttons' in c) return { ...base, isButtons: true, buttons: c.buttons.map(([label, kind]) => ({ label, style: small(kind) })) };
+          if (c && typeof c === 'object' && 'strong' in c) return { ...base, isText: true, text: c.strong, style: 'font-weight: 600' };
+          return { ...base, isText: true, text: String(c), style: '' };
+        };
+        const lines = (r.lines || []).map((l) => ({ cells: l.map(cell) }));
+        return { ...blank, isTable: true, head: r.table, lines, empty: r.empty || '', hasEmpty: lines.length === 0 && !!r.empty, span: String(r.table.length) };
+      }
+      // figures: [label, value] pairs side by side, the label over the value (a status card's numbers).
+      if ('figures' in r) return { ...blank, isFigures: true, figures: r.figures.map(([k, v]) => ({ k, v })) };
+      // para: a sentence in the body text; link: a text button at the end of a row; disclosure: a closed "more" toggle.
+      if ('para' in r) return { ...blank, isPara: true, text: r.para };
+      if ('link' in r) return { ...blank, isLink: true, text: r.link };
+      if ('disclosure' in r) return { ...blank, isDisclosure: true, text: r.disclosure };
       if ('note' in r) return { ...blank, isNote: true, text: r.note, noteStyle: note(r.tone) };
       if ('buttons' in r) return { ...blank, isButtons: true, barStyle: 'display: flex; flex-wrap: wrap; gap: 10px; ' + (r.buttons[0] && r.buttons[0][1] === 'primary' ? 'justify-content: flex-end' : ''), buttons: r.buttons.map(([label, kind]) => ({ label, style: btn(kind) })) };
       return blank;
     };
     const raw = Array.isArray(this.props.sections) ? this.props.sections : [];
-    const cards = raw.map((s, i) => ({ id: 'nbi-s' + i, name: s.name, desc: s.desc || '', hasDesc: !!s.desc, rows: (s.rows || []).map(row) }));
+    const cards = raw.map((s, i) => ({ id: 'nbi-s' + i, name: s.name, help: !!s.help, desc: s.desc || '', hasDesc: !!s.desc, rows: (s.rows || []).map(row) }));
     return { app, mainStyle: `padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 20px; max-width: ${this.props.maxWidth || '1000px'}; box-sizing: border-box; width: 100%`, appIcon: this.props.appIcon || '', apps: Array.isArray(this.props.apps) ? this.props.apps : [], title: this.props.title || '', section: this.props.section || '', tabs: Array.isArray(this.props.tabs) ? this.props.tabs : [],
       scope: this.props.scope || 'alleen voor beheerders, elke sectie slaat apart op', user: this.props.user || 'Pieter Jansen', initials: this.props.initials || 'PJ', role: this.props.role || 'Functioneel beheerder', cards };
   }

@@ -26,6 +26,7 @@ function fakePage(fail = {}) {
 		locator: (s) => ({ pressSequentially: async (v) => calls.push(`type ${s}=${v}`) }),
 		waitForTimeout: async () => {},
 		waitForSelector: async (s) => calls.push(`waitFor ${s}`),
+		$eval: async (s, fn, files) => calls.push(`drag ${s} ${files.join(',')}`),
 	}
 }
 
@@ -121,4 +122,14 @@ test('a phone board is measured at its own width, a desktop board at 1440', () =
 		{ board: 'MobielZaak', liveUrl: 'http://localhost:8080/index.php/apps/portaliq/site/mijn/cases', steps: [], width: 390 },
 	])
 	assert.equal(row, 'MobielZaak\t/apps/portaliq/site/mijn/cases\t--width\t390')
+})
+
+test('drags files over a drop zone without dropping them (the board draws the drop state)', async () => {
+	const step = normaliseStep({ dragFiles: '.cn-files-browser', files: ['bouwtekening.pdf', 'foto.jpg'] })
+	assert.deepEqual(step, { kind: 'dragFiles', selector: '.cn-files-browser', files: ['bouwtekening.pdf', 'foto.jpg'] })
+	const page = fakePage()
+	await playSteps(page, [step])
+	assert.deepEqual(page.calls, ['drag .cn-files-browser bouwtekening.pdf,foto.jpg'])
+	assert.throws(() => normaliseStep({ dragFiles: '.x' }), /files/)
+	assert.throws(() => normaliseStep({ dragFiles: '.x', files: [] }), /files/)
 })

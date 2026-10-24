@@ -326,7 +326,8 @@ window.__compdiffExtract = function () {
 		// So is a plain line of smaller text set right under the title (a board's h2 + p): a description, not content.
 		const next = headerRow && headerRow.nextElementSibling
 		const plainLine = (e) => {
-			if (!e || !visible(e) || !e.textContent.trim() || e.querySelector(INTERACTIVE + ', [role=combobox], table, ul, ol, img, svg')) return false
+			// A chart or picture is content, though an svg chart holds text (its axis labels).
+			if (!e || !visible(e) || !e.textContent.trim() || e.matches('svg, canvas, img, picture, figure, [role=img]') || e.querySelector(INTERACTIVE + ', [role=combobox], table, ul, ol, img, svg, canvas')) return false
 			const top = e.getBoundingClientRect().top - (titleBox.y + titleBox.h)
 			return top >= -1 && top <= 12 && px(getComputedStyle(e).fontSize) < px(getComputedStyle(textEl(title)).fontSize)
 		}

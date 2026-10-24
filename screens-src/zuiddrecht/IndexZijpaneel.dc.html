@@ -136,12 +136,12 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-if>
 </aside>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"text","default":"Alle zaken"},"count":{"editor":"text","default":"48 zaken, 8 op deze pagina"},"tab":{"editor":"text","default":"Zoeken"},"view":{"editor":"text","default":"Tabel"},"menu":{"editor":"text","default":""},"pinned":{"editor":"text","default":"Termijn deze week"},"active":{"editor":"text","default":""},"placeholder":{"editor":"text","default":"Zoek op zaak, nummer of verzoeker"},"$preview":{"width":360,"height":1052}}'>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"text","default":"Alle zaken"},"count":{"editor":"text","default":"8 zaken, 8 op deze pagina"},"tab":{"editor":"text","default":"Zoeken"},"view":{"editor":"text","default":"Tabel"},"menu":{"editor":"text","default":""},"pinned":{"editor":"text","default":"Termijn deze week"},"active":{"editor":"text","default":""},"placeholder":{"editor":"text","default":"Zoek op zaak, nummer of verzoeker"},"$preview":{"width":360,"height":1052}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
     const title = p.title ?? 'Alle zaken';
-    const count = p.count ?? '48 zaken, 8 op deze pagina';
+    const count = p.count ?? '8 zaken, 8 op deze pagina';
     const tab = p.tab ?? 'Zoeken';
     const view = p.view ?? 'Tabel';
     const menu = p.menu ?? '';
@@ -174,9 +174,9 @@ class Component extends DCLogic {
     const sortNow = 'Nu: op termijn, oplopend. De sortering bewaart u mee in een weergave.';
 
     const facets = [
-      ['Team', [['Woo en informatie', 19, true], ['Vergunningen', 12, false], ['Sociaal domein', 9, false], ['Handhaving', 8, false]]],
-      ['Status', [['Ontvangen', 11, false], ['In behandeling', 20, false], ['Wacht op inwoner', 4, false], ['Besluit', 6, false], ['Afgehandeld', 7, false]]],
-      ['Zaaktype', [['Woo-verzoek', 19, false], ['Bezwaar', 8, false], ['Omgevingsvergunning', 10, false], ['Melding', 6, false], ['Subsidie', 5, false]]]
+      ['Team', [['Woo en informatie', 4, true], ['Vergunningen', 2, false], ['Sociaal domein', 1, false], ['Handhaving', 1, false]]],
+      ['Status', [['Ontvangen', 2, false], ['In behandeling', 2, false], ['Wacht op inwoner', 1, false], ['Besluit', 2, false], ['Afgehandeld', 1, false]]],
+      ['Zaaktype', [['Woo-verzoek', 4, false], ['Bezwaar', 1, false], ['Omgevingsvergunning', 1, false], ['Melding', 1, false], ['Subsidie', 1, false]]]
     ].map(([label, options]) => ({ label, options: options.map(([l, count, checked]) => ({ label: l, count, checked })) }));
 
     const columns = ['Zaak', 'Zaaktype', 'Status', 'Behandelaar', 'Termijn', 'Verzoeker', 'Ontvangen op', 'Laatst gewijzigd'].map((label, i) => ({ label, checked: i < 5 }));
@@ -206,9 +206,9 @@ class Component extends DCLogic {
       menu: menuFor({ name }, access)
     });
     const groups = [
-      { id: 'zp-mijn', title: 'Mijn weergaven', readOnly: false, hasNote: false, note: '', items: [['Termijn deze week', 'Mijn zaken, termijn binnen 7 dagen', 3], ['Wacht op inwoner', 'Status wacht op inwoner, gedeeld met team Woo', 4], ['Opgeschort', 'Status opgeschort, alle teams', 15]].map(row('owner')) },
-      { id: 'zp-gedeeld', title: 'Gedeeld met mij', readOnly: false, hasNote: true, note: 'Van collega\'s. U kunt ze gebruiken en een kopie opslaan.', items: [['Woo-verzoeken team', 'Door Anouk Bakker, team Woo en informatie', 19]].map(row('read')) },
-      { id: 'zp-standaard', title: 'Standaardweergaven', readOnly: true, hasNote: true, note: 'Geleverd door dossiq. Een nieuwe versie werkt ze bij.', items: [['Mijn zaken', 'Behandelaar is ik', 14], ['Alle lopende zaken', 'Status niet afgehandeld', 41], ['Termijn verstreken', 'Termijn voor vandaag, niet afgehandeld', 2]].map(row('default')) }
+      { id: 'zp-mijn', title: 'Mijn weergaven', readOnly: false, hasNote: false, note: '', items: [['Termijn deze week', 'Mijn zaken, termijn binnen 7 dagen', 2], ['Wacht op inwoner', 'Status wacht op inwoner, gedeeld met team Woo', 1], ['Opgeschort', 'Status opgeschort, alle teams', 0]].map(row('owner')) },
+      { id: 'zp-gedeeld', title: 'Gedeeld met mij', readOnly: false, hasNote: true, note: 'Van collega\'s. U kunt ze gebruiken en een kopie opslaan.', items: [['Woo-verzoeken team', 'Door Anouk Bakker, team Woo en informatie', 4]].map(row('read')) },
+      { id: 'zp-standaard', title: 'Standaardweergaven', readOnly: true, hasNote: true, note: 'Geleverd door dossiq. Een nieuwe versie werkt ze bij.', items: [['Mijn zaken', 'Behandelaar is ik', 3], ['Alle lopende zaken', 'Status niet afgehandeld', 7], ['Termijn verstreken', 'Termijn voor vandaag, niet afgehandeld', 0]].map(row('default')) }
     ];
     return {
       paneelLabel: 'Zoeken, kolommen en weergaven van ' + title.toLowerCase(),

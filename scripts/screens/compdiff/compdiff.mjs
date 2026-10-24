@@ -26,7 +26,7 @@ import { pairComponents, compareProps, scoreComponent, pairElements, compareElem
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { parseSteps, parseWidth, playSteps } from './steps.mjs'
-import { accountFor, markIgnored, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, readPosts, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -125,12 +125,13 @@ try {
 			try { for (const [k, v] of entries) sessionStorage.setItem(k, v) } catch (e) {}
 		}, session)
 	}
+	const mayRead = readPosts(args['read-post'])
 	const blocked = []
 	// Read-only: refuse any write request to the live instance (login is the one allowed POST).
 	const origin = new URL(base).origin
 	await lctx.route((u) => u.origin === origin, (route) => {
 		const m = route.request().method()
-		if (m === 'GET' || m === 'HEAD' || m === 'OPTIONS' || /\/login(\?|$)/.test(route.request().url())) return route.fallback()
+		if (m === 'GET' || m === 'HEAD' || m === 'OPTIONS' || /\/login(\?|$)/.test(route.request().url()) || mayRead(m, route.request().url())) return route.fallback()
 		blocked.push(`${m} ${route.request().url().replace(base, '')}`)
 		return route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"compdiff is read-only"}' })
 	})

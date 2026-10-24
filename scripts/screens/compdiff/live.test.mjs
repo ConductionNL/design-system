@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, readPosts, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -120,4 +120,13 @@ test('--session seeds the live page\'s session storage: a string as is, anything
 	])
 	assert.throws(() => sessionEntries('[1,2]'), /--session/)
 	assert.throws(() => sessionEntries('not json'), /--session/)
+})
+
+test('--read-post lets a POST that only reads through, by path glob; every other write stays refused', () => {
+	const allowed = readPosts('/apps/openregister/api/objects/*/case/dedup-check|/apps/dossiq/api/search')
+	assert.equal(allowed('POST', 'http://localhost:8080/index.php/apps/openregister/api/objects/dossiq/case/dedup-check'), true)
+	assert.equal(allowed('POST', 'http://localhost:8080/apps/dossiq/api/search?q=x'), true)
+	assert.equal(allowed('POST', 'http://localhost:8080/index.php/apps/openregister/api/objects/dossiq/case'), false)
+	assert.equal(allowed('PUT', 'http://localhost:8080/index.php/apps/openregister/api/objects/dossiq/case/dedup-check'), false)
+	assert.equal(readPosts(undefined)('POST', 'http://localhost:8080/apps/dossiq/api/search'), false)
 })

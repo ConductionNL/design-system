@@ -86,6 +86,8 @@ Besides the components, the extractor lists every visible UI element in the page
 
 An untitled card that only frames a paired table (with its pager or toolbar) is that table's frame. One side may draw the frame as a card and the other as the table's own border, so such a card is neither missing nor extra.
 
+A framed item whose framed siblings of the same kind are too short to be cards (under 48px) is a row of that list, not a card: whether one tile reaches 48px depends on how its text wraps.
+
 A deck is three or more sibling cards of the same width: a row of record cards, or a column of widgets. Every card of a deck pairs and is compared, including its structure: the order and rows of its parts (pill, number, title, meta, divider, deadline). A card past a deck's first that finds no counterpart is not reported as missing or extra, because how many cards a deck holds follows the data.
 
 With a modal dialog open (`aria-modal="true"`, on the dialog box or on the mask around it), only what is inside the dialog is measured. The page under the scrim is ignored on both sides.
@@ -94,7 +96,7 @@ A tab strip is a `[role=tablist]`, or a `nav[aria-label]` (or an element with a 
 
 A toolbar is a row of two or more controls. A chip on it (a fully rounded pill of 36px or less: a quick filter, a shortcut, an active-filter tag) is not counted as a control: which chips a bar shows follows the data, and a board draws them as buttons where the library may draw links or spans. A wrapping flex bar whose row wrappers are `display: contents` (the board layout of CnActionsBar) draws its first line as a toolbar though no element boxes that line: the line takes the bar's width and holds the items on it. A table's head is read from its first header cell with a label, so an empty selection column does not stand for the head's type. Run the extractor's tests with `node --test scripts/screens/compdiff/extract.test.mjs` and the live side's with `live.test.mjs` (they need `PLAYWRIGHT_MODULE` and Chrome, and skip without them). The pairing rules' tests are `compare.test.mjs`.
 
-A card's header actions are the buttons in its title row, and any button set on the title's line to the right of the title from outside that row, as NcSettingsSection places its actions. A button lower in the card is not one.
+A card's header actions are the buttons in its title row, and any button set on the title's line to the right of the title from outside that row, as NcSettingsSection places its actions. A button lower in the card is not one. A dialog's close button (named Sluiten or Close, or with a `close` class) is the dialog's own chrome and never a header action: the boards put it in the title row, NcDialog in the corner.
 
 Every board element with a box of its own that nothing above accounts for is listed under "not measured", with a count in `verdicts.tsv`. A board with unmeasured elements never counts as a match.
 

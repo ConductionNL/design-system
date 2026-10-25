@@ -550,6 +550,18 @@ test('a drawn map as an svg named as a map is measured as a map, not as the card
 	assert.equal(r.components.filter((c) => c.role === 'card').length, 0)
 })
 
+test('a chart\'s own texts are one chart part of the card structure, as svg or as canvas', { skip }, async () => {
+	const svg = '<svg width="600" height="200" role="img"><text x="10" y="20" font-size="12">Doorlooptijd (dagen)</text><text x="10" y="190" font-size="12">0-10</text><text x="100" y="190" font-size="12">11-20</text></svg>'
+	const canvas = '<canvas width="600" height="200" style="width:600px;height:200px"></canvas>'
+	const one = (title, chart) => `<section style="width:700px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+		<h2 style="margin:0;font-size:17px">${title}</h2>${chart}<span style="font-size:13px;color:#5e6168">Uit de analyselaag</span></section>`
+	// Three cards of one width are a deck, whose cards carry a structure.
+	const card = (chart) => `<div style="position:absolute;left:300px;top:20px;display:flex;flex-direction:column;gap:16px">${one('Verdeling doorlooptijd', chart)}${one('SLA-trend', chart)}${one('Doorstroom', chart)}</div>`
+	const s = async (chart) => (await measure(card(chart))).components.find((c) => c.title === 'Verdeling doorlooptijd').structure
+	assert.equal(await s(svg), await s(canvas))
+	assert.match(await s(svg), /chart/)
+})
+
 test('a table\'s first head cell is not the title of the card that frames the table', { skip }, async () => {
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:1074px;border:1px solid #ddd;border-radius:12px">
 		<table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left;padding:10px 12px;font-weight:600">Zaaktype</th><th style="text-align:left;padding:10px 12px;font-weight:600">Open</th></tr></thead>

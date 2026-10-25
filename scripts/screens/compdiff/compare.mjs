@@ -47,6 +47,9 @@ export function pairComponents (board, live, H) {
 			if (usedB.has(b) || !TITLED(b)) continue
 			for (const l of live) {
 				if (usedL.has(l) || !TITLED(l) || group(b) !== group(l)) continue
+				// The same title in another column is another widget (a side panel's "Alle zaken" against the page's).
+				const overlap = Math.min(b.rect.x + b.rect.w, l.rect.x + l.rect.w) - Math.max(b.rect.x, l.rect.x)
+				if (overlap <= 0) continue
 				const s = titleSimilarity(b.title, l.title)
 				if (s >= minSim) cand.push({ b, l, cost: (1 - s) + pos(b, l) })
 			}
@@ -61,7 +64,10 @@ export function pairComponents (board, live, H) {
 		if (usedB.has(b)) continue
 		for (const l of live) {
 			if (usedL.has(l) || group(b) !== group(l)) continue
-			let cost = pos(b, l)
+			// A toolbar starts where the row starts; how far it reaches follows what the row holds, so its width and centre
+			// do not keep it from its counterpart on the same line.
+			if (b.role === 'toolbar' && Math.abs(b.rect.y - l.rect.y) > 24 && Math.abs(b.rect.w - l.rect.w) > 8) continue
+			let cost = b.role === 'toolbar' && Math.abs(b.rect.y - l.rect.y) <= 24 ? Math.abs(b.rect.x - l.rect.x) / 1440 + 0.5 * Math.abs(b.rect.y - l.rect.y) / H : pos(b, l)
 			if (!!b.record !== !!l.record) cost += 0.15
 			if (b.title && l.title && CARDLIKE.has(b.role)) cost += 0.12
 			// Two cards with different titles are a pair only as near neighbours or in the same grid slot (a board column

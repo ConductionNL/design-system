@@ -165,3 +165,15 @@ test('a list card whose board side has no page links pairs as the table\'s frame
 	// A pager far from any paired table still counts.
 	assert.equal(pairComponents([table(374, 445)], [table(420.5, 300), { role: 'pager', rect: { x: 293, y: 1500, w: 1118, h: 61 } }], 1600).extra.length, 1)
 })
+
+test('the same title in another column does not pair; a toolbar pairs on its line whatever its width', () => {
+	const side = { role: 'card', title: 'Alle zaken', rect: { x: 1080, y: 68, w: 360, h: 1072 } }
+	const main = { role: 'card', title: 'Alle zaken', rect: { x: 264, y: 68, w: 816, h: 1072 } }
+	const r = pairComponents([side], [main], 1200)
+	assert.equal(r.pairs.length, 0)
+	const tb = (w, y) => ({ role: 'toolbar', title: 'toolbar', rect: { x: 292, y, w, h: 40 } })
+	const t = pairComponents([tb(1120, 188)], [tb(916.6, 184.5)], 1200)
+	assert.equal(t.pairs.length, 1)
+	// A narrower toolbar on another line does not pair.
+	assert.equal(pairComponents([tb(1120, 188)], [tb(916.6, 600)], 1200).pairs.length, 0)
+})

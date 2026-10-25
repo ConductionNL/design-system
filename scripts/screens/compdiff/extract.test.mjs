@@ -72,6 +72,14 @@ test('a table head is read from its first labelled header cell', { skip }, async
 	assert.equal(table.head.fontWeight, 600)
 })
 
+test('a table cell is read from the first labelled cell of the row, not a selection cell', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:800px"><table style="width:800px">
+		<thead><tr><th style="width:28px"></th><th style="font-weight:600">Naam</th></tr></thead>
+		<tbody><tr><td style="padding:14px 20px"><input type="checkbox" style="margin:0"></td><td style="padding:14px 16px">Pieter</td></tr></tbody></table></div>`)
+	const table = r.components.find((c) => c.role === 'table')
+	assert.equal(table.cell.paddingLeft, 16)
+})
+
 test('with a modal dialog open, only what is inside it is measured', { skip }, async () => {
 	const page = `<div style="position:absolute;left:300px;top:100px;width:800px">
 		<h1>Zaak</h1>

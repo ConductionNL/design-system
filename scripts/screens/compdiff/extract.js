@@ -903,5 +903,8 @@ window.__compdiffExtract = function () {
 	// when the component has no element of its own (it can land on an icon inside it).
 	const ownLib = (el) => { for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => LIBCLS.test(k)); if (c) return c } return null }
 	for (const c of components) { if (c.el) c.cls = [...(c.el.classList || [])].slice(0, 2).join('.') || c.el.tagName.toLowerCase(); c.libClass = (c.el && ownLib(c.el)) || clsOf(c.rect) }
-	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c), elements, unmeasured }
+	// The capture is the viewport, as tall as the board: a component that starts below it (the rows of a side panel
+	// that scrolls on past the page) is in neither picture, so it is not measured.
+	const inFrame = components.filter((c) => !c.rect || c.rect.y < window.innerHeight)
+	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: inFrame.map(({ el, ...c }) => c), elements, unmeasured }
 }

@@ -26,7 +26,7 @@ import { pairComponents, compareProps, scoreComponent, pairElements, compareElem
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { parseSteps, parseWidth, playSteps } from './steps.mjs'
-import { accountFor, markIgnored, readPosts, resetScroll, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -168,6 +168,7 @@ try {
 	}
 	lap('load')
 	await playSteps(lpage, steps)
+	if (steps.length) await parkPointer(lpage)
 	lap('steps')
 	if (settleMode === 'fixed') await lpage.waitForTimeout(settle)
 	else await waitForQuiet(lpage, requests, { min: 1500, max: settle, quiet: 1500 })

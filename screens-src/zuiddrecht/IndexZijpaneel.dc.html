@@ -174,9 +174,9 @@ class Component extends DCLogic {
     const sortNow = 'Nu: op termijn, oplopend. De sortering bewaart u mee in een weergave.';
 
     const facets = [
-      ['Team', [['Woo en informatie', 4, true], ['Vergunningen', 2, false], ['Sociaal domein', 1, false], ['Handhaving', 1, false]]],
-      ['Status', [['Ontvangen', 2, false], ['In behandeling', 2, false], ['Wacht op inwoner', 1, false], ['Besluit', 2, false], ['Afgehandeld', 1, false]]],
-      ['Zaaktype', [['Woo-verzoek', 4, false], ['Bezwaar', 1, false], ['Omgevingsvergunning', 1, false], ['Melding', 1, false], ['Subsidie', 1, false]]]
+      ['Team', [['Woo en informatie', 8, true], ['Sociaal domein', 8, false], ['Vergunningen', 5, false], ['KCC', 2, false], ['Zuiddrecht medewerkers', 2, false], ['Behandelaars', 1, false], ['Juridische zaken', 1, false], ['Toezicht en handhaving', 1, false]]],
+      ['Status', [['Ontvangen', 4, false], ['In behandeling', 3, false], ['Besluit', 1, false]]],
+      ['Zaaktype', [['Woo-verzoek', 8, false]]]
     ].map(([label, options]) => ({ label, options: options.map(([l, count, checked]) => ({ label: l, count, checked })) }));
 
     const columns = ['Zaak', 'Zaaktype', 'Status', 'Behandelaar', 'Termijn', 'Verzoeker', 'Ontvangen op', 'Laatst gewijzigd'].map((label, i) => ({ label, checked: i < 5 }));
@@ -206,9 +206,9 @@ class Component extends DCLogic {
       menu: menuFor({ name }, access)
     });
     const groups = [
-      { id: 'zp-mijn', title: 'Mijn weergaven', readOnly: false, hasNote: false, note: '', items: [['Termijn deze week', 'Mijn zaken, termijn binnen 7 dagen', 2], ['Wacht op inwoner', 'Status wacht op inwoner, gedeeld met team Woo', 1], ['Opgeschort', 'Status opgeschort, alle teams', 0]].map(row('owner')) },
-      { id: 'zp-gedeeld', title: 'Gedeeld met mij', readOnly: false, hasNote: true, note: 'Van collega\'s. U kunt ze gebruiken en een kopie opslaan.', items: [['Woo-verzoeken team', 'Door Anouk Bakker, team Woo en informatie', 4]].map(row('read')) },
-      { id: 'zp-standaard', title: 'Standaardweergaven', readOnly: true, hasNote: true, note: 'Geleverd door dossiq. Een nieuwe versie werkt ze bij.', items: [['Mijn zaken', 'Behandelaar is ik', 3], ['Alle lopende zaken', 'Status niet afgehandeld', 7], ['Termijn verstreken', 'Termijn voor vandaag, niet afgehandeld', 0]].map(row('default')) }
+      { id: 'zp-mijn', title: 'Mijn weergaven', readOnly: false, hasNote: false, note: '', items: [['Termijn deze week', 'Mijn zaken, termijn binnen 7 dagen', 2], ['Wacht op inwoner', 'Status wacht op inwoner, gedeeld met team Woo', 2], ['Opgeschort', 'Status opgeschort, alle teams', 0]].map(row('owner')) },
+      { id: 'zp-gedeeld', title: 'Gedeeld met mij', readOnly: false, hasNote: true, note: 'Van collega\'s. U kunt ze gebruiken en een kopie opslaan.', items: [['Woo-verzoeken team', 'Door Anouk Bakker, team Woo en informatie', 8]].map(row('read')) },
+      { id: 'zp-standaard', title: 'Standaardweergaven', readOnly: true, hasNote: true, note: 'Geleverd door dossiq. Een nieuwe versie werkt ze bij.', items: [['Mijn zaken', 'Behandelaar is ik', 9], ['Alle lopende zaken', 'Status niet afgehandeld', 55], ['Termijn verstreken', 'Termijn voor vandaag, niet afgehandeld', 21]].map(row('default')) }
     ];
     return {
       paneelLabel: 'Zoeken, kolommen en weergaven van ' + title.toLowerCase(),

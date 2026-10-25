@@ -30,7 +30,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
-          <span style="font-size: 15px; color: #5e6168">4 van 4 lopende zaken in uw teams · bordweergave per status</span>
+          <span style="font-size: 15px; color: #5e6168">8 van 8 lopende zaken in uw teams · bordweergave per status</span>
         </div>
       </section>
         <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
@@ -70,7 +70,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                     <span style="display: flex; align-items: flex-start; gap: 8px"><strong style="flex: 1; font-size: 15px; color: #1b1c1d; line-height: 1.3">{{ k.title }}</strong><span aria-label="Acties" style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin: -4px -4px 0 0; border-radius: 8px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></span></span>
                     <span style="font-size: 13px; color: #5e6168">{{ k.sub }}</span>
                     <span style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center"><span style="{{ k.pillStyle }}">{{ k.pill }}</span></span>
-                    <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid #eef0f3"><span style="{{ k.dueStyle }}">{{ k.due }}</span><span title="{{ k.ownerName }}" style="flex: none; width: 26px; height: 26px; border-radius: 13px; background: #eaf0f7; color: #234a78; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ k.owner }}</span></span>
+                    <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid #eef0f3"><span style="{{ k.dueStyle }}">{{ k.due }}</span><sc-if value="{{ k.hasOwner }}" hint-placeholder-val="{{ true }}"><span title="{{ k.ownerName }}" style="flex: none; width: 26px; height: 26px; border-radius: 13px; background: #eaf0f7; color: #234a78; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ k.owner }}</span></sc-if></span>
                   </a>
                 </sc-for>
                 <sc-if value="{{ c.hasMore }}" hint-placeholder-val="{{ false }}"><button type="button" style="height: 34px; border: 1px dashed #828a95; border-radius: 8px; background: transparent; color: #3d4047; font: 600 13px 'Fira Sans', sans-serif">{{ c.more }}</button></sc-if>
@@ -95,15 +95,15 @@ class Component extends DCLogic {
     const seg = (on) => 'display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 34px; border: 0; border-radius: 6px; cursor: pointer; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12);' : 'background: transparent; color: #3d4047;');
     const ICONS = ['M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z', 'M3 11H11V3H3M5 5H9V9H5M13 21H21V13H13M15 15H19V19H15M3 21H11V13H3M5 15H9V19H5M13 3V11H21V3M19 9H15V5H19Z', 'M4 5V18H21V5H4M14 7V16H11V7H14M6 7H9V16H6V7M19 16H16V7H19V16Z', 'M12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5M12,2A7,7 0 0,1 19,9C19,14.25 12,22 12,22C12,22 5,14.25 5,9A7,7 0 0,1 12,2M12,4A5,5 0 0,0 7,9C7,10 7,12 12,18.71C17,12 17,10 17,9A5,5 0 0,0 12,4Z'];
     const modes = ['Tabel', 'Kaarten', 'Bord', 'Kaart'].map((label, i) => ({ label, icon: ICONS[i], pressed: i === 2 ? 'true' : 'false', style: seg(i === 2) }));
-    const views = [['Alles', 4, true], ['Mijn zaken', 2, false], ['Termijn deze week', 1, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
+    const views = [['Alles', 8, true], ['Mijn zaken', 4, false], ['Termijn deze week', 3, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
     const type = { 'Woo-verzoek': pill('#fcedec', '#a30000'), 'Bezwaar': pill('#e8e6f6', '#4a3f8f'), 'Melding': pill('#fff4de', '#7a4f00'), 'Omgevingsvergunning': pill('#e3f1f3', '#1d5e66'), 'Subsidie': pill('#e3f1f3', '#1d5e66') };
-    const card = (number, title, who, ty, ownerName, d, lvl) => ({ title, sub: number + ' · ' + who, pill: ty, pillStyle: type[ty], due: d, dueStyle: dueS(lvl), owner: ownerName.split(' ').map((p) => p[0]).join(''), ownerName, box: box(lvl === 'late') });
-    const PJ = 'Pieter Jansen', AB = 'Anouk Bakker', LK = 'Lars de Koning';
+    const card = (number, title, who, ty, ownerName, d, lvl) => ({ title, sub: number + ' · ' + who, pill: ty, pillStyle: type[ty], due: d, dueStyle: dueS(lvl), owner: ownerName.split(' ').map((p) => p[0]).join(''), hasOwner: ownerName !== '', ownerName, box: box(lvl === 'late') });
+    const PJ = 'Pieter Jansen', HB = 'Hanna Bos';
     const cols = [
-      { title: 'Ontvangen', dot: dot('#3669a5'), cards: [] },
-      { title: 'In behandeling', dot: dot('#4a3f8f'), cards: [card('2026-0061', 'Parkeervergunningen binnenstad', 'M. de Graaf', 'Woo-verzoek', PJ, 'Termijn vandaag', 'late'), card('2026-0082', 'Verlichting fietspad Lindelaan', 'S. de Vries', 'Woo-verzoek', PJ, 'Termijn 1 nov', 'ok')] },
-      { title: 'Besluit', dot: dot('#1d5e66'), cards: [card('2026-0058', 'Aanbesteding jeugdzorg 2026', 'Stichting Kindzorg', 'Woo-verzoek', AB, 'Termijn 9 okt', 'soon')] },
-      { title: 'Publiceren', dot: dot('#1e6b2a'), cards: [card('2026-0049', 'Rapport luchtkwaliteit 2025', 'Dagblad Drechtsteden', 'Woo-verzoek', PJ, 'Klaar om te publiceren', 'ok')] }
+      { title: 'Ontvangen', dot: dot('#3669a5'), cards: [card('2026-4864', 'Afvalinzameling Oosthaven 2025', 'Marja Verbeek', 'Woo-verzoek', '', 'Termijn 31 okt', 'soon'), card('2026-4865', 'Vergunningen dakkapellen Beukenlaan', 'Henk Visser', 'Woo-verzoek', '', 'Termijn 2 nov', 'ok'), card('2026-4866', 'Afgewezen parkeervergunningen 2025', 'Linda Bakker', 'Woo-verzoek', '', 'Termijn 2 nov', 'ok'), card('2026-4845', 'Lakken offerte lantaarnpalen', 'Gemeente Zuiddrecht', 'Woo-verzoek', PJ, 'Termijn 18 nov', 'ok')] },
+      { title: 'In behandeling', dot: dot('#4a3f8f'), cards: [card('2026-4837', 'Parkeervergunningen binnenstad', 'Linda Bakker', 'Woo-verzoek', PJ, 'Termijn 26 okt', 'soon'), card('2026-0110', 'Verlichting fietspad Lindelaan', 'Sanne de Vries', 'Woo-verzoek', PJ, 'Termijn 8 nov', 'ok'), card('2026-4838', 'Woo-verzoek vergunningen evenementen', 'Slagerij Van der Berg', 'Woo-verzoek', HB, 'Termijn 18 nov', 'ok')] },
+      { title: 'Besluit', dot: dot('#1d5e66'), cards: [card('2026-4841', 'Openbare verlichting fietspad Lindelaan', 'Henk Visser', 'Woo-verzoek', PJ, 'Termijn 28 okt', 'soon')] },
+      { title: 'Publiceren', dot: dot('#1e6b2a'), cards: [] }
     ].map((c) => ({ ...c, count: c.cards.length, hasMore: false, more: '' }));
     return { views, modes, cols };
   }

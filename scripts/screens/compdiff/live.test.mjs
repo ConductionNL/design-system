@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -120,4 +120,44 @@ test('--session seeds the live page\'s session storage: a string as is, anything
 	])
 	assert.throws(() => sessionEntries('[1,2]'), /--session/)
 	assert.throws(() => sessionEntries('not json'), /--session/)
+})
+
+test('--read-post lets a POST that only reads through, by path glob; every other write stays refused', () => {
+	const allowed = readPosts('/apps/openregister/api/objects/*/case/dedup-check|/apps/dossiq/api/search')
+	assert.equal(allowed('POST', 'http://localhost:8080/index.php/apps/openregister/api/objects/dossiq/case/dedup-check'), true)
+	assert.equal(allowed('POST', 'http://localhost:8080/apps/dossiq/api/search?q=x'), true)
+	assert.equal(allowed('POST', 'http://localhost:8080/index.php/apps/openregister/api/objects/dossiq/case'), false)
+	assert.equal(allowed('PUT', 'http://localhost:8080/index.php/apps/openregister/api/objects/dossiq/case/dedup-check'), false)
+	assert.equal(readPosts(undefined)('POST', 'http://localhost:8080/apps/dossiq/api/search'), false)
+})
+
+test('the document and an inner scroll area scrolled by a hash are scrolled back to the top', { skip }, async () => {
+	const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox'] })
+	try {
+		const page = await browser.newPage({ viewport: { width: 800, height: 600 } })
+		await page.setContent(`<div id="app-content" style="height:400px;overflow:auto"><h1>Instellingen</h1><div style="height:1200px"></div><section id="section-kadaster">Kadaster</section></div><div style="height:2000px"></div>`)
+		await page.evaluate(() => { document.getElementById('section-kadaster').scrollIntoView(); window.scrollTo(0, 300) })
+		assert.ok(await page.evaluate(() => document.getElementById('app-content').scrollTop > 0))
+		assert.equal(await resetScroll(page), 2)
+		assert.deepEqual(await page.evaluate(() => [document.getElementById('app-content').scrollTop, document.scrollingElement.scrollTop]), [0, 0])
+	} finally {
+		await browser.close()
+	}
+})
+
+test('after a click the pointer is parked over no control, so a hover ground is not measured', { skip }, async () => {
+	const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox'] })
+	try {
+		const page = await browser.newPage({ viewport: { width: 800, height: 600 } })
+		await page.setContent(`<style>button{background:#fff}button:hover{background:rgb(240,241,243)}</style><button id="meer" style="position:absolute;left:600px;top:20px;height:40px">Meer</button><button style="position:absolute;right:0;bottom:0;width:40px;height:40px">AI</button>`)
+		await page.click('#meer')
+		const bg = () => page.evaluate(() => getComputedStyle(document.getElementById('meer')).backgroundColor)
+		assert.equal(await bg(), 'rgb(240, 241, 243)')
+		const spot = await parkPointer(page)
+		assert.ok(spot)
+		assert.equal(await bg(), 'rgb(255, 255, 255)')
+		assert.equal(await page.evaluate(({ x, y }) => !!document.elementFromPoint(x, y).closest('button'), spot), false)
+	} finally {
+		await browser.close()
+	}
 })

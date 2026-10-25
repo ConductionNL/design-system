@@ -40,6 +40,76 @@ export function sessionEntries(raw) {
 }
 
 /**
+ * The POST requests a spec declares as reads (--read-post, path globs joined by `|`, `*` for one path segment): a
+ * duplicate check or a search that asks with a POST body but writes nothing. Those pass through; every other write
+ * stays refused, so a step that reaches a save still cannot create anything. The path is matched without
+ * `/index.php` and without the query.
+ *
+ * @param {string|undefined} raw The --read-post value.
+ * @return {(method: string, url: string) => boolean} Whether a request may pass as a read.
+ */
+export function readPosts(raw) {
+	const globs = (raw || '').split('|').map((x) => x.trim()).filter(Boolean)
+	const patterns = globs.map((g) => new RegExp('^' + g.split('*').map((part) => part.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('[^/]+') + '$'))
+	return (method, url) => {
+		if (method !== 'POST' || patterns.length === 0) return false
+		let pathName
+		try {
+			pathName = new URL(url).pathname.replace(/^\/index\.php(?=\/)/, '')
+		} catch {
+			return false
+		}
+		return patterns.some((re) => re.test(pathName))
+	}
+}
+
+/**
+ * Scrolls the document and every scrolled container back to the top-left, so the capture starts where the board
+ * does. A spec hash (`#section-kadaster`) or a step can scroll an app's inner scroll area (Nextcloud's settings
+ * content, `#app-content`), and the page header and tabs above it then read as missing. `--keep-scroll` skips it for
+ * a board that is drawn scrolled.
+ *
+ * @param {object} page A playwright page.
+ * @return {Promise<number>} How many elements were scrolled back.
+ */
+export async function resetScroll(page) {
+	return page.evaluate(() => {
+		let n = 0
+		for (const el of [document.scrollingElement, ...document.querySelectorAll('*')]) {
+			if (el && (el.scrollTop > 0 || el.scrollLeft > 0)) {
+				el.scrollTop = 0
+				el.scrollLeft = 0
+				n++
+			}
+		}
+		return n
+	})
+}
+
+/**
+ * Moves the pointer off whatever a click step left it on, to a spot over no control, so the capture does not read a
+ * hover ground (DqZaakMeer: "Meer" read 240 grey under the pointer that opened it, white once the pointer left).
+ *
+ * @param {object} page A playwright page.
+ * @return {Promise<{x: number, y: number}|null>} Where the pointer went, or null when no free spot was found.
+ */
+export async function parkPointer(page) {
+	const spot = await page.evaluate(() => {
+		const W = window.innerWidth, H = window.innerHeight
+		const free = (x, y) => {
+			const el = document.elementFromPoint(x, y)
+			return !el || !el.closest('a, button, input, select, textarea, label, summary, [role=button], [role=tab], [role=link], [role=menuitem], [role=option], [tabindex], [onclick]')
+		}
+		const candidates = [[W - 2, H - 2], [W - 2, Math.round(H / 2)], [Math.round(W / 2), H - 2], [2, H - 2], [W - 2, 2], [2, 2]]
+		for (let y = H - 2; y > 0; y -= 97) for (let x = W - 2; x > 0; x -= 131) candidates.push([x, y])
+		const hit = candidates.find(([x, y]) => free(x, y))
+		return hit ? { x: hit[0], y: hit[1] } : null
+	})
+	if (spot) await page.mouse.move(spot.x, spot.y)
+	return spot
+}
+
+/**
  * Marks the elements a spec leaves out (--ignore, selectors joined by `|`), so the extractor treats them as chrome.
  *
  * @param {object} page A playwright page.

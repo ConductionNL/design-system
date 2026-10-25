@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, readPosts, resetScroll, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -140,6 +140,23 @@ test('the document and an inner scroll area scrolled by a hash are scrolled back
 		assert.ok(await page.evaluate(() => document.getElementById('app-content').scrollTop > 0))
 		assert.equal(await resetScroll(page), 2)
 		assert.deepEqual(await page.evaluate(() => [document.getElementById('app-content').scrollTop, document.scrollingElement.scrollTop]), [0, 0])
+	} finally {
+		await browser.close()
+	}
+})
+
+test('after a click the pointer is parked over no control, so a hover ground is not measured', { skip }, async () => {
+	const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox'] })
+	try {
+		const page = await browser.newPage({ viewport: { width: 800, height: 600 } })
+		await page.setContent(`<style>button{background:#fff}button:hover{background:rgb(240,241,243)}</style><button id="meer" style="position:absolute;left:600px;top:20px;height:40px">Meer</button><button style="position:absolute;right:0;bottom:0;width:40px;height:40px">AI</button>`)
+		await page.click('#meer')
+		const bg = () => page.evaluate(() => getComputedStyle(document.getElementById('meer')).backgroundColor)
+		assert.equal(await bg(), 'rgb(240, 241, 243)')
+		const spot = await parkPointer(page)
+		assert.ok(spot)
+		assert.equal(await bg(), 'rgb(255, 255, 255)')
+		assert.equal(await page.evaluate(({ x, y }) => !!document.elementFromPoint(x, y).closest('button'), spot), false)
 	} finally {
 		await browser.close()
 	}

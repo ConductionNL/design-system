@@ -87,6 +87,29 @@ export async function resetScroll(page) {
 }
 
 /**
+ * Moves the pointer off whatever a click step left it on, to a spot over no control, so the capture does not read a
+ * hover ground (DqZaakMeer: "Meer" read 240 grey under the pointer that opened it, white once the pointer left).
+ *
+ * @param {object} page A playwright page.
+ * @return {Promise<{x: number, y: number}|null>} Where the pointer went, or null when no free spot was found.
+ */
+export async function parkPointer(page) {
+	const spot = await page.evaluate(() => {
+		const W = window.innerWidth, H = window.innerHeight
+		const free = (x, y) => {
+			const el = document.elementFromPoint(x, y)
+			return !el || !el.closest('a, button, input, select, textarea, label, summary, [role=button], [role=tab], [role=link], [role=menuitem], [role=option], [tabindex], [onclick]')
+		}
+		const candidates = [[W - 2, H - 2], [W - 2, Math.round(H / 2)], [Math.round(W / 2), H - 2], [2, H - 2], [W - 2, 2], [2, 2]]
+		for (let y = H - 2; y > 0; y -= 97) for (let x = W - 2; x > 0; x -= 131) candidates.push([x, y])
+		const hit = candidates.find(([x, y]) => free(x, y))
+		return hit ? { x: hit[0], y: hit[1] } : null
+	})
+	if (spot) await page.mouse.move(spot.x, spot.y)
+	return spot
+}
+
+/**
  * Marks the elements a spec leaves out (--ignore, selectors joined by `|`), so the extractor treats them as chrome.
  *
  * @param {object} page A playwright page.

@@ -550,6 +550,14 @@ test('a drawn map as an svg named as a map is measured as a map, not as the card
 	assert.equal(r.components.filter((c) => c.role === 'card').length, 0)
 })
 
+test('a table\'s first head cell is not the title of the card that frames the table', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:1074px;border:1px solid #ddd;border-radius:12px">
+		<table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left;padding:10px 12px;font-weight:600">Zaaktype</th><th style="text-align:left;padding:10px 12px;font-weight:600">Open</th></tr></thead>
+		<tbody><tr><td style="padding:11px 12px">Woo-verzoek</td><td style="padding:11px 12px">12</td></tr><tr><td style="padding:11px 12px">Bezwaar</td><td style="padding:11px 12px">4</td></tr></tbody></table></div>`)
+	const card = r.components.find((c) => c.role === 'card')
+	assert.ok(!card || !card.title, JSON.stringify(card && card.title))
+})
+
 test('the buttons on the page title\'s line are header buttons, not a toolbar, when they sit beside the title block', { skip }, async () => {
 	const r = await measure(`<main style="position:absolute;left:292px;top:92px;width:1120px">
 		<div class="detail__header" style="display:flex;justify-content:space-between;align-items:flex-start;height:180px">

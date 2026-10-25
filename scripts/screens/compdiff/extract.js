@@ -232,6 +232,22 @@ window.__compdiffExtract = function () {
 		const hs = [...card.querySelectorAll('h1, h2, h3, h4, h5, h6, [role=heading], legend')].filter((h) => ownedBy(h, card) && visible(h) && h.textContent.trim() && h.getBoundingClientRect().width > 4 && h.getBoundingClientRect().height > 4)
 		// A dialog's title sits at its top: a section heading further down is not it, however tall the dialog.
 		const top = hs.find((h) => h.getBoundingClientRect().top - cr.top < (role === 'dialog' ? 90 : Math.max(90, cr.height * 0.4)))
+		// A small heading over a much larger bold line is a kicker (an eyebrow: "Vandaag eerst" over the case title):
+		// the larger line is the card's title, as it is where the kicker is set as a paragraph.
+		if (top && px(getComputedStyle(top).fontSize) <= 13) {
+			const tr = top.getBoundingClientRect(), size = px(getComputedStyle(top).fontSize)
+			const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT)
+			const range = document.createRange()
+			for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+				if (!n.textContent.trim() || !n.parentElement || top.contains(n) || !visible(n.parentElement) || !ownedBy(n, card) || n.parentElement.closest(INTERACTIVE)) continue
+				range.selectNodeContents(n)
+				const q = range.getBoundingClientRect()
+				if (q.top < tr.bottom - 1) continue
+				if (q.top - tr.bottom > 40) break
+				const cs = getComputedStyle(n.parentElement)
+				if (Number(cs.fontWeight) >= 600 && px(cs.fontSize) >= size * 1.4) return n.parentElement
+			}
+		}
 		if (top) return top
 		// No heading element: a bold run of text at the top of the card serves as its title. In a dialog the top can
 		// hold an eyebrow over the title, so there the largest bold line near the top is the title. A card keeps the

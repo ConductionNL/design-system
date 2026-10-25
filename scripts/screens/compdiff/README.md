@@ -134,6 +134,8 @@ Text, values, row counts and empty or filled lists are never compared. The rules
 - When either side centres its content, as an empty state does, the content insets are not flagged.
 - Labels only pair the buttons and the cards with each other. They are never compared.
 
+A small heading (13px or less) over a bold line 1.4 times its size is a kicker, an eyebrow such as "Vandaag eerst" over the case title: the larger line is the card's title, as it is where the kicker is set as a paragraph.
+
 Components pair by their title text first, exact and then fuzzy. The rest pair by role and position. A pair matched on position with two different titles is named `board title ~ live title`, so you can spot a wrong pair. Each pair also gets a pixel mismatch percentage of its own crop. Treat that number as secondary, because different content changes the pixels.
 
 Flags fire when a value goes past one of these limits:

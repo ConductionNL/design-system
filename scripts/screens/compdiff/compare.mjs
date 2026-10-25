@@ -86,12 +86,17 @@ export function pairComponents (board, live, H) {
 		const table = inner.find((x) => x.role === 'table')
 		if (!table || inner.some((x) => !['table', 'pager', 'toolbar'].includes(x.role))) return false
 		const bottom = Math.max(...inner.map((x) => x.rect.y + x.rect.h))
-		return table.rect.w >= c.rect.w - 8 && table.rect.y - c.rect.y <= 24 && c.rect.y + c.rect.h - bottom <= 24
+		// Under the table the frame may hold a count line ("6 van 6 · 20 per pagina") where the other side draws a pager.
+		const others = (side === 'board' ? board : live).filter((x) => x !== c && x.role !== 'card' && hugs(c.rect, x.rect) && !inner.includes(x))
+		return table.rect.w >= c.rect.w - 8 && table.rect.y - c.rect.y <= 24 && c.rect.y + c.rect.h - bottom <= 72 && others.length === 0
 	}
+	// A pager right under a paired table belongs to it: whether a list has page links follows how many rows it holds.
+	const tablePager = (c, side) => c.role === 'pager' && pairs.some((p) => p[side].role === 'table'
+		&& Math.abs(c.rect.y - (p[side].rect.y + p[side].rect.h)) <= 24 && Math.abs(c.rect.x - p[side].rect.x) <= 8)
 	return {
 		pairs,
-		missing: board.filter((c) => !usedB.has(c) && counted(c) && !frameOnly(c, 'board')),
-		extra: live.filter((c) => !usedL.has(c) && counted(c) && !frameOnly(c, 'live')),
+		missing: board.filter((c) => !usedB.has(c) && counted(c) && !frameOnly(c, 'board') && !tablePager(c, 'board')),
+		extra: live.filter((c) => !usedL.has(c) && counted(c) && !frameOnly(c, 'live') && !tablePager(c, 'live')),
 	}
 }
 

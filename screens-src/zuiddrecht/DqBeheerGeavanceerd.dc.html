@@ -35,11 +35,13 @@ class Component extends DCLogic {
         { table: ['ZGW-bron', 'Status', 'Acties'], lines: zgw.map((name) => [name, on, edit]) }
       ] },
       { name: 'KCC-werkplek-integratie', desc: 'Burgeridentificatie, voorblad-limieten, sentiment-triggerwoorden en belplan-overflowdrempels voor de KCC-contactcenterbrug.', rows: [
-        { note: 'Stel in hoe de KCC-werkplekbrug burgers identificeert, het zaak-voorblad opent, sentiment scoort en gesprekken routeert. DigiD-authenticatie en de telefonie-screen-pop worden geleverd door respectievelijk Integriq en pipelinq; hier wordt alleen het Dossiq-gedeelte geconfigureerd.', tone: 'plain' },
-        { pair: [{ label: 'Identificatiemethode', value: 'Beide', select: true }, { label: 'Identificatiescoredrempel (0,6 - 1,0)', value: '0,8' }] },
-        { pair: [{ label: 'Sentiment-pollinginterval (seconden)', value: '10' }, { label: 'Pollinginterval specialist-beschikbaarheid (seconden)', value: '30' }] },
-        { pair: [{ label: 'Max. open zaken in voorblad', value: '5' }, { label: 'Max. recente zaken in voorblad', value: '5' }] },
-        { buttons: [['Opslaan', 'primary']] }
+        { note: 'Stel in hoe de KCC-werkplekbrug burgers identificeert, het zaak-voorblad opent, sentiment scoort en gesprekken routeert. DigiD-authenticatie en de telefonie-screen-pop worden geleverd door respectievelijk Integriq en pipelinq; hier wordt alleen het Dossiq-gedeelte geconfigureerd.' },
+        { pair: [{ label: 'Identificatiemethode', value: 'Beide', select: true, hint: 'Of burgers worden geïdentificeerd via DigiD (portaal/chat), identificatievragen (telefoon), of beide.' }, { label: 'Identificatiescoredrempel (0,6 - 1,0)', value: '0,8', hint: 'Minimale matchscore voor identificatievragen om een burger te koppelen en volledige zaaksinfo te tonen. Onder de drempel wordt alleen openbare zaaksinformatie getoond.' }] },
+        { pair: [{ label: 'Sentiment-pollinginterval (seconden)', value: '5' }, { label: 'Pollinginterval specialist-beschikbaarheid (seconden)', value: '30' }] },
+        { pair: [{ label: 'Max. open zaken in voorblad', value: '10' }, { label: 'Max. contactmomenten in historie', value: '5' }] },
+        { pair: [{ label: 'Belplan overflowdrempel: wachttijd (seconden)', value: '180' }, { label: 'Belplan overflowdrempel: wachtrijlengte', value: '5' }] },
+        { area: 'Sentiment-triggerwoorden (één per regel)', value: 'klacht\nadvocaat\nwethouder\nmedia', rows: 5, hint: 'Nederlandse woorden die negatief sentiment markeren en een escalatie-aanbeveling triggeren. Eén woord of zin per regel.' },
+        { buttons: [['KCC-instellingen opslaan', 'primary']] }
       ] },
       { name: 'Beslistabellen (DMN)', rows: [
         { para: 'Beslistabellen staan in het register decision-tables van OpenRegister. Dossiq bewaart zijn eigen tabellen daar onder sleutels die met dossiq. beginnen en evalueert ze vanuit workflowstappen en het handhavingsadvies. Open OpenRegister om een tabel te lezen of te wijzigen.' }
@@ -59,8 +61,9 @@ class Component extends DCLogic {
         { table: ['Verzonden op', 'Richting', 'Bericht', 'Functie', 'Status', 'HTTP', 'Duur (ms)'], lines: [], empty: 'Geen StUF-berichten voldoen aan de filters.' }
       ] },
       { name: 'Storeregister', desc: 'Verbind de OpenRegister-instantie die de Store-pagina doorzoekt. Zonder verbinding blijft dossiq offline en toont het alleen de eigen sjablonen.', rows: [
-        { note: 'Een storeregister is een andere OpenRegister-instantie die zaakconfiguratie publiceert. Laat het adres leeg om dossiq offline te houden: er wordt niets van het netwerk opgehaald zolang er geen adres staat.', tone: 'plain' },
-        { pair: [{ label: 'Adres van het register', value: '' }, { label: 'Register op die instantie', value: '' }] },
+        { note: 'Een storeregister is een andere OpenRegister-instantie die zaakconfiguratie publiceert. Laat het adres leeg om dossiq offline te houden: er wordt niets van het netwerk opgehaald zolang er geen adres staat.' },
+        { text: 'Adres van het register', value: '', placeholder: 'https://registry.example.org' },
+        { text: 'Register op die instantie', value: '', placeholder: 'dossiq' },
         { text: 'Token voor het register', value: '', hint: 'Het token wordt na opslaan nooit meer getoond. Laat het leeg om het opgeslagen token te behouden.' },
         { buttons: [['Store-instellingen opslaan', 'primary']] }
       ] },

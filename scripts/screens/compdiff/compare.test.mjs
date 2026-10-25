@@ -153,3 +153,15 @@ test('an untitled card that only frames a paired table is that table\'s frame, n
 	const wide = { role: 'card', rect: { x: 292, y: 100, w: 1120, h: 900 } }
 	assert.equal(pairComponents(board, [table(293.5), pager(734.5), wide], 1400).extra.length, 1)
 })
+
+test('a list card whose board side has no page links pairs as the table\'s frame, and live\'s pager under the table is not extra', () => {
+	const table = (y, h) => ({ role: 'table', rect: { x: 293, y, w: 1118, h } })
+	const board = [table(374, 445), { role: 'card', rect: { x: 292, y: 373, w: 1120, h: 489 } }]
+	const live = [table(420.5, 1344.8), { role: 'pager', rect: { x: 293, y: 1765.3, w: 1118, h: 61 } }]
+	const { pairs, missing, extra } = pairComponents(board, live, 1600)
+	assert.equal(pairs.length, 1)
+	assert.deepEqual(missing, [])
+	assert.deepEqual(extra, [])
+	// A pager far from any paired table still counts.
+	assert.equal(pairComponents([table(374, 445)], [table(420.5, 300), { role: 'pager', rect: { x: 293, y: 1500, w: 1118, h: 61 } }], 1600).extra.length, 1)
+})

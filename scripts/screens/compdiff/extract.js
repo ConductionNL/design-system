@@ -248,7 +248,8 @@ window.__compdiffExtract = function () {
 				first = q.top
 			} else if (q.top - first > 40) break
 			const cs = getComputedStyle(n.parentElement)
-			if (Number(cs.fontWeight) < 600 || px(cs.fontSize) < 13 || n.parentElement.closest(INTERACTIVE)) {
+			// A table's head cell is the table's, not the title of the card that frames it.
+			if (Number(cs.fontWeight) < 600 || px(cs.fontSize) < 13 || n.parentElement.closest(INTERACTIVE) || n.parentElement.closest('th, thead, [role=columnheader]')) {
 				if (best === null) break
 				continue
 			}

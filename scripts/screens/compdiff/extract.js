@@ -696,6 +696,12 @@ window.__compdiffExtract = function () {
 			if (i >= 0) components.splice(i, 1)
 		}
 	}
+	// A toolbar that is the same box as a card (a framed bulk-action band) is that card's content: one component.
+	for (let i = components.length - 1; i >= 0; i--) {
+		const t = components[i]
+		if (t.role !== 'toolbar') continue
+		if (components.some((c) => (c.role === 'card' || c.role === 'dialog-card') && Math.abs(c.rect.x - t.rect.x) <= 3 && Math.abs(c.rect.y - t.rect.y) <= 3 && Math.abs(c.rect.w - t.rect.w) <= 3 && Math.abs(c.rect.h - t.rect.h) <= 3)) components.splice(i, 1)
+	}
 	// The component's own classes (and its nearest cn-* ancestor), used to tell a library defect from an app one.
 	// 7. Every visible UI element, not a whitelist: controls, fields, toggles, chips and pills, badges and tags, list
 	// rows. Each carries its own styling; compare.mjs pairs them by label, then by repeated group and order.

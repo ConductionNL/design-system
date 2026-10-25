@@ -611,9 +611,14 @@ window.__compdiffExtract = function () {
 		// of its own (a board's falls back to the browser's bold th), so it does not stand for the head's type.
 		const heads = [...t.querySelectorAll('th, [role=columnheader]')]
 		const th = heads.find((h) => visible(h) && h.textContent.trim()) || heads[0]
-		const td = t.querySelector('tbody td, [role=row] [role=cell], [role=gridcell]')
+		// The cell is read the same way: a selection cell holding only a checkbox is inset by its checkbox (a board's
+		// native box carries a 4px margin, the app's cell pads the same 4px), so it does not stand for the row's cells.
+		const firstCell = t.querySelector('tbody td, [role=row] [role=cell], [role=gridcell]')
+		const firstRow = firstCell && (firstCell.closest('tr, [role=row]') || firstCell)
+		const rowCells = firstRow && firstRow !== firstCell ? [...firstRow.querySelectorAll('td, [role=cell], [role=gridcell]')] : []
+		const td = rowCells.find((c) => visible(c) && c.textContent.trim()) || firstCell
 		const hr = th && (th.closest('tr, [role=row]') || th)
-		const dr = td && (td.closest('tr, [role=row]') || td)
+		const dr = firstRow
 		// A `display: contents` row (an ARIA grid row) has no box: its height is that of its tallest cell.
 		const rowH = (row) => { const h = row.getBoundingClientRect().height; return round(h || Math.max(0, ...[...row.children].map((c) => c.getBoundingClientRect().height))) }
 		const cell = (c) => { if (!c) return null; const ccs = getComputedStyle(c); return { ...font(c), paddingLeft: px(ccs.paddingLeft), paddingTop: px(ccs.paddingTop), borderBottom: borders(ccs).bottom || (c.parentElement ? borders(getComputedStyle(c.parentElement)).bottom : 0), background: bgBehind(c) } }

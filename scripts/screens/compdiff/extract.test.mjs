@@ -557,3 +557,13 @@ test('a table\'s first head cell is not the title of the card that frames the ta
 	const card = r.components.find((c) => c.role === 'card')
 	assert.ok(!card || !card.title, JSON.stringify(card && card.title))
 })
+
+test('the buttons on the page title\'s line are header buttons, not a toolbar, when they sit beside the title block', { skip }, async () => {
+	const r = await measure(`<main style="position:absolute;left:292px;top:92px;width:1120px">
+		<div class="detail__header" style="display:flex;justify-content:space-between;align-items:flex-start;height:180px">
+			<div class="detail__header-left"><div class="detail__title-row"><h1 style="margin:0;font-size:28px">Verlichting fietspad Lindelaan</h1></div></div>
+			<div class="detail__header-actions" style="display:flex;gap:8px">${btn('Bericht')}${btn('Document')}${btn('Contact vastleggen')}${btn('Bewerken')}${btn('Meer')}</div>
+		</div></main>`)
+	assert.equal(r.components.filter((c) => c.role === 'toolbar').length, 0, JSON.stringify(r.components.map((c) => c.role)))
+	assert.deepEqual(r.components.find((c) => c.role === 'pageHeader').buttons.map((b) => b.label), ['Bericht', 'Document', 'Contact vastleggen', 'Bewerken', 'Meer'])
+})

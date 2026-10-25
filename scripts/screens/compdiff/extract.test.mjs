@@ -607,3 +607,11 @@ test('a record card titled by a bold line inside a plain link carries that title
 	const b = await measure(`<div style="position:absolute;left:292px;top:369px;width:265px;border:1px solid #ddd;padding:14px"><button style="font-weight:700;font-size:15px">Oppakken</button><div style="margin-top:6px">Tekst</div></div>`)
 	assert.ok(!b.components.find((c) => c.role === 'card')?.title)
 })
+
+test('a 15px intro in a second dark text colour under a card title is content; a muted grey line is the description', { skip }, async () => {
+	const card = (color) => `<section style="position:absolute;left:292px;top:200px;width:800px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:8px">
+		<h2 style="margin:0;font-size:17px;color:#1b1c1d">Contactmomenten in het klantbeeld</h2><p style="margin:0;font-size:15px;color:${color}">Uit pipelinq: elk contactmoment dat op deze zaak staat.</p><p style="margin:0">Nog geen contactmomenten</p></section>`
+	const gap = async (color) => (await measure(card(color))).components.find((c) => /klantbeeld/.test(c.title || '')).content.gapBelowTitle
+	assert.ok(await gap('#3d4047') < 12)
+	assert.ok(await gap('#5e6168') > 20)
+})

@@ -422,6 +422,8 @@ window.__compdiffExtract = function () {
 			const ecs = getComputedStyle(el)
 			if (!el.closest(CONTROL_BOX) && (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4))) { parts.push({ t: 'divider', y: el.tagName === 'HR' || r.height <= 2 ? r.top : r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
 			if (PILLISH(el)) { parts.push({ t: DATE.test(el.textContent) ? 'pill:deadline' : 'pill', y: r.top, x: r.left }); seen.add(el); continue }
+			// A chart is one part, whether it is drawn as an svg (whose axis labels are text) or on a canvas.
+			if (el.matches('svg, canvas') && r.height >= 60 && r.width >= 120) { parts.push({ t: 'chart', y: r.top, x: r.left }); seen.add(el); continue }
 		}
 		const range = document.createRange()
 		const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT)

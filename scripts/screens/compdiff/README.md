@@ -136,6 +136,8 @@ Text, values, row counts and empty or filled lists are never compared. The rules
 
 A card with no heading element is titled by its first bold line near the top. A card that is itself one link or label (a record card, a choice) keeps that line as its title, a plain link around the title text does too, a pill in the head row is skipped, and a record number beside it (2026-0082) does not end the search; a button's label is never a title.
 
+A small heading (13px or less) over a bold line 1.4 times its size is a kicker, an eyebrow such as "Vandaag eerst" over the case title: the larger line is the card's title, as it is where the kicker is set as a paragraph.
+
 Components pair by their title text first, exact and then fuzzy. The rest pair by role and position. A pair matched on position with two different titles is named `board title ~ live title`, so you can spot a wrong pair. Each pair also gets a pixel mismatch percentage of its own crop. Treat that number as secondary, because different content changes the pixels.
 
 Flags fire when a value goes past one of these limits:

@@ -580,6 +580,16 @@ test('the buttons on the page title\'s line are header buttons, not a toolbar, w
 	assert.deepEqual(r.components.find((c) => c.role === 'pageHeader').buttons.map((b) => b.label), ['Bericht', 'Document', 'Contact vastleggen', 'Bewerken', 'Meer'])
 })
 
+test('a small heading over a larger bold line is a kicker: the larger line is the card title, as heading or as paragraph', { skip }, async () => {
+	const board = await measure(`<section style="position:absolute;left:292px;top:200px;width:1120px;border:1px solid #ddd;padding:20px 24px"><div style="display:flex;flex-direction:column;gap:6px">
+		<h2 style="margin:0;font-size:13px;font-weight:700;color:#a30000">Vandaag eerst</h2><strong style="font-size:20px;font-weight:700">Parkeervergunningen binnenstad</strong><span style="font-size:15px">2026-0061 · Woo-verzoek</span></div></section>`)
+	const live = await measure(`<section style="position:absolute;left:292px;top:200px;width:1120px;border:1px solid #ddd;padding:20px 24px"><div style="display:flex;flex-direction:column;gap:6px">
+		<p style="margin:0;font-size:13px;font-weight:700;color:#a30000">Vandaag eerst</p><h3 style="margin:0;font-size:20px;font-weight:700">Parkeervergunningen binnenstad</h3><span style="font-size:15px">2026-0061 · Woo-verzoek</span></div></section>`)
+	const title = (r) => r.components.find((c) => c.role === 'card').title
+	assert.equal(title(board), 'Parkeervergunningen binnenstad')
+	assert.equal(title(live), 'Parkeervergunningen binnenstad')
+})
+
 test('a framed band of bulk actions is one card, not also a toolbar of the same box', { skip }, async () => {
 	const r = await measure(`<div style="position:absolute;left:292px;top:384px;width:1120px;height:54px;box-sizing:border-box;display:flex;gap:8px;align-items:center;padding:0 16px;border:1px solid #ddd;border-radius:12px;background:#eaf0f7">
 		<strong style="font-size:15px">Met de geselecteerde zaken</strong>${btn('Toewijzen')}${btn('Status wijzigen')}${btn('Exporteren')}</div>`)

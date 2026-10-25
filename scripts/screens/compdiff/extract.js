@@ -502,6 +502,7 @@ window.__compdiffExtract = function () {
 		}
 		scope = scope || container
 		window.__compdiffPageHeader = container
+		window.__compdiffPageHeaderScope = scope
 		const tb = textRect(h1) || rect(h1)
 		const btns = [...scope.querySelectorAll('button, a')].filter((b) => {
 			// Tabs drawn inside the header area are a tab strip, compared as 'tabs', not header buttons.
@@ -592,6 +593,15 @@ window.__compdiffExtract = function () {
 	// bar shows follows the data, and a board draws them as buttons where the library may draw spans.
 	const chip = (c) => { const r = c.getBoundingClientRect(); return r.height <= 36 && radius(c, getComputedStyle(c)) >= r.height / 2 - 1 }
 	const headerBox = window.__compdiffPageHeader
+	// The page header's buttons are counted from its whole header block (scope), so a row of them beside the title
+	// block, on the title's line, is the header's and not a toolbar; counting it as both doubled the buttons or left an
+	// extra toolbar on live (CnDetailPage's header actions).
+	const headerScope = window.__compdiffPageHeaderScope
+	const onTitleLine = (el) => {
+		if (!headerBox || !headerScope || !headerScope.contains(el)) return false
+		const r = el.getBoundingClientRect(), hb = headerBox.getBoundingClientRect()
+		return r.top < hb.bottom && r.bottom > hb.top
+	}
 	const used = new Set()
 	// Pager rows: the row around a pagination nav (its page links or buttons and the count beside them). Measured as a
 	// pager on both sides, never as a toolbar: a board draws its pages as links, the library as buttons.
@@ -634,7 +644,7 @@ window.__compdiffExtract = function () {
 		if (!/flex|grid/.test(cs.display)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width >= 300 && /flex/.test(cs.display) && cs.flexWrap === 'wrap' && [...el.children].some((c) => getComputedStyle(c).display === 'contents')
-			&& ![...used].some((u) => u.contains(el)) && !(headerBox && (headerBox.contains(el) || el.contains(headerBox)))) {
+			&& ![...used].some((u) => u.contains(el)) && !(headerBox && (headerBox.contains(el) || el.contains(headerBox) || onTitleLine(el)))) {
 			const line = firstLine(el)
 			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c)) : []
 			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
@@ -653,7 +663,7 @@ window.__compdiffExtract = function () {
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (tabStrips.some((s) => el.contains(s))) continue
 		if ([...used].some((u) => u.contains(el)) || [...lineItems].some((u) => u.contains(el))) continue
-		if (headerBox && (headerBox.contains(el) || el.contains(headerBox))) continue
+		if (headerBox && (headerBox.contains(el) || el.contains(headerBox) || onTitleLine(el))) continue
 		used.add(el)
 		const c0 = ctrls[0], c0cs = getComputedStyle(c0)
 		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })

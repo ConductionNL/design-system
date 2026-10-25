@@ -64,6 +64,29 @@ export function readPosts(raw) {
 }
 
 /**
+ * Scrolls the document and every scrolled container back to the top-left, so the capture starts where the board
+ * does. A spec hash (`#section-kadaster`) or a step can scroll an app's inner scroll area (Nextcloud's settings
+ * content, `#app-content`), and the page header and tabs above it then read as missing. `--keep-scroll` skips it for
+ * a board that is drawn scrolled.
+ *
+ * @param {object} page A playwright page.
+ * @return {Promise<number>} How many elements were scrolled back.
+ */
+export async function resetScroll(page) {
+	return page.evaluate(() => {
+		let n = 0
+		for (const el of [document.scrollingElement, ...document.querySelectorAll('*')]) {
+			if (el && (el.scrollTop > 0 || el.scrollLeft > 0)) {
+				el.scrollTop = 0
+				el.scrollLeft = 0
+				n++
+			}
+		}
+		return n
+	})
+}
+
+/**
  * Marks the elements a spec leaves out (--ignore, selectors joined by `|`), so the extractor treats them as chrome.
  *
  * @param {object} page A playwright page.

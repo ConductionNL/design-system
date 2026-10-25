@@ -47,6 +47,7 @@ class Component extends DCLogic {
         { para: 'Beslistabellen staan in het register decision-tables van OpenRegister. Dossiq bewaart zijn eigen tabellen daar onder sleutels die met dossiq. beginnen en evalueert ze vanuit workflowstappen en het handhavingsadvies. Open OpenRegister om een tabel te lezen of te wijzigen.' }
       ] },
       { name: 'Financiële integratie: dwangsom-callback', desc: 'Configureer het gedeelde geheim waarmee ERP-betalingsbevestigingscallbacks voor dwangsomuitbetalingen worden gevalideerd.', rows: [
+        { para: 'Configureer het gedeelde geheim waarmee de X-Procest-Signature HMAC-SHA256-header op de openbare dwangsom-betalingsbevestigingscallback (/apps/dossiq/api/dwangsom/payment-callback) wordt gevalideerd. Zonder geconfigureerd geheim wordt elk callbackverzoek geweigerd (HTTP 401). Een niet-geconfigureerd geheim wordt nooit als een impliciete goedkeuring behandeld.' },
         { note: 'Er is geen callbackgeheim ingesteld. Elke bevestiging van een uitbetaling wordt nu geweigerd met HTTP 401.', tone: 'warn' },
         { text: 'Callbackgeheim voor uitbetalingen', value: '', hint: 'Gedeeld HMAC-SHA256-ondertekeningsgeheim. Geef deze waarde aan de ERP-/Integriq-integrator zodat deze X-Procest-Signature-headers kan ondertekenen.' },
         { buttons: [['Willekeurig geheim genereren', ''], ['Opslaan', 'primary']] }
@@ -68,7 +69,7 @@ class Component extends DCLogic {
         { buttons: [['Store-instellingen opslaan', 'primary']] }
       ] },
       { name: 'Eerste keer', desc: 'Wat deze omgeving nog nodig heeft voordat er een zaak in kan. We melden het, we eisen het niet. Herstel het register met de knop Configuratie opnieuw importeren.', rows: [
-        { items: [['Een zaaktype', 'Zaaktypen', '', 'Klaar'], ['Een afdeling met medewerkers', 'Afdelingen en medewerkers', '', 'Klaar'], ['Een behandelaar met een rol', 'Beheerrechten', '', 'Nog open']] }
+        { items: [['Een organisatie', 'Zaken, documenten en kalenders hangen aan een organisatie. OpenRegister bewaart die.', '', 'Klaar'], ['Een mailaccount', 'Kies de gedeelde mailbox waaruit de app verstuurt en zaakmail leest.', '', 'Nog open'], ['Een gepubliceerd zaaktype', 'Elke zaak volgt een zaaktype. Een concepttype neemt geen zaken aan.', '', 'Klaar'], ['Een rol met een houder', 'Een rol zonder iemand erin beslist niets. Geef minstens één rol een houder.', '', 'Klaar'], ['Een werkkalender', 'Termijnen tellen in werkdagen. Zonder kalender is elke termijn een gok.', '', 'Klaar']] }
       ] },
       { name: 'Vereisten', desc: 'Wat dossiq nodig heeft om te draaien, en wat deze instantie heeft. Live gelezen, elke keer dat u deze pagina opent.', rows: [
         { table: ['Platform', 'Wat het doet', 'Hier'], lines: [

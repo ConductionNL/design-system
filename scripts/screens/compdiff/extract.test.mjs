@@ -579,3 +579,13 @@ test('the buttons on the page title\'s line are header buttons, not a toolbar, w
 	assert.equal(r.components.filter((c) => c.role === 'toolbar').length, 0, JSON.stringify(r.components.map((c) => c.role)))
 	assert.deepEqual(r.components.find((c) => c.role === 'pageHeader').buttons.map((b) => b.label), ['Bericht', 'Document', 'Contact vastleggen', 'Bewerken', 'Meer'])
 })
+
+test('a record card titled by a bold line inside a plain link carries that title', { skip }, async () => {
+	const card = (t) => `<div style="width:265px;border:1px solid #ddd;border-radius:12px;padding:14px"><a href="#" style="color:inherit;text-decoration:none"><strong style="font-size:15px">${t}</strong></a><div style="font-size:13px;margin-top:6px">2026-0082 · Woo-verzoek</div></div>`
+	const r = await measure(`<div style="position:absolute;left:292px;top:369px;display:grid;grid-template-columns:repeat(4,265px);gap:20px">${card('Verlichting fietspad Lindelaan')}${card('Melding afval')}${card('Parkeervergunningen')}${card('Terrasoverkapping')}</div>`)
+	const titles = r.components.filter((c) => c.role === 'card').map((c) => c.title)
+	assert.ok(titles.includes('Verlichting fietspad Lindelaan'), JSON.stringify(titles))
+	// A button's label is still no title.
+	const b = await measure(`<div style="position:absolute;left:292px;top:369px;width:265px;border:1px solid #ddd;padding:14px"><button style="font-weight:700;font-size:15px">Oppakken</button><div style="margin-top:6px">Tekst</div></div>`)
+	assert.ok(!b.components.find((c) => c.role === 'card')?.title)
+})

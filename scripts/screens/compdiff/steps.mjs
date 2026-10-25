@@ -73,6 +73,20 @@ export function parseWidth(arg) {
 }
 
 /**
+ * Read a --clock argument: the moment the live page believes it is, for a board drawn on a fixed date (a calendar
+ * opened on December 2026, a "today" row). Unset, the real time.
+ *
+ * @param {string|undefined} arg An ISO date or date-time.
+ * @return {Date|null} The moment, or null for the real time.
+ */
+export function parseClock(arg) {
+	if (arg === undefined) return null
+	const at = new Date(arg)
+	if (!/^\d{4}-\d{2}-\d{2}/.test(arg) || Number.isNaN(at.getTime())) throw new Error('--clock must be an ISO date such as 2026-12-01T09:00:00')
+	return at
+}
+
+/**
  * Read a --steps argument: a JSON array, or `@<file>` holding one.
  *
  * @param {string} arg The argument.

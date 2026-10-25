@@ -84,6 +84,9 @@ export async function resetScroll(page) {
 		}
 		return n
 	})
+}
+
+/**
  * Moves the pointer off whatever a click step left it on, to a spot over no control, so the capture does not read a
  * hover ground (DqZaakMeer: "Meer" read 240 grey under the pointer that opened it, white once the pointer left).
  *

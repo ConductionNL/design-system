@@ -5,8 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, readPosts, resetScroll, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
-import { accountFor, markIgnored, parkPointer, readPosts, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -141,6 +140,11 @@ test('the document and an inner scroll area scrolled by a hash are scrolled back
 		assert.ok(await page.evaluate(() => document.getElementById('app-content').scrollTop > 0))
 		assert.equal(await resetScroll(page), 2)
 		assert.deepEqual(await page.evaluate(() => [document.getElementById('app-content').scrollTop, document.scrollingElement.scrollTop]), [0, 0])
+	} finally {
+		await browser.close()
+	}
+})
+
 test('after a click the pointer is parked over no control, so a hover ground is not measured', { skip }, async () => {
 	const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox'] })
 	try {

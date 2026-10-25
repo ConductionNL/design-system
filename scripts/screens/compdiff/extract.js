@@ -480,12 +480,19 @@ window.__compdiffExtract = function () {
 		return out.join(' / ')
 	}
 	const deckOf = new Map()
+	// A card's slot: the card, or the wrapper around it that holds nothing else (a grid cell, a list item), so cards
+	// wrapped one per cell are siblings as much as bare ones.
+	const slotOf = (el) => { let s = el; while (s.parentElement && s.parentElement !== document.body && s.parentElement.children.length === 1) s = s.parentElement; return s }
+	const cardIn = (slot) => (cardEls.has(slot) ? slot : [...cardEls].find((e) => slot.contains(e) && slotOf(e) === slot) || null)
 	for (const c of components) {
 		if (c.role !== 'card' || !c.el.parentElement) continue
-		const sibs = [...c.el.parentElement.children].filter((s) => cardEls.has(s) && Math.abs(s.getBoundingClientRect().width - c.rect.w) < c.rect.w * 0.1)
+		const slot = slotOf(c.el)
+		const row = slot.parentElement
+		if (!row) continue
+		const sibs = [...row.children].map(cardIn).filter((e) => e && Math.abs(e.getBoundingClientRect().width - c.rect.w) < c.rect.w * 0.1)
 		if (sibs.length < 3) continue
-		if (!deckOf.has(c.el.parentElement)) deckOf.set(c.el.parentElement, deckOf.size + 1)
-		c.record = { deck: deckOf.get(c.el.parentElement), index: sibs.indexOf(c.el), count: sibs.length }
+		if (!deckOf.has(row)) deckOf.set(row, deckOf.size + 1)
+		c.record = { deck: deckOf.get(row), index: sibs.indexOf(c.el), count: sibs.length }
 		c.structure = structureOf(c.el)
 	}
 

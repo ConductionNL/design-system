@@ -615,3 +615,11 @@ test('a 15px intro in a second dark text colour under a card title is content; a
 	assert.ok(await gap('#3d4047') < 12)
 	assert.ok(await gap('#5e6168') > 20)
 })
+
+test('cards wrapped one per grid cell are a deck, as bare sibling cards are', { skip }, async () => {
+	const card = (t) => `<div class="cell"><a href="#" style="display:block;border:1px solid #ddd;border-radius:12px;padding:14px;height:200px;box-sizing:border-box"><strong style="font-size:17px">${t}</strong></a></div>`
+	const r = await measure(`<div style="position:absolute;left:292px;top:400px;width:1120px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">${['Melding afval', 'Parkeervergunningen', 'Terrasoverkapping', 'Openbare verlichting', 'Kapvergunning'].map(card).join('')}</div>`)
+	const cards = r.components.filter((c) => c.role === 'card')
+	assert.equal(cards.length, 5)
+	assert.ok(cards.every((c) => c.record && c.record.count === 5), JSON.stringify(cards.map((c) => c.record)))
+})

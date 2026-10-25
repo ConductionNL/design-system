@@ -623,3 +623,10 @@ test('cards wrapped one per grid cell are a deck, as bare sibling cards are', { 
 	assert.equal(cards.length, 5)
 	assert.ok(cards.every((c) => c.record && c.record.count === 5), JSON.stringify(cards.map((c) => c.record)))
 })
+
+test('a component that starts below the captured frame is not measured', { skip }, async () => {
+	const r = await measure(`<aside style="position:absolute;left:1108px;top:0;width:307px">
+		<div style="height:920px"></div>${['Status', 'Zaaktype', 'Behandelaar'].map((t) => `<div style="height:50px;margin-top:20px;border:1px solid #ddd;border-radius:8px;padding:10px">${t} <b>filter</b></div>`).join('')}</aside>
+		<section style="position:absolute;left:292px;top:200px;width:700px;border:1px solid #ddd;padding:20px"><h2 style="margin:0">Zichtbaar</h2><p>Inhoud</p></section>`)
+	assert.deepEqual(r.components.filter((c) => c.role === 'card').map((c) => c.title), ['Zichtbaar'])
+})

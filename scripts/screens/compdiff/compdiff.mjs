@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url'
 import { pairComponents, compareProps, scoreComponent, pairElements, compareElement } from './compare.mjs'
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
-import { parseSteps, parseWidth, playSteps } from './steps.mjs'
+import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { accountFor, markIgnored, readPosts, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -40,9 +40,10 @@ const BOARDS = args.boards || path.join(HERE, '..', '..', '..', 'preview', 'scre
 const base = args.base || 'http://localhost:8080'
 const board = args.board
 const out = args.out || path.join(process.cwd(), 'compdiff-out')
-let width
+let width, clock
 try {
 	width = parseWidth(args.width)
+	clock = parseClock(args.clock)
 } catch (e) {
 	console.error(e.message)
 	process.exit(2)
@@ -110,6 +111,8 @@ try {
 	let kept = null
 	try { kept = storage && fs.existsSync(storage) ? JSON.parse(fs.readFileSync(storage, 'utf8')) : null } catch { kept = null }
 	const lctx = await browser.newContext({ viewport: { width, height: boardHeight }, deviceScaleFactor: 1, locale: 'nl-NL', ...(kept ? { storageState: kept } : {}) })
+	// A board drawn on a fixed date: the live page's clock reads that moment (timers keep running).
+	if (clock) await lctx.clock.setFixedTime(clock)
 	const lpage = await lctx.newPage()
 	const requests = trackRequests(lpage)
 	if (args['skip-first-run']) {

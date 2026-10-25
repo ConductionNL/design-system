@@ -7,7 +7,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
-import { normaliseStep, parseSteps, parseWidth, playSteps } from './steps.mjs'
+import { normaliseStep, parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { routeOf, specRows } from './specs-from-boards.mjs'
 
 /**
@@ -132,4 +132,12 @@ test('drags files over a drop zone without dropping them (the board draws the dr
 	assert.deepEqual(page.calls, ['drag .cn-files-browser bouwtekening.pdf,foto.jpg'])
 	assert.throws(() => normaliseStep({ dragFiles: '.x' }), /files/)
 	assert.throws(() => normaliseStep({ dragFiles: '.x', files: [] }), /files/)
+})
+
+test('--clock fixes the live page\'s date for a board drawn on one (a calendar on December 2026)', () => {
+	assert.equal(parseClock(undefined), null)
+	assert.equal(parseClock('2026-12-01T09:00:00').getFullYear(), 2026)
+	assert.equal(parseClock('2026-12-01').getMonth(), 11)
+	assert.throws(() => parseClock('december'), /--clock/)
+	assert.throws(() => parseClock('2026-13-45'), /--clock/)
 })

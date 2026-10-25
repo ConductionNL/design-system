@@ -1,35 +1,20 @@
 # =============================================================
-# Conduction design system, local dev orchestration
+# Conduction design system, local server
 # -------------------------------------------------------------
-# Spins up the Docusaurus sites in containers so testing matches
-# what GitHub Pages will eventually serve. Hot-reload works via
-# bind-mount; node_modules stay in named volumes per workspace
-# so the host machine's empty folders do not shadow them.
+# Serves the repo root with Caddy, so the kit and the screens
+# gallery have the same relative paths as the live site at
+# https://identity.conduction.nl (where preview/ is the root).
 #
 # From the repo root:
-#   docker compose up                  # build + start www
-#   docker compose up -d               # detached
-#   docker compose logs -f www         # tail the dev server
+#   docker compose up kit              # http://localhost:8090/
+#   KIT_PORT=8091 docker compose up kit
 #   docker compose down                # stop + remove
 #
-# To wire www into the local Nextcloud (for the future OpenCatalogi
-# content plugin), uncomment the networks block at the bottom and
-# the matching service-level networks key. Set OPENCATALOGI_URL to
-# http://nextcloud:80/... so the container reaches Nextcloud via
-# Docker DNS instead of localhost:8080.
+# No build step: the repo is bind-mounted read-only, so a saved
+# file shows on the next browser refresh.
 # =============================================================
 
 services:
-
-  # =====================================================================
-  # kit - the design-system kit (preview/*.html) served as static files
-  # ---------------------------------------------------------------------
-  # Production is GitHub Pages on main at https://designsystem.conduction.nl
-  # Locally we use Caddy's file_server to serve the same tree on port 8090,
-  # so the kit pages have a stable URL when you're iterating on a component
-  # spec page next to the React side. No build step; bind-mount the repo
-  # and reload the browser to see changes.
-  # =====================================================================
   kit:
     image: caddy:2-alpine
     container_name: conduction-kit
@@ -39,42 +24,3 @@ services:
       - .:/srv:ro
       - ./.github/kit-caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     restart: unless-stopped
-
-  www:
-    build:
-      context: .
-      dockerfile: sites/www/Dockerfile
-    image: conduction/www:dev
-    container_name: conduction-www
-    ports:
-      # Host port 3100 (3000 + 3030 are typically used by other Conduction
-      # dev containers, e.g. openregister UIs). Change via .env if needed:
-      #   WWW_PORT=3200 docker compose up
-      - "${WWW_PORT:-3100}:3000"
-    volumes:
-      # Source bind-mount so saves trigger Docusaurus hot-reload
-      - .:/app
-      # Anonymous volumes shadow the host's (empty) node_modules
-      - /app/node_modules
-      - /app/diagrams/node_modules
-      - /app/docusaurus-preset/node_modules
-      - /app/sites/www/node_modules
-      # Docusaurus build cache; speeds up restart
-      - /app/sites/www/.docusaurus
-    environment:
-      # Local default. Override via .env when wiring to the live Nextcloud:
-      #   OPENCATALOGI_URL=http://nextcloud:80/index.php/apps/openregister/api
-      - OPENCATALOGI_URL=${OPENCATALOGI_URL:-http://localhost:8080/index.php/apps/openregister/api}
-      - CHOKIDAR_USEPOLLING=true
-    # Uncomment the next two lines to attach to the local Nextcloud network.
-    # The network name comes from `docker network ls`; for nextcloud-docker-dev
-    # it is typically `master_default`.
-    # networks:
-    #   - nextcloud-net
-    restart: unless-stopped
-
-
-# networks:
-#   nextcloud-net:
-#     external: true
-#     name: master_default

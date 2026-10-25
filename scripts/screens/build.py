@@ -177,9 +177,24 @@ def apply_heights(index):
                 index['boards'][k]['h'] = h
 
 
+# Fields capabilities.py adds to each board; build.py cannot compute them, so it keeps the stored ones.
+ENRICHED = ('repo', 'repoUrl', 'repos', 'capIds', 'matrixCapIds', 'specs')
+
+
 def write_index(index):
+    """Write screens.json, keeping the capabilities.py fields of every board whose source did not move."""
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / 'screens.json').write_text(json.dumps(index, ensure_ascii=False, indent=1) + '\n')
+    path = OUT / 'screens.json'
+    stored = load(path).get('boards', {}) if path.exists() else {}
+    boards = {}
+    for key, board in index['boards'].items():
+        board = dict(board)
+        old = stored.get(key, {})
+        if old.get('src', '').removeprefix('screens-src/') == board['src']:
+            board['src'] = old['src']
+            board.update({f: old[f] for f in ENRICHED if f in old})
+        boards[key] = board
+    path.write_text(json.dumps({**index, 'boards': boards}, ensure_ascii=False, indent=1) + '\n')
 
 
 def copy_assets():

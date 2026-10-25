@@ -10,7 +10,8 @@ when that ref is missing or the fetch failed, and says so):
   openspec/parity/capabilities.json, openspec/parity/gap-decisions.json
 and from this repo preview/screens/screens.json (boards[*].caps).
 
-Run it after build.py: build.py rewrites screens.json without the fields this script adds.
+Run it after adding a board or changing a capability note: build.py keeps the fields this script
+adds for boards it already knows, but cannot compute them.
 Idempotent: both outputs are rewritten from the sources on every run.
 """
 import argparse

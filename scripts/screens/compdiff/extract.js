@@ -375,7 +375,10 @@ window.__compdiffExtract = function () {
 			// A description reads as one: smaller than the title and either 14px or less, or muted. A 15px line in the
 			// title's own ink ("Deze zaak hangt niet onder een programma.") is the card's content.
 			const tcs = getComputedStyle(textEl(title))
-			const muted = ecs.color !== tcs.color
+			// Muted means a grey well lighter than the title's ink (#5e6168 against #1b1c1d), not a second dark text
+			// colour (#3d4047), which reads as body text.
+			const mean = (c) => { const v = rgba(c); return v ? (v[0] + v[1] + v[2]) / 3 : 0 }
+			const muted = mean(ecs.color) - mean(tcs.color) > 50
 			return top >= -1 && top <= 12 && px(ecs.fontSize) < px(tcs.fontSize) && (px(ecs.fontSize) <= 14 || muted)
 		}
 		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || plainLine(next)) ? next : null

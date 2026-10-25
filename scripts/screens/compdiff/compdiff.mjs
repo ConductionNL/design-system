@@ -26,6 +26,7 @@ import { pairComponents, compareProps, scoreComponent, pairElements, compareElem
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { parseSteps, parseWidth, playSteps } from './steps.mjs'
+import { accountFor, markIgnored, readPosts, resetScroll, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 import { accountFor, markIgnored, parkPointer, readPosts, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -176,6 +177,7 @@ try {
 	// A table's selection column can render after the settle: measure the head once it holds every column.
 	if (!(await waitForTables(lpage))) console.error('tables did not settle; measuring as they are')
 	lap('tables')
+	if (args['keep-scroll'] !== 'true' && (await resetScroll(lpage)) > 0) await lpage.waitForTimeout(500)
 	await markIgnored(lpage, args.ignore)
 	const livePng = path.join(out, `${board}-live.png`)
 	await lpage.screenshot({ path: livePng, clip: { x: 0, y: 0, width, height: boardHeight } })

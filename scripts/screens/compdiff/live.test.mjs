@@ -5,6 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
+import { accountFor, markIgnored, readPosts, resetScroll, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 import { accountFor, markIgnored, parkPointer, readPosts, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
@@ -131,6 +132,15 @@ test('--read-post lets a POST that only reads through, by path glob; every other
 	assert.equal(readPosts(undefined)('POST', 'http://localhost:8080/apps/dossiq/api/search'), false)
 })
 
+test('the document and an inner scroll area scrolled by a hash are scrolled back to the top', { skip }, async () => {
+	const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox'] })
+	try {
+		const page = await browser.newPage({ viewport: { width: 800, height: 600 } })
+		await page.setContent(`<div id="app-content" style="height:400px;overflow:auto"><h1>Instellingen</h1><div style="height:1200px"></div><section id="section-kadaster">Kadaster</section></div><div style="height:2000px"></div>`)
+		await page.evaluate(() => { document.getElementById('section-kadaster').scrollIntoView(); window.scrollTo(0, 300) })
+		assert.ok(await page.evaluate(() => document.getElementById('app-content').scrollTop > 0))
+		assert.equal(await resetScroll(page), 2)
+		assert.deepEqual(await page.evaluate(() => [document.getElementById('app-content').scrollTop, document.scrollingElement.scrollTop]), [0, 0])
 test('after a click the pointer is parked over no control, so a hover ground is not measured', { skip }, async () => {
 	const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox'] })
 	try {

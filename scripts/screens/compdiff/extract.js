@@ -249,8 +249,19 @@ window.__compdiffExtract = function () {
 			} else if (q.top - first > 40) break
 			const cs = getComputedStyle(n.parentElement)
 			// A table's head cell is the table's, not the title of the card that frames it.
-			if (Number(cs.fontWeight) < 600 || px(cs.fontSize) < 13 || n.parentElement.closest(INTERACTIVE) || n.parentElement.closest('th, thead, [role=columnheader]')) {
-				if (best === null) break
+			// A control's label is no title, but a plain link around the title text (a record card's title links to the
+			// record) is: it is drawn as text, without a button's ground or border.
+			// A card that is itself one link (a record card) is no control around its own title.
+			const ctl = n.parentElement.closest(INTERACTIVE)
+			const own = ctl && (ctl === card || ctl.contains(card))
+			const plainLink = ctl && ctl.tagName === 'A' && !opaque(getComputedStyle(ctl).backgroundColor) && !Object.values(borders(getComputedStyle(ctl))).some((v) => v > 0)
+			// A pill in the card's head row (a status, a priority) comes before the title; it is not the title.
+			const inPill = (() => { for (let e = n.parentElement; e && e !== card; e = e.parentElement) { const ecs = getComputedStyle(e), er = e.getBoundingClientRect(); if (er.height <= 30 && er.width <= 200 && opaque(ecs.backgroundColor) && ecs.backgroundColor !== getComputedStyle(card).backgroundColor && px(ecs.borderTopLeftRadius) >= er.height / 2 - 1) return true } return false })()
+			if (inPill) continue
+			if (Number(cs.fontWeight) < 600 || px(cs.fontSize) < 13 || (ctl && !own && !plainLink) || n.parentElement.closest('th, thead, [role=columnheader]')) {
+				// A record number in a head row (2026-0082 beside a pill) does not end the search for the title under it;
+				// any other plain line does (a KPI tile's label above its bigger value).
+				if (best === null && !/^[A-Z]{0,4}[\s-]?\d{2,4}[-./]\d{2,6}$/.test(n.textContent.trim())) break
 				continue
 			}
 			if (px(cs.fontSize) > bestSize) { best = n.parentElement; bestSize = px(cs.fontSize) }

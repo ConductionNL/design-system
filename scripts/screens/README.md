@@ -98,7 +98,7 @@ python3 scripts/screens/component_status.py ~/memcap-work/screens/round6/COMP/co
 
 ## Capabilities, specs and repositories
 
-`capabilities.py` adds to the gallery what each screen delivers, which OpenSpec specs define it and which repository it lives in. Run it after `build.py`, because `build.py` rewrites `screens.json` without these fields.
+`capabilities.py` adds to the gallery what each screen delivers, which OpenSpec specs define it and which repository it lives in. `build.py` cannot compute these fields, so it keeps the stored ones for every board whose source did not move. Run `capabilities.py` after adding a board or changing a capability note.
 
 ```
 python3 scripts/screens/capabilities.py             # git fetch each app checkout first

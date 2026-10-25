@@ -225,23 +225,32 @@ conduction-design-system/
 
 ## Local development
 
-The site is plain static HTML, no build step, no runtime. To work on it locally with the same paths as production (`https://designsystem.conduction.nl/` redirects to `preview/`), serve the folder over a local HTTP server. Don't open files via `file://`, the root redirect and a couple of relative paths only behave correctly under HTTP.
+The site is plain static HTML. The pages need no build step. It goes live at [identity.conduction.nl](https://identity.conduction.nl/), published from `preview/` on `main`.
 
-**Recommended, VS Code Live Server.** Install the [Live Server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) (Ritwick Dey), then right-click [`index.html`](./index.html) → **"Open with Live Server"** (or click **"Go Live"** in the status bar). The browser opens at `http://127.0.0.1:5500/` and auto-reloads on every save.
-
-**One-line alternatives if you don't use VS Code:**
+Serve the repo root over HTTP. Opening files with `file://` breaks the root redirect, and serving `preview/` on its own breaks the `../../brand/` paths.
 
 ```bash
-python3 -m http.server 8000     # zero install on most Linux/macOS
-npx serve -l 8000               # if you have Node
-php -S localhost:8000           # if you have PHP
+python3 -m http.server 8000     # from the repo root, opens on http://localhost:8000/
+docker compose up kit           # Caddy on http://localhost:8090/ (set KIT_PORT to change the port)
 ```
 
-Then open `http://localhost:8000/`. Live reload only with VS Code's extension or `npx live-server`.
+For reload on save, use the VS Code [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension: right-click [`index.html`](./index.html) and pick **Open with Live Server** (port 5500).
+
+Locally every path starts with `/preview/`. The live site serves `preview/` as its root, so it drops that part:
+
+| Page | Local | Live |
+|---|---|---|
+| The kit | `/preview/` | `/` |
+| Screens gallery | `/preview/screens/` | [`/screens/`](https://identity.conduction.nl/screens/) |
+| One board | `/preview/screens/board.html?id=dossiq/DqZaakTaken` | `/screens/board.html?id=dossiq/DqZaakTaken` |
+
+Add `?lang=en` to see a page in English.
 
 **Notes:**
-- Google Fonts (Figtree + IBM Plex Mono) are CDN-loaded by [`tokens.css`](./tokens.css). Offline they fall back to system fonts.
-- The site is published from `main` via GitHub Pages, push to `main` and changes go live within ~30 seconds.
+- Google Fonts (Figtree and IBM Plex Mono) load from a CDN through [`tokens.css`](./tokens.css). Offline they fall back to system fonts.
+- A merge to `main` that touches `preview/`, `brand/`, `tokens.css` or the other paths in [`.github/workflows/pages.yml`](./.github/workflows/pages.yml) deploys identity.conduction.nl.
+- The Docusaurus website that used to live in `sites/www` moved to [ConductionNL/conduction-website](https://github.com/ConductionNL/conduction-website) and serves www.conduction.nl.
+- To change a screen on /screens, read [Changing the screens](./screens-src/README.md).
 
 ---
 

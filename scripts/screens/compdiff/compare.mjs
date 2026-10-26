@@ -32,7 +32,10 @@ export function pairComponents (board, live, H) {
 	const take = (b, l, by) => { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by, name: b.title && b.role !== 'tabs' && b.role !== 'table' && b.role !== 'toolbar' && b.role !== 'pager' && b.role !== 'map' ? b.title : `${b.role}@${Math.round(b.rect.x)},${Math.round(b.rect.y)}` }) }
 	const pos = (b, l) => {
 		const cx = (r) => r.x + r.w / 2
-		return Math.abs(cx(b.rect) - cx(l.rect)) / 1440 + 0.5 * Math.abs(b.rect.y - l.rect.y) / H + Math.abs(b.rect.w - l.rect.w) / 1440 + 0.2 * Math.abs((b.depth || 0) - (l.depth || 0))
+		// A popup's nesting follows where the library mounts it (NcActions teleports its menu out of the panel), not the
+		// page, so two popups are not kept apart by their depth.
+		const depth = b.popup && l.popup ? 0 : Math.abs((b.depth || 0) - (l.depth || 0))
+		return Math.abs(cx(b.rect) - cx(l.rect)) / 1440 + 0.5 * Math.abs(b.rect.y - l.rect.y) / H + Math.abs(b.rect.w - l.rect.w) / 1440 + 0.2 * depth
 	}
 	// 1. The page header pairs with the page header.
 	const bh = board.find((c) => c.role === 'pageHeader'), lh = live.find((c) => c.role === 'pageHeader')

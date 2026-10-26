@@ -104,7 +104,9 @@ A framed item whose framed siblings of the same kind are too short to be cards (
 
 A deck is three or more sibling cards of the same width (a card wrapped alone in a grid cell or list item counts by its cell): a row of record cards, or a column of widgets. Every card of a deck pairs and is compared, including its structure: the order and rows of its parts (pill, number, title, meta, divider, deadline). A card past a deck's first that finds no counterpart is not reported as missing or extra, because how many cards a deck holds follows the data.
 
-Only what starts inside the captured frame (the viewport, as tall as the board) is measured: the rows of a side panel that scrolls on past the page are in neither picture.
+What starts below the captured frame (the viewport, as tall as the board) is in neither picture, so it is only a counterpart: a table the board draws inside its frame pairs with the same table drawn lower on a taller live page, and a component below the frame that pairs with nothing (the rows of a side panel that scrolls on past the page) is neither missing nor extra.
+
+A side panel docked at the right edge and ruled off by its left border only (NcAppSidebar, white inside the app's white container) is a card, as the board's white panel on the work ground is. In a record card, a pill or other box joins a line when its middle sits well inside that line's run of text (a pill beside a due date that wrapped), an icon-only control drawn as an aria-labelled span counts as a header action, a glyph hidden from assistive tech is not text, a line split over spans is one text, a table is one part and a map is one part at its own box.
 
 With a modal dialog open (`aria-modal="true"`, on the dialog box or on the mask around it), only what is inside the dialog is measured. The page under the scrim is ignored on both sides.
 

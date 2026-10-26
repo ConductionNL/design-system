@@ -976,3 +976,15 @@ test('a tall tile among short framed list rows is a row when the frame sits on a
 	assert.deepEqual(cards.map((c) => c.title), ['Statussen'], JSON.stringify(cards.map((c) => [c.title, c.rect])))
 	assert.ok(cards[0].content.gapBelowTitle < 20, `gap ${cards[0].content.gapBelowTitle}`)
 })
+
+test('a header whose subtitle wraps to two lines keeps its centred button as a header action', { skip }, async () => {
+	const r = await measure(`<div class="card" style="position:absolute;left:292px;top:262px;width:800px;border:1px solid #ccc;border-radius:12px">
+		<div style="display:flex;align-items:center;gap:8px;padding:20px 22px 0">
+			<div style="flex:1;display:flex;flex-direction:column;gap:3px"><h2 style="margin:0;font-size:17px">Velden</h2>
+				<span style="font-size:14px;line-height:1.2;color:#5e6168;width:420px">Het gegevensschema van dit zaaktype. Sleep om de volgorde te wijzigen. Velden van het moedertype zijn paars en daarom anders.</span></div>
+			<button style="height:34px">Veld toevoegen</button></div>
+		<table style="margin:22px"><tbody><tr><td>Bouwkosten</td><td>Nummer</td></tr><tr><td>Soort</td><td>Keuzelijst</td></tr></tbody></table></div>`)
+	const c = r.components.find((x) => x.title === 'Velden')
+	assert.equal(c.header.actions, 1, JSON.stringify(c.header))
+	assert.ok(c.content.gapBelowTitle > 10, JSON.stringify(c.content))
+})

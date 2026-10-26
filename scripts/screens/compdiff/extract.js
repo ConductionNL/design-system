@@ -390,7 +390,6 @@ window.__compdiffExtract = function () {
 			// Climb to the header row: the widest ancestor that still holds only the title line.
 			for (let p = title.parentElement; p && p !== card && card.contains(p); p = p.parentElement) {
 				const pr = p.getBoundingClientRect()
-				if (pr.height > titleBox.h + 56) break
 				// A wrapping header row whose actions wrapped under the title in a narrow card is still the header row.
 				const wraps = getComputedStyle(p).flexWrap === 'wrap'
 				const inAction = (l) => { const e = l.node.nodeType === 1 ? l.node : l.node.parentElement; return !!(e && e.closest('a, button, [role=button]')) }
@@ -398,6 +397,10 @@ window.__compdiffExtract = function () {
 				// belongs to the title, so the row with the heading's actions is still the header row.
 				const titleSize = px(getComputedStyle(textEl(title)).fontSize)
 				const subtitle = (l) => !record && l.text && l.y <= titleBox.y + titleBox.h + 32 && px(getComputedStyle(l.node.nodeType === 1 ? l.node : l.node.parentElement).fontSize) < titleSize
+				// A row taller than a title line is past the header, unless all it holds under the title is a subtitle
+				// (one that wraps to a second line, CnWidgetWrapper on DqZaaktypeVelden "Velden") and the actions.
+				const titleAndSubtitle = leaves.every((l) => !p.contains(l.node) || l.y <= titleBox.y + titleBox.h + 4 || subtitle(l) || inAction(l))
+				if (pr.height > titleBox.h + 56 && !titleAndSubtitle) break
 				// In a record card a line of text under the title (its number line) is a row of its own, however tight.
 				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + (record && l.text ? -1 : 4) && !(wraps && inAction(l)) && !subtitle(l))) break
 				headerRow = p

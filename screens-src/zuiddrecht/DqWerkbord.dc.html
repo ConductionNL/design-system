@@ -73,6 +73,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                     <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid #eef0f3"><span style="{{ k.dueStyle }}">{{ k.due }}</span><sc-if value="{{ k.hasOwner }}" hint-placeholder-val="{{ true }}"><span title="{{ k.ownerName }}" style="flex: none; width: 26px; height: 26px; border-radius: 13px; background: #eaf0f7; color: #234a78; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ k.owner }}</span></sc-if></span>
                   </a>
                 </sc-for>
+                <sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: 15px; line-height: 1.5; color: #5e6168">Niets in deze kolom</p></sc-if>
                 <sc-if value="{{ c.hasMore }}" hint-placeholder-val="{{ false }}"><button type="button" style="height: 34px; border: 1px dashed #828a95; border-radius: 8px; background: transparent; color: #3d4047; font: 600 13px 'Fira Sans', sans-serif">{{ c.more }}</button></sc-if>
               </section>
             </sc-for>
@@ -104,7 +105,7 @@ class Component extends DCLogic {
       { title: 'In behandeling', dot: dot('#4a3f8f'), cards: [card('2026-4837', 'Parkeervergunningen binnenstad', 'Linda Bakker', 'Woo-verzoek', PJ, 'Termijn 26 okt', 'soon'), card('2026-0110', 'Verlichting fietspad Lindelaan', 'Sanne de Vries', 'Woo-verzoek', PJ, 'Termijn 8 nov', 'ok'), card('2026-4838', 'Woo-verzoek vergunningen evenementen', 'Slagerij Van der Berg', 'Woo-verzoek', HB, 'Termijn 18 nov', 'ok')] },
       { title: 'Besluit', dot: dot('#1d5e66'), cards: [card('2026-4841', 'Openbare verlichting fietspad Lindelaan', 'Henk Visser', 'Woo-verzoek', PJ, 'Termijn 28 okt', 'soon')] },
       { title: 'Publiceren', dot: dot('#1e6b2a'), cards: [] }
-    ].map((c) => ({ ...c, count: c.cards.length, hasMore: false, more: '' }));
+    ].map((c) => ({ ...c, count: c.cards.length, empty: c.cards.length === 0, hasMore: false, more: '' }));
     return { views, modes, cols };
   }
 }

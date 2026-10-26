@@ -791,3 +791,23 @@ test('a table in a widget is one part of its structure, held directly or in a fr
 	assert.equal(s(live), s(board))
 	assert.match(s(board), /table$/)
 })
+
+test('a footer avatar taller than the name beside it is on the name\'s line', { skip }, async () => {
+	const card = (size) => `<article style="background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px;width:200px">
+		<strong style="font-size:17px">Verlichting fietspad Lindelaan</strong><span style="font-size:14px;color:#5e6168">Woo-verzoek</span>
+		<div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;padding-top:10px;border-top:1px solid #eef0f3"><span style="display:flex;align-items:center;gap:8px"><span style="width:${size}px;height:${size}px;border-radius:50%;background:#eaf0f7;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">PJ</span>Pieter Jansen</span><span>8 nov</span></div></article>`
+	const deck = (size) => `<div style="position:absolute;left:300px;top:300px;display:grid;grid-template-columns:repeat(3,250px);gap:20px">${card(size)}${card(size)}${card(size)}</div>`
+	const s = async (size) => (await measure(deck(size))).components.find((c) => c.role === 'card').structure
+	assert.equal(await s(36), await s(20))
+	assert.match(await s(36), /divider \/ pill meta deadline$/)
+})
+
+test('an open row menu pairs with an open menu, never with a flat row card where the other side left it shut', { skip }, async () => {
+	const row = '<div style="position:absolute;left:1107px;top:379px;width:307px;height:52px;background:#eaf0f7;border-radius:8px;padding:8px"><b>Termijn deze week</b><br><small>Mijn zaken</small></div>'
+	const menu = '<div role="menu" style="position:absolute;left:1134px;top:379px;width:264px;height:280px;background:#fff;border:1px solid #e4e6ea;border-radius:10px;box-shadow:0 8px 24px rgba(27,28,29,.16)"><button role="menuitem">Bewerken</button><button role="menuitem">Delen</button></div>'
+	const board = await measure(row + menu)
+	const live = await measure(row)
+	const { pairs, missing } = pairComponents(board.components, live.components, 900)
+	assert.ok(!pairs.some((p) => p.board.popup && !p.live.popup))
+	assert.ok(missing.some((c) => c.popup))
+})

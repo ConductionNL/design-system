@@ -337,6 +337,8 @@ window.__compdiffExtract = function () {
 		const cs = getComputedStyle(card)
 		const cr = card.getBoundingClientRect()
 		const comp = { el: card, role, rect: rect(card), frame: framed(card, cs), depth: 0 }
+		// A menu or a floating panel (placed over the page with a shadow) is a popup: it pairs only with a popup.
+		if (role === 'card' && (card.matches('[role=menu], [role=listbox]') || (/absolute|fixed/.test(cs.position) && cs.boxShadow !== 'none'))) comp.popup = true
 		for (let e = ownerCard(card); e; e = ownerCard(e)) comp.depth++
 		comp.props = {
 			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: seenBorders(cs), borderColor: seenBorderColour(cs),
@@ -526,13 +528,16 @@ window.__compdiffExtract = function () {
 		const maxFs = Math.max(0, ...texts.filter((x) => x.fw >= 600).map((x) => x.fs))
 		for (const x of texts) parts.push({ t: NUMBER.test(x.t) ? 'number' : DATE.test(x.t) ? 'deadline' : x.fw >= 600 && x.fs >= maxFs ? 'title' : 'meta', y: x.y, b: x.b, x: x.x })
 		parts.sort((a, b) => a.y - b.y || a.x - b.x)
-		// One row is one line: parts whose tops are close, or a box centred on the line (a pill beside a due date that
-		// wrapped to two lines starts a few px lower than it). Text beside a taller box (two lines beside an avatar)
-		// stays in rows of its own. The order in a row is left to right.
+		// One row is one line: parts whose tops are close, or a box centred on a line of text (a pill beside a due date
+		// that wrapped to two lines starts a few px lower than it; a 28px avatar starts higher than the name beside it).
+		// A box centred between two lines of text (beside a title and its meta line) is on neither. The order in a row is
+		// left to right.
 		const rows = []
 		for (const p of parts) {
-			const row = rows.find((r) => Math.abs(r.y - p.y) <= 6 || (/^(pill|chart|map)/.test(p.t) && r.b > r.y && sameLine(r, p)))
-			if (row) { row.parts.push(p); if (p.t !== 'divider') row.b = Math.max(row.b, p.b) } else rows.push({ y: p.y, b: p.t === 'divider' ? p.y : p.b, parts: [p] })
+			const box = /^(pill|chart|map)/.test(p.t)
+			const row = rows.find((r) => Math.abs(r.y - p.y) <= 6 || (r.ty !== undefined && !box && Math.abs(r.ty - p.y) <= 6) || (box && r.b > r.y && sameLine(r, p)) || (!box && p.t !== 'divider' && r.parts.every((q) => /^(pill|chart|map)/.test(q.t)) && sameLine(p, r)))
+			// ty: the top of the row's first text, the line later text lines up with.
+			if (row) { row.parts.push(p); if (p.t !== 'divider') row.b = Math.max(row.b, p.b); if (!box && p.t !== 'divider' && row.ty === undefined) row.ty = p.y } else rows.push({ y: p.y, b: p.t === 'divider' ? p.y : p.b, parts: [p], ty: box || p.t === 'divider' ? undefined : p.y })
 		}
 		const out = []
 		for (const r of rows) {

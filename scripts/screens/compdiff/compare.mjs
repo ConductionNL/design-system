@@ -69,6 +69,8 @@ export function pairComponents (board, live, H) {
 			if (b.role === 'toolbar' && Math.abs(b.rect.y - l.rect.y) > 24 && Math.abs(b.rect.w - l.rect.w) > 8) continue
 			let cost = b.role === 'toolbar' && Math.abs(b.rect.y - l.rect.y) <= 24 ? Math.abs(b.rect.x - l.rect.x) / 1440 + 0.5 * Math.abs(b.rect.y - l.rect.y) / H : pos(b, l)
 			if (!!b.record !== !!l.record) cost += 0.15
+			// An open menu is not the row it opened from: a popup pairs by position only with a popup.
+			if (!!b.popup !== !!l.popup) continue
 			if (b.title && l.title && CARDLIKE.has(b.role)) cost += 0.12
 			// Two cards with different titles are a pair only as near neighbours or in the same grid slot (a board column
 			// titled by its data); a titled card and an untitled one only within a card's height of each other.
@@ -114,7 +116,7 @@ function flatten (obj, prefix = '', out = {}) {
 	for (const [k, v] of Object.entries(obj)) flatten(v, prefix ? `${prefix}.${k}` : k, out)
 	return out
 }
-const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions|belowFrame)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
+const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions|belowFrame|popup)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
 // Properties whose value follows the data (row counts, text length), reported but never flagged.
 const DATA = /^rect\.h$|^pages$|^cell\.background$|^head\.background$/
 // Card padding and gap depend on where the DOM puts its padding (card vs header vs body); the effective insets

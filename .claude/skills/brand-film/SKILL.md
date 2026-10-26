@@ -1,192 +1,176 @@
 ---
 name: brand-film
-description: "Make a short Conduction or ConNext motion film (social reel, product explainer) in code, from storyboard to rendered MP4 with sound. Covers the context pack (brand, product truth, real app icons, references), three storyboard variants presented to the user as an artifact with one still frame per scene, building scenes on the time-driven engine in preview/films/_lib, director notes, the brand-rule and voice review, scoring, rendering and the sources ledger. Trigger on 'make a film', 'motion graphics video', 'social video for <app>', 'product explainer video', 'showreel', 'maak een filmpje', 'animatie voor LinkedIn'."
+description: "The production side of a Conduction film: the context pack, one storyboard per direction (an audience and a use of the app), the modular film (shared opening, body, Built on Nextcloud, install board), the app and audience film templates, director notes mapped to engine changes, the brand, voice and mute reviews, the sources ledger, and getting slides and videos onto identity.conduction.nl/movies. Use it with the film skill, which holds the motion method. Trigger on 'make a film', 'motion graphics video', 'social video for <app>', 'product explainer video', 'storyboard for <app>', 'a film for <audience>', 'showreel', 'maak een filmpje', 'animatie voor LinkedIn'."
 ---
 
 # brand-film
 
-> The [film](../film/SKILL.md) skill holds the motion method (laws, gates, grid, motion tokens,
-> kinetic type, sound, review rubric). Use both. Where they differ, for example "land it harder"
-> below, which no longer means `outBack` (the no-pop rule), the film skill and the bible win.
+Two skills make a film. The [film](../film/SKILL.md) skill is the motion method: the five laws, the
+gated workflow, the grid, the motion tokens, kinetic type, sound, variants and the review rubric.
+This skill is the production side: what goes into a film, how it is put together from shared pieces,
+how a storyboard gets approved, and where everything is recorded.
 
-A film is a web page whose every frame is a pure function of time. The engine in
-[`preview/films/_lib/`](../../../preview/films/_lib/) draws it, the tools in
-[`scripts/films/`](../../../scripts/films/) capture, score and encode it, and each
-film lives in `preview/films/<slug>/`, published on `identity.conduction.nl/films/<slug>/`.
-
-The first film is [`preview/films/connext/`](../../../preview/films/connext/). Copy
-its structure for every product film that follows.
+[BIBLE.md](../../../preview/films/BIBLE.md) holds every decision Ruben has made about our films. Read
+it before a storyboard. Later rounds supersede earlier text in the same file: the opening sections
+describe the first ConNext film, and rounds 4 to 31 changed much of it (the closing, the install
+board, "free", the current line). Where this skill, the film skill and the bible disagree, the bible's
+latest round wins and the drift is a finding.
 
 ## Why it works this way
 
-Everyone has the same model. What makes a film look like ours, and look made, is the
-context it is given and the checkpoints before anything moves. Without them the
-output falls back to the default look: centred text, a gradient, everything fading
-in, one idea stretched over fifteen seconds. Our brand bans the gradient outright;
-this process bans the rest.
+Everyone has the same model. What makes a film look like ours, and look made, is the context it is
+given and the checkpoints before anything moves. Without them the output falls back to the default
+look: centred text, a gradient, everything fading in, one idea stretched over fifteen seconds. Our
+brand bans the gradient outright; this process bans the rest.
+
+## What a film is made of
+
+Every film is modular (bible round 4). Four pieces, played in this order:
+
+| Piece | Layer | Lives in | Notes |
+|---|---|---|---|
+| Conduction opening | brand | [`_lib/scenes/opening.js`](../../../preview/films/_lib/scenes/opening.js) | 3 bars, the same sting in front of every film. Never voiced. |
+| Body | app | `preview/films/<slug>/film.js` | the film's own scenes. A product film opens on a question, "What if ...?" (NL "Wat als ...?"), with no answer card; the proofs answer it (rounds 15 and 19). |
+| Built on Nextcloud | brand | [`_lib/scenes/closing.js`](../../../preview/films/_lib/scenes/closing.js) `builtOnScene` | the film's app is the orange lead cell; the Nextcloud apps flip in and connect; "Works with <app>" rolls the name. Never voiced. |
+| Install board | brand | `closing.js` `installScene` | "Install it" / "Use it" / "Own it", the orange landing on "Own it", then the open source line. Never voiced. |
+
+Reserve `BUILT_ON_DUR` and `INSTALL_DUR` from `closing.js` for the two closing pieces. `legacy: true`
+draws the round-6 pieces, so old masters stay reproducible; never use it for a new film.
+
+The body comes from one of two templates:
+
+- **App film** ([`_lib/appfilm.js`](../../../preview/films/_lib/appfilm.js)): direction C, "proof". Slots
+  with a layer each: the hook and the proofs (**app**, drawn per app), one **general** scene every app
+  shares (data layer, notifications, flows or the assistant, from
+  [`_lib/scenes/general.js`](../../../preview/films/_lib/scenes/general.js), filled with this app's
+  content), and the brand outro. `appFilm(content)` returns `{ meta, boards }`.
+- **Audience film** ([`_lib/audiencefilm.js`](../../../preview/films/_lib/audiencefilm.js)): one app told
+  to one audience. The app-film body with the promise first and the shared pieces round it.
+  `audienceFilm({ ...content, audience, promise, techniques })`.
+
+A film that is not about one app (the ConNext film, the archiving film) writes its body by hand on the
+same engine and still closes with Built on and the install board, unless the bible says otherwise for
+that film.
 
 ## The process
 
-Six steps. Do not skip one because the request says "just make a video".
+Seven steps. Do not skip one because the request says "just make a video". The gates are the film
+skill's; this lists what each step produces.
 
 ### 1 · Build the context pack
 
-Before any storyboard, collect and write down (in the film's `sources.json`):
+Before any storyboard, collect and write down, in the film's `sources.json`:
 
 | Input | Where it comes from | Rule |
 |---|---|---|
-| Brand | `tokens.css`, `brand/assets/`, [README](../../../README.md), this repo's [SKILL.md](../../../SKILL.md) | Tokens only. Marks are loaded as symbols, never redrawn. |
-| App icons | `brand/assets/apps/glyphs/<id>.svg`, taken from each app's `img/app.svg` on its **development** branch | Check the app's `<id>` in `appinfo/info.xml` first. Names move per app. |
-| Product truth | the app's `info.xml` summary, its docs, the identity `products` and `slogans` pages | Every on-screen claim is shipped today and has a source. No invented numbers. |
-| Real UI | the design system's own mock components: `preview/components/app-mock.html`, `widget-mock`, `sidebar-mock`, `flow-mock`, `mock-scene`, `platform-overview` | Never invent a product UI. Rebuild these faithfully in SVG, or embed their markup in a `foreignObject`. |
+| What the app does | `node scripts/films/app-facts.mjs <app> --screens 1` (the digest of `/capabilities` and `/screens`) | Claims come from `built` capabilities. Bible round 7 lets release films claim spec'd features; say so in the brief and get Ruben's yes. |
+| Positioning | `positioning/<app>.json` in market-intelligence (each USP's `line`, `scene` and `confidence`) | Never an "only we" claim on a USP with `confidence: thin`. |
+| Brand | `tokens.css`, `_lib/brand.js`, `brand/assets/`, this repo's [SKILL.md](../../../SKILL.md) | Colours from `C.*`, never raw hex. Marks are loaded as symbols, never redrawn. |
+| App icons | `brand/assets/apps/glyphs/<id>.svg`, loaded by `loadBrandAssets` as `g-<id>` | Check the app's `<id>` in `appinfo/info.xml` first. Names move per app. |
+| Real UI | the screen ids from `app-facts.mjs` (`/screens/board.html?id=<app>/<Board>`), redrawn with the atoms in [`_lib/ui.js`](../../../preview/films/_lib/ui.js) | Never paste a screenshot, never invent a product UI. |
 | References | 1 to 3 reference films, named as a style ("Swiss kinetic type, masked rise, hard cuts on the beat") | A named reference beats a described one. Record the URL and what is borrowed. |
-| Platform | the social specs and safe zones in the film's `sources.json` | Design for mute. Text inside the unified safe zone. |
 
-### 2 · Three storyboard variants
+### 2 · One storyboard per direction
 
-Ask for three directions that differ in kind, not in colour. For the ConNext film they
-were: one continuous camera move through the honeycomb; kinetic type that states the
-problem then answers it; product proof with UI push-ins and hard cuts.
+A direction is one audience and one use of the app: pipelinq for contact centres, pipelinq for sales
+teams. Each has its own storyboard module at `preview/films/<app>/boards/<direction>/board.js`,
+exporting `meta` and `boards`: one key frame per scene, drawn with the same engine as the film. Copy
+[`_template/boards/demo/board.js`](../../../preview/films/_template/boards/demo/board.js) to start.
+Open it at `preview/films/board.html?film=<app>&v=<direction>` (board i sits at t = i + 0.5).
 
-Each variant is a module `preview/films/<slug>/boards/<V>/board.js` exporting `meta`
-and `boards`: one key frame per scene, drawn with the same engine as the film. Render
-the stills:
+For a new kind of film, draw three style frames that differ in kind, not in colour (the film skill's
+step 3). For the ConNext film they were: one continuous camera move through the honeycomb; kinetic
+type that states the problem then answers it; product proof with UI push-ins and hard cuts.
 
-```bash
-cd scripts/films && npm install   # once
-node film.mjs stills --root <repo> --page 'preview/films/<slug>/boards/board.html?v=A' --times 0.5,1.5,2.5 --outdir <review>/A --scale 0.5
-```
+### 3 · Show the storyboard
 
-### 3 · Present the storyboard as an artifact
+The storyboard is approved before anything animates. Fixing a still costs seconds; fixing a render
+costs a render.
 
-Publish one storyboard page with the three variants side by side: per scene the still,
-its bar and beat timing, the on-screen words, the motion in camera language, the sound
-cue and the reference it borrows from. The page declares the `db` capability so the
-user can pick a variant and leave a note per scene; read both back with `ArtifactData`
-before building. Fixing a still costs seconds. Fixing a render costs a render.
+- **On /movies.** `node scripts/films/board-stills.mjs --root <repo> --only <slug>` draws the slides,
+  `node scripts/films/movies-index.mjs` adds them to the overview. Every direction shows there from its
+  first storyboard.
+- **For notes and a pick.** When Ruben should choose between variants or leave a note per scene, build
+  a review page with `node scripts/films/storyboard.mjs --variants <json> --film <json> --out <dir>` and
+  publish it as an artifact with the `db` capability; read the pick and the notes back with
+  `ArtifactData`. An artifact belongs to the account that published it, so keep `<dir>` (it is the
+  record) and write the link into `sources.json`. After an account switch, republish from `<dir>`.
 
-Do not build before the user has picked.
+Do not build before the storyboard is approved.
 
-Build the page with `node scripts/films/storyboard.mjs --variants <json> --film <json> --out <dir>`
-(`film.mode: 'approve-each'` for app films, where each film is approved on its own; add a
-`layer` and, for shared scenes, a `module` to every scene, and a `film.divide` table). An
-artifact belongs to the account that published it: after an account switch the old link stops
-working for the new account. Keep the generated `<dir>` (it is the record), republish it as a
-new artifact from a fresh folder, and write the new link into the film's `sources.json`.
+### 4 · Build the approved direction
 
-### 4 · Build the picked variant
-
-The approved stills become the scenes' resting frames; animation is added around
-them. Work on the beat grid (see *The grid*). One scene per file under
-`preview/films/<slug>/scenes/` when a film has more than a handful of scenes.
+The approved stills become the scenes' resting frames; animation is added around them. The film page
+is `preview/films/<slug>[/<direction>]/index.html` with its `film.js`. Times come from the film's
+timeline and the grid ([`_lib/timeline.js`](../../../preview/films/_lib/timeline.js)), moves from the
+motion tokens ([`_lib/motion.js`](../../../preview/films/_lib/motion.js)), seams from the transitions
+registry ([`_lib/transitions.js`](../../../preview/films/_lib/transitions.js)). Keep every on-screen
+string in a `{ nl, en }` table and set `film.langs`, so the four variants are a lookup.
 
 ### 5 · Director notes
 
-Take notes in camera words and map them to engine changes. Vague notes ("make it pop")
-get random changes; these get exact ones:
+Take notes in camera words and map them to engine changes. Vague notes ("make it pop") get random
+changes; these get exact ones:
 
 | Note | Engine change |
 |---|---|
-| "push in on X" | scale the scene's camera group about X's centre, `ease.brand` |
-| "pull out" / "reveal" | the same, scale down from a close start |
-| "hard cut here" | end the scene on the beat with no `post` overlap and no exit tween |
-| "match cut to Y" | end scene N with a shape at Y's exact position and size in scene N+1 |
-| "whip to" | 4 to 6 frame move with `ease.snap`, render with `--blur 4` |
-| "hold N beats" | extend the resting frame by N × 60/bpm seconds, shift later scenes |
-| "slow every zoom to 0.7x" | multiply every camera scale segment's duration by 1/0.7 |
-| "on the beat" | move the event to the nearest `film.beat(n)` |
+| "push in on X" | scale the scene's camera group about X's centre with the `camera` token, `durationFor(px, 'camera')` |
+| "pull out" / "reveal" | the same, scaling down from a close start |
+| "hard cut here" | end the scene on the beat with no overlap and no exit tween |
+| "match cut to Y" | end scene N with a shape at Y's exact place, size and colour in scene N+1 |
+| "whip to" | the `whip` token into the cut, `arrive` out of it; render with `--blur 4` |
+| "hold N beats" | extend the resting frame by N beats on the timeline; later scenes move with it |
+| "slow every zoom to 0.7x" | multiply every camera segment's duration by 1/0.7, snapped to whole frames |
+| "on the beat" | move the event to the nearest `grid().beatAt(n)` |
 | "stagger tighter" | reduce the `stagger()` spread |
-| "land it harder" | shorter in-duration, `outBack` or a spring with lower `zeta`, add a tick or kick cue |
+| "land it harder" | the `contact` token (it stops dead on the contact frame) and a dry click on that frame; never a bounce or an overshoot |
+| "no transition here" | the hex flip wave, the registry's fallback |
 
-### 6 · Review, score, render, record
+### 6 · Review
 
-- **Brand review** of the contact sheet (`film.mjs sheet`): one orange per scene, no
-  gradient, no rotated or flat-top hex, solid fills, marks unaltered, 3 to 4 hex
-  families per scene, Next in ConNext is Nextcloud blue.
-- **Voice review** of every on-screen word with the hydra `writing` skill in REVIEW mode:
-  no em-dashes, sentence case, one claim per line, banned words (including
-  "ecosystem" and "platform that"), CTA exactly *Install from the Nextcloud app store*.
-- **Mute review**: each line stays on screen for its reading time; the story reads
-  with sound off; the first frame already says something (it is the thumbnail).
-- **Score**: `film.mjs cues` then `score.mjs` (see *Sound*).
-- **Render** the master and the feed cut, and write every source and decision into
-  `sources.json`.
+The film skill's review loop scores the film. On top of it, three checks that are about our brand:
 
-## House rules decided for films (Ruben, 2026-09-27)
+- **Brand review** of the contact sheet (`film.mjs sheet`): one orange per scene, orange as text or a
+  shape and never a box behind text, no terracotta, no gradient, pointy-top hexes that flip in and
+  never rotate or pop, one solid honeycomb and every hex on a cell, used screens gone before the next
+  camera move, marks unaltered, the small mark above a caption a section title.
+- **Voice review** of every on-screen word with the hydra `writing` skill in REVIEW mode: sentence
+  case, no em-dashes, no full stop at the end of a line, one claim per line, every caption clear on
+  its own (round 18), the bible's banned words. Never "free" or "gratis" (say "100% open source"),
+  never a seat-fee or flat-cost claim, no app counts. The closing words come from `closing.js`; do not
+  retype them.
+- **Mute review**: each line stays on screen for its reading time; the story reads with the sound off;
+  the first frame of the body already says something.
 
-- **16:9 landscape, 1920 x 1080.** Text safe box x 120 to 1800, y 96 to 930 (the bottom
-  150 px hold the player's controls). Type sits in a left column, picture and UI on the right.
-  A vertical cut is a separate decision, not the default.
-- **No terracotta (brown).** Not as a ground, a hex or a file pip. App hexes are cobalt.
-- **Orange is text, never a box behind text.** The accent word and the install call are
-  KNVB orange at headline size (64 px or more, weight 700): 3.0:1 on cobalt, 5.9:1 on
-  cobalt-900. Black or white text in an orange box reads dated. Orange shapes are still fine,
-  and orange text counts as the scene's one orange.
-- **The word Nextcloud stays white** in copy. Nextcloud blue (#0082C9) is 2.2:1 on cobalt;
-  it stays on the "Next" of the ConNext wordmark and on the workspace hex.
+### 7 · Render, deliver, record
 
-## Which direction for which film
+Render the four variants and publish them on [/movies](https://identity.conduction.nl/movies/) as the
+film skill describes (Variants, Publish). Then complete `sources.json`.
 
-Decided by Ruben on 2026-09-27, after the first three-variant storyboard:
+## Sources ledger
 
-| Film | Direction | Why |
-|---|---|---|
-| ConNext film (the whole set of apps) | **A · One take**: one unbroken camera move through the honeycomb, pushing into one app's UI and gliding to the next | Apps working together is a move from one cell to the next; one camera shows it without a cut |
-| Every app film (Pipelinq, Learniq, ...) | **C · Proof**: true product moments shown as the app's UI, each carrying the app hexes behind it, joined by hex match cuts | An app film has to show the product working; C shows it most plainly on a phone |
-
-An app film is built on the shared template in `preview/films/_lib/appfilm.js`: fixed slots on
-the grid, each with a layer. **App** slots (the hook, the proof) are drawn per app.
-**General** slots show the capabilities every app shares (the common data layer, flows, AI)
-through shared scene modules in `_lib/scenes/general.js`, filled with the app's own content.
-**Brand** slots (the outro) are the same frame for every app with its own glyph and name.
-Storyboards for app films carry a `layer` per scene, and the review page shows the divide.
-
-## The grid
-
-A film runs on a musical grid so cuts land on beats. 128 BPM makes 15 seconds exactly
-8 bars of 1.875 s (a beat is 0.46875 s). Put scene changes on beats and the big moments
-on bars. `film.beat(n)` and `film.bar(n)` give the times.
+`preview/films/<slug>/sources.json` records, for every film: each asset path and the repo ref it came
+from, each on-screen claim and its source (a capability, a positioning USP, a bible round), each
+reference and what was borrowed, each brand rule that decided something, the storyboard and review
+artifact links, and each deviation (for the first ConNext film: English only).
 
 ## Engine
 
 | File | What it gives you |
 |---|---|
-| `_lib/core.js` | `ease` (house curves `brand`, `snap`, `exit`), `bezier`, `spring`, `seg`, `envelope`, `stagger`, seeded `rand`, colour `mix`, pointy-top `hexPath`, `axialToPixel`, `axialRing` |
-| `_lib/stage.js` | `Film` (scenes, cues, beat grid, safe box, player), `el`/`set`/`tf`/`tfAbout`, `textBlock` (per-word or per-character text in per-line clip boxes, `*accent*` markup), `loadFonts`, `loadSymbols` |
-| `_lib/brand.js` | colour constants mirrored from `tokens.css`, font files |
-| `_lib/assets.js` | `loadBrandAssets(defs)`: every app glyph `g-<id>`, Nextcloud bundled apps `nc-*`, `nextcloud-logo`, `avatar-conduction`, both wordmarks |
+| `_lib/core.js` | `ease` (house curves), `bezier`, `spring`, `seg`, `envelope`, `stagger`, seeded `rand`, colour `mix`, pointy-top `hexPath`, `axialToPixel`, `axialRing` |
+| `_lib/motion.js` | the named motion tokens, `durationFor`, `withinCeiling`, `rangeOk` |
+| `_lib/timeline.js` | `grid()` (bars, beats, snapping), `timeline()`, `holdFor`, `wordCount` |
+| `_lib/stage.js` | `Film` (scenes, cues, music, player), `variant()` for `?lang` and `?voice`, `el`/`set`/`tf`/`tfAbout`, `textBlock` with `*accent*` markup, `loadFonts`, `loadSymbols` |
+| `_lib/transitions.js` | the seam registry, from match cut to the hex flip wave, with cues and caption rules |
+| `_lib/ui.js`, `_lib/atoms/` | the product UI vocabulary: AppMock, WidgetMock, SidebarMock, FlowMock and record atoms in SVG |
+| `_lib/brand.js`, `_lib/assets.js` | colour constants mirrored from `tokens.css`, fonts, and `loadBrandAssets(defs)`: `g-<id>`, `nc-*`, `nextcloud-logo`, `avatar-conduction`, the wordmarks |
+| `_lib/appfilm.js`, `_lib/audiencefilm.js` | the two body templates |
+| `_lib/scenes/` | `opening.js`, `closing.js`, `general.js`, `kinetic.js` |
+| `_lib/current.js` | retired (round 28): the current line draws nothing; do not build on it |
 
-Rules the engine enforces by omission: there is no rotation helper and no gradient
-helper. Do not add them.
+The engine has no rotation helper and no gradient helper, on purpose. Do not add them.
 
-A page exposes `window.__render(t)`, `window.__ready` and `window.__film`. `?capture`
-hides the player; `?t=3.2` opens at a time; `?safe` shows the safe zones.
-
-## Tools
-
-```bash
-cd scripts/films
-node film.mjs render --root <repo> --page preview/films/<slug>/index.html --out <slug>.mp4 --blur 4 --audio mix.wav
-node film.mjs sheet  --root <repo> --page preview/films/<slug>/index.html --every 0.25 --out sheet.png
-node film.mjs cues   --root <repo> --page preview/films/<slug>/index.html --out cues.json
-node score.mjs --cues cues.json --out mix.wav --spectrum mix.png
-```
-
-`render` splits frames over parallel pages, optionally averages sub-frames for motion
-blur, and encodes H.264 High with `+faststart`. `--scale 0.5` renders a quick proof.
-
-## Sound
-
-Sound is designed for the viewer who turns it on; the film never depends on it. The
-score is synthesised in code (`scripts/films/lib/synth.mjs`), so there is no licence to
-track. A film declares a music bed (`film.music`: chords, bass, which parts play in which
-bars) and sound cues (`film.cue(t, kind, params)`) next to the motion that causes them,
-so every hit lands on its frame. `score.mjs` mixes, ducks the bed under kicks and
-impacts, and normalises to the social loudness target.
-
-## Sources ledger
-
-`preview/films/<slug>/sources.json` records, for every film: each asset path and the
-repo ref it came from, each on-screen claim and its source, each reference and what was
-borrowed, each brand rule that decided something, and each deviation (for the ConNext
-film: English only, where the brand asks for NL and EN).
+A page exposes `window.__render(t)`, `window.__ready` and `window.__film`. `?capture` hides the
+player, `?t=3.2` opens at a time, `?safe` shows the safe zones, `?lang=nl|en` and `?voice=0` pick the
+variant.

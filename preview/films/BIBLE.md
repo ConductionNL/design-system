@@ -498,3 +498,6 @@ hats, claps) plus cues: tick (hex lands), pluck (musical UI note), whoosh (move)
 - **Without the voice-over, the text stays.** The films work on their written text, so the version without voice-over keeps every caption; only the spoken track leaves.
 - **Claims come from the app's own facts.** What the app can do comes from the capabilities (`/capabilities`, data in `preview/screens/capabilities.json`), what it looks like from its screens (`/screens`, data in `preview/screens/screens.json`). Ask them through `scripts/films/app-facts.mjs`; never read the files whole.
 - **Every film on identity.conduction.nl/movies.** One overview with every film, per direction (an audience and a use: pipelinq for contact centres, pipelinq for sales teams) its slides, whether or not the film is rendered yet, plus the videos to watch and download and the film kit as a zip. Ruben's voice model, recordings and training data are never published; only generated lines are.
+
+## Round 32 (2026-10-26, Ruben): the install board's last line
+- **"The code stays open source, your data stays yours"** (NL "De code blijft open source, je data blijft van jou"), as `_lib/scenes/closing.js` renders it. This replaces round 22's "the data stays yours".

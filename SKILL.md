@@ -166,9 +166,9 @@ For one-off shapes that don't fit any class, inline-style with tokens. **If you 
 
 ## Films
 
-Motion films (social reels, product explainers) are built in code, frame by frame, and live in [`preview/films/<slug>/`](./preview/films/), published at `identity.conduction.nl/films/<slug>/`. The engine is [`preview/films/_lib/`](./preview/films/_lib/); the capture, scoring and storyboard tools are in [`scripts/films/`](./scripts/films/).
+Motion films (social reels, product explainers) are built in code, frame by frame, and live in [`preview/films/<slug>/`](./preview/films/), listed with their slides and videos on [identity.conduction.nl/movies](https://identity.conduction.nl/movies/). The engine is [`preview/films/_lib/`](./preview/films/_lib/); the capture, scoring and storyboard tools are in [`scripts/films/`](./scripts/films/).
 
-Follow the [`brand-film`](./.claude/skills/brand-film/SKILL.md) skill for every film: context pack, three storyboard variants presented as an artifact with one still per scene, the user's pick, the build, director notes, review, score and render. Each film keeps a `sources.json` ledger of every asset, claim, reference and decision.
+Follow the [`brand-film`](./.claude/skills/brand-film/SKILL.md) skill for every film: the context pack, one storyboard per direction (an audience and a use of the app), the modular film (shared opening, body, Built on Nextcloud, install board), the build, director notes and the brand review. Each film keeps a `sources.json` ledger of every asset, claim, reference and decision.
 
 The [`film`](./.claude/skills/film/SKILL.md) skill is the motion design method that goes with it: the five laws, the gated workflow, the 128 BPM / 24 fps grid, the named motion tokens in `_lib/motion.js`, one timeline per film (`_lib/timeline.js`), kinetic type timed to a voice (`_lib/scenes/kinetic.js`), the review rubric and `scripts/films/grid-check.mjs`. The public page is the Film section of the brand kit, [`preview/identity/film/`](./preview/identity/film/index.html).
 

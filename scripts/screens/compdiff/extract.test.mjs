@@ -876,3 +876,93 @@ test('a KPI tile\'s big figure is a number on both sides, whatever its digits', 
 	assert.equal(await s('1.284', '9', '12'), await s('76', '9', '12'))
 	assert.equal(await s('76', '9', '12'), 'meta / number')
 })
+
+test('a switch track with its knob leads the row it sits in, as an icon does', { skip }, async () => {
+	const card = (sw) => `<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px"><h2 style="margin:0 0 12px;font-size:17px">AI-ondersteunde verwerking</h2>
+		<label style="display:flex;align-items:center;gap:10px">${sw}<span>Samenvattingen voorstellen</span></label></section>`
+	const track = '<span style="position:relative;width:38px;height:22px;border-radius:11px;background:#3669a5"><span style="position:absolute;right:3px;top:3px;width:16px;height:16px;border-radius:8px;background:#fff"></span></span>'
+	const r = await measure(card(track))
+	assert.equal(r.components.find((c) => c.title === 'AI-ondersteunde verwerking').content.firstRowInsetLeft, 23)
+})
+
+test('an initials tile leads its row, set with 16px corners or with 50%, level with the name or centred', { skip }, async () => {
+	const card = (tile, align) => `<section style="position:absolute;left:292px;top:600px;width:800px;border:1px solid #ddd;padding:20px 22px"><h2 style="margin:0 0 12px;font-size:17px">Notities</h2>
+		<div style="display:flex;gap:12px;align-items:${align}">${tile}<div><b style="font-size:15px">Pieter Jansen</b><div style="font-size:13px;color:#5e6168">vandaag 09:12</div></div></div></section>`
+	const tile = (r) => `<span style="flex:none;width:32px;height:32px;border-radius:${r};background:#eaf0f7;color:#234a78;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">PJ</span>`
+	const inset = async (r, a) => (await measure(card(tile(r), a))).components.find((c) => c.title === 'Notities').content.firstRowInsetLeft
+	assert.equal(await inset('16px', 'flex-start'), 23)
+	assert.equal(await inset('50%', 'center'), 23)
+})
+
+test('a matrix head\'s text inset is read from the table\'s edge, with or without row elements', { skip }, async () => {
+	const heads = ['Gevolg A: gering', 'Gevolg B: aanzienlijk'].map((h) => `<span role="columnheader" style="padding:6px">${h}</span>`).join('')
+	const board = await measure(`<div role="table" style="position:absolute;left:315px;top:399px;width:760px;display:grid;grid-template-columns:170px repeat(2,1fr);gap:4px"><span></span>${heads}<span role="rowheader" style="padding:10px 6px">Gedrag 1</span><span role="cell">Herstelactie</span><span role="cell">Waarschuwing</span></div>`)
+	const live = await measure(`<div role="table" style="position:absolute;left:315px;top:399px;width:760px"><div role="row" style="display:grid;grid-template-columns:170px repeat(2,1fr);gap:4px"><span role="columnheader"></span>${heads}</div><div role="row" style="display:grid;grid-template-columns:170px repeat(2,1fr);gap:4px"><span role="rowheader" style="padding:10px 6px">Gedrag 1</span><span role="cell">Herstelactie</span><span role="cell">Waarschuwing</span></div></div>`)
+	const t = (r) => r.components.find((c) => c.role === 'table')
+	assert.equal(t(board).head.textInsetLeft, t(live).head.textInsetLeft)
+	assert.equal(t(board).head.textInsetLeft, 180)
+})
+
+test('a record card\'s line under its title is its first row: the footer a stretched card pins down is not', { skip }, async () => {
+	const card = (h) => `<a href="#" style="background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px;height:${h}px;box-sizing:border-box;text-decoration:none;color:#1b1c1d">
+		<strong style="font-size:17px">Bezwaar parkeerboete</strong><span style="font-size:14px;color:#5e6168">Bezwaar · R. Yilmaz</span>
+		<span style="margin-top:auto;display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid #eef0f3"><span style="padding:3px 10px;border-radius:12px;background:#e8e6f6;font-size:13px">In behandeling</span><span>Termijn 8 nov</span></span></a>`
+	const deck = (h) => `<div style="position:absolute;left:292px;top:400px;display:grid;grid-template-columns:repeat(3,265px);gap:20px">${card(h)}${card(h)}${card(h)}</div>`
+	const gap = async (h) => (await measure(deck(h))).components.find((c) => c.role === 'card').content.gapBelowTitle
+	assert.equal(await gap(210), await gap(250))
+	assert.ok(await gap(210) < 16)
+})
+
+test('the column holding the page title is the page, not a card, when a side panel narrows it', { skip }, async () => {
+	const r = await measure(`<div style="position:fixed;inset:68px 0 0 264px;background:#fff"><main style="position:absolute;left:0;top:0;width:816px;height:820px;background:#f5f6f8;padding:24px 28px;box-sizing:border-box"><h1 style="margin:0">Alle zaken</h1><section style="margin-top:40px;background:#fff;border:1px solid #ddd;height:300px"><h2>Lijst</h2><p>rij</p></section></main></div>`)
+	assert.deepEqual(r.components.filter((c) => c.role === 'card').map((c) => c.title), ['Lijst'])
+})
+
+test('a row of 38px chips is chips, as a row of 36px chips is: no toolbar without other controls', { skip }, async () => {
+	const row = (h) => `<div style="position:absolute;left:292px;top:230px;width:760px;display:flex;gap:8px">${['Alles', 'Mijn zaken', 'Termijn deze week'].map((t) => `<button style="height:${h}px;border-radius:${h / 2}px;border:1px solid #ccc;padding:0 14px">${t}</button>`).join('')}<button style="height:36px;border-radius:8px">Filter</button></div>`
+	for (const h of [36, 38]) assert.deepEqual((await measure(row(h))).components.filter((c) => c.role === 'toolbar'), [], `chips ${h}px`)
+})
+
+test('a card that runs on past the captured frame is measured on the part inside it', { skip }, async () => {
+	const rows = Array.from({ length: 6 }, (_, i) => `<div style="padding:10px 0;border-top:1px solid #eee"><span>Toestemming gewijzigd</span> <span style="color:#5e6168">${20 + i} okt</span></div>`).join('')
+	const r = await measure(`<section style="position:absolute;left:1112px;top:700px;width:300px;border:1px solid #ddd;padding:12px 22px"><h2 style="margin:0 0 10px;font-size:17px">Historie</h2>${rows}<button style="margin-left:-6px;margin-top:12px;padding:0;border:0;background:none">Alles weergeven (7)</button></section>`)
+	const c = r.components.find((x) => x.title === 'Historie')
+	assert.equal(c.content.minInsetLeft, 23)
+})
+
+test('a notice band is a card whether its words take one line or two', { skip }, async () => {
+	const band = (text) => `<div role="note" style="position:absolute;left:315px;top:685px;width:754px;box-sizing:border-box;padding:10px 42px;background:#eaf0f7;border-radius:8px;font-size:14px;line-height:1.5"><strong>Advies: last onder dwangsom</strong> ${text}</div>`
+	for (const text of ['met een begunstigingstermijn.', 'met een begunstigingstermijn van vier weken, volgens de matrix Bouw- en woningtoezicht 2026 en de afspraken met de omgevingsdienst.']) {
+		const r = await measure(band(text))
+		assert.ok(r.components.some((c) => c.role === 'card' && c.title === 'Advies: last onder dwangsom'), text)
+	}
+})
+
+test('a record card\'s number line is its first row whether it sits in the title\'s wrapper or beside it', { skip }, async () => {
+	const card = (head) => `<article style="background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px">${head}
+		<div style="display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid #eef0f3"><span>Pieter Jansen</span><span>8 nov</span></div></article>`
+	const deck = (head) => `<div style="position:absolute;left:300px;top:300px;display:grid;grid-template-columns:repeat(3,250px);gap:20px">${card(head)}${card(head)}${card(head)}</div>`
+	const t = '<a href="#" style="font-size:17px;font-weight:700;text-decoration:none;color:#1b1c1d">Verlichting fietspad Lindelaan</a>', n = '<span style="font-size:14px;color:#5e6168">2026-0110 · Woo-verzoek</span>'
+	const c = async (head) => (await measure(deck(head))).components.find((x) => x.role === 'card')
+	const wrapped = await c(`<div style="display:flex;flex-direction:column;gap:2px">${t}${n}</div>`)
+	const flat = await c(`<h3 style="margin:0">${t}</h3>${n}`)
+	assert.ok(wrapped.content.gapBelowTitle < 16 && flat.content.gapBelowTitle < 16, `wrapped ${wrapped.content.gapBelowTitle}, flat ${flat.content.gapBelowTitle}`)
+	assert.equal(wrapped.header.separator, flat.header.separator)
+})
+
+test('a card wholly below the frame keeps its rows, measured as a counterpart', { skip }, async () => {
+	const r = await measure('<section style="position:absolute;left:300px;top:1200px;width:700px;border:1px solid #ddd;padding:20px"><h2 style="margin:0 0 8px">Knelpuntenranglijst</h2><p style="margin:0;color:#5e6168;font-size:14px">Waar zaken wachten</p><table><tr><td>a</td></tr></table></section><section style="position:absolute;left:300px;top:1500px;width:700px;border:1px solid #ddd;padding:20px"><h2 style="margin:0 0 8px">Doorlooptijd</h2><p style="margin:0;color:#5e6168;font-size:14px">Per behandelaar</p><table><tr><td>b</td></tr></table></section><section style="position:absolute;left:300px;top:1800px;width:700px;border:1px solid #ddd;padding:20px"><h2 style="margin:0 0 8px">Derde</h2><p>x</p></section>')
+	const c = r.components.find((x) => x.title === 'Knelpuntenranglijst')
+	assert.ok(c.belowFrame && c.content && c.content.gapBelowTitle !== undefined)
+})
+
+test('a settings section\'s marked description stays its description in a column of sections', { skip }, async () => {
+	const sec = (t) => `<div class="settings-section" style="border:1px solid #ddd;padding:20px 24px;margin-bottom:16px"><h2 style="margin:0 0 6px;font-size:17px">${t}</h2><p class="settings-section__desc" style="margin:0 0 12px;font-size:14px;color:#5e6168">Uitleg bij ${t}.</p><p style="margin:0">Inhoud</p></div>`
+	const r = await measure(`<div style="position:absolute;left:316px;top:200px;width:1073px">${sec('Beslistabellen (DMN)')}${sec('Archivering')}${sec('Zoekindex')}</div>`)
+	const c = r.components.find((x) => x.title === 'Beslistabellen (DMN)')
+	assert.ok(c.record, 'a column of sections is a deck')
+	assert.ok(c.content.gapBelowTitle > 20, `gap ${c.content.gapBelowTitle}`)
+	// The board writes the same sections with a plain muted line: still a description.
+	const plain = await measure(`<div style="position:absolute;left:316px;top:200px;width:1073px">${['A', 'B', 'C'].map((t) => sec(t).replace(' class="settings-section__desc"', '')).join('')}</div>`)
+	assert.ok(plain.components.find((x) => x.title === 'A').content.gapBelowTitle > 20)
+})

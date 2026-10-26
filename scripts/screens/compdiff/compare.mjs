@@ -75,7 +75,8 @@ export function pairComponents (board, live, H) {
 			// An open menu is not the row it opened from: a popup pairs by position only with a popup.
 			if (!!b.popup !== !!l.popup) continue
 			// A table in a titled card is that card's table: it pairs with a table in a card of the same title.
-			if (b.role === 'table' && b.inCard && l.inCard && titleSimilarity(b.inCard, l.inCard) < 0.5) continue
+			// Two cards of one family ("StUF-ZKN-endpoints", "StUF-ZKN-auditlog") share words, not a title.
+			if (b.role === 'table' && b.inCard && l.inCard && titleSimilarity(b.inCard, l.inCard) < 0.8) continue
 			if (b.title && l.title && CARDLIKE.has(b.role)) cost += 0.12
 			// Two cards with different titles are a pair only as near neighbours or in the same grid slot (a board column
 			// titled by its data); a titled card and an untitled one only within a card's height of each other.

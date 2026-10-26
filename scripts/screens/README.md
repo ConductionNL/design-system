@@ -42,9 +42,9 @@ For every board:
    | site-ink | #1a1a1a | work-ground | #f5f6f8 |
    | site-muted | #4a4a4a | work-chip | #f0f1f3 |
    | site-border | #d3d8df | work-field | #828a95 |
-   | site-ground | #f4f6f9 | | |
+   | site-ground | #f4f6f9 | buildiq | #c64e0b |
 
-   Every other colour (for example buildiq orange #e2611a) stays as drawn. The school sets are not tokenized.
+   buildiq is the buildiq square's orange: the brand orange darkened to WCAG AA (white icon 4.67:1, edge on the page ground 4.32:1; Ruben, 26 Oct), the same value nextcloud-vue's board look sets. Draw the square with `#c64e0b` and it becomes `var(--sc-buildiq, #c64e0b)`, so a design system can restyle every square in one place. Every other colour stays as drawn. The school sets are not tokenized.
 
    A system built on an NL Design System token set does not type its variables: `python3 scripts/screens/sc_from_thematiq.py <system>` reads thematiq's `css/tokens/<set>.css` (the system's `set`, from the development branch or a path you pass) and writes the roles above from the `--nldesign-*` tokens with the mapping thematiq's `overrides.css` uses for a Nextcloud page; the script records the source under `source` in `design-systems.json`. Such a system also sets `"look": "nldesign"`, which `theme.js` puts on `<html data-sc-look>` and `screens.css` turns into the element layer (squared controls, bold button labels, a visible field edge, underlined prose links, a black focus ring). The Rijkshuisstijl example is the first.
 

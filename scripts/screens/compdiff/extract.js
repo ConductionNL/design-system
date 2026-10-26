@@ -333,12 +333,26 @@ window.__compdiffExtract = function () {
 			left: own.left || Math.min(...pad.map((p) => p.left)), right: own.right || Math.min(...pad.map((p) => p.right)),
 		}
 	}
+	// A popup: a menu, or a card placed over the page (absolute or fixed, stacked with a z-index) with a shadow. The
+	// placing and the shadow may sit on wrappers
+	// (NcActions' popover: an absolutely placed .v-popper__popper around a static .v-popper__inner that draws the card),
+	// so the card and its ancestors up to the nearest placed one are looked at, the card itself included.
+	const popupOf = (card) => {
+		if (card.matches('[role=menu], [role=listbox]')) return true
+		let shadow = false
+		for (let e = card; e && e !== document.body; e = e.parentElement) {
+			const ecs = getComputedStyle(e)
+			if (ecs.boxShadow !== 'none' && !/^rgba\(0, 0, 0, 0\)/.test(ecs.boxShadow)) shadow = true
+			if (/absolute|fixed/.test(ecs.position)) return shadow && ecs.zIndex !== 'auto' && e.getBoundingClientRect().width < VW * 0.5
+		}
+		return false
+	}
 	const describeCard = (card, role) => {
 		const cs = getComputedStyle(card)
 		const cr = card.getBoundingClientRect()
 		const comp = { el: card, role, rect: rect(card), frame: framed(card, cs), depth: 0 }
 		// A menu or a floating panel (placed over the page with a shadow) is a popup: it pairs only with a popup.
-		if (role === 'card' && (card.matches('[role=menu], [role=listbox]') || (/absolute|fixed/.test(cs.position) && cs.boxShadow !== 'none'))) comp.popup = true
+		if (role === 'card' && popupOf(card)) comp.popup = true
 		for (let e = ownerCard(card); e; e = ownerCard(e)) comp.depth++
 		comp.props = {
 			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: seenBorders(cs), borderColor: seenBorderColour(cs),

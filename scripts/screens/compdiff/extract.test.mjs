@@ -811,3 +811,18 @@ test('an open row menu pairs with an open menu, never with a flat row card where
 	assert.ok(!pairs.some((p) => p.board.popup && !p.live.popup))
 	assert.ok(missing.some((c) => c.popup))
 })
+
+test('a menu drawn in a placed popover wrapper is a popup and pairs with the board\'s menu, not with the row it opened from', { skip }, async () => {
+	const row = '<div style="position:absolute;left:1107px;top:379px;width:307px;height:52px;background:#eaf0f7;border-radius:8px;padding:8px"><b>Termijn deze week</b><br><small>Mijn zaken</small></div>'
+	const items = '<button role="menuitem">Bewerken</button><button role="menuitem">Delen</button><button role="menuitem">Verwijderen</button>'
+	// The board draws the menu inside the side panel card; the library mounts it at the end of the body.
+	const board = await measure(`<aside style="position:absolute;right:0;top:68px;width:360px;height:820px;background:#fff;border:1px solid #e4e6ea;box-sizing:border-box"><h2>Alle zaken</h2>${row.replace('position:absolute;', 'position:absolute;margin-left:-1080px;')}<div role="menu" style="position:absolute;left:54px;top:311px;z-index:2;width:264px;height:280px;background:#fff;border:1px solid #e4e6ea;border-radius:10px;box-shadow:0 8px 24px rgba(27,28,29,.16)">${items}</div></aside>`)
+	const live = await measure(row + `<div class="v-popper__popper" style="position:absolute;left:1176px;top:452px;z-index:10000"><div class="v-popper__wrapper"><div class="v-popper__inner" style="width:264px;height:327px;background:#fff;border-radius:8px;box-shadow:0 0 10px rgba(77,77,77,.5)"><div><ul role="menu" style="margin:0;padding:4px">${items}</ul></div></div></div></div>`)
+	const pop = live.components.find((c) => c.role === 'card' && c.rect.x === 1176)
+	assert.ok(pop && pop.popup, JSON.stringify(live.components.map((c) => [c.role, c.rect, c.popup])))
+	const { pairs } = pairComponents(board.components, live.components, 900)
+	assert.ok(pairs.some((p) => p.board.popup && p.live.popup))
+	// A shadowed card in a placed layout column with no stacking order is no popup.
+	const col = await measure('<div style="position:absolute;left:300px;top:100px;width:300px"><div style="height:120px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.1)"><h3>Kolom</h3><p>tekst</p></div></div>')
+	assert.ok(!col.components.find((c) => c.role === 'card').popup)
+})

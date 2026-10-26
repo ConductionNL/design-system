@@ -108,6 +108,8 @@ A deck is three or more sibling cards of the same width (a card wrapped alone in
 
 What starts below the captured frame (the viewport, as tall as the board) is in neither picture, so it is only a counterpart: a table the board draws inside its frame pairs with the same table drawn lower on a taller live page, and a component below the frame that pairs with nothing (the rows of a side panel that scrolls on past the page) is neither missing nor extra.
 
+An open menu or floating panel is a popup: a `role=menu` box, or a card with a shadow on it or on a wrapper up to the nearest absolute or fixed ancestor with a z-index (NcActions mounts its menu in such a wrapper at the end of the body). A popup pairs only with a popup, and its nesting depth does not count against the pairing.
+
 A side panel docked at the right edge and ruled off by its left border only (NcAppSidebar, white inside the app's white container) is a card, as the board's white panel on the work ground is. In a record card, a pill or other box joins a line when its middle sits well inside that line's run of text (a pill beside a due date that wrapped), an icon-only control drawn as an aria-labelled span counts as a header action, a glyph hidden from assistive tech is not text, a line split over spans is one text, a table is one part and a map is one part at its own box.
 
 With a modal dialog open (`aria-modal="true"`, on the dialog box or on the mask around it), only what is inside the dialog is measured. The page under the scrim is ignored on both sides.

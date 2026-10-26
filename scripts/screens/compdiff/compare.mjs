@@ -82,7 +82,8 @@ export function pairComponents (board, live, H) {
 	}
 	cand.sort((x, y) => x.cost - y.cost)
 	for (const { b, l } of cand) if (!usedB.has(b) && !usedL.has(l)) take(b, l, 'position')
-	const counted = (c) => !c.record || c.record.index === 0
+	// A component that starts below the captured frame is measured only as a counterpart: unpaired, it is not counted.
+	const counted = (c) => (!c.record || c.record.index === 0) && !c.belowFrame
 	// An untitled card that only frames a paired table (and its pager) is that table's frame: one side may draw the
 	// frame as a card, the other as the table's own border. It is neither missing nor extra.
 	const hugs = (o, i) => i.x >= o.x - 4 && i.x + i.w <= o.x + o.w + 4 && i.y >= o.y - 4 && i.y + i.h <= o.y + o.h + 4
@@ -113,7 +114,7 @@ function flatten (obj, prefix = '', out = {}) {
 	for (const [k, v] of Object.entries(obj)) flatten(v, prefix ? `${prefix}.${k}` : k, out)
 	return out
 }
-const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
+const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions|belowFrame)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
 // Properties whose value follows the data (row counts, text length), reported but never flagged.
 const DATA = /^rect\.h$|^pages$|^cell\.background$|^head\.background$/
 // Card padding and gap depend on where the DOM puts its padding (card vs header vs body); the effective insets

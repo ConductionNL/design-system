@@ -938,8 +938,9 @@ window.__compdiffExtract = function () {
 		// not an element.
 		if (el.matches('button, [role=button]') && !boxed && !el.querySelector('svg, img, [class*=icon]') && !opaque(cs.backgroundColor)) return null
 		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
-		// A filled label around a radio or checkbox (NcCheckboxRadioSwitch's checked row) is that toggle's state, not a badge.
-		if (boxed && el.querySelector(TOGGLE)) return null
+		// A filled label around a radio or checkbox, or beside one (NcCheckboxRadioSwitch fills the content next to its
+		// input on the checked row), is that toggle's state, not a badge.
+		if (boxed && (el.querySelector(TOGGLE) || (el.parentElement && [...el.parentElement.children].some((c) => c !== el && c.matches(TOGGLE))))) return null
 		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
 		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
 		return null
@@ -1003,7 +1004,8 @@ window.__compdiffExtract = function () {
 	// A list row drawn by a full-width box inside it (cn-folder-tree: an unstyled li around a button; cn-menu-tree: a
 	// treeitem around a padded row div) is measured on that box, which is then not an element of its own.
 	const drawnBy = new Set()
-	const styled = (cs) => opaque(cs.backgroundColor) || Object.values(borders(cs)).some((v) => v > 0) || px(cs.paddingLeft) > 0 || px(cs.borderTopLeftRadius) > 0
+	// A radius alone draws nothing (NcActions rounds the focused item's li, `action active`, and fills its button).
+	const styled = (cs) => opaque(cs.backgroundColor) || Object.values(borders(cs)).some((v) => v > 0) || px(cs.paddingLeft) > 0
 	const rowDrawer = (row, rcs, rr) => {
 		if (styled(rcs)) return null
 		return [...row.querySelectorAll('*')].find((c) => {

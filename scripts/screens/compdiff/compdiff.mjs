@@ -28,6 +28,7 @@ import { fileURLToPath } from 'node:url'
 import { pairComponents, compareProps, scoreComponent, pairElements, compareElement } from './compare.mjs'
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
+import { cropMismatch, wholePixels } from './crop.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
@@ -232,23 +233,22 @@ try {
 	// Per-pair pixel mismatch: the live crop is scaled to the board crop's size. Secondary to the properties.
 	const dpage = await bctx.newPage()
 	const b64 = (f) => 'data:image/png;base64,' + fs.readFileSync(f).toString('base64')
-	const crops = await dpage.evaluate(async ({ a, b, H, list }) => {
+	const crops = await dpage.evaluate(async ({ a, b, H, list, fns }) => {
+		const { cropMismatch, wholePixels } = new Function(`${fns}; return { cropMismatch, wholePixels }`)()
 		const load = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = src })
 		const [ia, ib] = await Promise.all([load(a), load(b)])
-		return list.map(({ br, lr }) => {
+		return list.map(({ br: bf, lr: lf }) => {
 			const ok = (r) => r.w >= 4 && r.h >= 4 && r.x >= 0 && r.y >= 0 && r.x + r.w <= 1441 && r.y + r.h <= H + 1
-			if (!ok(br) || !ok(lr)) return null
-			const w = Math.round(br.w), h = Math.round(br.h)
+			if (!ok(bf) || !ok(lf)) return null
+			const br = wholePixels(bf), lr = wholePixels(lf)
+			const w = br.w, h = br.h
 			const ca = document.createElement('canvas'); ca.width = w; ca.height = h
 			const xa = ca.getContext('2d'); xa.drawImage(ia, br.x, br.y, br.w, br.h, 0, 0, w, h)
 			const cb = document.createElement('canvas'); cb.width = w; cb.height = h
 			const xb = cb.getContext('2d'); xb.drawImage(ib, lr.x, lr.y, lr.w, lr.h, 0, 0, w, h)
-			const da = xa.getImageData(0, 0, w, h).data, db = xb.getImageData(0, 0, w, h).data
-			let n = 0
-			for (let p = 0; p < da.length; p += 4) if (Math.max(Math.abs(da[p] - db[p]), Math.abs(da[p + 1] - db[p + 1]), Math.abs(da[p + 2] - db[p + 2])) > 24) n++
-			return Math.round(n / (w * h) * 1000) / 10
+			return cropMismatch(xa.getImageData(0, 0, w, h).data, xb.getImageData(0, 0, w, h).data, w, h)
 		})
-	}, { a: b64(boardPng), b: b64(livePng), H: boardHeight, list: [...pairs, ...ep.pairs].map((p) => ({ br: p.board.rect, lr: p.live.rect })) })
+	}, { a: b64(boardPng), b: b64(livePng), H: boardHeight, list: [...pairs, ...ep.pairs].map((p) => ({ br: p.board.rect, lr: p.live.rect })), fns: `${cropMismatch.toString()}\n${wholePixels.toString()}` })
 
 	const pageBg = { board: await pageBackground(dpage, boardPng, fs), live: await pageBackground(dpage, livePng, fs) }
 	// Element pairs: properties first; a crop that differs while no property fired is flagged as unidentified.

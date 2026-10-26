@@ -895,6 +895,8 @@ window.__compdiffExtract = function () {
 		// A pager's boxed items are its page links, including a disabled "Volgende" drawn as a span.
 		if (boxed && pagerRows.some((p) => p.contains(el))) return 'button'
 		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
+		// A filled label around a radio or checkbox (NcCheckboxRadioSwitch's checked row) is that toggle's state, not a badge.
+		if (boxed && el.querySelector(TOGGLE)) return null
 		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
 		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
 		return null

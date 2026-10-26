@@ -997,3 +997,11 @@ test('a bar of a link drawn as a button and a button is a toolbar (NcButton with
 	assert.equal(toolbars.length, 1, JSON.stringify(r.components.map((c) => c.role)))
 	assert.equal(toolbars[0].controls, 2)
 })
+
+test('a filled label around a checked radio is the toggle, not a badge', { skip }, async () => {
+	const r = await measure(`<fieldset style="position:absolute;left:464px;top:280px;border:0;padding:0;display:flex;flex-direction:column;gap:2px">
+		<label style="display:flex;align-self:flex-start;gap:10px;align-items:center;min-height:34px;padding:0 9px 0 7px;border-radius:8px;background:#dce6f2"><input type="radio" name="d" checked style="width:20px;height:20px;margin:0">Behandeling van de zaak</label>
+		<label style="display:flex;gap:10px;align-items:center;min-height:34px"><input type="radio" name="d" style="width:20px;height:20px;margin:0">Overig</label></fieldset>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'badge').map((e) => e.label), [])
+	assert.equal(r.elements.filter((e) => e.kind === 'toggle').length, 2)
+})

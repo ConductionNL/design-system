@@ -1067,3 +1067,17 @@ test('buttons that wrapped under a subtitle in the header row are not header act
 	const c = r.components.find((x) => x.title === 'Fasen en taken')
 	assert.equal(c.header.actions, 0, JSON.stringify(c.header))
 })
+
+test('a filled content box beside a checked radio is the toggle, not a badge (NcCheckboxRadioSwitch)', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:464px;top:280px;display:flex;flex-direction:column;gap:2px">
+		<span class="checkbox-radio-switch" style="display:flex"><input type="radio" name="d" checked style="position:absolute;opacity:0;width:1px;height:1px"><span style="display:flex;gap:10px;align-items:center;min-height:34px;padding:0 9px 0 7px;border-radius:8px;background:#dce6f2"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#3669a5"/></svg>Behandeling van de zaak</span></span>
+		<span class="checkbox-radio-switch" style="display:flex"><input type="radio" name="d" style="position:absolute;opacity:0;width:1px;height:1px"><span style="display:flex;gap:10px;align-items:center;min-height:34px">Overig</span></span></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'badge').map((e) => e.label), [])
+})
+
+test('a menu row whose li is only rounded (NcActions focus) is still measured on its button', { skip }, async () => {
+	const row = (cls, t) => `<li class="${cls}" style="border-radius:${cls ? 6 : 0}px"><button style="display:flex;align-items:center;width:100%;min-height:36px;padding:0 10px;border:0;border-radius:6px;background:${cls ? '#eceef1' : 'transparent'}">${t}</button></li>`
+	const r = await measure(`<ul role="menu" style="position:absolute;left:1014px;top:140px;width:258px;list-style:none;margin:0;padding:6px">${row('action active', 'Zaaktype importeren uit bestand')}${row('', 'Sjablonen opnieuw laden')}</ul>`)
+	const rows = r.elements.filter((e) => /importeren|Sjablonen/.test(e.label))
+	assert.deepEqual(rows.map((e) => [e.kind, e.props.paddingLeft]), [['row', 10], ['row', 10]], JSON.stringify(rows.map((e) => [e.kind, e.label, e.props.paddingLeft])))
+})

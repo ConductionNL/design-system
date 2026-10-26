@@ -410,8 +410,9 @@ window.__compdiffExtract = function () {
 				const titleSize = px(getComputedStyle(textEl(title)).fontSize)
 				const subtitle = (l) => !record && l.text && l.y <= titleBox.y + titleBox.h + 32 && px(getComputedStyle(l.node.nodeType === 1 ? l.node : l.node.parentElement).fontSize) < titleSize
 				// A row taller than a title line is past the header, unless all it holds under the title is a subtitle
-				// (one that wraps to a second line, CnWidgetWrapper on DqZaaktypeVelden "Velden") and the actions.
-				const titleAndSubtitle = leaves.every((l) => !p.contains(l.node) || l.y <= titleBox.y + titleBox.h + 4 || subtitle(l) || inAction(l))
+				// (one that wraps to a second line, CnWidgetWrapper on DqZaaktypeVelden "Velden") and the actions beside it.
+				// Actions that wrapped under the subtitle (DqZaaktype "Fasen en taken") end the header at the subtitle.
+				const titleAndSubtitle = leaves.every((l) => !p.contains(l.node) || l.y <= titleBox.y + titleBox.h + 4 || subtitle(l) || (inAction(l) && l.x >= titleBox.x + titleBox.w))
 				if (pr.height > titleBox.h + 56 && !titleAndSubtitle) break
 				// In a record card a line of text under the title (its number line) is a row of its own, however tight.
 				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + (record && l.text ? -1 : 4) && !(wraps && inAction(l)) && !subtitle(l))) break

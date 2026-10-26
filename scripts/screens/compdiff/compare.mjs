@@ -330,10 +330,14 @@ export function pairElements (B = [], L = [], H = 2000) {
 		for (const l of gl) {
 			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind] || !sameRole(b.rep, l.rep)) continue
 			// Two lone elements with different labels are two different controls, not one control restyled.
-			if (b.count === 1 && l.count === 1 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
-			// Nor do two buttons with different labels, unless both are a list's per-row action (three or more copies).
-			if (b.rep.kind === 'button' && l.rep.kind === 'button' && Math.min(b.count, l.count) < 3 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
 			const cost = Math.abs(b.rep.rect.x - l.rep.rect.x) / 1440 + 0.5 * Math.abs(b.rep.rect.y - l.rep.rect.y) / H + (b.rep.kind === l.rep.kind ? 0 : 0.05)
+			// An icon-only control shows no label: its name is for assistive tech ("Open AI chat", "AI-chat openen"), so two
+			// icon-only controls in the same place are one control, whatever each side names it.
+			const iconOnly = (e) => e.props && e.props.text === false && e.props.icon
+			const samePlace = iconOnly(b.rep) && iconOnly(l.rep) && b.count === 1 && l.count === 1 && cost <= 0.02
+			if (!samePlace && b.count === 1 && l.count === 1 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
+			// Nor do two buttons with different labels, unless both are a list's per-row action (three or more copies).
+			if (!samePlace && b.rep.kind === 'button' && l.rep.kind === 'button' && Math.min(b.count, l.count) < 3 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
 			if (cost <= 0.12) cand.push({ b, l, cost })
 		}
 	}

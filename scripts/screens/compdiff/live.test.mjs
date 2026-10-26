@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, loadingCount, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -168,4 +168,16 @@ test('a session seed keyed by the record follows the route\'s record id ({routeI
 	assert.equal(routeId('/apps/dossiq/cases'), null)
 	assert.deepEqual(sessionEntries('{"cn-access-purposes":["cn-access-purpose:case:{routeId}"]}', id), [['cn-access-purposes', `["cn-access-purpose:case:${id}"]`]])
 	assert.throws(() => sessionEntries('{"k":"{routeId}"}', null), /no record id/)
+})
+
+test('waits for a widget that fills seconds after the page, until no loading indicator shows', { skip }, async () => {
+	await withPage('<section><h2>Kaarten</h2><div class="cn-widget__loading"><span class="loading-icon" style="display:inline-block;width:20px;height:20px"></span></div></section>', async (page) => {
+		await page.evaluate(() => setTimeout(() => { document.querySelector('.cn-widget__loading').outerHTML = '<ul><li><a href="#">Hoorzitting voorbereiden</a></li></ul>' }, 1200))
+		assert.ok(await page.evaluate(loadingCount) > 0)
+		assert.equal(await waitForLoaded(page, { timeout: 6000, still: 300 }), true)
+		assert.equal(await page.evaluate(() => document.querySelectorAll('li').length), 1)
+	})
+	await withPage('<span class="loading-icon" style="display:inline-block;width:20px;height:20px"></span>', async (page) => {
+		assert.equal(await waitForLoaded(page, { timeout: 600, still: 100 }), false)
+	})
 })

@@ -74,6 +74,8 @@ export function pairComponents (board, live, H) {
 			if (!!b.record !== !!l.record) cost += 0.15
 			// An open menu is not the row it opened from: a popup pairs by position only with a popup.
 			if (!!b.popup !== !!l.popup) continue
+			// A table in a titled card is that card's table: it pairs with a table in a card of the same title.
+			if (b.role === 'table' && b.inCard && l.inCard && titleSimilarity(b.inCard, l.inCard) < 0.5) continue
 			if (b.title && l.title && CARDLIKE.has(b.role)) cost += 0.12
 			// Two cards with different titles are a pair only as near neighbours or in the same grid slot (a board column
 			// titled by its data); a titled card and an untitled one only within a card's height of each other.
@@ -119,7 +121,7 @@ function flatten (obj, prefix = '', out = {}) {
 	for (const [k, v] of Object.entries(obj)) flatten(v, prefix ? `${prefix}.${k}` : k, out)
 	return out
 }
-const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions|belowFrame|popup)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
+const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions|belowFrame|popup|inCard)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
 // Properties whose value follows the data (row counts, text length), reported but never flagged.
 const DATA = /^rect\.h$|^pages$|^cell\.background$|^head\.background$/
 // Card padding and gap depend on where the DOM puts its padding (card vs header vs body); the effective insets
@@ -194,6 +196,14 @@ export function compareProps (b, l) {
 	}
 	// Text placed off-card (screen-reader-only text at -10000px) is not a rendered inset.
 	for (const r of rows) if (/^content\./.test(r.prop) && ((typeof r.board === 'number' && r.board < -4) || (typeof r.live === 'number' && r.live < -4))) r.flag = null
+	// A cell's padding is how one side places its text; where the text starts is what people see. When the text starts
+	// at the same place (the board pads the name cell around its icon, the app gives the icon a column of its own), the
+	// padding is reported but not flagged; textInsetLeft carries the flag when the text moves.
+	for (const part of ['cell', 'head']) {
+		const tb = fb[`${part}.textInsetLeft`], tl = fl[`${part}.textInsetLeft`]
+		if (typeof tb !== 'number' || typeof tl !== 'number' || Math.abs(tb - tl) > THRESHOLDS.spacing) continue
+		for (const r of rows) if (r.prop === `${part}.paddingLeft`) r.flag = null
+	}
 	// Content insets mean nothing when either side centres its content (empty state): report, do not flag.
 	if (fb['content.centred'] || fl['content.centred']) for (const r of rows) if (/^content\.(firstRowInsetLeft|minInsetLeft|gapBelowTitle|insetTop)$/.test(r.prop)) r.flag = null
 	// A border colour only matters where both sides draw that border: a zero-width border has no colour to see.

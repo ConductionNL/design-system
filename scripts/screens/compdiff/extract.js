@@ -429,7 +429,9 @@ window.__compdiffExtract = function () {
 			// colour (#3d4047), which reads as body text.
 			const mean = (c) => { const v = rgba(c); return v ? (v[0] + v[1] + v[2]) / 3 : 0 }
 			const muted = mean(ecs.color) - mean(tcs.color) > 50
-			return top >= -1 && top <= 12 && px(ecs.fontSize) < px(tcs.fontSize) && (px(ecs.fontSize) <= 14 || muted)
+			// On a card a line in a dark text colour is content however small ("Laatst gewijzigd op 3 oktober door ..." over
+			// its Historie link, which the app sets as a facts row); a dialog's head may set its description in ink.
+			return top >= -1 && top <= 12 && px(ecs.fontSize) < px(tcs.fontSize) && (muted || (role !== 'card' && px(ecs.fontSize) <= 14))
 		}
 		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || plainLine(next)) ? next : null
 		const inHeader = (n) => (headerRow && headerRow.contains(n)) || (desc && desc.contains(n))
@@ -688,8 +690,12 @@ window.__compdiffExtract = function () {
 	for (const m of maps) components.push({ el: m, role: 'map', title: 'map', rect: rect(m) })
 
 	// 5. Tables (and ARIA grids).
+	// A month calendar (seven weekday column heads) is a date picker, not a list of records: a board draws it as a plain
+	// grid of day boxes, the library as an ARIA grid. Neither side measures it as a table.
+	const WEEKDAYS = /^(ma|di|wo|do|vr|za|zo|mon?|tue?|wed?|thu?|fri?|sat?|sun?)\.?$/i
+	const calendarGrid = (t) => { const hs = [...t.querySelectorAll('th, [role=columnheader]')].slice(0, 7); return hs.length === 7 && hs.every((h) => WEEKDAYS.test(h.textContent.trim())) }
 	for (const t of document.querySelectorAll('table, [role=table], [role=grid]')) {
-		if (!visible(t) || outOfScope(t)) continue
+		if (!visible(t) || outOfScope(t) || calendarGrid(t)) continue
 		// The head is read from the first header cell with a label: a selection column's empty cell takes no weight
 		// of its own (a board's falls back to the browser's bold th), so it does not stand for the head's type.
 		const heads = [...t.querySelectorAll('th, [role=columnheader]')]
@@ -706,8 +712,14 @@ window.__compdiffExtract = function () {
 		// A `display: contents` row (an ARIA grid row) has no box: its height is that of its tallest cell.
 		const rowH = (row) => { const h = row.getBoundingClientRect().height; return round(h || Math.max(0, ...[...row.children].map((c) => c.getBoundingClientRect().height))) }
 		// A cell's type is that of its text (a name in a bold link inside a plain cell reads bold); its padding is the cell's.
-		const cell = (c) => { if (!c) return null; const ccs = getComputedStyle(c); return { ...font(textEl(c)), paddingLeft: px(ccs.paddingLeft), paddingTop: px(ccs.paddingTop), borderBottom: borders(ccs).bottom || (c.parentElement ? borders(getComputedStyle(c.parentElement)).bottom : 0), background: bgBehind(c) } }
-		components.push({ role: 'table', title: 'table', rect: rect(t), head: cell(th), headRowHeight: hr ? rowH(hr) : null, cell: cell(td), rowHeight: dr ? rowH(dr) : null })
+		// textInsetLeft: where the cell's text starts from the row's left edge, whatever draws the space before it (the
+		// cell's padding, an icon inside the cell, or an icon column of its own before it).
+		const rowLeft = (c) => { const row = c.closest('tr, [role=row]'); const first = row && [...row.children].find(visible); return (first || c).getBoundingClientRect().left }
+		const cell = (c) => { if (!c) return null; const ccs = getComputedStyle(c); const tr = textRect(c); return { ...font(textEl(c)), paddingLeft: px(ccs.paddingLeft), paddingTop: px(ccs.paddingTop), textInsetLeft: tr ? round(tr.x - rowLeft(c)) : null, borderBottom: borders(ccs).bottom || (c.parentElement ? borders(getComputedStyle(c.parentElement)).bottom : 0), background: bgBehind(c) } }
+		// The titled card a table sits in: two tables pair only within cards of the same title.
+		const holder = ownerCard(t)
+		const inCard = holder ? (components.find((c) => c.el === holder) || {}).title || null : null
+		components.push({ role: 'table', title: 'table', rect: rect(t), inCard, head: cell(th), headRowHeight: hr ? rowH(hr) : null, cell: cell(td), rowHeight: dr ? rowH(dr) : null })
 	}
 
 	// 6. Toolbars: a row (not a card header, not the page header) that holds 2+ controls.

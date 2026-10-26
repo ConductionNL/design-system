@@ -24,11 +24,16 @@ export function accountFor(login, env) {
  * A string value is stored as is; any other value as its JSON.
  *
  * @param {string|undefined} raw The --session value.
+ * @param {string|null} [id] The record id the route ends in, put where the value says `{routeId}`.
  * @return {Array<[string, string]>} The entries, in order.
  * @throws {Error} When the value is not a JSON object.
  */
-export function sessionEntries(raw) {
+export function sessionEntries(raw, id = null) {
 	if (!raw) return []
+	if (raw.includes('{routeId}')) {
+		if (!id) throw new Error('--session uses {routeId}, but the route ends in no record id')
+		raw = raw.split('{routeId}').join(id)
+	}
 	let parsed
 	try {
 		parsed = JSON.parse(raw)
@@ -218,4 +223,15 @@ export async function waitForQuiet(page, requests, { min = 1000, max = 8000, qui
 		await page.waitForTimeout(interval)
 	}
 	return { quiet: false, waited: Date.now() - start }
+}
+
+/**
+ * The record id a route ends in: its last path segment when that is a uuid or a number, before any query or hash.
+ *
+ * @param {string} route The route, with its lookups resolved.
+ * @return {string|null} The id, or null.
+ */
+export function routeId(route) {
+	const last = String(route).split(/[?#]/)[0].split('/').filter(Boolean).pop() || ''
+	return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(last) || /^\d+$/.test(last) ? last : null
 }

@@ -428,7 +428,7 @@ test('a switch whose real input is hidden is measured on the icon that draws it'
 test('a plain line of smaller text right under a card title is its description on both sides', { skip }, async () => {
 	const field = '<div style="margin-top:10px"><span>Register</span><div role="combobox" aria-label="Register" style="height:40px;border:1px solid #888"></div></div>'
 	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 24px;display:flex;flex-direction:column;gap:6px">
-		<h2 style="margin:0;font-size:17px">Configuratie</h2><p style="margin:0;font-size:14px">In welk register Dossiq zaken bewaart.</p>${field}</section>`)
+		<h2 style="margin:0;font-size:17px">Configuratie</h2><p style="margin:0;font-size:14px;color:#5e6168">In welk register Dossiq zaken bewaart.</p>${field}</section>`)
 	const live = await measure(`<div class="settings-section" style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 24px">
 		<h2 style="margin:0 0 6px;font-size:17px">Configuratie</h2><p class="settings-section__desc" style="margin:0;padding-bottom:6px;font-size:14px">In welk register Dossiq zaken bewaart.</p>${field}</div>`)
 	const gap = (r) => r.components.find((c) => c.title === 'Configuratie').content.gapBelowTitle
@@ -551,9 +551,9 @@ test('facts, a pill row or a list of rows right under a card title is content, n
 		const gap = r.components.find((c) => c.title === 'Kaart').content.gapBelowTitle
 		assert.ok(gap < 20, `${name}: gap ${gap}`)
 	}
-	// A plain line of smaller text right under the title is still the description.
+	// A plain muted line of smaller text right under the title is still the description.
 	const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:400px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:6px">
-		<div><h2 style="margin:0;font-size:17px">Kaart</h2></div><p style="margin:0;font-size:14px">Wie wat mag bij dit zaaktype</p><div style="margin-top:20px">Inhoud</div></section>`)
+		<div><h2 style="margin:0;font-size:17px">Kaart</h2></div><p style="margin:0;font-size:14px;color:#5e6168">Wie wat mag bij dit zaaktype</p><div style="margin-top:20px">Inhoud</div></section>`)
 	assert.ok(r.components.find((c) => c.title === 'Kaart').content.gapBelowTitle > 30)
 	// A 15px line in the title's own ink is content (an empty-state sentence), not a description.
 	const empty = await measure(`<section style="position:absolute;left:300px;top:200px;width:400px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:12px">
@@ -825,4 +825,46 @@ test('a menu drawn in a placed popover wrapper is a popup and pairs with the boa
 	// A shadowed card in a placed layout column with no stacking order is no popup.
 	const col = await measure('<div style="position:absolute;left:300px;top:100px;width:300px"><div style="height:120px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.1)"><h3>Kolom</h3><p>tekst</p></div></div>')
 	assert.ok(!col.components.find((c) => c.role === 'card').popup)
+})
+
+test('a 14px line in a dark text colour under a card title is content; muted grey is the description', { skip }, async () => {
+	const card = (color) => `<section style="position:absolute;left:1100px;top:300px;width:300px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:8px">
+		<h2 style="margin:0;font-size:17px;color:#1b1c1d">Historie</h2><span style="font-size:14px;color:${color}">Laatst gewijzigd op 3 oktober door Pieter Jansen</span><a href="#">Historie bekijken</a></section>`
+	const gap = async (color) => (await measure(card(color))).components.find((c) => c.title === 'Historie').content.gapBelowTitle
+	assert.ok(await gap('#3d4047') < 12)
+	assert.ok(await gap('#5e6168') > 30)
+})
+
+test('a month calendar is no table, drawn as an ARIA grid or as a plain grid of day boxes', { skip }, async () => {
+	const days = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo']
+	const aria = `<div role="grid" style="position:absolute;left:885px;top:400px;width:500px">${'<div role="row" style="display:flex">' + days.map((d) => `<span role="columnheader" style="flex:1">${d}</span>`).join('') + '</div>'}${[0, 1].map((w) => '<div role="row" style="display:flex">' + days.map((_, i) => `<span role="gridcell" style="flex:1;height:34px">${w * 7 + i + 1}</span>`).join('') + '</div>').join('')}</div>`
+	const live = await measure(aria)
+	assert.deepEqual(live.components.filter((c) => c.role === 'table'), [])
+	// A table of records with a weekday column is still a table.
+	const rec = await measure('<table style="position:absolute;left:300px;top:300px;width:600px"><thead><tr><th>Dag</th><th>Zaak</th></tr></thead><tbody><tr><td>ma</td><td>2026-0110</td></tr></tbody></table>')
+	assert.equal(rec.components.filter((c) => c.role === 'table').length, 1)
+})
+
+test('a name cell padded around its icon and a name cell after an icon column start their text at the same place', { skip }, async () => {
+	const icon = '<span style="display:inline-block;width:24px;height:24px;background:#eaf0f7;vertical-align:middle"></span>'
+	const board = await measure(`<table style="position:absolute;left:293px;top:309px;width:800px;border-collapse:collapse"><thead><tr><th style="padding:8px 16px;text-align:left">Naam</th><th>Plaats</th></tr></thead><tbody><tr><td style="padding:12px 16px">${icon}<span style="margin-left:8px">CloudGemeente</span></td><td>Zuiddrecht</td></tr></tbody></table>`)
+	const live = await measure(`<table style="position:absolute;left:293px;top:309px;width:800px;border-collapse:collapse;table-layout:fixed"><thead><tr><th style="width:40px;box-sizing:border-box;padding:8px 0 8px 16px"></th><th style="padding:8px 0 8px 12px;text-align:left">Naam</th><th>Plaats</th></tr></thead><tbody><tr><td style="width:24px;padding:12px 0 12px 16px">${icon}</td><td style="padding:12px 0 12px 12px"><span style="margin-left:-4px">CloudGemeente</span></td><td>Zuiddrecht</td></tr></tbody></table>`)
+	const t = (r) => r.components.find((c) => c.role === 'table')
+	const rows = compareProps(t(board), t(live))
+	assert.ok(!rows.some((r) => r.prop === 'cell.paddingLeft' && r.flag), JSON.stringify([t(board).cell, t(live).cell]))
+	// Text that really moves still flags.
+	const moved = await measure(`<table style="position:absolute;left:293px;top:309px;width:800px;border-collapse:collapse"><thead><tr><th style="padding:8px 16px;text-align:left">Naam</th><th>Plaats</th></tr></thead><tbody><tr><td style="padding:12px 24px">${icon}<span style="margin-left:8px">CloudGemeente</span></td><td>Zuiddrecht</td></tr></tbody></table>`)
+	assert.ok(compareProps(t(board), t(moved)).some((r) => r.flag && /^cell\.(paddingLeft|textInsetLeft)$/.test(r.prop)))
+})
+
+test('a table pairs with the table in the card of the same title, not with the one in the next card down', { skip }, async () => {
+	const tbl = (n) => `<table style="width:100%"><thead><tr><th>Naam</th></tr></thead><tbody>${Array.from({ length: n }, (_, i) => `<tr><td style="height:${40}px">Rij ${i}</td></tr>`).join('')}</tbody></table>`
+	const card = (title, body) => `<section style="border:1px solid #ddd;padding:20px;margin-bottom:16px"><h2 style="margin:0 0 12px;font-size:17px">${title}</h2>${body}</section>`
+	const page = (cards) => `<div style="position:absolute;left:300px;top:100px;width:900px">${cards}</div>`
+	const board = await measure(page(card('Resultaten', tbl(2)) + card('Documenttypen', tbl(2))))
+	const live = await measure(page(card('Resultaten', '<p>Nog geen resultaten</p>') + card('Documenttypen', tbl(2))))
+	const { pairs } = pairComponents(board.components, live.components, 900)
+	const tp = pairs.filter((p) => p.board.role === 'table')
+	assert.equal(tp.length, 1)
+	assert.equal(tp[0].board.inCard, 'Documenttypen')
 })

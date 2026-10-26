@@ -15,13 +15,16 @@ SCRIPT = pathlib.Path(__file__).resolve().parent / 'build_status.py'
 HEAD = 'board\tverdict\tfailing\tcomponents\tnot_measured\tdata_unpaired\tfailing_detail\n'
 
 
-def write_run(root, name, rows, measured_at):
+def write_run(root, name, rows, measured_at, counts=None):
     d = root / name
     d.mkdir()
     lines = [HEAD] + ['\t'.join(str(c) for c in r) + '\n' for r in rows]
     (d / 'verdicts.tsv').write_text(''.join(lines), encoding='utf-8')
     for r in rows:
-        (d / f'{r[0]}.json').write_text(json.dumps({'board': r[0], 'url': f'/apps/x/{r[0].lower()}', 'measuredAt': measured_at}), encoding='utf-8')
+        meta = {'board': r[0], 'url': f'/apps/x/{r[0].lower()}', 'measuredAt': measured_at}
+        if counts and r[0] in counts:
+            meta.update(counts[r[0]])
+        (d / f'{r[0]}.json').write_text(json.dumps(meta), encoding='utf-8')
     return d
 
 
@@ -96,8 +99,10 @@ class BuildStatusTest(unittest.TestCase):
         self.assertEqual((dq['boards'], dq['measured'], dq['match'], dq['failing']), (3, 2, 1, 5))
         self.assertEqual(dq['lastRun']['id'], 'r2')
         self.assertEqual(dq['trend'], {'from': 'r1', 'fromDate': '2026-10-19T20:00:00.000Z', 'to': 'r2', 'toDate': '2026-10-21T01:00:00.000Z',
-                                       'boards': 2, 'matchFrom': 0, 'matchTo': 1, 'failingFrom': 11, 'failingTo': 5})
-        self.assertEqual(c['total'], {'boards': 3, 'measured': 2, 'match': 1, 'failing': 5})
+                                       'boards': 2, 'matchFrom': 0, 'matchTo': 1, 'failingFrom': 11, 'failingTo': 5,
+                                       'flaggedFrom': 0, 'flaggedTo': 0})
+        self.assertEqual(c['total'], {'boards': 3, 'measured': 2, 'match': 1, 'failing': 5,
+                                      'flaggedComponents': 0, 'noFlaggedComponents': 0})
 
     def test_no_trend_from_a_single_run(self):
         d, _ = self.run_script('--compdiff', self.new)
@@ -106,10 +111,27 @@ class BuildStatusTest(unittest.TestCase):
     def test_each_board_keeps_its_history_oldest_first(self):
         d, _ = self.run_script(self.tsv, '--compdiff', self.new, '--compdiff', self.old)
         self.assertEqual(d['boards']['DqZaak']['history'], [
-            {'run': 'r1', 'date': '2026-10-19T20:00:00.000Z', 'verdict': 'NO-MATCH', 'failing': 8},
-            {'run': 'r2', 'date': '2026-10-21T01:00:00.000Z', 'verdict': 'NO-MATCH', 'failing': 5},
+            {'run': 'r1', 'date': '2026-10-19T20:00:00.000Z', 'verdict': 'NO-MATCH', 'failing': 8, 'flaggedComponents': None},
+            {'run': 'r2', 'date': '2026-10-21T01:00:00.000Z', 'verdict': 'NO-MATCH', 'failing': 5, 'flaggedComponents': None},
         ])
         self.assertNotIn('history', d['boards']['DqTaken'], 'a board no run measured has no history')
+
+    def test_flagged_components_are_the_lanes_unit_next_to_failing_items(self):
+        # DqZaken has no flagged component property, but a button is missing on live: still NO-MATCH.
+        run = write_run(self.root, 'r3', [
+            ('DqZaken', 'NO-MATCH', 2, 10, 0, 0, 'button "Opslaan": missing on live | pill "Alles": h 38>17'),
+            ('DqZaak', 'NO-MATCH', 4, 12, 0, 0, 'tabs: y -70'),
+        ], '2026-10-22T01:00:00.000Z', counts={
+            'DqZaken': {'counts': {'flaggedComponents': 0}, 'missingOnLive': [{'role': 'button'}], 'extraOnLive': []},
+            'DqZaak': {'counts': {'flaggedComponents': 3}, 'missingOnLive': [], 'extraOnLive': []},
+        })
+        d, _ = self.run_script('--compdiff', run)
+        zaken = d['boards']['DqZaken']
+        self.assertEqual((zaken['verdict'], zaken['failing'], zaken['flaggedComponents'], zaken['unpairedComponents']), ('NO-MATCH', 2, 0, 1))
+        self.assertEqual(zaken['history'][-1]['flaggedComponents'], 0)
+        dq = d['compdiff']['apps']['dossiq']
+        self.assertEqual((dq['match'], dq['failing'], dq['flaggedComponents'], dq['noFlaggedComponents']), (0, 6, 3, 1))
+        self.assertEqual(d['compdiff']['runs'][-1]['flaggedComponents'], 3)
 
 
 if __name__ == '__main__':

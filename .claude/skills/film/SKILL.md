@@ -8,7 +8,7 @@ description: "Conduction's motion design method: how a film is planned, timed, b
 A Conduction film is a web page whose every frame is a pure function of time. This skill is the
 method: what to decide, in which order, and how to check it. The [brand-film](../brand-film/SKILL.md)
 skill holds the storyboard and artifact mechanics; [BIBLE.md](../../../preview/films/BIBLE.md) holds
-every decision Ruben has made about our films, rounds 1 to 30. Where this skill and the bible
+every decision Ruben has made about our films, rounds 1 to 31. Where this skill and the bible
 disagree, the bible wins and the drift is a finding.
 
 ## When to use it
@@ -151,8 +151,10 @@ word timings by the same factor. In `--mode both` the style prompt is spoken alo
 Whisper hears wrongly, and add a respelling to `pronounce.tsv` for a word it keeps getting wrong.
 
 **The voice stays private.** The kinetic-voice demo still uses the earlier clean-reference take. Only generated takes go into this public
-repo. The voice model and the recordings stay in a private repository (ConductionNL/voice-ruben);
-never copy a reference recording, training data or a checkpoint here.
+repo. The voice model and the recordings stay in a private repository (ConductionNL/voice-lab);
+never copy a reference recording, training data or a checkpoint here. It is not kept on this
+machine: `gh repo clone ConductionNL/voice-lab ~/voice-lab && git -C ~/voice-lab lfs pull`, then
+rebuild its environments from its README. The voice is the LoRA at `train/ckpt/ruben-lora/step_0000100`.
 
 ## Transitions
 

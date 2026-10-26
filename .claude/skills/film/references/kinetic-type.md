@@ -43,7 +43,9 @@ kineticScene(film, 'tagline', { recipe: 'hero', text: 'Make Nextcloud your works
 The voice is the clock. Every word lands on the frame it is heard.
 
 1. **Write the line** in the Conduction voice. One claim, under 16 words, sentence case.
-2. **Generate the take** with the cloned voice (`~/voice-lab`, private). Keep only the generated take.
+2. **Generate the take** with the trained voice in `~/voice-lab`. It is not kept on disk: clone the
+   private repo with `gh repo clone ConductionNL/voice-lab ~/voice-lab && git -C ~/voice-lab lfs pull`
+   and rebuild its environments from its README. Keep only the generated take.
 3. **Align it.** WhisperX gives `{ word, start, end }` per word. Check the transcript against the
    text: a wrong word means a wrong onset.
 4. **Place the take on the grid.** Offset it so its first word lands on a beat:
@@ -52,15 +54,16 @@ The voice is the clock. Every word lands on the frame it is heard.
    frames (`LEAD`) before its onset, so it is readable on the onset frame. The hold is computed from
    the word count; the line's out time can be set to a bar line.
 6. **Mix.** Put the take in `film.music.voice` as `{ src, at, gain }`. `score.mjs --root <repo>`
-   places it, ducks the bed and the effects by 9 dB under it, and normalises to -14 LUFS, true peak
+   places it, ducks the bed and the effects under it by `film.music.duckDb` (15 dB for every new film,
+   bible round 30; `score.mjs` falls back to 9 dB for older films), and normalises to -14 LUFS, true peak
    -1.5 dBTP.
 7. **Check sync by eye** on a contact sheet of the muxed render, frame by frame round each onset, and
    against the audio energy per frame.
 
 **Privacy.** The voice model, the reference recordings, the training data and any checkpoint stay in
-a private repository (ConductionNL/voice-ruben). Only generated takes and their word timings may enter
+a private repository (ConductionNL/voice-lab). Only generated takes and their word timings may enter
 this public repo.
 
-**Provisional.** The demo uses the clean-reference run of Ruben's cloned voice. Ruben has not yet
-picked between it and the trained voice. When he does, replace the mp3 and the words JSON; the film
-retimes itself from the alignment.
+**An earlier take.** Ruben picked the trained voice (the LoRA). The demo still uses the earlier
+clean-reference take. To re-voice it, replace the mp3 and the words JSON; the film retimes itself
+from the alignment.

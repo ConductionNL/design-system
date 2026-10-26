@@ -13,9 +13,9 @@
  * end of each section the line leaves and both cells turn back, so the last frame flows into frame 1.
  *
  * PROVISIONAL VOICE. The takes are generated from Ruben's cloned voice (VoxCPM2, the clean-reference
- * run, take 04). Ruben has not yet picked between this voice and the trained one; when he does, swap
- * the mp3 and the words JSON, and the film retimes itself. Only generated takes live in this public
- * repo; the voice model and the recordings stay in a private repository (ConductionNL/voice-ruben).
+ * run, take 04). Ruben has since picked the trained voice; to re-voice the demo, swap the mp3 and the
+ * words JSON, and the film retimes itself. Only generated takes live in this public repo; the voice
+ * model and the recordings stay in a private repository (ConductionNL/voice-lab).
  *
  * Every frame is a pure function of time. 1920 x 1080, 24 fps, 128 BPM, 6 bars (270 frames).
  */

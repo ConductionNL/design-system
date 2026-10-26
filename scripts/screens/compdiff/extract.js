@@ -214,7 +214,13 @@ window.__compdiffExtract = function () {
 	}
 	// A framed item among framed siblings of the same kind that are too short to be cards is a row of that list, not
 	// a card: whether one tile reaches 48px depends on how its text wraps (a long status name), not on what it is.
-	const rowSibling = (el) => [...el.parentElement.children].some((s) => s !== el && s.tagName === el.tagName && visible(s) && framed(s, getComputedStyle(s)) && s.getBoundingClientRect().height < 48)
+	// The frame can sit on an element that fills a list item (live's status tiles draw it inside the li), so the
+	// item is read at the outermost element with the same box, and a sibling counts when it or the element filling it
+	// is framed.
+	const sameBox = (a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect(); return Math.abs(p.x - q.x) <= 1 && Math.abs(p.y - q.y) <= 1 && Math.abs(p.right - q.right) <= 1 && Math.abs(p.bottom - q.bottom) <= 1 }
+	const itemOf = (el) => { let e = el; while (e.parentElement && e.parentElement !== document.body && sameBox(e, e.parentElement)) e = e.parentElement; return e }
+	const framedFill = (s) => { for (let e = s; e; e = [...e.children].find((k) => sameBox(k, s)) || null) if (framed(e, getComputedStyle(e))) return true; return false }
+	const rowSibling = (el) => { const item = itemOf(el); return !!item.parentElement && [...item.parentElement.children].some((s) => s !== item && s.tagName === item.tagName && visible(s) && framedFill(s) && s.getBoundingClientRect().height < 48) }
 	cards = cards.filter((c) => !c.el.parentElement || !rowSibling(c.el))
 	// Collapse wrappers that draw the same box (grid item around widget wrapper): keep the one with the most border sides, else the inner one.
 	const same = (a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect(); return Math.abs(p.x - q.x) <= 3 && Math.abs(p.y - q.y) <= 3 && Math.abs(p.right - q.right) <= 3 && Math.abs(p.bottom - q.bottom) <= 3 }
@@ -396,7 +402,6 @@ window.__compdiffExtract = function () {
 			// Climb to the header row: the widest ancestor that still holds only the title line.
 			for (let p = title.parentElement; p && p !== card && card.contains(p); p = p.parentElement) {
 				const pr = p.getBoundingClientRect()
-				if (pr.height > titleBox.h + 56) break
 				// A wrapping header row whose actions wrapped under the title in a narrow card is still the header row.
 				const wraps = getComputedStyle(p).flexWrap === 'wrap'
 				const inAction = (l) => { const e = l.node.nodeType === 1 ? l.node : l.node.parentElement; return !!(e && e.closest('a, button, [role=button]')) }
@@ -404,6 +409,11 @@ window.__compdiffExtract = function () {
 				// belongs to the title, so the row with the heading's actions is still the header row.
 				const titleSize = px(getComputedStyle(textEl(title)).fontSize)
 				const subtitle = (l) => !record && l.text && l.y <= titleBox.y + titleBox.h + 32 && px(getComputedStyle(l.node.nodeType === 1 ? l.node : l.node.parentElement).fontSize) < titleSize
+				// A row taller than a title line is past the header, unless all it holds under the title is a subtitle
+				// (one that wraps to a second line, CnWidgetWrapper on DqZaaktypeVelden "Velden") and the actions beside it.
+				// Actions that wrapped under the subtitle (DqZaaktype "Fasen en taken") end the header at the subtitle.
+				const titleAndSubtitle = leaves.every((l) => !p.contains(l.node) || l.y <= titleBox.y + titleBox.h + 4 || subtitle(l) || (inAction(l) && l.x >= titleBox.x + titleBox.w))
+				if (pr.height > titleBox.h + 56 && !titleAndSubtitle) break
 				// In a record card a line of text under the title (its number line) is a row of its own, however tight.
 				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + (record && l.text ? -1 : 4) && !(wraps && inAction(l)) && !subtitle(l))) break
 				headerRow = p
@@ -777,7 +787,8 @@ window.__compdiffExtract = function () {
 		const b = c.matches(FIELD) ? fieldBorder(c) : { width: borders(getComputedStyle(c)).top, color: getComputedStyle(c).borderTopColor }
 		return { controlBorder: b.width, controlBorderColor: b.color }
 	}
-	const ctrl = 'button, input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
+	// An NcButton with an href renders as a link (`a.button-vue`): it is a control of the bar it sits in.
+	const ctrl = 'button, a.button-vue, a[role=button], input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
 	// A chip (a fully rounded pill of 40px or less: a quick filter, a shortcut or an active-filter tag) is not a toolbar control: which chips a
 	// bar shows follows the data, and a board draws them as buttons where the library may draw spans.
 	// Up to 40px: a 38px chip row and a 36px one are the same row of chips (their 2px is measured on the chips).
@@ -927,6 +938,8 @@ window.__compdiffExtract = function () {
 		// not an element.
 		if (el.matches('button, [role=button]') && !boxed && !el.querySelector('svg, img, [class*=icon]') && !opaque(cs.backgroundColor)) return null
 		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
+		// A filled label around a radio or checkbox (NcCheckboxRadioSwitch's checked row) is that toggle's state, not a badge.
+		if (boxed && el.querySelector(TOGGLE)) return null
 		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
 		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
 		return null

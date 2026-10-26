@@ -1018,3 +1018,52 @@ test('a folder row holding its sub-list is measured on its own line', { skip }, 
 	assert.ok(row, JSON.stringify(r.elements.map((e) => [e.kind, e.label])))
 	assert.equal(row.props.h, 34)
 })
+
+test('a tall tile among short framed list rows is a row when the frame sits on an element inside the li', { skip }, async () => {
+	const tile = (h, t) => `<li style="list-style:none;margin:0 0 8px"><div style="height:${h}px;border:1px solid #ccc;border-radius:8px;padding:0 12px;box-sizing:border-box">${t}</div></li>`
+	const r = await measure(`<section style="position:absolute;left:300px;top:100px;width:800px;border:1px solid #ccc;padding:20px">
+		<h2 style="margin:0 0 12px">Statussen</h2>
+		<ul style="margin:0;padding:0">${tile(52, 'Ontvangen')}${tile(35, 'In behandeling')}${tile(39, 'Besluit')}</ul></section>`)
+	const cards = r.components.filter((c) => c.role === 'card')
+	assert.deepEqual(cards.map((c) => c.title), ['Statussen'], JSON.stringify(cards.map((c) => [c.title, c.rect])))
+	assert.ok(cards[0].content.gapBelowTitle < 20, `gap ${cards[0].content.gapBelowTitle}`)
+})
+
+test('a header whose subtitle wraps to two lines keeps its centred button as a header action', { skip }, async () => {
+	const r = await measure(`<div class="card" style="position:absolute;left:292px;top:262px;width:800px;border:1px solid #ccc;border-radius:12px">
+		<div style="display:flex;align-items:center;gap:8px;padding:20px 22px 0">
+			<div style="flex:1;display:flex;flex-direction:column;gap:3px"><h2 style="margin:0;font-size:17px">Velden</h2>
+				<span style="font-size:14px;line-height:1.2;color:#5e6168;width:420px">Het gegevensschema van dit zaaktype. Sleep om de volgorde te wijzigen. Velden van het moedertype zijn paars en daarom anders.</span></div>
+			<button style="height:34px">Veld toevoegen</button></div>
+		<table style="margin:22px"><tbody><tr><td>Bouwkosten</td><td>Nummer</td></tr><tr><td>Soort</td><td>Keuzelijst</td></tr></tbody></table></div>`)
+	const c = r.components.find((x) => x.title === 'Velden')
+	assert.equal(c.header.actions, 1, JSON.stringify(c.header))
+	assert.ok(c.content.gapBelowTitle > 10, JSON.stringify(c.content))
+})
+
+test('a bar of a link drawn as a button and a button is a toolbar (NcButton with an href)', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:315px;top:336px;width:754px">
+		<div style="display:inline-flex;gap:8px;width:325px"><a class="button-vue" href="#" style="display:flex;align-items:center;height:34px;padding:0 14px;border:1px solid #828a95;border-radius:8px">Bekijken als flow</a>${btn('Taak toevoegen')}</div>
+		<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px"><section>Fase 1</section><section>Fase 2</section></div></div>`)
+	const toolbars = r.components.filter((c) => c.role === 'toolbar')
+	assert.equal(toolbars.length, 1, JSON.stringify(r.components.map((c) => c.role)))
+	assert.equal(toolbars[0].controls, 2)
+})
+
+test('a filled label around a checked radio is the toggle, not a badge', { skip }, async () => {
+	const r = await measure(`<fieldset style="position:absolute;left:464px;top:280px;border:0;padding:0;display:flex;flex-direction:column;gap:2px">
+		<label style="display:flex;align-self:flex-start;gap:10px;align-items:center;min-height:34px;padding:0 9px 0 7px;border-radius:8px;background:#dce6f2"><input type="radio" name="d" checked style="width:20px;height:20px;margin:0">Behandeling van de zaak</label>
+		<label style="display:flex;gap:10px;align-items:center;min-height:34px"><input type="radio" name="d" style="width:20px;height:20px;margin:0">Overig</label></fieldset>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'badge').map((e) => e.label), [])
+	assert.equal(r.elements.filter((e) => e.kind === 'toggle').length, 2)
+})
+
+test('buttons that wrapped under a subtitle in the header row are not header actions', { skip }, async () => {
+	const r = await measure(`<section style="position:absolute;left:292px;top:268px;width:800px;box-sizing:border-box;border:1px solid #ccc;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+		<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px">
+			<div style="flex:1 1 600px;display:flex;flex-direction:column;gap:2px"><h2 style="margin:0;font-size:17px">Fasen en taken</h2><span style="font-size:14px">Elke taak heeft een eigen rol, termijn en formulier.</span></div>
+			<div style="display:flex;gap:8px">${btn('Bekijken als flow')}${btn('Taak toevoegen')}</div></div>
+		<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><section style="padding:14px;background:#f5f6f8">Fase 1</section><section style="padding:14px;background:#f5f6f8">Fase 2</section></div></section>`)
+	const c = r.components.find((x) => x.title === 'Fasen en taken')
+	assert.equal(c.header.actions, 0, JSON.stringify(c.header))
+})

@@ -14,6 +14,7 @@ No npm packages.
 
 1. Edit the board in `screens-src/<set>/<Name>.dc.html`. A shared part (header, footer, side bar) lives in its own board, for example `Kop.dc.html`, and every board that imports it changes with it.
 2. Rebuild that board: `python3 scripts/screens/build.py --only Name`. For a school board use its key, for example `--only wilgenboom-Home`. Changed a shared part? Rebuild everything.
+   `python3 scripts/screens/board_fresh.py Name` tells whether a flattened board still matches its source (compdiff refuses a stale one).
 3. Open `preview/screens/boards/Name.html` in a browser, or the gallery with `python3 -m http.server` in `preview/`.
 4. Commit the source, the board, the thumbnail, `screens.json` and `scripts/screens/heights.json`.
 

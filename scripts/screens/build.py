@@ -224,11 +224,15 @@ def flatteners(index):
 THEME_HEAD = '<link rel="stylesheet" href="../screens.css">\n<script src="../theme.js" defer></script>\n'
 
 
-def flatten_one(fl, key, board):
+def render_one(fl, board):
+    """The flattened document of one board, as flatten_one writes it."""
     name = board['src'].split('/')[1][:-8]
     extra = THEME_HEAD if source_set(board['set']) == 'zuiddrecht' else ''
-    html = fl.document(name, board['title'], board['w'], extra_head=extra)
-    (OUT / board['file']).write_text(html)
+    return fl.document(name, board['title'], board['w'], extra_head=extra)
+
+
+def flatten_one(fl, key, board):
+    (OUT / board['file']).write_text(render_one(fl, board))
 
 
 MEASURE = ('<script>addEventListener("load",()=>setTimeout(()=>{const b=document.querySelector(".sc-board");'

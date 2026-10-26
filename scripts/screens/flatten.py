@@ -38,6 +38,7 @@ ROLES = {
     '#f5f6f8': 'work-ground',
     '#f0f1f3': 'work-chip',
     '#828a95': 'work-field',
+    '#c64e0b': 'buildiq',
 }
 HEX = re.compile(r'(?<![\w-])#(' + '|'.join(h[1:] for h in ROLES) + r')(?![0-9a-fA-F])', re.I)
 FONT = re.compile(r"""(?<!var\(--sc-font, )(['"])Fira Sans\1""")

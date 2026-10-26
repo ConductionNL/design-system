@@ -177,3 +177,12 @@ test('the same title in another column does not pair; a toolbar pairs on its lin
 	// A narrower toolbar on another line does not pair.
 	assert.equal(pairComponents([tb(1120, 188)], [tb(916.6, 600)], 1200).pairs.length, 0)
 })
+
+test('two icon-only buttons in the same place pair whatever each side names them; labelled ones still do not', () => {
+	const fab = (label, text) => ({ kind: 'button', label, inControl: null, container: 0, rect: { x: 1340, y: 960, w: 56, h: 56 }, props: { h: 56, borderRadius: 28, background: 'rgb(54, 105, 165)', text, icon: true } })
+	const r = pairElements([fab('AI-chat openen', false)], [fab('Open AI chat', false)], 1100)
+	assert.equal(r.pairs.length, 1)
+	assert.deepEqual([r.missing.length, r.extra.length], [0, 0])
+	const t = pairElements([fab('Opslaan', true)], [fab('Bewaren', true)], 1100)
+	assert.equal(t.pairs.length, 0)
+})

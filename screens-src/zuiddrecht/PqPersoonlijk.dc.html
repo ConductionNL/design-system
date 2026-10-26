@@ -44,9 +44,13 @@ class Component extends DCLogic {
         { note: '1 kaart kon niet worden geschreven: Bakkerij De Graaf heeft geen naam in het adresboek.', tone: 'warn' },
         { buttons: [['Nu synchroniseren', ''], ['Importeren uit Contacten', '']] }
       ] },
-      { name: 'E-mail en agenda', desc: 'Mail en afspraken gekoppeld aan je klanten.', rows: [
-        { switch: 'E-mailsynchronisatie aanzetten', hint: 'Mail uit de gekozen accounts komt bij het contact met hetzelfde e-mailadres.', on: true },
-        { switch: 'Agendasynchronisatie aanzetten', hint: 'Vervolgacties en afspraken komen in de agenda Pipelinq.', on: true }
+      { name: 'E-mail en agenda', desc: 'Mail en afspraken gekoppeld aan je klanten. De mail zelf blijft in Nextcloud Mail.', rows: [
+        { switch: 'E-mailsynchronisatie aanzetten', hint: 'Mail uit het gekozen account komt bij het contact met hetzelfde e-mailadres.', on: true },
+        { radios: 'Account', options: [['p.jansen@zuiddrecht.nl', 'Persoonlijke mailbox', true], ['klantcontact@zuiddrecht.nl', 'Gedeelde mailbox van klantcontact', false]] },
+        { text: 'Overslaan, kommagescheiden', value: 'noreply@zuiddrecht.nl, nieuwsbrief@zuiddrecht.nl', hint: 'Mail van of naar deze adressen wordt niet gekoppeld.' },
+        { facts: [['Laatste keer', 'vandaag om 09.40'], ['Gekoppeld', '14 van 52 mails bij de laatste keer'], ['Laatste fout', 'geen']] },
+        { note: 'Pipelinq bewaart onderwerp, afzender en datum. De inhoud lees je in Nextcloud Mail.', tone: 'plain' },
+        { buttons: [['Nu synchroniseren', '']] }
       ] },
       { name: 'Inloggegevens', desc: 'Je eigen accounts bij andere diensten. Ze staan versleuteld opgeslagen.', rows: [
         { items: [['KvK API, persoonlijke sleutel', 'Prospectverkenning · toegevoegd 12 september', 'Verwijderen']] },

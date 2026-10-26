@@ -27,19 +27,18 @@ class Component extends DCLogic {
   renderVals() {
     // Pipelinq's settings dialog (see PqPersoonlijk), scrolled to E-mail en agenda: which mail accounts are read,
     // which addresses are skipped, and the agenda link. Replaces the sync page drawn inside Nextcloud's personal
-    // settings (decision 11 Oct 2026).
+    // settings (decision 11 Oct 2026). One mail account (a radio), as the matcher reads one; no agenda switch,
+    // because there is no calendar sync to switch (coordinator, 27 Oct).
     const sections = [
       { name: 'Meldingen', rows: [] },
       { name: 'Contacten', rows: [] },
       { name: 'E-mail en agenda', desc: 'Mail en afspraken gekoppeld aan je klanten. De mail zelf blijft in Nextcloud Mail.', rows: [
-        { switch: 'E-mailsynchronisatie aanzetten', hint: 'Mail uit de gekozen accounts komt bij het contact met hetzelfde e-mailadres.', on: true },
-        { check: 'p.jansen@zuiddrecht.nl', hint: 'Persoonlijke mailbox', on: true },
-        { check: 'klantcontact@zuiddrecht.nl', hint: 'Gedeelde mailbox van klantcontact', on: false },
+        { switch: 'E-mailsynchronisatie aanzetten', hint: 'Mail uit het gekozen account komt bij het contact met hetzelfde e-mailadres.', on: true },
+        { radios: 'Account', options: [['p.jansen@zuiddrecht.nl', 'Persoonlijke mailbox', true], ['klantcontact@zuiddrecht.nl', 'Gedeelde mailbox van klantcontact', false]] },
         { text: 'Overslaan, kommagescheiden', value: 'noreply@zuiddrecht.nl, nieuwsbrief@zuiddrecht.nl', hint: 'Mail van of naar deze adressen wordt niet gekoppeld.' },
-        { facts: [['Laatste keer', 'vandaag om 09.40'], ['Gekoppeld', '1.284 mails, 14 sinds vanochtend'], ['Laatste fout', 'geen']] },
-        { note: 'Pipelinq bewaart onderwerp, afzender en datum. De inhoud lees je in Nextcloud Mail, en die is standaard alleen voor jou.', tone: 'plain' },
-        { buttons: [['Nu synchroniseren', '']] },
-        { switch: 'Agendasynchronisatie aanzetten', hint: 'Vervolgacties en afspraken komen in de agenda Pipelinq. Een afspraak met een bekend contact komt bij dat contact.', on: true }
+        { facts: [['Laatste keer', 'vandaag om 09.40'], ['Gekoppeld', '14 van 52 mails bij de laatste keer'], ['Laatste fout', 'geen']] },
+        { note: 'Pipelinq bewaart onderwerp, afzender en datum. De inhoud lees je in Nextcloud Mail.', tone: 'plain' },
+        { buttons: [['Nu synchroniseren', '']] }
       ] },
       { name: 'Inloggegevens', desc: 'Je eigen accounts bij andere diensten. Ze staan versleuteld opgeslagen.', rows: [
         { items: [['KvK API, persoonlijke sleutel', 'Prospectverkenning · toegevoegd 12 september', 'Verwijderen']] },

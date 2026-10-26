@@ -118,22 +118,22 @@ class Component extends DCLogic {
     ];
     const openS = (n) => n > 0 ? 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #e8e6f6; color: #4a3f8f' : 'color: #5e6168';
     const data = [
-      ['Bakkerij De Gouden Korst', '69011234', 'Eenmanszaak', 'Zuiddrecht', 0, '2 okt', 1],
-      ['Buurtvereniging Oost', '40481234', 'Vereniging', 'Zuiddrecht', 1, '6 okt', 3],
-      ['Café De Kroon', '69027781', 'Eenmanszaak', 'Zuiddrecht', 0, '4 okt', 1],
-      ['Meridiaan Advies B.V.', '24187655', 'Besloten vennootschap', 'Zuiddrecht', 0, '18 aug', 0],
-      ['Sportvereniging ZVV 28', '40322190', 'Vereniging', 'Zuiddrecht', 0, '30 sep', 1],
-      ['Stichting Voedselbank Zuiddrecht', '58210366', 'Stichting', 'Zuiddrecht', 0, '3 okt', 1],
-      ['Waterschap Hollandse Delta', '24480901', 'Overheidsorgaan', 'Zuiddrecht', 0, '12 sep', 0],
-      ['Woningstichting Zuiddrecht Wonen', '23046118', 'Stichting', 'Zuiddrecht', 2, '5 okt', 3]
+      ['Aannemersbedrijf Van Wijk B.V.', '00001005', 'Besloten vennootschap', 'Zuiddrecht', 0, 'Nog geen contact', 0],
+      ['Bakkerij De Molen', '00001008', 'Eenmanszaak', 'Zuiddrecht', 0, 'Nog geen contact', 0],
+      ['Bewonersvereniging Lindelaan', '00001006', 'Vereniging', 'Zuiddrecht', 0, 'Nog geen contact', 0],
+      ['Buurtvereniging Oost', '00001007', 'Vereniging', 'Zuiddrecht', 0, '2 okt', 2],
+      ['CloudGemeente B.V.', '00001002', 'Besloten vennootschap', 'Zuiddrecht', 0, 'Nog geen contact', 3],
+      ['Dagblad Drechtsteden B.V.', '00001009', 'Besloten vennootschap', 'Zuiddrecht', 0, 'Nog geen contact', 0],
+      ['Groen & Co B.V.', '00001011', 'Besloten vennootschap', 'Zuiddrecht', 0, 'Nog geen contact', 0],
+      ['Installatiebedrijf Van Dam', '00001003', 'Eenmanszaak', 'Zuiddrecht', 0, 'Nog geen contact', 0]
     ];
-    const IND = { 'Bakkerij De Gouden Korst': ['Detailhandel', '078 611 20 40'], 'Buurtvereniging Oost': ['Gemeenschap', '078 612 33 10'], 'Café De Kroon': ['Horeca', '078 613 77 81'], 'Meridiaan Advies B.V.': ['Advies', '020 555 12 34'], 'Sportvereniging ZVV 28': ['Sport', '078 614 21 90'], 'Stichting Voedselbank Zuiddrecht': ['Goed doel', '078 615 03 66'], 'Waterschap Hollandse Delta': ['Overheid', '088 974 49 00'], 'Woningstichting Zuiddrecht Wonen': ['Wonen', '078 616 11 18'] };
+    const IND = { 'Aannemersbedrijf Van Wijk B.V.': ['Algemene burgerlijke en utiliteitsbouw', ''], 'Bakkerij De Molen': ['Vervaardiging van brood en vers banketbakkerswerk', ''], 'Bewonersvereniging Lindelaan': ['Bewonersverenigingen en buurtcomités', ''], 'Buurtvereniging Oost': ['Bewonersverenigingen en buurtcomités', ''], 'CloudGemeente B.V.': ['Ontwikkelen, produceren en uitgeven van software', ''], 'Dagblad Drechtsteden B.V.': ['Uitgeverijen van kranten', ''], 'Groen & Co B.V.': ['Hoveniers en aanleg en onderhoud van groenvoorzieningen', ''], 'Installatiebedrijf Van Dam': ['Loodgieters- en fitterswerk; installatie van sanitair en verwarming', ''] };
     const rows = data.map(([name, kvk, form, place, n, last, t]) => ({ name, kvk, form, place, last, industry: (IND[name] || ['Overig'])[0], phone: (IND[name] || ['', ''])[1], open: n > 0 ? String(n) : 'Geen', openStyle: openS(n), tickets: t > 0 ? String(t) : 'Geen', ticketStyle: openS(t), href: name === 'Buurtvereniging Oost' ? 'PqOrganisatie.dc.html' : '#', selectLabel: 'Selecteren ' + name }));
     const view = (on) => 'display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px \'Fira Sans\', sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
     const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
     const seg = (on) => 'display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 34px; border: 0; border-radius: 6px; cursor: pointer; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12);' : 'background: transparent; color: #3d4047;');
     const modes = [['Tabel', 'M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z', true], ['Kaarten', 'M3 11H11V3H3M5 5H9V9H5M13 21H21V13H13M15 15H19V19H15M3 21H11V13H3M5 15H9V19H5M13 3V11H21V3M19 9H15V5H19Z', false], ['Bord', 'M4 5V18H21V5H4M14 7V16H11V7H14M6 7H9V16H6V7M19 16H16V7H19V16Z', false], ['Map', 'M12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5M12,2A7,7 0 0,1 19,9C19,14.25 12,22 12,22C12,22 5,14.25 5,9A7,7 0 0,1 12,2M12,4A5,5 0 0,0 7,9C7,10 7,12 12,18.71C17,12 17,10 17,9A5,5 0 0,0 12,4Z', false]].map(([label, icon, on]) => ({ label, icon, pressed: on ? 'true' : 'false', style: seg(on) }));
-    const views = [['Alle', 23, true], ['Met open zaak', 9, false], ['Verenigingen', 8, false], ['Stichtingen', 6, false], ['Bedrijven', 9, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
+    const views = [['Alle', 23, true], ['Verenigingen', 8, false], ['Stichtingen', 6, false], ['Bedrijven', 9, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
     return { nav, rows, views, modes };
   }
 }

@@ -646,5 +646,168 @@ test('a component that starts below the captured frame is not measured', { skip 
 	const r = await measure(`<aside style="position:absolute;left:1108px;top:0;width:307px">
 		<div style="height:920px"></div>${['Status', 'Zaaktype', 'Behandelaar'].map((t) => `<div style="height:50px;margin-top:20px;border:1px solid #ddd;border-radius:8px;padding:10px">${t} <b>filter</b></div>`).join('')}</aside>
 		<section style="position:absolute;left:292px;top:200px;width:700px;border:1px solid #ddd;padding:20px"><h2 style="margin:0">Zichtbaar</h2><p>Inhoud</p></section>`)
-	assert.deepEqual(r.components.filter((c) => c.role === 'card').map((c) => c.title), ['Zichtbaar'])
+	assert.deepEqual(r.components.filter((c) => c.role === 'card' && !c.belowFrame).map((c) => c.title), ['Zichtbaar'])
+	// The rows below the frame are kept only as counterparts: unpaired, they are not extra.
+	const { extra } = pairComponents(r.components.filter((c) => c.title === 'Zichtbaar'), r.components, 900)
+	assert.deepEqual(extra, [])
+})
+
+test('a table the board draws inside its frame pairs with the same table drawn lower on a taller live page', { skip }, async () => {
+	const page = (top) => `<section style="position:absolute;left:315px;top:${top}px;width:540px"><table style="width:540px;border-collapse:collapse"><thead><tr><th style="padding:8px">Zaak</th><th>Dagen</th></tr></thead><tbody><tr><td style="padding:8px">2026-0110</td><td>12</td></tr></tbody></table></section>`
+	const board = await measure(page(700))
+	const live = await measure(page(1000))
+	const { pairs, missing, extra } = pairComponents(board.components, live.components, 900)
+	assert.equal(pairs.filter((p) => p.board.role === 'table').length, 1)
+	assert.deepEqual(missing.filter((c) => c.role === 'table'), [])
+	assert.deepEqual(extra, [])
+})
+
+test('a card footer is one row when its due date wraps to two lines beside the pill', { skip }, async () => {
+	const card = (due) => `<a href="#" style="background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px;text-decoration:none;color:#1b1c1d">
+		<span style="display:flex;gap:8px;align-items:center"><span style="margin-left:auto;display:inline-block;padding:3px 10px;border-radius:12px;background:#fcedec;font-size:13px;font-weight:600">Kritiek</span><span style="font-size:13px;color:#5e6168">2026-4836</span></span>
+		<strong style="font-size:17px;font-weight:700">Bezwaar parkeerboete</strong><span style="font-size:14px;color:#5e6168">Bezwaar · R. Yilmaz</span>
+		<span style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:10px;border-top:1px solid #eef0f3"><span style="display:inline-block;padding:3px 10px;border-radius:12px;background:#e8e6f6;font-size:13px;font-weight:600;white-space:nowrap">In behandeling</span><span style="font-size:14px;font-weight:600;${due}">Termijn vandaag</span></span></a>`
+	const r = await measure(`<div style="position:absolute;left:292px;top:400px;display:grid;grid-template-columns:repeat(4,265px);gap:20px">${card('')}${card('width:70px')}${card('')}</div>`)
+	const cards = r.components.filter((c) => c.role === 'card').sort((a, b) => a.rect.x - b.rect.x)
+	assert.equal(cards.length, 3)
+	assert.equal(cards[1].structure, cards[0].structure)
+	assert.match(cards[0].structure, /divider \/ pill deadline$/)
+	assert.equal(cards[1].content.firstRowInsetLeft, cards[0].content.firstRowInsetLeft)
+})
+
+test('a side panel docked at the right edge is a card, ruled off by its left border inside a white container or drawn on the work ground', { skip }, async () => {
+	const panel = '<aside style="position:absolute;right:0;top:68px;width:360px;height:820px;background:#fff;border-left:1px solid #e4e6ea;box-sizing:border-box;padding:20px"><h2 style="margin:0;font-size:20px">Alle zaken</h2><p>8 zaken, 8 op deze pagina</p></aside>'
+	const live = await measure(`<div style="position:fixed;inset:68px 0 0 0;background:#fff"><main style="position:absolute;left:264px;top:0;width:816px;height:820px;background:#f5f6f8"></main>${panel}</div>`)
+	const board = await measure(`<div style="position:fixed;inset:68px 0 0 0;background:#f5f6f8">${panel}</div>`)
+	for (const r of [live, board]) {
+		const c = r.components.find((x) => x.title === 'Alle zaken')
+		assert.ok(c, JSON.stringify(r.components.map((x) => x.title)))
+		assert.equal(c.rect.w, 360)
+	}
+	// A narrow ruled column inside the page is no side panel.
+	const col = await measure('<div style="position:absolute;left:300px;top:100px;width:300px;height:800px;background:#fff;border-left:1px solid #ddd"><h2>Kolom</h2><p>tekst</p></div>')
+	assert.ok(!col.components.find((x) => x.title === 'Kolom'))
+})
+
+test('a row menu drawn as an aria-labelled icon span in a record card\'s title row is a header action, as a button is', { skip }, async () => {
+	const dots = '<svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>'
+	const card = (menu) => `<a href="#" style="display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:10px;background:#fff;border:1px solid #e4e6ea;text-decoration:none;width:244px">
+		<span style="display:flex;align-items:flex-start;gap:8px"><strong style="flex:1;font-size:15px">Verlichting fietspad Lindelaan</strong>${menu}</span>
+		<span style="font-size:13px;color:#5e6168">2026-0110 · Sanne de Vries</span><span style="font-size:13px">Termijn 8 nov</span></a>`
+	const deck = (menu) => `<div style="position:absolute;left:300px;top:300px;display:flex;flex-direction:column;gap:10px">${card(menu)}${card(menu)}${card(menu)}</div>`
+	const board = await measure(deck(`<span aria-label="Acties" style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px">${dots}</span>`))
+	const live = await measure(deck('<button type="button" aria-label="Acties voor Verlichting" style="width:28px;height:28px;padding:0"><span aria-hidden="true" style="font-size:20px;font-weight:700">⋯</span></button>'))
+	const first = (r) => r.components.filter((c) => c.role === 'card').sort((a, b) => a.rect.y - b.rect.y)[0]
+	assert.equal(first(board).header.actions, 1)
+	assert.equal(first(live).header.actions, 1)
+	// The toggle's text glyph is decoration: the card reads the same on both sides.
+	assert.equal(first(live).structure, first(board).structure)
+	// A label-only span with no icon (a drawn checkbox named "Selecteren") is not an action.
+	const box = await measure(deck('<span aria-label="Selecteren" style="flex:none;width:18px;height:18px;border:2px solid #3669a5;border-radius:4px"></span>'))
+	assert.equal(first(box).header.actions, 0)
+})
+
+test('a line under the card title split over spans reads as the one line a board writes as one string', { skip }, async () => {
+	const card = (sub) => `<article style="background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px;width:200px">
+		<strong style="font-size:17px">Verlichting fietspad Lindelaan</strong>${sub}<span style="font-size:14px">Pieter Jansen</span></article>`
+	const deck = (sub) => `<div style="position:absolute;left:300px;top:300px;display:grid;grid-template-columns:repeat(3,250px);gap:20px">${card(sub)}${card(sub)}${card(sub)}</div>`
+	const board = await measure(deck('<span style="font-size:14px;color:#5e6168">2026-0110 · Woo-verzoek</span>'))
+	const live = await measure(deck('<p style="margin:0;font-size:14px;color:#5e6168"><span>2026-0110</span><span aria-hidden="true"> · </span><span>Woo-verzoek</span></p>'))
+	const first = (r) => r.components.find((c) => c.role === 'card').structure
+	assert.equal(first(live), first(board))
+	assert.match(first(board), /title \/ number \/ meta/)
+})
+
+test('a map in a card is its first row at its own box, not the zoom control laid over it', { skip }, async () => {
+	const card = (map) => `<section style="position:absolute;left:292px;top:300px;width:420px;border:1px solid #ddd;border-radius:12px;padding:20px 22px"><h2 style="margin:0 0 12px;font-size:17px">Locaties</h2>${map}<p style="margin:12px 0 0">Lindelaan 4</p></section>`
+	const board = await measure(card('<svg role="img" aria-label="Kaart met de locatie" width="374" height="200" style="display:block"><rect width="374" height="200" fill="#e9eef3"/><text x="20" y="40">Lindelaan</text></svg>'))
+	const live = await measure(card(`<div class="leaflet-container" style="position:relative;width:374px;height:200px;background:#ddd;overflow:hidden"><div class="leaflet-tile-pane"></div>
+		<div class="leaflet-control-zoom" style="position:absolute;right:12px;top:12px;display:flex;flex-direction:column"><a href="#" style="width:30px;height:30px;background:#fff;text-align:center">+</a><a href="#" style="width:30px;height:30px;background:#fff;text-align:center">−</a></div></div>`))
+	const card0 = (r) => r.components.find((c) => c.title === 'Locaties')
+	assert.equal(card0(live).content.firstRowInsetLeft, card0(board).content.firstRowInsetLeft)
+	assert.equal(card0(live).content.gapBelowTitle, card0(board).content.gapBelowTitle)
+	assert.equal(card0(board).content.firstRowInsetLeft, 23)
+})
+
+test('a chosen option\'s title in a choice row label nested beside its details is the option card\'s title', { skip }, async () => {
+	const fields = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 16px 56px"><label>Reden<input type="text" style="display:block;width:100%;height:36px"></label><label>Dagen<input type="number" style="display:block;width:100%;height:36px"></label></div>'
+	const title = '<span style="display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">Opschorten</span><span style="font-size:13px;color:#5e6168">De termijn staat stil tot het antwoord er is.</span></span>'
+	const box = 'position:absolute;left:400px;top:300px;width:600px;border:2px solid #3669a5;border-radius:12px;background:#fff'
+	const board = await measure(`<label style="${box};display:block"><span style="display:flex;gap:12px;align-items:center;padding:16px"><input type="radio" checked>${title}</span>${fields}</label>`)
+	const live = await measure(`<div style="${box}"><label style="display:flex;gap:12px;align-items:center;padding:16px"><input type="radio" checked>${title}</label>${fields}</div>`)
+	const opt = (r) => r.components.find((c) => c.rect.x === 400 && c.rect.y === 300)
+	assert.equal(opt(board).title, 'Opschorten')
+	assert.equal(opt(live).title, 'Opschorten')
+	assert.equal(opt(live).content.firstRowInsetLeft, opt(board).content.firstRowInsetLeft)
+})
+
+test('a row header cell holding the row\'s name is the row\'s first labelled cell, as a board\'s plain cell is', { skip }, async () => {
+	const table = (name) => `<table style="position:absolute;left:495px;top:600px;width:600px;border-collapse:collapse"><thead><tr><th style="padding:8px 4px;text-align:left">Gebeurtenis</th><th>Mail</th></tr></thead>
+		<tbody><tr>${name}<td style="padding:8px 4px"><input type="checkbox"></td></tr></tbody></table>`
+	const board = await measure(table('<td style="padding:12px 0">Zaak toegewezen</td>'))
+	const live = await measure(table('<th scope="row" style="padding:12px 0;text-align:left;font-weight:400">Zaak toegewezen</th>'))
+	const cell = (r) => r.components.find((c) => c.role === 'table').cell
+	assert.equal(cell(live).paddingLeft, cell(board).paddingLeft)
+	assert.equal(cell(live).fontWeight, 400)
+})
+
+test('a small bold kicker set as a paragraph over a larger bold line gives the card its title from the larger line', { skip }, async () => {
+	const panel = (head) => `<div style="position:absolute;left:300px;top:200px;width:330px;border:10px solid #1b1c1d;border-radius:36px;background:#f5f6f8;height:500px"><div style="padding:14px 18px 10px;background:#fff;border-bottom:1px solid #e4e6ea;display:flex;flex-direction:column;gap:6px">${head}</div><p style="padding:14px">Vandaag geen inspecties gepland</p></div>`
+	const board = await measure(panel('<span style="font-size:13px;color:#7a4f00;font-weight:600">Offline · gesynchroniseerd om 07:42</span><strong style="font-size:20px">Vandaag</strong>'))
+	const live = await measure(panel('<span style="font-size:13px;color:#7a4f00;font-weight:600">Offline · eerder gesynchroniseerd</span><h2 style="margin:0;font-size:20px">Vandaag</h2>'))
+	const titles = (r) => r.components.filter((c) => c.role === 'card').map((c) => c.title)
+	assert.ok(titles(board).includes('Vandaag') && !titles(board).some((t) => /Offline/.test(t || '')), JSON.stringify(titles(board)))
+	assert.ok(titles(live).includes('Vandaag'), JSON.stringify(titles(live)))
+	// A KPI tile's label keeps the title: its larger bold value is a figure, not a line of words.
+	const kpi = await measure('<div style="position:absolute;left:300px;top:200px;width:260px;border:1px solid #ddd;padding:16px"><span style="font-size:13px;font-weight:600">Geanalyseerde zaken</span><strong style="display:block;font-size:28px">1.284</strong></div>')
+	assert.equal(kpi.components.find((c) => c.role === 'card').title, 'Geanalyseerde zaken')
+})
+
+test('a coloured dot leads its row though it holds an off-screen 0x0 image', { skip }, async () => {
+	const card = (inner) => `<section style="position:absolute;left:300px;top:200px;width:400px;border:1px solid #ddd;padding:20px 22px"><h2 style="margin:0 0 12px;font-size:17px">Recente activiteit</h2>
+		<div style="display:flex;gap:12px;align-items:center"><span style="width:10px;height:10px;border-radius:5px;background:#3669a5">${inner}</span><span>Zaak 2026-0110 toegewezen</span></div></section>`
+	const plain = await measure(card(''))
+	const live = await measure(card('<img alt="" style="position:absolute;left:-1092px;width:0;height:0">'))
+	const inset = (r) => r.components.find((c) => c.title === 'Recente activiteit').content.firstRowInsetLeft
+	assert.equal(inset(plain), 23)
+	assert.equal(inset(live), 23)
+})
+
+test('an avatar\'s initial in a 32px circle is not the title of the row card that holds it', { skip }, async () => {
+	const r = await measure(`<div role="dialog" aria-modal="true" style="position:absolute;left:400px;top:88px;width:640px;border:1px solid #ddd;background:#fff;padding:24px"><h2 style="margin:0 0 16px">Weergave delen</h2>
+		<div style="display:flex;align-items:center;gap:12px;height:52px;padding:0 14px;border-radius:12px;background:#f0f1f3"><span style="width:32px;height:32px;border-radius:16px;background:#3669a5;color:#fff;font-weight:700;display:inline-flex;align-items:center;justify-content:center">Z</span><span style="font-weight:600">Zuiddrecht behandelaars</span></div></div>`)
+	const row = r.components.find((c) => c.role === 'dialog-card')
+	assert.equal(row.title, 'Zuiddrecht behandelaars')
+})
+
+test('a table in a widget is one part of its structure, held directly or in a frame of its own', { skip }, async () => {
+	const rows = ['Ontvangst', 'Beoordeling', 'Besluit'].map((t, i) => `<tr><td>${t}</td><td>${i + 3} dagen</td></tr>`).join('')
+	const table = `<table style="width:100%"><thead><tr><th>Fase</th><th>Doorlooptijd</th></tr></thead><tbody>${rows}</tbody></table>`
+	const widget = (inner, title) => `<section style="border:1px solid #ddd;padding:20px;width:1000px"><h2 style="margin:0 0 8px;font-size:17px">${title}</h2><p style="margin:0 0 12px;font-size:14px">Waar zaken het langst wachten</p>${inner}</section>`
+	const col = (inner) => `<div style="position:absolute;left:300px;top:100px;display:flex;flex-direction:column;gap:16px">${['Knelpuntenranglijst', 'Doorlooptijd per behandelaar', 'Dagen per fase'].map((t) => widget(inner, t)).join('')}</div>`
+	const board = await measure(col(table))
+	const live = await measure(col(`<div style="border:1px solid #e4e6ea;border-radius:8px;padding:4px">${table}</div>`))
+	const s = (r) => r.components.find((c) => c.title === 'Knelpuntenranglijst').structure
+	assert.equal(s(live), s(board))
+	assert.match(s(board), /table$/)
+})
+
+test('a footer avatar taller than the name beside it is on the name\'s line', { skip }, async () => {
+	const card = (size) => `<article style="background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px;width:200px">
+		<strong style="font-size:17px">Verlichting fietspad Lindelaan</strong><span style="font-size:14px;color:#5e6168">Woo-verzoek</span>
+		<div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;padding-top:10px;border-top:1px solid #eef0f3"><span style="display:flex;align-items:center;gap:8px"><span style="width:${size}px;height:${size}px;border-radius:50%;background:#eaf0f7;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">PJ</span>Pieter Jansen</span><span>8 nov</span></div></article>`
+	const deck = (size) => `<div style="position:absolute;left:300px;top:300px;display:grid;grid-template-columns:repeat(3,250px);gap:20px">${card(size)}${card(size)}${card(size)}</div>`
+	const s = async (size) => (await measure(deck(size))).components.find((c) => c.role === 'card').structure
+	assert.equal(await s(36), await s(20))
+	assert.match(await s(36), /divider \/ pill meta deadline$/)
+})
+
+test('an open row menu pairs with an open menu, never with a flat row card where the other side left it shut', { skip }, async () => {
+	const row = '<div style="position:absolute;left:1107px;top:379px;width:307px;height:52px;background:#eaf0f7;border-radius:8px;padding:8px"><b>Termijn deze week</b><br><small>Mijn zaken</small></div>'
+	const menu = '<div role="menu" style="position:absolute;left:1134px;top:379px;width:264px;height:280px;background:#fff;border:1px solid #e4e6ea;border-radius:10px;box-shadow:0 8px 24px rgba(27,28,29,.16)"><button role="menuitem">Bewerken</button><button role="menuitem">Delen</button></div>'
+	const board = await measure(row + menu)
+	const live = await measure(row)
+	const { pairs, missing } = pairComponents(board.components, live.components, 900)
+	assert.ok(!pairs.some((p) => p.board.popup && !p.live.popup))
+	assert.ok(missing.some((c) => c.popup))
 })

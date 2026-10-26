@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>launchpad: vandaag in één scherm</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+.lp-frame{height:900px}
+.lp-grid{display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto;gap:14px;min-height:0}
+.lp-first{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.lp-work{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.lp-main{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:14px;min-height:0}
+.lp-apps{grid-row:span 2}
+.lp-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+.lp-scroll{overflow:auto;min-height:0;scrollbar-width:thin}
+.lp-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px}
+@media (max-width: 960px){
+  .lp-frame{height:auto;min-height:100vh}
+  .lp-grid{grid-template-rows:none}
+  .lp-first,.lp-main,.lp-menu{grid-template-columns:minmax(0,1fr)}
+  .lp-main{grid-template-rows:none}
+  .lp-apps{grid-row:auto}
+  .lp-work{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lp-scroll{max-height:260px}
+}
+</style>
+</helmet>
+<div class="lp-frame" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden">
+  <dc-import name="DqKop" app="Launchpad" placeholder="Zoek dashboards, widgets en apps" role="Medewerker" hint-size="100%,68px"></dc-import>
+  <main class="lp-grid" style="position: relative; flex: 1 1 auto; width: 100%; box-sizing: border-box; padding: 18px 28px 16px">
+
+    <div style="display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 14px">
+        <img src="/_blob/ca3780498365dca18f9882aca801f345" alt="" style="height: 44px; width: auto">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <h1 style="margin: 0; font-size: 26px; font-weight: 700; line-height: 1.15">Vandaag</h1>
+          <span style="font-size: 14px; color: #5e6168">Goedemiddag, Pieter · maandag 5 oktober 2026 · week 41</span>
+        </div>
+      </div>
+      <div style="position: relative; flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+        <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Startpagina aanpassen</button>
+        <button type="button" aria-haspopup="menu" aria-expanded="true" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #3669a5; border-radius: 8px; background: #eaf0f7; font: 600 14px 'Fira Sans', sans-serif; color: #234a78"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg>Meer</button>
+        <div role="menu" aria-label="Meer" class="lp-menu" style="position: absolute; z-index: 4; top: 48px; right: 0; width: 600px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; box-shadow: 0 12px 32px rgba(27,28,29,0.18); padding: 10px 10px 12px">
+          <sc-for list="{{ menu }}" as="col" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+              <sc-for list="{{ col }}" as="g" hint-placeholder-count="2">
+                <span style="padding: 10px 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span>
+                <sc-for list="{{ g.items }}" as="m" hint-placeholder-count="5">
+                  <a href="#" role="{{ m.role }}" aria-checked="{{ m.checked }}" style="{{ m.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex: none"><path d="{{ m.icon }}"></path></svg><span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.label }}</span><sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 12px; color: #5e6168">{{ m.meta }}</span></sc-if></a>
+                </sc-for>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <section aria-labelledby="lp-eerst" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 14px 18px 16px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+        <h2 id="lp-eerst" style="margin: 0; font-size: 16px; font-weight: 700">Vandaag eerst</h2>
+        <span style="font-size: 13px; color: #5e6168">3 dingen uit al uw apps die vandaag aandacht vragen</span>
+      </div>
+      <div class="lp-first">
+        <sc-for list="{{ first }}" as="f" hint-placeholder-count="3">
+          <a href="{{ f.href }}" style="display: flex; align-items: center; gap: 12px; min-width: 0; padding: 0 0 0 12px; border-left: 4px solid {{ f.color }}; color: #1b1c1d; text-decoration: none">
+            <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ f.title }}</strong><span style="font-size: 13px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ f.why }}</span><span style="margin-top: 2px; align-self: flex-start; padding: 1px 8px; border-radius: 10px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 600">{{ f.app }}</span></span>
+            <span style="flex: none; display: inline-flex; align-items: center; height: 34px; padding: 0 12px; border-radius: 8px; background: #3669a5; color: #ffffff; font-size: 13px; font-weight: 600">{{ f.action }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section aria-label="Mijn werk" class="lp-work">
+      <sc-for list="{{ apps }}" as="a" hint-placeholder-count="4">
+        <a href="{{ a.href }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; min-width: 0; color: #1b1c1d; text-decoration: none">
+          <span style="flex: none; width: 36px; height: 36px; border-radius: 8px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="{{ a.icon }}"></path></svg></span>
+          <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; line-height: 1.2"><span style="font-size: 13px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><strong style="color: #1b1c1d">{{ a.name }}</strong> · {{ a.what }}</span><span style="display: flex; align-items: baseline; gap: 6px"><strong style="font-size: 26px; font-weight: 700; line-height: 1.1">{{ a.count }}</strong><span style="font-size: 13px; color: #5e6168">{{ a.unit }}</span></span></span>
+          <span style="{{ a.noteStyle }}">{{ a.note }}</span>
+        </a>
+      </sc-for>
+    </section>
+
+    <div class="lp-main">
+      <section aria-labelledby="lp-apps" class="lp-apps" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 14px 18px 16px; display: flex; flex-direction: column; gap: 10px; min-height: 0">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+          <h2 id="lp-apps" style="flex: 1; margin: 0; font-size: 16px; font-weight: 700">Apps</h2>
+          <div style="position: relative; flex: 0 1 240px">
+            <label for="lp-filter" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter tegels</label>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#5e6168" style="position: absolute; left: 10px; top: 10px"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg>
+            <input id="lp-filter" type="search" placeholder="Filter tegels" style="width: 100%; height: 36px; box-sizing: border-box; padding: 0 10px 0 34px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif">
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #5e6168; margin-right: 4px">Meest gebruikt</span>
+          <sc-for list="{{ most }}" as="u" hint-placeholder-count="4">
+            <a href="#" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 15px; background: #f0f1f3; color: #1b1c1d; font-size: 13px; font-weight: 500; text-decoration: none">{{ u.name }}<span style="font-size: 12px; color: #5e6168">{{ u.n }}</span></a>
+          </sc-for>
+        </div>
+        <div class="lp-tiles lp-scroll" style="flex: 1 1 auto; align-content: start">
+          <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="12">
+            <a href="#" title="{{ t.title }}" style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px 10px; border: 1px solid #e4e6ea; border-radius: 10px; color: #1b1c1d; text-decoration: none; text-align: center">
+              <sc-if value="{{ t.pinned }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="#3669a5" aria-label="Vastgezet" style="position: absolute; top: 6px; left: 6px"><path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"></path></svg></sc-if>
+              <span aria-label="{{ t.statusLabel }}" style="{{ t.dot }}"></span>
+              <span style="{{ t.chip }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="{{ t.icon }}"></path></svg></span>
+              <span style="font-size: 13px; font-weight: 600; line-height: 1.2">{{ t.name }}</span>
+              <sc-if value="{{ t.down }}" hint-placeholder-val="{{ false }}"><span style="padding: 1px 8px; border-radius: 10px; background: #fcedec; color: #a30000; font-size: 12px; font-weight: 600">Storing</span></sc-if>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+
+      <section aria-labelledby="lp-agenda" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 14px 18px 8px; display: flex; flex-direction: column; min-height: 0">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px"><h2 id="lp-agenda" style="margin: 0; font-size: 16px; font-weight: 700">Agenda vandaag</h2><a href="#" style="font-size: 13px; font-weight: 600">Open agenda</a></div>
+        <div class="lp-scroll" style="flex: 1 1 auto">
+          <sc-for list="{{ agenda }}" as="e" hint-placeholder-count="4">
+            <div style="display: flex; gap: 12px; align-items: center; padding: 7px 0; border-top: 1px solid #eef0f3">
+              <span style="flex: 0 0 84px; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums">{{ e.time }}</span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ e.title }}</span><span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ e.where }}</span></span>
+              <sc-if value="{{ e.talk }}" hint-placeholder-val="{{ false }}"><a href="#" style="flex: none; display: inline-flex; align-items: center; height: 30px; padding: 0 10px; border-radius: 8px; background: #3669a5; color: #ffffff; font-size: 13px; font-weight: 600; text-decoration: none">Deelnemen</a></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section aria-labelledby="lp-recent" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 14px 18px 8px; display: flex; flex-direction: column; min-height: 0">
+        <h2 id="lp-recent" style="margin: 0 0 4px; font-size: 16px; font-weight: 700">Verder waar u was</h2>
+        <div class="lp-scroll" style="flex: 1 1 auto">
+          <sc-for list="{{ recent }}" as="r" hint-placeholder-count="4">
+            <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.title }}</span><span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.meta }}</span></span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#3669a5" style="flex: none"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+    </div>
+
+    <p style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="flex: none; padding: 1px 8px; border: 1px dashed #828a95; border-radius: 10px; font-weight: 600; color: #3d4047">Ontwerpnotitie</span><span>De pagina scrolt niet: de rijen verdelen de hoogte onder de bovenbalk, op 1440×900 en op 1366×768. Agenda, recent werk en tegels scrollen in hun eigen kaart. Op een smal scherm staan de kaarten onder elkaar en scrolt de pagina wel.</span></p>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const I = {
+      case: 'M10,2H14A2,2 0 0,1 16,4V6H20A2,2 0 0,1 22,8V19A2,2 0 0,1 20,21H4C2.89,21 2,20.1 2,19V8C2,6.89 2.89,6 4,6H8V4C8,2.89 8.89,2 10,2M14,6V4H10V6H14Z',
+      mail: 'M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z',
+      help: 'M12,1C7,1 3,5 3,10V17A3,3 0 0,0 6,20H9V12H5V10A7,7 0 0,1 12,3A7,7 0 0,1 19,10V12H15V20H19V21H12V23H18A3,3 0 0,0 21,20V10C21,5 16.97,1 12,1Z',
+      gavel: 'M2.3,20.28L11.9,10.68L10.5,9.26L9.78,9.97C9.39,10.36 8.76,10.36 8.37,9.97L7.66,9.26C7.27,8.87 7.27,8.24 7.66,7.85L13.32,2.19C13.71,1.8 14.34,1.8 14.73,2.19L15.44,2.9C15.83,3.29 15.83,3.92 15.44,4.31L14.73,5L16.15,6.43C16.54,6.04 17.17,6.04 17.56,6.43C17.95,6.82 17.95,7.46 17.56,7.85L18.97,9.26L19.68,8.55C20.07,8.16 20.71,8.16 21.1,8.55L21.8,9.26C22.19,9.65 22.19,10.29 21.8,10.68L16.15,16.33C15.76,16.72 15.12,16.72 14.73,16.33L14.03,15.63C13.63,15.24 13.63,14.6 14.03,14.21L14.73,13.5L13.32,12.09L3.71,21.7C3.32,22.09 2.69,22.09 2.3,21.7C1.91,21.31 1.91,20.67 2.3,20.28Z',
+      map: 'M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z',
+      chat: 'M15,4V11H5.17L4,12.17V4H15M16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12V3A1,1 0 0,0 16,2M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z',
+      cal: 'M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z',
+      office: 'M3,5V19L11,21V3L3,5M13,5V7H19V17H13V19H21V5H13M5,9H9V11H5V9M5,13H9V15H5V13Z',
+      folder: 'M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z',
+      people: 'M16,13C15.71,13 15.38,13 15.03,13.05C16.19,13.89 17,15 17,16.5V19H23V16.5C23,14.17 18.33,13 16,13M8,13C5.67,13 1,14.17 1,16.5V19H15V16.5C15,14.17 10.33,13 8,13M8,11A3,3 0 0,0 11,8A3,3 0 0,0 8,5A3,3 0 0,0 5,8A3,3 0 0,0 8,11M16,11A3,3 0 0,0 19,8A3,3 0 0,0 16,5A3,3 0 0,0 13,8A3,3 0 0,0 16,11Z',
+      receipt: 'M3,22L4.5,20.5L6,22L7.5,20.5L9,22L10.5,20.5L12,22L13.5,20.5L15,22L16.5,20.5L18,22L19.5,20.5L21,22V2L19.5,3.5L18,2L16.5,3.5L15,2L13.5,3.5L12,2L10.5,3.5L9,2L7.5,3.5L6,2L4.5,3.5L3,2M18,9H6V7H18M18,13H6V11H18M18,17H6V15H18V17Z',
+      plane: 'M20.56,3.91C21.15,4.5 21.15,5.45 20.56,6.03L16.67,9.92L18.79,19.11L17.38,20.53L13.5,13.1L9.6,17L9.96,19.47L8.89,20.53L7.13,17.35L3.94,15.58L5,14.5L7.5,14.87L11.37,11L3.94,7.09L5.36,5.68L14.55,7.8L18.44,3.91C19,3.33 20,3.33 20.56,3.91Z',
+      home: 'M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z',
+      queue: 'M3,5H21V7H3V5M3,9H21V11H3V9M3,13H21V15H3V13M3,17H21V19H3V17Z',
+      chart: 'M22,21H2V3H4V19H6V10H10V19H12V6H16V19H18V14H22V21Z',
+      shared: 'M16,13C15.71,13 15.38,13 15.03,13.05C16.19,13.89 17,15 17,16.5V19H23V16.5C23,14.17 18.33,13 16,13M8,13C5.67,13 1,14.17 1,16.5V19H15V16.5C15,14.17 10.33,13 8,13M8,11A3,3 0 0,0 11,8A3,3 0 0,0 8,5A3,3 0 0,0 5,8A3,3 0 0,0 8,11M16,11A3,3 0 0,0 19,8A3,3 0 0,0 16,5A3,3 0 0,0 13,8A3,3 0 0,0 16,11Z',
+      bullhorn: 'M12,8H4A2,2 0 0,0 2,10V14A2,2 0 0,0 4,16H5V20A1,1 0 0,0 6,21H8A1,1 0 0,0 9,20V16H12L17,20V4L12,8M15,15.6L13,14H4V10H13L15,8.4V15.6M21.5,12C21.5,13.71 20.54,15.26 19,16V8C20.53,8.75 21.5,10.3 21.5,12Z',
+      grid: 'M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z',
+      pencil: 'M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z',
+      cog: 'M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z',
+      plus: 'M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z',
+      share: 'M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z',
+      star: 'M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z',
+      history: 'M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3',
+      clock: 'M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z',
+      eyeoff: 'M11.83,9L15,12.16C15,12.11 15,12.05 15,12A3,3 0 0,0 12,9C11.94,9 11.89,9 11.83,9M7.53,9.8L9.08,11.35C9.03,11.56 9,11.77 9,12A3,3 0 0,0 12,15C12.22,15 12.44,14.97 12.65,14.92L14.2,16.47C13.53,16.8 12.79,17 12,17A5,5 0 0,1 7,12C7,11.21 7.2,10.47 7.53,9.8M2,4.27L4.28,6.55L4.73,7C3.08,8.3 1.78,10 1,12C2.73,16.39 7,19.5 12,19.5C13.55,19.5 15.03,19.2 16.38,18.66L16.81,19.08L19.73,22L21,20.73L3.27,3M12,7A5,5 0 0,1 17,12C17,12.64 16.87,13.26 16.64,13.82L19.57,16.75C21.07,15.5 22.27,13.86 23,12C21.27,7.61 17,4.5 12,4.5C10.6,4.5 9.26,4.75 8,5.2L10.17,7.35C10.74,7.13 11.35,7 12,7Z',
+      bin: 'M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z',
+      store: 'M12,18H6V14H12M21,14V12L20,7H4L3,12V14H4V20H14V14H18V20H20V14M20,4H4V6H20V4Z',
+      template: 'M3,3H21V7H3V3M3,9H21V11H3V9M3,13H11V21H3V13M13,13H21V15H13V13M13,17H21V19H13V17Z',
+      report: 'M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M13,3.5L18.5,9H13V3.5M8,12H16V14H8V12M8,16H13V18H8V16Z',
+      flow: 'M6,2A4,4 0 0,1 10,6C10,7.75 8.87,9.24 7.3,9.78L9,14H15L16.7,9.78C15.13,9.24 14,7.75 14,6A4,4 0 0,1 18,2A4,4 0 0,1 22,6C22,7.75 20.87,9.24 19.3,9.78L17,15.5V16H7V15.5L4.7,9.78C3.13,9.24 2,7.75 2,6A4,4 0 0,1 6,2M6,4A2,2 0 0,0 4,6A2,2 0 0,0 6,8A2,2 0 0,0 8,6A2,2 0 0,0 6,4M18,4A2,2 0 0,0 16,6A2,2 0 0,0 18,8A2,2 0 0,0 20,6A2,2 0 0,0 18,4M9,18H15V22H9V18Z',
+      link: 'M3.9,12C3.9,10.29 5.29,8.9 7,8.9H11V7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H11V15.1H7C5.29,15.1 3.9,13.71 3.9,12M8,13H16V11H8V13M17,7H13V8.9H17C18.71,8.9 20.1,10.29 20.1,12C20.1,13.71 18.71,15.1 17,15.1H13V17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7Z',
+      book: 'M18,2A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H18M6,4V20H18V4H6M8,6H16V8H8V6M8,10H16V12H8V10M8,14H13V16H8V14Z',
+      road: 'M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z',
+      user: 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z',
+      shield: 'M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.1 14.8,9.5V11C15.4,11 16,11.6 16,12.3V15.8C16,16.4 15.4,17 14.7,17H9.2C8.6,17 8,16.4 8,15.7V12.2C8,11.6 8.6,11 9.2,11V9.5C9.2,8.1 10.6,7 12,7M12,8.2C11.2,8.2 10.5,8.7 10.5,9.5V11H13.5V9.5C13.5,8.7 12.8,8.2 12,8.2Z',
+      dossier: 'M3 7h18v13H3zM8 7V4h8v3M3 12h18',
+      contact: 'M4 5h16v11H8l-4 4z',
+      sign: 'M14 4l6 6M11 7l6 6M4 20l8-8M3 21h8',
+      tasks: 'M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2'
+    };
+    const first = [
+      { title: 'Parkeervergunningen binnenstad', why: 'De beslistermijn loopt vandaag af', app: 'dossiq', action: 'Zaak openen', href: 'DqZaak.dc.html', color: '#cc0000' },
+      { title: 'Vraag van M. de Graaf over afvalpas', why: 'Wacht 3 dagen op een antwoord', app: 'pipelinq', action: 'Beantwoorden', href: 'PqDashboard.dc.html', color: '#e0a030' },
+      { title: 'Collegevoorstel Havenpark', why: 'Uw paraaf is nodig voor dinsdag', app: 'decidiq', action: 'Paraferen', href: 'DcDashboard.dc.html', color: '#e0a030' }
+    ];
+    const note = (c, w) => 'flex: none; max-width: 40%; text-align: right; font-size: 12px; line-height: 1.3; color: ' + c + '; font-weight: ' + (w || 500);
+    const apps = [
+      { name: 'dossiq', what: 'Zaken', count: '14', unit: 'open zaken', note: '3 termijnen deze week', noteStyle: note('#a30000', 600), href: 'DqDashboard.dc.html', icon: I.dossier },
+      { name: 'pipelinq', what: 'Klantcontact', count: '5', unit: 'open vragen', note: '2 wachten op u', noteStyle: note('#5e6168'), href: 'PqDashboard.dc.html', icon: I.contact },
+      { name: 'decidiq', what: 'Besluiten', count: '2', unit: 'te paraferen', note: 'college dinsdag', noteStyle: note('#5e6168'), href: 'DcDashboard.dc.html', icon: I.sign },
+      { name: 'Taken', what: 'Uit alle apps', count: '4', unit: 'taken', note: '1 voor vandaag', noteStyle: note('#5e6168'), href: 'DqDashboard.dc.html', icon: I.tasks }
+    ];
+    const most = [['Zaaksysteem', '42 keer'], ['Outlook web', '31 keer'], ['TOPdesk', '12 keer'], ['Kadasterviewer', '9 keer']].map(([name, n]) => ({ name, n }));
+    const dot = (c) => 'position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; border-radius: 5px; background: ' + c;
+    const chip = (bg, fg) => 'width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: ' + bg + '; color: ' + fg;
+    const tiles = [
+      ['Zaaksysteem', I.case, true, 'ok'], ['Outlook web', I.mail, true, 'ok'], ['TOPdesk', I.help, false, 'ok'], ['Raadsinformatie', I.gavel, false, 'down'],
+      ['Kadasterviewer', I.map, false, 'ok'], ['Talk', I.chat, false, 'ok'], ['Agenda', I.cal, false, 'ok'], ['Word', I.office, false, 'ok'],
+      ['Bestanden', I.folder, false, 'ok'], ['Smoelenboek', I.people, false, 'ok'], ['Declaraties', I.receipt, false, 'ok'], ['Verlof en rooster', I.plane, false, 'ok']
+    ].map(([name, icon, pinned, st]) => ({ name, icon, pinned, down: st === 'down', title: name + (st === 'down' ? ', storing sinds 09.12' : ', bereikbaar'), statusLabel: st === 'down' ? 'Storing' : 'Bereikbaar', dot: dot(st === 'down' ? '#cc0000' : '#1e6b2a'), chip: st === 'down' ? chip('#fcedec', '#a30000') : chip('#eaf0f7', '#234a78') }));
+    const agenda = [
+      { time: '09.30 - 10.00', title: 'Weekstart team Woo en informatie', where: 'Stadskantoor, kamer 2.14', talk: false },
+      { time: '11.00 - 11.30', title: 'Overleg vergunningverlening Havenpark', where: 'Talk · online, 4 deelnemers', talk: true },
+      { time: '13.00 - 13.30', title: 'Bellen met M. de Graaf over ID-bewijs', where: 'Telefonisch', talk: false },
+      { time: '15.00 - 16.00', title: 'Voorbereiding collegevergadering', where: 'Online', talk: false }
+    ];
+    const recent = [
+      { title: 'Verlichting fietspad Lindelaan', meta: 'dossiq · zaak 2026-0082 · 10 minuten geleden' },
+      { title: 'Besluit Woo-verzoek jeugdzorg.docx', meta: 'Bestanden · vanochtend' },
+      { title: 'Collegevoorstel Havenpark', meta: 'decidiq · vrijdag' },
+      { title: 'Sanne de Vries', meta: 'pipelinq · contact · vrijdag' }
+    ];
+    const mi = 'display: flex; align-items: center; gap: 10px; min-height: 32px; padding: 0 10px; border-radius: 6px; font-size: 14px; text-decoration: none; ';
+    const item = (label, icon, o) => Object.assign({ label, icon, role: 'menuitem', checked: 'false', hasMeta: false, meta: '', style: mi + 'color: #1b1c1d;' }, o || {});
+    const dash = (label, icon, meta, current) => item(label, icon, { role: 'menuitemradio', checked: current ? 'true' : 'false', hasMeta: !!meta, meta: meta || '', style: mi + (current ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d;') });
+    const menu = [
+      [
+        { title: 'Dashboards', items: [
+          dash('Vandaag', I.home, 'standaard', true), dash('Mijn werkplek', I.queue, '', false), dash('Project Havenpark', I.chart, '', false),
+          dash('Team Vergunningen', I.shared, 'gedeeld', false), dash('Intranet Zuiddrecht', I.bullhorn, 'groep', false), item('Alle dashboards', I.grid)
+        ] },
+        { title: 'Instellingen', items: [item('Persoonlijke instellingen', I.user), item('Beheerinstellingen', I.shield)] }
+      ],
+      [
+        { title: 'Dit dashboard', items: [
+          item('Bewerken', I.pencil), item('Instellingen', I.cog), item('Widget toevoegen', I.plus), item('Delen', I.share), item('Als standaard instellen', I.star),
+          item('Versies', I.history), item('Inplannen', I.clock), item('Publicatie intrekken', I.eyeoff),
+          item('Verwijderen', I.bin, { style: mi + 'color: #a30000; border-top: 1px solid #eef0f3; border-radius: 0 0 6px 6px; margin-top: 4px;' })
+        ] },
+        { title: 'Launchpad', items: [item('Store', I.store), item('Sjablonen', I.template), item('Rapporten', I.report), item('Flows', I.flow), item('Koppelingen', I.link), item('Documentatie', I.book), item('Functies en roadmap', I.road)] }
+      ]
+    ];
+    return { first, apps, most, tiles, agenda, recent, menu };
+  }
+}
+</script>
+</body>
+</html>

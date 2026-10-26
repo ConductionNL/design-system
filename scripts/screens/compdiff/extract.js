@@ -214,7 +214,13 @@ window.__compdiffExtract = function () {
 	}
 	// A framed item among framed siblings of the same kind that are too short to be cards is a row of that list, not
 	// a card: whether one tile reaches 48px depends on how its text wraps (a long status name), not on what it is.
-	const rowSibling = (el) => [...el.parentElement.children].some((s) => s !== el && s.tagName === el.tagName && visible(s) && framed(s, getComputedStyle(s)) && s.getBoundingClientRect().height < 48)
+	// The frame can sit on an element that fills a list item (live's status tiles draw it inside the li), so the
+	// item is read at the outermost element with the same box, and a sibling counts when it or the element filling it
+	// is framed.
+	const sameBox = (a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect(); return Math.abs(p.x - q.x) <= 1 && Math.abs(p.y - q.y) <= 1 && Math.abs(p.right - q.right) <= 1 && Math.abs(p.bottom - q.bottom) <= 1 }
+	const itemOf = (el) => { let e = el; while (e.parentElement && e.parentElement !== document.body && sameBox(e, e.parentElement)) e = e.parentElement; return e }
+	const framedFill = (s) => { for (let e = s; e; e = [...e.children].find((k) => sameBox(k, s)) || null) if (framed(e, getComputedStyle(e))) return true; return false }
+	const rowSibling = (el) => { const item = itemOf(el); return !!item.parentElement && [...item.parentElement.children].some((s) => s !== item && s.tagName === item.tagName && visible(s) && framedFill(s) && s.getBoundingClientRect().height < 48) }
 	cards = cards.filter((c) => !c.el.parentElement || !rowSibling(c.el))
 	// Collapse wrappers that draw the same box (grid item around widget wrapper): keep the one with the most border sides, else the inner one.
 	const same = (a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect(); return Math.abs(p.x - q.x) <= 3 && Math.abs(p.y - q.y) <= 3 && Math.abs(p.right - q.right) <= 3 && Math.abs(p.bottom - q.bottom) <= 3 }

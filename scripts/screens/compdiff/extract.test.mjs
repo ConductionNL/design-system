@@ -966,3 +966,13 @@ test('a settings section\'s marked description stays its description in a column
 	const plain = await measure(`<div style="position:absolute;left:316px;top:200px;width:1073px">${['A', 'B', 'C'].map((t) => sec(t).replace(' class="settings-section__desc"', '')).join('')}</div>`)
 	assert.ok(plain.components.find((x) => x.title === 'A').content.gapBelowTitle > 20)
 })
+
+test('a tall tile among short framed list rows is a row when the frame sits on an element inside the li', { skip }, async () => {
+	const tile = (h, t) => `<li style="list-style:none;margin:0 0 8px"><div style="height:${h}px;border:1px solid #ccc;border-radius:8px;padding:0 12px;box-sizing:border-box">${t}</div></li>`
+	const r = await measure(`<section style="position:absolute;left:300px;top:100px;width:800px;border:1px solid #ccc;padding:20px">
+		<h2 style="margin:0 0 12px">Statussen</h2>
+		<ul style="margin:0;padding:0">${tile(52, 'Ontvangen')}${tile(35, 'In behandeling')}${tile(39, 'Besluit')}</ul></section>`)
+	const cards = r.components.filter((c) => c.role === 'card')
+	assert.deepEqual(cards.map((c) => c.title), ['Statussen'], JSON.stringify(cards.map((c) => [c.title, c.rect])))
+	assert.ok(cards[0].content.gapBelowTitle < 20, `gap ${cards[0].content.gapBelowTitle}`)
+})

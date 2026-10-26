@@ -106,21 +106,23 @@ class Component extends DCLogic {
       { name: 'AWB-termijndefinities', desc: 'Configureer wettelijke termijndefinities per zaaktype voor AWB-termijnbewaking (wettelijke grondslag, duur, geldigheid). Versiebeheer wordt afgedwongen bij opslaan.', rows: [
         { note: 'Dagen en datums worden geteld in Europe/Amsterdam.', tone: 'plain' },
         { buttons: [['Nieuwe termijndefinitie', '']] },
-        { table: ['Grondslag', 'Duur', 'Versie', 'Telling', 'Gesloten dag', 'Geldig', 'Staat', ''], lines: [
-          ['Awb 4:13', '8 weken', 'v1', 'Kalenderdagen', 'Verschuift van een gesloten dag', '2026-01-01 → ∞', { pill: 'Actief', tone: 'success' }, { buttons: [['Nieuwe versie', '']] }],
-          ['Woo art. 4.4', '4 weken', 'v1', 'Kalenderdagen', 'Verschuift van een gesloten dag', '2026-01-01 → ∞', { pill: 'Actief', tone: 'success' }, { buttons: [['Nieuwe versie', '']] }]
+        { table: ['Zaaktype', 'Grondslag', 'Duur', 'Versie', 'Telling', 'Gesloten dag', 'Geldig', 'Staat', ''], lines: [
+          [{ strong: 'omgevingsvergunning-kleinbouw' }, 'Ow 16.64 lid 1', '8 weken', 'v1', 'Kalenderdagen', 'Verschuift van een gesloten dag', '2026-01-01 → ∞', { pill: 'Actief', tone: 'success' }, { buttons: [['Nieuwe versie', '']] }],
+          [{ strong: 'sloopmelding' }, 'Bbl 7.10', '4 weken', 'v1', 'Kalenderdagen', 'Verschuift van een gesloten dag', '2026-01-01 → ∞', { pill: 'Actief', tone: 'success' }, { buttons: [['Nieuwe versie', '']] }]
         ] }
       ] },
       { name: 'Urgentie in de werkvoorraad', desc: 'Wanneer een zaak kritiek of bijna is, en hoe zwaar prioriteit en stilliggen wegen in de volgorde.', rows: [
         { note: 'Bepaalt de volgorde van de zaken die aan iemand zijn toegewezen. Een zaaktype kan de twee drempels zelf instellen.', tone: 'plain' },
-        { pair: [{ label: 'Kritiek vanaf, werkdagen voor de termijn', value: '3' }, { label: 'Bijna vanaf, werkdagen voor de termijn', value: '7' }] },
-        { pair: [{ label: 'Gewicht van de prioriteit', value: '10' }, { label: 'Gewicht van stilliggen', value: '0,5' }] },
+        { pair: [{ label: 'Kritiek vanaf, werkdagen voor de termijn', value: '3', hint: 'Van 0 tot 60. Standaard 3.' }, { label: 'Bijna vanaf, werkdagen voor de termijn', value: '7', hint: 'Van 0 tot 120. Standaard 7.' }] },
+        { pair: [{ label: 'Gewicht van de prioriteit', value: '10', hint: 'Punten per stap van laag naar spoed, 0 tot 50. Standaard 10.' }, { label: 'Gewicht van stilliggen', value: '0,5', hint: 'Punten per dag zonder activiteit, 0 tot 1,5. Standaard 0,5.' }] },
         { buttons: [['Opslaan', 'primary']] }
       ] },
       { name: 'Mandaatmatrix: administratie', desc: 'Configureer mandaatbesluiten, organisatierollen, roltoewijzingen en importeer oude mandaatexports', rows: [
         { select: 'Secties', value: 'Besluiten' },
         { buttons: [['Nieuw mandaat', ''], ['Importeren uit Decidiq', '']] },
-        { note: 'Nog geen MandateringsBesluit-registraties. Maak er een aan of importeer een export.', tone: 'plain' }
+        { table: ['#', 'Naam', 'Status', 'Inwerkingtreding', 'Vervaldatum', ''], lines: [
+          ['1', 'Mandaatbesluit Zuiddrecht 2026', { pill: 'Vastgesteld' }, '—', '—', { buttons: [['Bewerken', '']] }]
+        ] }
       ] },
       { name: 'Archivering', desc: 'Hoe vaak een beoordelaar wordt herinnerd aan de archiefbeslissingen die bij hem liggen. De instelling staat in OpenRegister, dat het archiveringsproces uitvoert; dossiq bewaart er geen kopie van.', rows: [
         { text: 'Herinneringsfrequentie voor beoordelingen', value: 'P7D', hint: 'Een ISO 8601-duur, bijvoorbeeld P7D voor elke zeven dagen.' },

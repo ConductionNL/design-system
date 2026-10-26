@@ -621,7 +621,8 @@ window.__compdiffExtract = function () {
 		const dr = firstRow
 		// A `display: contents` row (an ARIA grid row) has no box: its height is that of its tallest cell.
 		const rowH = (row) => { const h = row.getBoundingClientRect().height; return round(h || Math.max(0, ...[...row.children].map((c) => c.getBoundingClientRect().height))) }
-		const cell = (c) => { if (!c) return null; const ccs = getComputedStyle(c); return { ...font(c), paddingLeft: px(ccs.paddingLeft), paddingTop: px(ccs.paddingTop), borderBottom: borders(ccs).bottom || (c.parentElement ? borders(getComputedStyle(c.parentElement)).bottom : 0), background: bgBehind(c) } }
+		// A cell's type is that of its text (a name in a bold link inside a plain cell reads bold); its padding is the cell's.
+		const cell = (c) => { if (!c) return null; const ccs = getComputedStyle(c); return { ...font(textEl(c)), paddingLeft: px(ccs.paddingLeft), paddingTop: px(ccs.paddingTop), borderBottom: borders(ccs).bottom || (c.parentElement ? borders(getComputedStyle(c.parentElement)).bottom : 0), background: bgBehind(c) } }
 		components.push({ role: 'table', title: 'table', rect: rect(t), head: cell(th), headRowHeight: hr ? rowH(hr) : null, cell: cell(td), rowHeight: dr ? rowH(dr) : null })
 	}
 

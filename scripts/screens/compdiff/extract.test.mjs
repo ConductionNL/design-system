@@ -72,6 +72,16 @@ test('a table head is read from its first labelled header cell', { skip }, async
 	assert.equal(table.head.fontWeight, 600)
 })
 
+test('a table cell takes the type of its text, not of the cell around it', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:800px"><table style="width:800px">
+		<thead><tr><th style="font-weight:600">Naam</th></tr></thead>
+		<tbody><tr><td style="padding:11px 12px;font-weight:400"><a href="#" style="font-size:15px;font-weight:600">Bouwkosten</a></td></tr></tbody></table></div>`)
+	const table = r.components.find((c) => c.role === 'table')
+	assert.equal(table.cell.fontWeight, 600)
+	assert.equal(table.cell.fontSize, 15)
+	assert.equal(table.cell.paddingLeft, 12)
+})
+
 test('a table cell is read from the first labelled cell of the row, not a selection cell', { skip }, async () => {
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:800px"><table style="width:800px">
 		<thead><tr><th style="width:28px"></th><th style="font-weight:600">Naam</th></tr></thead>

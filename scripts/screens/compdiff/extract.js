@@ -835,6 +835,10 @@ window.__compdiffExtract = function () {
 		if (ctrls.length < 2) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (tabStrips.some((s) => el.contains(s))) continue
+		// A wrapper whose one visible child is itself the flex or grid row of these controls (a form inside a widget
+		// box) is not the toolbar: the row is, and its gap is the one the controls stand apart by.
+		const shown = [...el.children].filter(visible)
+		if (shown.length === 1 && /flex|grid/.test(getComputedStyle(shown[0]).display) && ctrls.every((c) => shown[0].contains(c))) continue
 		if ([...used].some((u) => u.contains(el)) || [...lineItems].some((u) => u.contains(el))) continue
 		if (headerBox && (headerBox.contains(el) || el.contains(headerBox) || onTitleLine(el))) continue
 		used.add(el)

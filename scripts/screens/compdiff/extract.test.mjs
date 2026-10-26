@@ -988,3 +988,12 @@ test('a header whose subtitle wraps to two lines keeps its centred button as a h
 	assert.equal(c.header.actions, 1, JSON.stringify(c.header))
 	assert.ok(c.content.gapBelowTitle > 10, JSON.stringify(c.content))
 })
+
+test('a bar of a link drawn as a button and a button is a toolbar (NcButton with an href)', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:315px;top:336px;width:754px">
+		<div style="display:inline-flex;gap:8px;width:325px"><a class="button-vue" href="#" style="display:flex;align-items:center;height:34px;padding:0 14px;border:1px solid #828a95;border-radius:8px">Bekijken als flow</a>${btn('Taak toevoegen')}</div>
+		<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px"><section>Fase 1</section><section>Fase 2</section></div></div>`)
+	const toolbars = r.components.filter((c) => c.role === 'toolbar')
+	assert.equal(toolbars.length, 1, JSON.stringify(r.components.map((c) => c.role)))
+	assert.equal(toolbars[0].controls, 2)
+})

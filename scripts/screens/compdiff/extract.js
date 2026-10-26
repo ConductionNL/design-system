@@ -769,7 +769,8 @@ window.__compdiffExtract = function () {
 		const b = c.matches(FIELD) ? fieldBorder(c) : { width: borders(getComputedStyle(c)).top, color: getComputedStyle(c).borderTopColor }
 		return { controlBorder: b.width, controlBorderColor: b.color }
 	}
-	const ctrl = 'button, input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
+	// An NcButton with an href renders as a link (`a.button-vue`): it is a control of the bar it sits in.
+	const ctrl = 'button, a.button-vue, a[role=button], input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
 	// A chip (a fully rounded pill of 40px or less: a quick filter, a shortcut or an active-filter tag) is not a toolbar control: which chips a
 	// bar shows follows the data, and a board draws them as buttons where the library may draw spans.
 	// Up to 40px: a 38px chip row and a 36px one are the same row of chips (their 2px is measured on the chips).

@@ -64,6 +64,17 @@ test('a wrapping bar with display: contents rows is measured as one toolbar line
 	assert.equal(toolbars.filter((t) => t.rect.y === 200).length, 1)
 })
 
+test('a wrapper around a form row is not the toolbar: the row and its gap are', { skip }, async () => {
+	// DqTermijnen's quarter form: a widget box (flex column, gap 8) holding the form (flex row, gap 16).
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:1000px">
+		<div class="box" style="display:flex;flex-direction:column;gap:8px">
+			<form style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 16px"><input style="height:40px;width:130px">${btn('Rapport laden')}${btn('CSV exporteren')}</form>
+		</div></div>`)
+	const bars = r.components.filter((c) => c.role === 'toolbar')
+	assert.equal(bars.length, 1)
+	assert.equal(bars[0].gap, 16)
+})
+
 test('a table head is read from its first labelled header cell', { skip }, async () => {
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:800px"><table style="width:800px">
 		<thead><tr><th style="width:28px"></th><th style="font-weight:600">Naam</th></tr></thead>
@@ -965,6 +976,47 @@ test('a settings section\'s marked description stays its description in a column
 	// The board writes the same sections with a plain muted line: still a description.
 	const plain = await measure(`<div style="position:absolute;left:316px;top:200px;width:1073px">${['A', 'B', 'C'].map((t) => sec(t).replace(' class="settings-section__desc"', '')).join('')}</div>`)
 	assert.ok(plain.components.find((x) => x.title === 'A').content.gapBelowTitle > 20)
+})
+
+test('a list card drawn as a table box open at the bottom, closed by its pager box, is one card with a bottom border', { skip }, async () => {
+	const rows = '<table style="width:100%"><thead><tr><th>Naam</th></tr></thead><tbody><tr><td>Vergunningen</td></tr><tr><td>Handhaving</td></tr></tbody></table>'
+	const pager = '<nav aria-label="Paginering" style="display:flex;gap:8px;padding:12px;height:61px;box-sizing:border-box"><button>1</button><button>2</button></nav>'
+	const board = await measure(`<div style="position:absolute;left:622px;top:381px;width:790px;border:1px solid #e4e6ea;border-radius:12px">${rows}${pager}</div>`)
+	const live = await measure(`<div style="position:absolute;left:622px;top:366px;width:790px"><div style="border:1px solid #e4e6ea;border-bottom:0;border-radius:12px 12px 0 0;background:#fff">${rows}</div><div style="border:1px solid #e4e6ea;border-radius:0 0 12px 12px;background:#fff">${pager}</div></div>`)
+	const cards = (r) => r.components.filter((c) => c.role === 'card')
+	assert.equal(cards(live).length, 1, JSON.stringify(cards(live).map((c) => c.rect)))
+	assert.equal(cards(live)[0].props.border.bottom, cards(board)[0].props.border.bottom)
+})
+
+test('a drag handle centred on a two-line row name leads that row', { skip }, async () => {
+	const grip = '<button aria-label="Verslepen" style="width:28px;height:34px;padding:4px;border:0;background:none"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18"/></svg></button>'
+	const row = (desc) => `<li style="display:flex;align-items:center;gap:12px;padding:2px 12px;border-bottom:1px solid #eee">${grip}<span aria-hidden="true">1</span><span style="display:flex;flex-direction:column"><b>Termijn deze week</b>${desc}</span></li>`
+	const card = (desc) => `<div role="dialog" aria-modal="true" style="position:absolute;left:470px;top:88px;width:700px;background:#fff;padding:24px"><h2>Weergaven</h2><ol style="list-style:none;margin:0;padding:0;border:1px solid #ddd;border-radius:8px;width:611px">${row(desc)}${row(desc)}</ol></div>`
+	const one = await measure(card('<span>Behandelaar @me</span>'))
+	const two = await measure(card('<span style="width:200px">Behandelaar @me, termijn binnen 7 dagen, status niet afgehandeld</span>'))
+	const list = (r) => r.components.find((c) => c.role === 'dialog-card')
+	assert.equal(list(two).content.firstRowInsetLeft, list(one).content.firstRowInsetLeft)
+})
+
+test('an initials tile marked aria-hidden is still the tile people see, measured whole', { skip }, async () => {
+	const tile = (hidden) => `<div style="position:absolute;left:400px;top:300px;display:flex;gap:12px;align-items:center"><span ${hidden ? 'aria-hidden="true"' : ''} style="width:40px;height:40px;border-radius:50%;background:#edeff2;display:inline-flex;align-items:center;justify-content:center;font-weight:700">MV</span><b>Marieke Visser</b></div>`
+	const h = async (hidden) => (await measure(tile(hidden))).elements.filter((e) => e.label === 'MV').map((e) => e.props.h)
+	assert.deepEqual(await h(true), [40])
+	assert.deepEqual(await h(false), [40])
+})
+
+test('a button drawn as a plain text link is read as the plain link a board draws: no element on either side', { skip }, async () => {
+	const r = await measure('<div style="position:absolute;left:300px;top:300px;display:flex;gap:12px"><a href="#" style="font-weight:600">Alles wissen</a><button style="background:none;border:0;padding:0;font-weight:600;color:#3669a5;text-decoration:underline;border-radius:8px">Alles wissen</button></div>')
+	assert.deepEqual(r.elements.filter((e) => e.label === 'Alles wissen'), [])
+})
+
+test('a folder row holding its sub-list is measured on its own line', { skip }, async () => {
+	const line = '<button style="display:flex;width:100%;height:34px;padding:0 10px;border:0;border-radius:8px;background:#eaf0f7;align-items:center">Alle</button>'
+	const sub = '<ul style="list-style:none;margin:0;padding-left:16px">' + ['Vergunningen', 'Handhaving', 'Woo'].map((t) => `<li style="height:34px">${t}</li>`).join('') + '</ul>'
+	const r = await measure(`<ul style="position:absolute;left:300px;top:300px;width:280px;list-style:none;margin:0;padding:0"><li>${line}${sub}</li></ul>`)
+	const row = r.elements.find((e) => e.kind === 'row' && e.label.startsWith('Alle'))
+	assert.ok(row, JSON.stringify(r.elements.map((e) => [e.kind, e.label])))
+	assert.equal(row.props.h, 34)
 })
 
 test('a tall tile among short framed list rows is a row when the frame sits on an element inside the li', { skip }, async () => {

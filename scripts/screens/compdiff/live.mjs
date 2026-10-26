@@ -165,6 +165,41 @@ export async function waitForTables(page, { timeout = 20000, still = 1000, inter
 }
 
 /**
+ * Runs in the page: how many loading indicators are on screen (a spinner, a skeleton, a busy region). A widget that
+ * fills from another app (the Kaarten card asking Deck) shows one until its data is in.
+ *
+ * @return {number} The visible loading indicators.
+ */
+export function loadingCount() {
+	const sel = '[aria-busy="true"], .icon-loading, .icon-loading-small, .loading-icon, [class*="loading-icon"], [class*="skeleton"], [class*="--loading"], [class*="__loading"]'
+	return [...document.querySelectorAll(sel)].filter((e) => {
+		const r = e.getBoundingClientRect(), cs = getComputedStyle(e)
+		return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05
+	}).length
+}
+
+/**
+ * Waits until no loading indicator is on screen and the layout has held still, so a widget that fills seconds after
+ * the page (an integration card) is measured filled, not in its loading state.
+ *
+ * @param {object} page A Playwright page.
+ * @param {{timeout?: number, still?: number, interval?: number}} [opts] The longest wait, how long the page must hold
+ *   still without indicators, and the poll interval (ms).
+ * @return {Promise<boolean>} False when it gave up, still loading.
+ */
+export async function waitForLoaded(page, { timeout = 20000, still = 1000, interval = 250 } = {}) {
+	const start = Date.now()
+	let last = null, since = Date.now()
+	while (Date.now() - start < timeout) {
+		const [n, sig] = await page.evaluate(`[(${loadingCount.toString()})(), (${layoutSignature.toString()})()]`)
+		if (n > 0 || sig !== last) { last = sig; since = Date.now() }
+		if (n === 0 && Date.now() - since >= still) return true
+		await page.waitForTimeout(interval)
+	}
+	return false
+}
+
+/**
  * Runs in the page: a signature of what is laid out, the size and place of every element in the document. It
  * changes while widgets render, load data or animate in, and holds still once the page has settled.
  *

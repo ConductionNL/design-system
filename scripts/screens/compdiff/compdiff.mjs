@@ -31,7 +31,7 @@ import { parseColour } from './colour.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
-import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -216,6 +216,7 @@ try {
 	lap('settle')
 	// A table's selection column can render after the settle: measure the head once it holds every column.
 	if (!(await waitForTables(lpage))) console.error('tables did not settle; measuring as they are')
+	if (!(await waitForLoaded(lpage))) console.error('a widget was still loading after 20 s; measuring as it is')
 	lap('tables')
 	if (args['keep-scroll'] !== 'true' && (await resetScroll(lpage)) > 0) await lpage.waitForTimeout(500)
 	await markIgnored(lpage, args.ignore)

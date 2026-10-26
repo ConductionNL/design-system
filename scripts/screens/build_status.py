@@ -29,8 +29,12 @@ notMeasured, run and runDate. Its mismatchPct is the share of compared items tha
 failing / (components + items extra on live), so it is a component share, not a pixel share
 (mismatchBasis "components"). Boards not in screens.json are left out of a run with a warning.
 
+Each board also carries flaggedComponents, the lanes' unit from its <Board>.json counts: paired components
+with a flagged styling property. It is narrower than failing: a board with none can still fail on a
+component missing or extra on live (unpairedComponents), a position, or an element such as a pill or button.
+
 The output's "compdiff" block holds per run and per app: boards measured, boards matching, failing
-items, the last run, and the trend against the latest earlier run that measured some of the same
+items, flagged components and the boards with none, the last run, and the trend against the latest earlier run that measured some of the same
 boards (counted over those shared boards only), plus the totals over all apps.
 
 The app of a board and the number of boards per app come from preview/screens/screens.json.
@@ -142,11 +146,16 @@ def read_compdiff(rundir):
                 dates.append(meta['measuredAt'])
             items = [i for i in detail.split(' | ') if i]
             shown = '; '.join(items[:NOTE_ITEMS]) + (f'; and {len(items) - NOTE_ITEMS} more' if len(items) > NOTE_ITEMS else '')
+            counts = meta.get('counts') if isinstance(meta.get('counts'), dict) else {}
+            flagged = counts.get('flaggedComponents')
             rows[board] = {
                 'route': meta.get('url') or None,
                 'verdict': verdict,
                 'layoutMatch': verdict == 'MATCH',
                 'failing': failing,
+                'flaggedComponents': flagged if isinstance(flagged, int) else None,
+                'unpairedComponents': (len(meta.get('missingOnLive') or []) + len(meta.get('extraOnLive') or []))
+                                      if 'missingOnLive' in meta else None,
                 'components': components,
                 'notMeasured': int(not_measured) if not_measured.isdigit() else None,
                 'mismatchPct': round(100 * failing / compared, 1) if compared else (0.0 if verdict == 'MATCH' else None),
@@ -171,9 +180,14 @@ def run_info(rundir):
 
 
 def tally(rows):
+    """Boards measured and matching, failing items, and the lanes' unit: flagged components and the
+    boards with none (counted over the boards whose measurement carries the count)."""
     rows = list(rows)
+    counted = [r for r in rows if r.get('flaggedComponents') is not None]
     return {'measured': len(rows), 'match': sum(1 for r in rows if r['verdict'] == 'MATCH'),
-            'failing': sum(r['failing'] for r in rows)}
+            'failing': sum(r['failing'] for r in rows),
+            'flaggedComponents': sum(r['flaggedComponents'] for r in counted),
+            'noFlaggedComponents': sum(1 for r in counted if r['flaggedComponents'] == 0)}
 
 
 def compdiff_summary(runs, boards, screens):
@@ -204,11 +218,12 @@ def compdiff_summary(runs, boards, screens):
                 was, now = tally(prev['rows'][n] for n in shared), tally(last_rows[n] for n in shared)
                 a['trend'] = {'from': prev['id'], 'fromDate': prev['date'], 'to': last['id'], 'toDate': last['date'],
                               'boards': len(shared), 'matchFrom': was['match'], 'matchTo': now['match'],
-                              'failingFrom': was['failing'], 'failingTo': now['failing']}
+                              'failingFrom': was['failing'], 'failingTo': now['failing'],
+                              'flaggedFrom': was['flaggedComponents'], 'flaggedTo': now['flaggedComponents']}
                 break
         apps[app] = a
     total = {'boards': sum(a['boards'] for a in apps.values()),
-             **{k: sum(a[k] for a in apps.values()) for k in ('measured', 'match', 'failing')}}
+             **{k: sum(a[k] for a in apps.values()) for k in ('measured', 'match', 'failing', 'flaggedComponents', 'noFlaggedComponents')}}
     return {
         'runs': [{'id': r['id'], 'date': r['date'], 'info': r['info'], 'apps': sorted({screens[n]['app'] for n in r['rows']}), **tally(r['rows'].values())} for r in runs],
         'apps': apps,
@@ -259,7 +274,8 @@ def main():
     history = collections.defaultdict(list)
     for run in runs:
         for name, r in run['rows'].items():
-            history[name].append({'run': run['id'], 'date': run['date'], 'verdict': r['verdict'], 'failing': r['failing']})
+            history[name].append({'run': run['id'], 'date': run['date'], 'verdict': r['verdict'], 'failing': r['failing'],
+                                  'flaggedComponents': r['flaggedComponents']})
             prev = boards.get(name, {})
             status = 'partial' if prev.get('status') == 'partial' and not r['layoutMatch'] else 'built'
             boards[name] = {'app': screens[name]['app'], 'kind': prev.get('kind'), **r,
@@ -308,7 +324,8 @@ def main():
     print(f'{args.out.relative_to(REPO) if args.out.is_relative_to(REPO) else args.out}: {len(boards)} boards, '
           + ', '.join(f"{p} {a['layoutMatch']}/{a['boards']} match, {a['built']} built, {a['missing']} missing" for p, a in apps.items()))
     for app, a in out.get('compdiff', {}).get('apps', {}).items():
-        print(f"compdiff {app}: {a['match']}/{a['measured']} match of {a['boards']} drawn, {a['failing']} failing, last run {a['lastRun']['id']}"
+        print(f"compdiff {app}: {a['match']}/{a['measured']} match of {a['boards']} drawn, {a['failing']} failing, "
+              f"{a['flaggedComponents']} flagged components ({a['noFlaggedComponents']} boards with none), last run {a['lastRun']['id']}"
               + (f", trend {a['trend']['from']}->{a['trend']['to']} failing {a['trend']['failingFrom']}->{a['trend']['failingTo']}" if a['trend'] else ''))
 
 

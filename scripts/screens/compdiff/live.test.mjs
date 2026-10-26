@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -160,4 +160,12 @@ test('after a click the pointer is parked over no control, so a hover ground is 
 	} finally {
 		await browser.close()
 	}
+})
+
+test('a session seed keyed by the record follows the route\'s record id ({routeId}), so a lookup route keeps it', () => {
+	const id = 'e0b306d2-c523-5938-9b5c-3474d292dc01'
+	assert.equal(routeId(`/apps/dossiq/cases/${id}?tab=x`), id)
+	assert.equal(routeId('/apps/dossiq/cases'), null)
+	assert.deepEqual(sessionEntries('{"cn-access-purposes":["cn-access-purpose:case:{routeId}"]}', id), [['cn-access-purposes', `["cn-access-purpose:case:${id}"]`]])
+	assert.throws(() => sessionEntries('{"k":"{routeId}"}', null), /no record id/)
 })

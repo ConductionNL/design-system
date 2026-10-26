@@ -31,7 +31,7 @@ import { parseColour } from './colour.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
-import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -140,12 +140,6 @@ try {
 		}, apps)
 		for (const a of apps) await lctx.route(new RegExp(`/apps/${a}/api/setup/status`), (route) => route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"skip-first-run"}' }))
 	}
-	const session = sessionEntries(args.session)
-	if (session.length) {
-		await lctx.addInitScript((entries) => {
-			try { for (const [k, v] of entries) sessionStorage.setItem(k, v) } catch (e) {}
-		}, session)
-	}
 	const mayRead = readPosts(args['read-post'])
 	const blocked = []
 	// Read-only: refuse any write request to the live instance (login is the one allowed POST).
@@ -186,6 +180,14 @@ try {
 		console.error(`route ${args.url} -> ${liveRoute}`)
 	}
 	const target = /^https?:\/\//.test(liveRoute) ? liveRoute : base + liveRoute
+	// Session storage is seeded before the page loads; `{routeId}` in a value is the record id the route ends in, so
+	// a seed keyed by the record (CnDetailPage's access purpose) follows a route found by a lookup.
+	const session = sessionEntries(args.session, routeId(liveRoute))
+	if (session.length) {
+		await lctx.addInitScript((entries) => {
+			try { for (const [k, v] of entries) sessionStorage.setItem(k, v) } catch (e) {}
+		}, session)
+	}
 	lap('login')
 	// The page has loaded at its load event; what renders after is waited for below. Nextcloud keeps polling, so the
 	// network is never idle for long and a networkidle wait runs into its timeout.

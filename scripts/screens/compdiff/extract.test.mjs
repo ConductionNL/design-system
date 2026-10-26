@@ -868,3 +868,11 @@ test('a table pairs with the table in the card of the same title, not with the o
 	assert.equal(tp.length, 1)
 	assert.equal(tp[0].board.inCard, 'Documenttypen')
 })
+
+test('a KPI tile\'s big figure is a number on both sides, whatever its digits', { skip }, async () => {
+	const tile = (n) => `<div style="background:#fff;border:1px solid #ddd;border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;color:#5e6168">Geanalyseerde zaken</span><strong style="font-size:28px">${n}</strong></div>`
+	const row = (a, b, c) => `<div style="position:absolute;left:292px;top:780px;width:1120px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px">${tile(a)}${tile(b)}${tile(c)}</div>`
+	const s = async (a, b, c) => (await measure(row(a, b, c))).components.find((x) => x.role === 'card').structure
+	assert.equal(await s('1.284', '9', '12'), await s('76', '9', '12'))
+	assert.equal(await s('76', '9', '12'), 'meta / number')
+})

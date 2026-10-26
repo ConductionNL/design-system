@@ -542,7 +542,9 @@ window.__compdiffExtract = function () {
 			texts.push({ t, y: q.top, b: q.bottom, x: q.left, r: q.right, fs, fw })
 		}
 		const maxFs = Math.max(0, ...texts.filter((x) => x.fw >= 600).map((x) => x.fs))
-		for (const x of texts) parts.push({ t: NUMBER.test(x.t) ? 'number' : DATE.test(x.t) ? 'deadline' : x.fw >= 600 && x.fs >= maxFs ? 'title' : 'meta', y: x.y, b: x.b, x: x.x })
+		// A figure (a KPI tile's 76, 311 or 1.284, 12,5 %) is a number like a record number, however many digits it has.
+		const FIGURE = /^\d{1,3}([.,\s]\d{3})*([.,]\d+)?\s?%?$/
+		for (const x of texts) parts.push({ t: NUMBER.test(x.t) || FIGURE.test(x.t) ? 'number' : DATE.test(x.t) ? 'deadline' : x.fw >= 600 && x.fs >= maxFs ? 'title' : 'meta', y: x.y, b: x.b, x: x.x })
 		parts.sort((a, b) => a.y - b.y || a.x - b.x)
 		// One row is one line: parts whose tops are close, or a box centred on a line of text (a pill beside a due date
 		// that wrapped to two lines starts a few px lower than it; a 28px avatar starts higher than the name beside it).

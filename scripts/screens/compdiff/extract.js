@@ -120,6 +120,10 @@ window.__compdiffExtract = function () {
 		}
 		return r && { x: round(r.x), y: round(r.y), w: round(r.r - r.x), h: round(r.b - r.y) }
 	}
+	// A box on a line: its vertical middle lies well inside the line's run of text, 3px clear of its top and bottom (a
+	// pill centred beside a due date that wrapped to two lines). A box centred between two separate lines (beside a
+	// title and its meta line) is on neither, however tight the two lines are set.
+	const sameLine = (line, b) => { const mid = (b.y + (b.b ?? b.y)) / 2; return mid >= line.y + 3 && mid <= (line.lb ?? line.b ?? line.y) - 3 }
 	// An open modal dialog covers the page with its scrim: only what is inside the dialog is in view.
 	const modals = [...document.querySelectorAll('[aria-modal=true]')].filter(visible)
 	// The app top bar and the left navigation are chrome around every page; they are not page components. A spec can
@@ -150,6 +154,14 @@ window.__compdiffExtract = function () {
 	const tabStrips = [...document.querySelectorAll('[role=tablist]'), ...pageTabs.filter((n) => !pageTabs.some((o) => o !== n && o.contains(n)))]
 	const inTabStrip = (el) => tabStrips.some((s) => s.contains(el))
 	const CONTROL_BOX = 'button, [role=button], input, select, textarea'
+	// An icon-only control drawn as an aria-labelled span (a row menu inside a card that is one link, where a button
+	// would be invalid HTML) is a control as a button is: no text, an icon, the size of a button.
+	const iconControl = (e) => {
+		if (ariaHidden(e) || e.textContent.trim() || !e.querySelector('svg, img, [class*=icon]')) return false
+		const r = e.getBoundingClientRect()
+		return r.width >= 16 && r.width <= 48 && r.height >= 16 && r.height <= 48
+	}
+	const ACTION = 'a, button, [role=button], span[aria-label], div[aria-label]'
 	const INTERACTIVE = 'button, input, select, textarea, a, label, [role=button], [role=tab], [role=option], [role=combobox], [role=checkbox], [role=switch]'
 
 	// 1. Cards: a framed box (3+ borders, a shadow, or a background unlike what is behind it), big enough to hold content.
@@ -159,6 +171,10 @@ window.__compdiffExtract = function () {
 		if (nb >= 3) return 'border'
 		if (cs.boxShadow !== 'none' && !/^rgba\(0, 0, 0, 0\)/.test(cs.boxShadow)) return 'shadow'
 		if (opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)) return 'background'
+		// A side panel docked at the right edge, ruled off by its left border only (NcAppSidebar: white inside a white
+		// app container, beside the grey work ground), is the panel a board draws as a white box on the work ground.
+		const r = el.getBoundingClientRect()
+		if (b.left > 0 && !b.right && r.right >= VW - 2 && r.width >= 240 && r.width <= VW * 0.4 && r.height >= window.innerHeight * 0.6 && opaque(cs.backgroundColor)) return 'side'
 		return null
 	}
 	// A map: a map library's container, or a drawn placeholder (role=img named as a map). It is measured for its place
@@ -208,16 +224,25 @@ window.__compdiffExtract = function () {
 		const range = document.createRange()
 		const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT)
 		for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-			if (!n.textContent.trim() || !n.parentElement || !visible(n.parentElement) || !ownedBy(n, card)) continue
+			if (!n.textContent.trim() || !n.parentElement || !visible(n.parentElement) || !ownedBy(n, card) || inMap(n.parentElement)) continue
 			range.selectNodeContents(n)
 			const q = [...range.getClientRects()].find((x) => x.width >= 1)
-			if (q) out.push({ node: n.parentElement, x: q.left, y: q.top, r: q.right, b: q.bottom, text: true })
+			// lb: the bottom of the whole run, past the first line when it wraps.
+			if (q) out.push({ node: n.parentElement, x: q.left, y: q.top, r: q.right, b: q.bottom, lb: range.getBoundingClientRect().bottom, text: true })
+		}
+		// A map is one part, at its own box: its tiles carry no text, and its overlay controls (zoom buttons) are the
+		// map's, not the card's first row.
+		for (const m of maps) {
+			if (m === card || !ownedBy(m, card)) continue
+			const q = m.getBoundingClientRect()
+			out.push({ node: m, x: q.left, y: q.top, r: q.right, b: q.bottom, text: false })
 		}
 		for (const el of card.querySelectorAll('svg, img, input, select, textarea, progress, canvas, button, [role=progressbar], span, i, div')) {
-			if (!ownedBy(el, card) || !visible(el)) continue
+			if (!ownedBy(el, card) || !visible(el) || inMap(el)) continue
 			const isMedia = el.matches('svg, img, input, select, textarea, progress, canvas, [role=progressbar]')
 			const cs = getComputedStyle(el)
-			const isDot = !el.children.length && !el.textContent.trim() && opaque(cs.backgroundColor)
+			// A coloured dot may hold an element nobody sees (a 0x0 overlay image placed off screen): still a dot.
+			const isDot = ![...el.children].some(visible) && !el.textContent.trim() && opaque(cs.backgroundColor)
 			if (!isMedia && !isDot) continue
 			if (el.closest('svg') && el.tagName !== 'svg') continue
 			const q = el.getBoundingClientRect()
@@ -271,17 +296,25 @@ window.__compdiffExtract = function () {
 			const ctl = n.parentElement.closest(INTERACTIVE)
 			const own = ctl && (ctl === card || ctl.contains(card))
 			const plainLink = ctl && ctl.tagName === 'A' && !opaque(getComputedStyle(ctl).backgroundColor) && !Object.values(borders(getComputedStyle(ctl))).some((v) => v > 0)
-			// A pill in the card's head row (a status, a priority) comes before the title; it is not the title.
-			const inPill = (() => { for (let e = n.parentElement; e && e !== card; e = e.parentElement) { const ecs = getComputedStyle(e), er = e.getBoundingClientRect(); if (er.height <= 30 && er.width <= 200 && opaque(ecs.backgroundColor) && ecs.backgroundColor !== getComputedStyle(card).backgroundColor && px(ecs.borderTopLeftRadius) >= er.height / 2 - 1) return true } return false })()
+			// A choice row's label (a radio or checkbox with its option title, nested in the option's card beside its
+			// details) carries the option's title, as it does when the label is the whole card.
+			const choiceLabel = ctl && ctl.tagName === 'LABEL' && !!ctl.querySelector('input[type=radio], input[type=checkbox], [role=radio], [role=checkbox]')
+			// A pill in the card's head row (a status, a priority) comes before the title; it is not the title. Nor is an
+			// avatar's initial (a filled circle up to 44px).
+			const inPill = (() => { for (let e = n.parentElement; e && e !== card; e = e.parentElement) { const ecs = getComputedStyle(e), er = e.getBoundingClientRect(); if ((er.height <= 30 || (er.height <= 44 && Math.abs(er.width - er.height) <= 2)) && er.width <= 200 && opaque(ecs.backgroundColor) && ecs.backgroundColor !== getComputedStyle(card).backgroundColor && px(ecs.borderTopLeftRadius) >= er.height / 2 - 1) return true } return false })()
 			if (inPill) continue
-			if (Number(cs.fontWeight) < 600 || px(cs.fontSize) < 13 || (ctl && !own && !plainLink) || n.parentElement.closest('th, thead, [role=columnheader]')) {
+			if (Number(cs.fontWeight) < 600 || px(cs.fontSize) < 13 || (ctl && !own && !plainLink && !choiceLabel) || n.parentElement.closest('th, thead, [role=columnheader]')) {
 				// A record number in a head row (2026-0082 beside a pill) does not end the search for the title under it;
 				// any other plain line does (a KPI tile's label above its bigger value).
 				if (best === null && !/^[A-Z]{0,4}[\s-]?\d{2,4}[-./]\d{2,6}$/.test(n.textContent.trim())) break
 				continue
 			}
-			if (px(cs.fontSize) > bestSize) { best = n.parentElement; bestSize = px(cs.fontSize) }
-			if (role !== 'dialog') break
+			// A card's small bold kicker (13px or less: "Offline · gesynchroniseerd" over "Vandaag") gives way to a larger
+			// bold line of words right under it, as a heading kicker does; a larger figure (a KPI's value) does not.
+			if (best && role !== 'dialog' && !/\p{L}{3}/u.test(n.textContent)) break
+			const kicker = best && role !== 'dialog' && bestSize <= 13
+			if (kicker ? px(cs.fontSize) >= bestSize * 1.4 : px(cs.fontSize) > bestSize) { best = n.parentElement; bestSize = px(cs.fontSize) }
+			if (role !== 'dialog' && (bestSize > 13 || best !== n.parentElement)) break
 		}
 		return best
 	}
@@ -304,6 +337,8 @@ window.__compdiffExtract = function () {
 		const cs = getComputedStyle(card)
 		const cr = card.getBoundingClientRect()
 		const comp = { el: card, role, rect: rect(card), frame: framed(card, cs), depth: 0 }
+		// A menu or a floating panel (placed over the page with a shadow) is a popup: it pairs only with a popup.
+		if (role === 'card' && (card.matches('[role=menu], [role=listbox]') || (/absolute|fixed/.test(cs.position) && cs.boxShadow !== 'none'))) comp.popup = true
 		for (let e = ownerCard(card); e; e = ownerCard(e)) comp.depth++
 		comp.props = {
 			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: seenBorders(cs), borderColor: seenBorderColour(cs),
@@ -332,11 +367,12 @@ window.__compdiffExtract = function () {
 				headerRow = p
 			}
 			const hcs = getComputedStyle(headerRow)
-			const actions = [...headerRow.querySelectorAll('a, button, [role=button]')].filter((a) => visible(a) && !title.contains(a) && ownedBy(a, card))
+			const actions = [...headerRow.querySelectorAll(ACTION)].filter((a) => visible(a) && !title.contains(a) && ownedBy(a, card) && (!a.matches('[aria-label]:not(a, button, [role=button])') || iconControl(a))).filter((a, _, all) => !all.some((o) => o !== a && o.contains(a)))
 			// A button set on the title's line from outside the title's row (NcSettingsSection puts its actions in a
 			// sibling placed in the title row) is a header action too: what counts is the line it sits on.
 			const titleMid = titleBox.y + titleBox.h / 2
-			for (const a of card.querySelectorAll('a, button, [role=button]')) {
+			for (const a of card.querySelectorAll(ACTION)) {
+				if (a.matches('[aria-label]:not(a, button, [role=button])') && !iconControl(a)) continue
 				if (actions.includes(a) || !visible(a) || title.contains(a) || !ownedBy(a, card) || actions.some((b) => b.contains(a) || a.contains(b))) continue
 				const ar = a.getBoundingClientRect()
 				if (ar.left >= titleBox.x + titleBox.w && Math.abs((ar.top + ar.bottom) / 2 - titleMid) <= Math.max(ar.height, titleBox.h) / 2) actions.push(a)
@@ -389,7 +425,10 @@ window.__compdiffExtract = function () {
 			// An icon set beside the first line, a few px lower than its text (centred on a taller line), is still part
 			// of that row: it starts inside the line's box.
 			const lineBottom = Math.min(...content.filter((l) => l.y <= top + 6).map((l) => l.b))
-			const firstRow = content.filter((l) => l.y <= top + 6 || (!l.text && l.y < lineBottom))
+			// A part centred on the first line is in the first row too, though it starts lower than the line's top (a pill
+			// beside a due date that wrapped to two lines).
+			const lead = content.filter((l) => l.y <= top + 6)
+			const firstRow = content.filter((l) => l.y <= top + 6 || (!l.text && l.y < lineBottom) || lead.some((f) => sameLine(f, l)))
 			comp.content = {
 				firstRowInsetLeft: round(Math.min(...firstRow.map((l) => l.x)) - cr.left),
 				minInsetLeft: round(Math.min(...content.map((l) => l.x)) - cr.left),
@@ -439,44 +478,74 @@ window.__compdiffExtract = function () {
 
 	// Record cards: a card with two or more siblings of about its width (a deck, a card grid or a column of widgets).
 	// Each is compared, with the order and placement of its parts as its structure; the count follows the data.
-	const PILLISH = (el) => { const cs = getComputedStyle(el), r = el.getBoundingClientRect(); return r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim() && ((opaque(cs.backgroundColor) && cs.backgroundColor !== bgBehind(el.parentElement)) || nBorders(el) >= 3) }
+	// The text people read in an element: a glyph hidden from assistive tech (a menu toggle's "⋯") is an icon. A
+	// control holding only such a glyph is no pill; an avatar's hidden initials still draw one.
+	const readText = (el) => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let t = ''; for (let n = w.nextNode(); n; n = w.nextNode()) if (n.parentElement && !ariaHidden(n.parentElement)) t += n.textContent; return t.trim() }
+	const PILLISH = (el) => { const cs = getComputedStyle(el), r = el.getBoundingClientRect(); return r.height >= 12 && r.height <= 44 && r.width <= 320 && (el.matches('button, [role=button]') ? readText(el) : el.textContent.trim()) && ((opaque(cs.backgroundColor) && cs.backgroundColor !== bgBehind(el.parentElement)) || nBorders(el) >= 3) }
 	const DATE = /\b\d{1,2}\s(jan|feb|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec)|vandaag|morgen|gisteren|\bdag(en)?\b|\bweken?\b|over \d|nog \d|verlopen|termijn/i
 	const NUMBER = /^[A-Z]{1,6}-?\d{2,}|^\d{4}[-/]\d+|^#?\d{3,}$|^ZK|^Z-\d/
 	const structureOf = (card) => {
 		const cr = card.getBoundingClientRect()
 		const parts = []
 		const seen = new Set()
+		// A table is one part, compared as a table of its own: its rows follow the data. It counts whether the card
+		// holds it directly or in a frame of its own (an object table's bordered wrapper).
+		for (const t of card.querySelectorAll('table, [role=table], [role=grid]')) {
+			if (!visible(t) || [...seen].some((s) => s.contains(t))) continue
+			const r = t.getBoundingClientRect()
+			parts.push({ t: 'table', y: r.top, b: r.bottom, x: r.left })
+			seen.add(t)
+		}
 		for (const el of card.querySelectorAll('*')) {
 			if (!visible(el) || !ownedBy(el, card)) continue
 			if ([...seen].some((s) => s.contains(el))) continue
 			const r = el.getBoundingClientRect()
+			// A map is one part, drawn as an svg or by a map library with its tiles and controls.
+			if (maps.includes(el)) { parts.push({ t: 'map', y: r.top, b: r.bottom, x: r.left }); seen.add(el); continue }
 			const ecs = getComputedStyle(el)
-			if (!el.closest(CONTROL_BOX) && (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4))) { parts.push({ t: 'divider', y: el.tagName === 'HR' || r.height <= 2 ? r.top : r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
-			if (PILLISH(el)) { parts.push({ t: DATE.test(el.textContent) ? 'pill:deadline' : 'pill', y: r.top, x: r.left }); seen.add(el); continue }
+			if (!el.closest(CONTROL_BOX) && (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4))) { parts.push({ t: 'divider', y: r.top, b: r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
+			if (PILLISH(el)) { parts.push({ t: DATE.test(el.textContent) ? 'pill:deadline' : 'pill', y: r.top, b: r.bottom, x: r.left }); seen.add(el); continue }
 			// A chart is one part, whether it is drawn as an svg (whose axis labels are text) or on a canvas.
-			if (el.matches('svg, canvas') && r.height >= 60 && r.width >= 120) { parts.push({ t: 'chart', y: r.top, x: r.left }); seen.add(el); continue }
+			if (el.matches('svg, canvas') && r.height >= 60 && r.width >= 120) { parts.push({ t: 'chart', y: r.top, b: r.bottom, x: r.left }); seen.add(el); continue }
 		}
 		const range = document.createRange()
 		const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT)
 		const texts = []
 		for (let n = walker.nextNode(); n; n = walker.nextNode()) {
 			const t = n.textContent.trim()
-			if (!t || !n.parentElement || !visible(n.parentElement) || !ownedBy(n, card) || [...seen].some((s) => s.contains(n.parentElement))) continue
+			// Text hidden from assistive tech is a glyph drawn as text (a menu toggle's "⋯"), not a part of the card.
+			if (!t || !n.parentElement || !visible(n.parentElement) || !ownedBy(n, card) || ariaHidden(n.parentElement) || [...seen].some((s) => s.contains(n.parentElement))) continue
 			range.selectNodeContents(n)
 			const q = range.getBoundingClientRect()
 			const ecs = getComputedStyle(n.parentElement)
-			texts.push({ t, y: q.top, x: q.left, fs: px(ecs.fontSize), fw: Number(ecs.fontWeight) })
+			// Runs of one line in one type, split over spans ("2026-0110", " · ", "Woo-verzoek"), are one text, as they
+			// are when a board writes them as one string.
+			const prev = texts[texts.length - 1]
+			const fs = px(ecs.fontSize), fw = Number(ecs.fontWeight)
+			if (prev && prev.fs === fs && prev.fw === fw && Math.abs(prev.y - q.top) <= 2 && q.left - prev.r >= -1 && q.left - prev.r <= fs * 1.2) { prev.t += ' ' + t; prev.r = q.right; continue }
+			texts.push({ t, y: q.top, b: q.bottom, x: q.left, r: q.right, fs, fw })
 		}
 		const maxFs = Math.max(0, ...texts.filter((x) => x.fw >= 600).map((x) => x.fs))
-		for (const x of texts) parts.push({ t: NUMBER.test(x.t) ? 'number' : DATE.test(x.t) ? 'deadline' : x.fw >= 600 && x.fs >= maxFs ? 'title' : 'meta', y: x.y, x: x.x })
+		for (const x of texts) parts.push({ t: NUMBER.test(x.t) ? 'number' : DATE.test(x.t) ? 'deadline' : x.fw >= 600 && x.fs >= maxFs ? 'title' : 'meta', y: x.y, b: x.b, x: x.x })
 		parts.sort((a, b) => a.y - b.y || a.x - b.x)
+		// One row is one line: parts whose tops are close, or a box centred on a line of text (a pill beside a due date
+		// that wrapped to two lines starts a few px lower than it; a 28px avatar starts higher than the name beside it).
+		// A box centred between two lines of text (beside a title and its meta line) is on neither. The order in a row is
+		// left to right.
 		const rows = []
 		for (const p of parts) {
-			const row = rows.find((r) => Math.abs(r.y - p.y) <= 6)
-			if (row) { if (row.items[row.items.length - 1] !== p.t) row.items.push(p.t) } else rows.push({ y: p.y, items: [p.t] })
+			const box = /^(pill|chart|map)/.test(p.t)
+			const row = rows.find((r) => Math.abs(r.y - p.y) <= 6 || (r.ty !== undefined && !box && Math.abs(r.ty - p.y) <= 6) || (box && r.b > r.y && sameLine(r, p)) || (!box && p.t !== 'divider' && r.parts.every((q) => /^(pill|chart|map)/.test(q.t)) && sameLine(p, r)))
+			// ty: the top of the row's first text, the line later text lines up with.
+			if (row) { row.parts.push(p); if (p.t !== 'divider') row.b = Math.max(row.b, p.b); if (!box && p.t !== 'divider' && row.ty === undefined) row.ty = p.y } else rows.push({ y: p.y, b: p.t === 'divider' ? p.y : p.b, parts: [p], ty: box || p.t === 'divider' ? undefined : p.y })
 		}
 		const out = []
-		for (const r of rows) { const k = r.items.join(' '); if (out[out.length - 1] !== k) out.push(k) }
+		for (const r of rows) {
+			const items = []
+			for (const p of r.parts.sort((a, b) => a.x - b.x)) if (items[items.length - 1] !== p.t) items.push(p.t)
+			const k = items.join(' ')
+			if (out[out.length - 1] !== k) out.push(k)
+		}
 		return out.join(' / ')
 	}
 	const deckOf = new Map()
@@ -613,9 +682,10 @@ window.__compdiffExtract = function () {
 		const th = heads.find((h) => visible(h) && h.textContent.trim()) || heads[0]
 		// The cell is read the same way: a selection cell holding only a checkbox is inset by its checkbox (a board's
 		// native box carries a 4px margin, the app's cell pads the same 4px), so it does not stand for the row's cells.
-		const firstCell = t.querySelector('tbody td, [role=row] [role=cell], [role=gridcell]')
+		// A row's header cell (th scope=row, holding the row's name) is one of its cells, as a board's plain td is.
+		const firstCell = t.querySelector('tbody td, tbody th[scope=row], [role=row] [role=cell], [role=row] [role=rowheader], [role=gridcell]')
 		const firstRow = firstCell && (firstCell.closest('tr, [role=row]') || firstCell)
-		const rowCells = firstRow && firstRow !== firstCell ? [...firstRow.querySelectorAll('td, [role=cell], [role=gridcell]')] : []
+		const rowCells = firstRow && firstRow !== firstCell ? [...firstRow.querySelectorAll('td, th[scope=row], [role=cell], [role=rowheader], [role=gridcell]')] : []
 		const td = rowCells.find((c) => visible(c) && c.textContent.trim()) || firstCell
 		const hr = th && (th.closest('tr, [role=row]') || th)
 		const dr = firstRow
@@ -910,7 +980,8 @@ window.__compdiffExtract = function () {
 	const ownLib = (el) => { for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => LIBCLS.test(k)); if (c) return c } return null }
 	for (const c of components) { if (c.el) c.cls = [...(c.el.classList || [])].slice(0, 2).join('.') || c.el.tagName.toLowerCase(); c.libClass = (c.el && ownLib(c.el)) || clsOf(c.rect) }
 	// The capture is the viewport, as tall as the board: a component that starts below it (the rows of a side panel
-	// that scrolls on past the page) is in neither picture, so it is not measured.
-	const inFrame = components.filter((c) => !c.rect || c.rect.y < window.innerHeight)
-	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: inFrame.map(({ el, ...c }) => c), elements, unmeasured }
+	// that scrolls on past the page) is in neither picture. It is kept, marked, so that a component the board draws
+	// inside its frame can still find its counterpart on a taller live page; unpaired, it is neither missing nor extra.
+	for (const c of components) if (c.rect && c.rect.y >= window.innerHeight) c.belowFrame = true
+	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c), elements, unmeasured }
 }

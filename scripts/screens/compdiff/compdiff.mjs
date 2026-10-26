@@ -13,6 +13,7 @@
 //   through the OpenRegister API at run time (lookup.mjs)
 //   [--settle-mode quiet|fixed]   quiet (default): measure once requests and layout hold still for 1.5 s, at most
 //   --settle ms; fixed: wait the full --settle, as before
+//   [--allow-stale-board]   measure a flattened board that is older than its source (refused by default)
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
 // PLAYWRIGHT_MODULE (path to a playwright package when it is not resolvable from here).
 //
@@ -29,6 +30,7 @@ import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
+import { staleSources } from './freshness.mjs'
 import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -78,6 +80,17 @@ const boardFile = path.join(BOARDS, `${board}.html`)
 if (!fs.existsSync(boardFile)) {
 	console.error(`board not found: ${boardFile}`)
 	process.exit(2)
+}
+// A flattened board older than its source (or a board it imports) draws an old board: refuse it, unless asked.
+const fresh = staleSources(boardFile, path.resolve(BOARDS, '..', '..', '..'))
+if (fresh.stale.length) {
+	const what = fresh.stale.map((s) => `${s.file} (${new Date(s.changed * 1000).toISOString()})`).join(', ')
+	const msg = `board ${board}.html (built ${new Date(fresh.built * 1000).toISOString()}) is older than ${what}: rebuild it with scripts/screens/build.py`
+	if (args['allow-stale-board'] !== 'true') {
+		console.error(`stale board: ${msg}, or pass --allow-stale-board`)
+		process.exit(2)
+	}
+	console.error(`warning: ${msg}`)
 }
 fs.mkdirSync(out, { recursive: true })
 // The extractor runs in the page, so it gets the colour parser as source ahead of it (a function declaration, so a
@@ -247,6 +260,7 @@ try {
 	})
 	const report = {
 		board, url: liveRoute, ...(liveRoute !== args.url ? { urlSpec: args.url } : {}), height: boardHeight, measuredAt: new Date().toISOString(),
+		...(fresh.stale.length ? { staleBoard: fresh.stale } : {}),
 		counts: { boardComponents: B.components.length, liveComponents: L.components.length, paired: pairs.length, missingOnLive: missing.length, extraOnLive: extra.length, flaggedComponents: results.filter((r) => r.flagged).length },
 		page: pageBg,
 		components: results,

@@ -500,4 +500,4 @@ hats, claps) plus cues: tick (hex lands), pluck (musical UI note), whoosh (move)
 - **Every film on identity.conduction.nl/movies.** One overview with every film, per direction (an audience and a use: pipelinq for contact centres, pipelinq for sales teams) its slides, whether or not the film is rendered yet, plus the videos to watch and download and the film kit as a zip. Ruben's voice model, recordings and training data are never published; only generated lines are.
 
 ## Round 32 (2026-10-26, Ruben): the install board's last line
-- **"The code stays open source, your data stays yours"** (NL "De code blijft open source, je data blijft van jou"), as `_lib/scenes/closing.js` renders it. This replaces round 22's "the data stays yours".
+- **"The code stays open source, the data stays yours"** (NL "De code blijft open source, de data blijft van jou"), as round 22 has it and `_lib/scenes/closing.js` renders it. Confirmed after a stale code comment had suggested "your data".

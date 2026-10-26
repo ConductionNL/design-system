@@ -14,7 +14,7 @@ import { dirname, join } from 'node:path'
 import { deflateRawSync, crc32 } from 'node:zlib'
 
 const site = process.argv[2] || '_site'
-const SOURCES = ['.claude/skills/film', 'preview/films/BIBLE.md', 'preview/films/_lib', 'preview/films/_template', 'scripts/films']
+const SOURCES = ['.claude/skills/film', '.claude/skills/brand-film', 'preview/films/BIBLE.md', 'preview/films/_lib', 'preview/films/_template', 'scripts/films']
 const SKIP = new Set(['node_modules', 'storyboard'])
 
 const files = []

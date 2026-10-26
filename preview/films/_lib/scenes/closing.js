@@ -10,9 +10,9 @@
  *                                the same), lang ('en' | 'nl': "Gebouwd op Nextcloud" and Dutch lines),
  *                                caption / markText (override the two headline lines), label, sound.
  *   installScene / installFrame  "Install it" / "Use it" / "Own it", the orange moving line by line and
- *                                landing on "Own it", then "The code stays open source, your data stays
+ *                                landing on "Own it", then "The code stays open source, the data stays
  *                                yours" on two lines; NL "Installeer het" / "Gebruik het" / "Bezit het",
- *                                "De code blijft open source, je data blijft van jou". 3 bars. Options:
+ *                                "De code blijft open source, de data blijft van jou". 3 bars. Options:
  *                                lang, slogans, line (overrides), app.
  *   Pass legacy: true to either for the round-6 pieces (the finished ConNext film and the rendered
  *   Dossiq film use it, so their masters stay reproducible). CLOSING.connect / CLOSING.install21 hold

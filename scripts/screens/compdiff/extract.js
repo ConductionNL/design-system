@@ -191,6 +191,7 @@ window.__compdiffExtract = function () {
 		const a = el.getBoundingClientRect(), b = m.getBoundingClientRect()
 		return Math.abs(a.left - b.left) <= 4 && Math.abs(a.top - b.top) <= 4 && Math.abs(a.right - b.right) <= 4 && Math.abs(a.bottom - b.bottom) <= 4
 	})
+	const pageTitle = [...document.querySelectorAll('h1')].find((h) => visible(h) && !outOfScope(h) && !h.closest('[role=dialog]')) || null
 	let cards = []
 	for (const el of all) {
 		// Links can be cards (a KPI tile is often one big <a>), and so can a framed label (a choice card, a checkbox
@@ -198,10 +199,15 @@ window.__compdiffExtract = function () {
 		if ((el.matches(INTERACTIVE) && el.tagName !== 'A' && el.tagName !== 'LABEL') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
 		if (!visible(el) || outOfScope(el) || inMap(el) || framesMap(el)) continue
 		const r = el.getBoundingClientRect()
-		if (r.width < 140 || r.height < 48) continue
+		// A notice band (role note, status or alert) is a card at one line of text too: whether its words wrap to a
+		// second line follows the data.
+		const band = el.matches('[role=note], [role=status], [role=alert]') && r.height >= 32
+		if (r.width < 140 || (r.height < 48 && !band)) continue
 		const cs = getComputedStyle(el)
 		if ((cs.position === 'fixed' || cs.position === 'absolute') && r.width >= VW * 0.9) continue
 		if (r.width >= VW * 0.75 && r.height >= window.innerHeight * 0.6) continue
+		// The column that holds the page's title is the page (narrowed by an open side panel), not a card on it.
+		if (pageTitle && el.contains(pageTitle) && r.height >= window.innerHeight * 0.6) continue
 		const kind = framed(el, cs)
 		if (!kind) continue
 		cards.push({ el, kind })
@@ -241,15 +247,24 @@ window.__compdiffExtract = function () {
 			if (!ownedBy(el, card) || !visible(el) || inMap(el)) continue
 			const isMedia = el.matches('svg, img, input, select, textarea, progress, canvas, [role=progressbar]')
 			const cs = getComputedStyle(el)
-			// A coloured dot may hold an element nobody sees (a 0x0 overlay image placed off screen): still a dot.
-			const isDot = ![...el.children].some(visible) && !el.textContent.trim() && opaque(cs.backgroundColor)
+			// A coloured dot may hold an element nobody sees (a 0x0 overlay image placed off screen): still a dot. So is a
+			// small filled box without text that holds parts of its own (a switch's track with its knob, an icon tile), and a
+			// square tile up to 48px with initials in it: the tile is what people see first, whether its corners are set as
+			// 16px or as 50%, and whether its row sets it level with the name's top or centred on two lines.
+			const box = el.getBoundingClientRect()
+			const filled = opaque(cs.backgroundColor) && cs.backgroundColor !== bgBehind(el.parentElement || el)
+			const isDot = filled && (!el.textContent.trim()
+				? (![...el.children].some(visible) || (box.height <= 48 && box.width <= 96))
+				: box.height >= 16 && box.height <= 48 && Math.abs(box.width - box.height) <= 4 && el.textContent.trim().length <= 3)
 			if (!isMedia && !isDot) continue
 			if (el.closest('svg') && el.tagName !== 'svg') continue
 			const q = el.getBoundingClientRect()
 			if (q.width < 3 || q.height < 3) continue
 			out.push({ node: el, x: q.left, y: q.top, r: q.right, b: q.bottom, text: false })
 		}
-		return out
+		// What starts below the captured frame is in neither picture: a card that runs on past it (a side column made
+		// taller by its data) is measured on the part people see in the capture.
+		return card.getBoundingClientRect().top < window.innerHeight ? out.filter((l) => l.y < window.innerHeight) : out
 	}
 
 	const headingIn = (card, cr, role) => {
@@ -347,7 +362,7 @@ window.__compdiffExtract = function () {
 		}
 		return false
 	}
-	const describeCard = (card, role) => {
+	const describeCard = (card, role, record = false) => {
 		const cs = getComputedStyle(card)
 		const cr = card.getBoundingClientRect()
 		const comp = { el: card, role, rect: rect(card), frame: framed(card, cs), depth: 0 }
@@ -376,8 +391,9 @@ window.__compdiffExtract = function () {
 				// A subtitle set right under the title in the same heading block (CnTimelineManage's title + description)
 				// belongs to the title, so the row with the heading's actions is still the header row.
 				const titleSize = px(getComputedStyle(textEl(title)).fontSize)
-				const subtitle = (l) => l.text && l.y <= titleBox.y + titleBox.h + 32 && px(getComputedStyle(l.node.nodeType === 1 ? l.node : l.node.parentElement).fontSize) < titleSize
-				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + 4 && !(wraps && inAction(l)) && !subtitle(l))) break
+				const subtitle = (l) => !record && l.text && l.y <= titleBox.y + titleBox.h + 32 && px(getComputedStyle(l.node.nodeType === 1 ? l.node : l.node.parentElement).fontSize) < titleSize
+				// In a record card a line of text under the title (its number line) is a row of its own, however tight.
+				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + (record && l.text ? -1 : 4) && !(wraps && inAction(l)) && !subtitle(l))) break
 				headerRow = p
 			}
 			const hcs = getComputedStyle(headerRow)
@@ -433,7 +449,10 @@ window.__compdiffExtract = function () {
 			// its Historie link, which the app sets as a facts row); a dialog's head may set its description in ink.
 			return top >= -1 && top <= 12 && px(ecs.fontSize) < px(tcs.fontSize) && (muted || (role !== 'card' && px(ecs.fontSize) <= 14))
 		}
-		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || plainLine(next)) ? next : null
+		// A record card's line under its title (number, type, handler) is its first row, not a description: the card's
+		// height follows the row it sits in, so a gap measured past that line lands on a footer pinned to the bottom.
+		// A line marked as a description (a settings section's __desc) stays one in a column of such cards.
+		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || (!record && plainLine(next))) ? next : null
 		const inHeader = (n) => (headerRow && headerRow.contains(n)) || (desc && desc.contains(n))
 		const content = leaves.filter((l) => !inHeader(l.node) && l.y >= below)
 		if (content.length) {
@@ -545,6 +564,7 @@ window.__compdiffExtract = function () {
 		// A figure (a KPI tile's 76, 311 or 1.284, 12,5 %) is a number like a record number, however many digits it has.
 		const FIGURE = /^\d{1,3}([.,\s]\d{3})*([.,]\d+)?\s?%?$/
 		for (const x of texts) parts.push({ t: NUMBER.test(x.t) || FIGURE.test(x.t) ? 'number' : DATE.test(x.t) ? 'deadline' : x.fw >= 600 && x.fs >= maxFs ? 'title' : 'meta', y: x.y, b: x.b, x: x.x })
+		if (cr.top < window.innerHeight) for (let i = parts.length - 1; i >= 0; i--) if (parts[i].y >= window.innerHeight) parts.splice(i, 1)
 		parts.sort((a, b) => a.y - b.y || a.x - b.x)
 		// One row is one line: parts whose tops are close, or a box centred on a line of text (a pill beside a due date
 		// that wrapped to two lines starts a few px lower than it; a 28px avatar starts higher than the name beside it).
@@ -580,6 +600,14 @@ window.__compdiffExtract = function () {
 		if (sibs.length < 3) continue
 		if (!deckOf.has(row)) deckOf.set(row, deckOf.size + 1)
 		c.record = { deck: deckOf.get(row), index: sibs.indexOf(c.el), count: sibs.length }
+		// A record card proper (a card of a grid of cards, a link, a draggable or listed item) reads the line under its
+		// title as its first row; a column of widgets or settings sections keeps its descriptions.
+		const grid = sibs.some((e) => e !== c.el && Math.abs(e.getBoundingClientRect().top - c.el.getBoundingClientRect().top) <= 4)
+		if (grid || c.el.matches('a, [role=listitem], [draggable=true]') || c.el.closest('a, [role=listitem], [draggable=true]') !== null) {
+			const asRecord = describeCard(c.el, 'card', true)
+			c.content = asRecord.content
+			c.header = asRecord.header
+		}
 		c.structure = structureOf(c.el)
 	}
 
@@ -714,9 +742,11 @@ window.__compdiffExtract = function () {
 		// A `display: contents` row (an ARIA grid row) has no box: its height is that of its tallest cell.
 		const rowH = (row) => { const h = row.getBoundingClientRect().height; return round(h || Math.max(0, ...[...row.children].map((c) => c.getBoundingClientRect().height))) }
 		// A cell's type is that of its text (a name in a bold link inside a plain cell reads bold); its padding is the cell's.
-		// textInsetLeft: where the cell's text starts from the row's left edge, whatever draws the space before it (the
-		// cell's padding, an icon inside the cell, or an icon column of its own before it).
-		const rowLeft = (c) => { const row = c.closest('tr, [role=row]'); const first = row && [...row.children].find(visible); return (first || c).getBoundingClientRect().left }
+		// textInsetLeft: where the cell's text starts from the table's left edge, whatever draws the space before it (the
+		// cell's padding, an icon inside the cell, an icon column of its own, or an empty corner cell). The table's edge,
+		// not the row's: an ARIA grid may set its cells straight in the grid with no row element.
+		const tableLeft = t.getBoundingClientRect().left
+		const rowLeft = () => tableLeft
 		const cell = (c) => { if (!c) return null; const ccs = getComputedStyle(c); const tr = textRect(c); return { ...font(textEl(c)), paddingLeft: px(ccs.paddingLeft), paddingTop: px(ccs.paddingTop), textInsetLeft: tr ? round(tr.x - rowLeft(c)) : null, borderBottom: borders(ccs).bottom || (c.parentElement ? borders(getComputedStyle(c.parentElement)).bottom : 0), background: bgBehind(c) } }
 		// The titled card a table sits in: two tables pair only within cards of the same title.
 		const holder = ownerCard(t)
@@ -731,9 +761,10 @@ window.__compdiffExtract = function () {
 		return { controlBorder: b.width, controlBorderColor: b.color }
 	}
 	const ctrl = 'button, input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
-	// A chip (a fully rounded pill of 36px or less: a quick filter, a shortcut or an active-filter tag) is not a toolbar control: which chips a
+	// A chip (a fully rounded pill of 40px or less: a quick filter, a shortcut or an active-filter tag) is not a toolbar control: which chips a
 	// bar shows follows the data, and a board draws them as buttons where the library may draw spans.
-	const chip = (c) => { const r = c.getBoundingClientRect(); return r.height <= 36 && radius(c, getComputedStyle(c)) >= r.height / 2 - 1 }
+	// Up to 40px: a 38px chip row and a 36px one are the same row of chips (their 2px is measured on the chips).
+	const chip = (c) => { const r = c.getBoundingClientRect(); return r.height <= 40 && radius(c, getComputedStyle(c)) >= r.height / 2 - 1 }
 	const headerBox = window.__compdiffPageHeader
 	// The page header's buttons are counted from its whole header block (scope), so a row of them beside the title
 	// block, on the title's line, is the header's and not a toolbar; counting it as both doubled the buttons or left an

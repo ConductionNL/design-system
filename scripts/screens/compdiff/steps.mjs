@@ -11,18 +11,21 @@
 //   { "waitFor": "<selector>" }
 //   { "dragFiles": "<selector>", "files": ["<name>", ...] }   drags files over a drop zone and holds them there,
 //                                                            without dropping (a board that draws the drop state)
+//   { "offline": true }                              takes the page off the network (navigator.onLine false, the
+//                                                    'offline' event fires), for a board that draws the offline state;
+//                                                    { "offline": false } brings it back
 // Nothing here writes: compdiff refuses every write request to the live instance, and a step that would submit a
 // form only meets that refusal.
 import fs from 'node:fs'
 
-const KINDS = ['click', 'fill', 'type', 'press', 'wait', 'waitFor', 'dragFiles']
+const KINDS = ['click', 'fill', 'type', 'press', 'wait', 'waitFor', 'dragFiles', 'offline']
 
 /**
  * Check one step and return it in its plain form.
  *
  * @param {object} step The step.
  * @param {number} index Its place in the list, for the error.
- * @return {{kind: string, selector?: string, value?: string, key?: string, ms?: number}} The step.
+ * @return {{kind: string, selector?: string, value?: string, key?: string, ms?: number, offline?: boolean}} The step.
  */
 export function normaliseStep(step, index = 0) {
 	if (!step || typeof step !== 'object' || Array.isArray(step)) {
@@ -37,6 +40,10 @@ export function normaliseStep(step, index = 0) {
 		const ms = Number(step.wait)
 		if (!Number.isFinite(ms) || ms < 0) throw new Error(`step ${index + 1}: wait needs a number of milliseconds`)
 		return { kind, ms }
+	}
+	if (kind === 'offline') {
+		if (typeof step.offline !== 'boolean') throw new Error(`step ${index + 1}: offline needs true or false`)
+		return { kind, offline: step.offline }
 	}
 	const selector = step[kind]
 	if (typeof selector !== 'string' || selector.trim() === '') {
@@ -141,6 +148,9 @@ export async function playSteps(page, steps, warn = (m) => console.error(m)) {
 				el.dispatchEvent(new DragEvent('dragover', at))
 			}, step.files)
 			await page.waitForTimeout(1000)
+		} else if (step.kind === 'offline') {
+			await page.context().setOffline(step.offline)
+			await page.waitForTimeout(1500)
 		}
 	}
 }

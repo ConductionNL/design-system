@@ -134,6 +134,15 @@ test('drags files over a drop zone without dropping them (the board draws the dr
 	assert.throws(() => normaliseStep({ dragFiles: '.x', files: [] }), /files/)
 })
 
+test('takes the page off the network and back, for a board that draws the offline state (DqInspectie)', async () => {
+	assert.deepEqual(normaliseStep({ offline: true }), { kind: 'offline', offline: true })
+	const page = fakePage()
+	page.context = () => ({ setOffline: async (v) => page.calls.push(`offline ${v}`) })
+	await playSteps(page, parseSteps('[{"click":"#open"},{"offline":true},{"offline":false}]'))
+	assert.deepEqual(page.calls, ['click #open', 'offline true', 'offline false'])
+	assert.throws(() => normaliseStep({ offline: 'yes' }), /true or false/)
+})
+
 test('--clock fixes the live page\'s date for a board drawn on one (a calendar on December 2026)', () => {
 	assert.equal(parseClock(undefined), null)
 	assert.equal(parseClock('2026-12-01T09:00:00').getFullYear(), 2026)

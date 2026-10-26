@@ -1057,3 +1057,13 @@ test('a filled label around a checked radio is the toggle, not a badge', { skip 
 	assert.deepEqual(r.elements.filter((e) => e.kind === 'badge').map((e) => e.label), [])
 	assert.equal(r.elements.filter((e) => e.kind === 'toggle').length, 2)
 })
+
+test('buttons that wrapped under a subtitle in the header row are not header actions', { skip }, async () => {
+	const r = await measure(`<section style="position:absolute;left:292px;top:268px;width:800px;box-sizing:border-box;border:1px solid #ccc;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+		<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px">
+			<div style="flex:1 1 600px;display:flex;flex-direction:column;gap:2px"><h2 style="margin:0;font-size:17px">Fasen en taken</h2><span style="font-size:14px">Elke taak heeft een eigen rol, termijn en formulier.</span></div>
+			<div style="display:flex;gap:8px">${btn('Bekijken als flow')}${btn('Taak toevoegen')}</div></div>
+		<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><section style="padding:14px;background:#f5f6f8">Fase 1</section><section style="padding:14px;background:#f5f6f8">Fase 2</section></div></section>`)
+	const c = r.components.find((x) => x.title === 'Fasen en taken')
+	assert.equal(c.header.actions, 0, JSON.stringify(c.header))
+})

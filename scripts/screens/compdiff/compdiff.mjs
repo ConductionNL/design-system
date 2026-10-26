@@ -9,6 +9,8 @@
 //   [--login none|<role>]   measure without a login, or as COMPDIFF_<ROLE>_USER (live.mjs accountFor)
 //   [--ignore "<sel>|<sel>"]   elements on either side to leave out, like the app's own chrome
 //   [--storage <path>]   keep the login in <path>-<user>.json and reuse it, so a batch logs in once
+//   --url may name a record by a lookup, {task:title=...} or {object:<register>/<schema>:<field>=<value>}, resolved
+//   through the OpenRegister API at run time (lookup.mjs)
 //   [--settle-mode quiet|fixed]   quiet (default): measure once requests and layout hold still for 1.5 s, at most
 //   --settle ms; fixed: wait the full --settle, as before
 //   [--allow-stale-board]   measure a flattened board that is older than its source (refused by default)
@@ -27,6 +29,7 @@ import { pairComponents, compareProps, scoreComponent, pairElements, compareElem
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
+import { parseLookups, resolveRoute } from './lookup.mjs'
 import { staleSources } from './freshness.mjs'
 import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, sessionEntries, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
@@ -151,7 +154,7 @@ try {
 		blocked.push(`${m} ${route.request().url().replace(base, '')}`)
 		return route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"compdiff is read-only"}' })
 	})
-	const target = /^https?:\/\//.test(args.url) ? args.url : base + args.url
+	let liveRoute = args.url
 	const onLogin = () => /\/login(\?|$)/.test(new URL(lpage.url()).pathname + new URL(lpage.url()).search)
 	const login = async () => {
 		await lpage.goto(base + '/login', { waitUntil: 'domcontentloaded', timeout: 180000 })
@@ -163,6 +166,24 @@ try {
 		if (storage) { const tmp = `${storage}.${process.pid}`; fs.writeFileSync(tmp, JSON.stringify(await lctx.storageState())); fs.renameSync(tmp, storage) }
 	}
 	if (account && !kept) await login()
+	// A route that names a record by a lookup gets its uuid now, as the measuring user. A kept login can have expired:
+	// then the lookup is answered by the login page, so log in again and retry once.
+	if (parseLookups(args.url).length) {
+		const getJson = async (p) => {
+			const res = await lctx.request.get(base + p, { headers: { Accept: 'application/json', 'OCS-APIRequest': 'true' } })
+			if (!res.ok()) throw new Error(`GET ${p} answered ${res.status()}`)
+			return res.json()
+		}
+		try {
+			liveRoute = await resolveRoute(args.url, getJson)
+		} catch (e) {
+			if (!account) throw e
+			await login()
+			liveRoute = await resolveRoute(args.url, getJson)
+		}
+		console.error(`route ${args.url} -> ${liveRoute}`)
+	}
+	const target = /^https?:\/\//.test(liveRoute) ? liveRoute : base + liveRoute
 	lap('login')
 	// The page has loaded at its load event; what renders after is waited for below. Nextcloud keeps polling, so the
 	// network is never idle for long and a networkidle wait runs into its timeout.
@@ -238,7 +259,7 @@ try {
 		return { name: p.name, role: p.board.role, matchedBy: p.by, board: p.board, live: p.live, cropMismatchPct: crops[i], rows, flagged: rows.filter((r) => r.flag).length, score: scoreComponent(rows) }
 	})
 	const report = {
-		board, url: args.url, height: boardHeight, measuredAt: new Date().toISOString(),
+		board, url: liveRoute, ...(liveRoute !== args.url ? { urlSpec: args.url } : {}), height: boardHeight, measuredAt: new Date().toISOString(),
 		...(fresh.stale.length ? { staleBoard: fresh.stale } : {}),
 		counts: { boardComponents: B.components.length, liveComponents: L.components.length, paired: pairs.length, missingOnLive: missing.length, extraOnLive: extra.length, flaggedComponents: results.filter((r) => r.flagged).length },
 		page: pageBg,

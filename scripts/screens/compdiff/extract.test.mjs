@@ -64,6 +64,17 @@ test('a wrapping bar with display: contents rows is measured as one toolbar line
 	assert.equal(toolbars.filter((t) => t.rect.y === 200).length, 1)
 })
 
+test('a wrapper around a form row is not the toolbar: the row and its gap are', { skip }, async () => {
+	// DqTermijnen's quarter form: a widget box (flex column, gap 8) holding the form (flex row, gap 16).
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:1000px">
+		<div class="box" style="display:flex;flex-direction:column;gap:8px">
+			<form style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 16px"><input style="height:40px;width:130px">${btn('Rapport laden')}${btn('CSV exporteren')}</form>
+		</div></div>`)
+	const bars = r.components.filter((c) => c.role === 'toolbar')
+	assert.equal(bars.length, 1)
+	assert.equal(bars[0].gap, 16)
+})
+
 test('a table head is read from its first labelled header cell', { skip }, async () => {
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:800px"><table style="width:800px">
 		<thead><tr><th style="width:28px"></th><th style="font-weight:600">Naam</th></tr></thead>

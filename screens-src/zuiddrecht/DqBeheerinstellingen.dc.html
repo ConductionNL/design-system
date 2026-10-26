@@ -40,9 +40,9 @@ class Component extends DCLogic {
       { name: 'Serviceaccount voor achtergrondtaken', desc: 'Het account waarmee Dossiq werkt als er niemand is ingelogd, zoals bij termijnbewaking en mail ophalen.', rows: [
         { text: 'Nextcloud-gebruikersnaam', value: 'svc-dossiq', action: 'Dit account gebruiken', hint: 'Het account wordt lid van de groep dossiq-background-service. Kies een account waarmee niemand inlogt.' }
       ] },
-      { name: 'Zaak-e-mail: gedeelde mailbox', desc: 'Mail aan zaken@zuiddrecht.nl komt binnen als zaak of bij een bestaande zaak.', rows: [
+      { name: 'Zaak-e-mail: gedeelde mailbox', desc: 'Mail aan de gedeelde mailbox komt binnen als zaak of bij een bestaande zaak.', rows: [
         { link: 'Uitleg tonen' },
-        { pair: [{ label: 'Mailaccount voor intake', value: 'zaken@zuiddrecht.nl', select: true }, { label: 'Map', value: 'INBOX' }] },
+        { pair: [{ label: 'Mailaccount voor intake', value: 'Kies de mailbox die de intake leest', select: true }, { label: 'Map', value: 'INBOX' }] },
         { pair: [{ label: 'Ophalen elke (seconden)', value: '300' }, { label: 'Berichten per keer', value: '50' }] },
         { select: 'Zaaktype voor mail die niemand oppakt', value: 'In de mailbox laten staan' },
         { switch: 'Mail op zaaknummer aan zaken koppelen', on: true },
@@ -53,6 +53,7 @@ class Component extends DCLogic {
         { switch: 'AI-ondersteunde verwerking aanzetten', on: true },
         { radios: 'Soort model', options: [['Lokaal (Ollama)', 'Gegevens blijven op je eigen servers', true], ['Cloud', 'Een aanbieder buiten je organisatie']] },
         { pair: [{ label: 'Adres van het model', value: 'http://ollama.intern:11434' }, { label: 'Modelnaam', value: 'llama3.1:8b' }] },
+        { note: 'Een DPIA is verplicht voordat je AI-functies met persoonsgegevens gebruikt. Zolang je die hier niet bevestigt, blijft elke AI-functie uit.', tone: 'warn' },
         { heading: 'Verbindingstest' },
         { buttons: [['Verbinding testen', '']] },
         { disclosure: 'Geavanceerd' }

@@ -233,7 +233,9 @@ one render after the other. `--check 1` only lists which variants the film has.
 [`_lib/stage.js`](../../../preview/films/_lib/stage.js), and lists its languages in `film.langs`. Keep
 every on-screen string and every UI label in a `{ nl, en }` table, and the voice takes per language
 (`voice/nl-01.mp3`, `voice/en-01.mp3`), so the language is a lookup, never a second film. A
-language the film does not list is skipped and reported, never rendered with the wrong text. With a
+language the film does not list is skipped and reported, never rendered with the wrong text; a film
+without `film.langs` has only its page's `<html lang>`. A voiced variant of a film without voice
+takes is skipped too, since it would be a copy of the version without the voice-over. With a
 voice, scene lengths come from that language's takes, so the Dutch and English cuts may differ in
 length; without a voice the film keeps the timing of the voiced cut in the same language.
 

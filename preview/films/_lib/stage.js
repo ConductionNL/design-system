@@ -182,7 +182,7 @@ export class Film {
 		/** Optional data the tools read back: music (see scripts/films/score.mjs) and board (storyboard metadata). */
 		this.music = null
 		this.board = null
-		/** The languages this film has (variant().lang must be one of them); null when it has one. */
+		/** The languages this film has (variant().lang must be one of them); null means only the page's own <html lang>. */
 		this.langs = null
 		this.svg = el('svg', { xmlns: NS, width: this.width, height: this.height, viewBox: `0 0 ${this.width} ${this.height}`, id: 'stage' }, mount)
 		this.defs = el('defs', {}, this.svg)
@@ -246,7 +246,7 @@ export class Film {
 		const v = variant()
 		// Without a voice-over the voice takes leave the mix, and with them the ducking under the voice.
 		const music = this.music && !v.voice ? { ...this.music, voice: [] } : this.music
-		window.__film = { variant: v, langs: this.langs || [v.lang], duration: this.duration, fps: this.fps, width: this.width, height: this.height, bpm: this.bpm, format: this.format, cues: this.cues, music, board: this.board, safe: this.safe, scenes: this.scenes.map(({ name, start, end }) => ({ name, start, end })) }
+		window.__film = { variant: v, langs: this.langs || [document.documentElement.lang || 'en'], duration: this.duration, fps: this.fps, width: this.width, height: this.height, bpm: this.bpm, format: this.format, cues: this.cues, music, board: this.board, safe: this.safe, scenes: this.scenes.map(({ name, start, end }) => ({ name, start, end })) }
 		window.__render = (t) => this.render(t)
 		this.drawOverlay()
 		const t0 = q.has('t') ? parseFloat(q.get('t')) : 0

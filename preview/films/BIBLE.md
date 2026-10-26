@@ -5,6 +5,10 @@
 > terracotta (brown)** anywhere. Accent words and the install call are **orange text, never
 > black text in an orange box**. The word Nextcloud stays white. Portaliq uses its store icon.
 
+> **How to read this file.** The sections below the decisions log describe the first ConNext film.
+> Later rounds changed much of them; where a later round and an earlier section disagree, the later
+> round wins. Lines marked *Superseded* say which round replaced them; the text itself is kept as the record.
+
 ## Decisions log (Ruben, 2026-09-27)
 
 - Films: the ConNext film is direction A (one take); every app film is direction C (proof),
@@ -87,12 +91,16 @@ Every storyboard variant and every scene obeys this file. Sources are in
 `story.json`, `social.json` (same folder) and the design-system clone at
 `/home/rubenlinde/memcap-work/ds-connext-film`.
 
+*Superseded:* that clone and the review folder are gone; every film now lives in this repository under `preview/films/`.
+
 ## The job
 
 A 15-second vertical social film for ConNext by Conduction. It explains ConNext as
 Nextcloud apps that work together, for the owner or IT lead of a business with 10 to
 500 people (primary) and a government IT lead (secondary). Posted natively on LinkedIn
 first, then Instagram Reels, TikTok, YouTube Shorts. English only for now.
+
+*Superseded:* 16:9 since the revised header; films are modular with lengths per module (round 4); one film per audience where the story differs (round 7); Dutch films exist (round 10); every film may render in Dutch and English (round 31).
 
 It doubles as a showcase of motion design craft: choreography, timing, match cuts,
 type that moves with intent. Not "everything fades in". Not "centred text on a
@@ -107,6 +115,7 @@ background". Every scene has a camera idea.
 - Musical grid: 128 BPM. A beat is 0.46875 s, a bar 1.875 s, and 18.75 s is exactly 10 bars.
   Cuts on beats, big moments on bars. Bars land exactly on frames (45 per bar); beats (11.25
   frames) snap to the nearest frame.
+- *Superseded:* the 18.75 s total no longer binds; durations are set per module on bar lines (round 4).
 - **Text safe box: x 120 to 1800, y 96 to 930.** The bottom 150 px stay free of words for the
   player's controls and progress bar (LinkedIn, YouTube). Visuals may bleed full frame.
 - **Layout grammar for 16:9:** type in a left column (x 120 to about 840, at most about 16
@@ -120,6 +129,7 @@ background". Every scene has a camera idea.
 - The story must read with the sound off. Sound is a bonus layer.
 - Frame 1 is the hook and the thumbnail: a legible headline or subject on frame 1. No fade
   from black, no logo build-up.
+  *Superseded in part:* every film now starts with the shared Conduction opening (round 4), so this applies to the first frame of the body.
 - The brand (colours, a hex, the wordmark) is visible by 2 to 3 s, repeated on the end card.
 - At least 3 shots or deliberate visual changes in the first 5 s, then a change every 1.5
   to 2.5 s (7 to 10 in total). Fast picture, slow text: a text line may span a shot change.
@@ -157,6 +167,7 @@ background". Every scene has a camera idea.
   draw an icon.
 - The ConNext wordmark is `wordmark-connext-white` on cobalt (or `wordmark-connext` on
   white). Never set it in live type, never recolour it.
+  *Superseded for app and audience films:* no ConNext there; the closing says "Built on Nextcloud" (round 10).
 - Nextcloud is cited, not claimed. Never imply Nextcloud GmbH makes ConNext.
 - Tokens: colours from `_lib/brand.js` (C.*), never raw hex in scene code.
 
@@ -171,6 +182,7 @@ background". Every scene has a camera idea.
   hex (Figtree 600, 28 to 36 px, or IBM Plex Mono), never as the message.
 - CTA, exactly: **Install from the Nextcloud app store**, in orange text (no box). Optional second line: conduction.nl.
   Never "Get started", "Book a demo", "Try it".
+  *Superseded:* there is no store line; the install board reads "Install it" / "Use it" / "Own it", then "The code stays open source, the data stays yours" (rounds 5, 6, 21, 22 and 32).
 - No app count (sources conflict: 21, 22, 12, 36). No download figures. No customer claims.
 
 ## What is true (use only these; source in story.json)
@@ -197,6 +209,8 @@ Shipped today, safe to show:
 9. **Outside systems feed the same records.** Your webshop or bookkeeping package feeds your
    records on a schedule; failed deliveries retry. (Integriq)
 10. Free and open source (EUPL-1.2). Your own server.
+
+*Superseded:* never "free" or "gratis", say "100% open source" (round 15). Release films may also claim features that are specified but not yet built (round 7); claims come from the app's capabilities through `scripts/films/app-facts.mjs` (round 31).
 
 **Not shipped, never show:** "enter a client once and every app updates"; "a signed quote
 lands in your books"; "a CRM request becomes a case"; payroll; "every app works with the
@@ -229,11 +243,15 @@ envelope, stagger, rand, mix, hexPath, hexPoints, axialToPixel, axialRing), `sta
 `brand.js` (C colours, FONTS), `assets.js`. Read them; they are short. No rotation helper
 and no gradient helper exist on purpose.
 
+*Superseded in part:* the engine has grown (motion tokens, timeline, transitions, the film templates, the shared scenes); the table in `.claude/skills/brand-film/SKILL.md` lists it.
+
 ## Sound (for the notes column)
 
 Synthesised in code, no licensed music. 128 BPM bed (pad, offbeat bass, kick from bar 3,
 hats, claps) plus cues: tick (hex lands), pluck (musical UI note), whoosh (move), riser
 (build), impact (reveal), bell (sonic logo). Gentle first 3 s: no loud stinger on frame 1.
+
+*Superseded:* no bell anywhere; the accent sound is a dry click (rounds 5 and 6). With a voice-over the bed and effects duck 15 dB (round 30).
 
 - **Positioning source (2026-09-28):** market-intelligence PR #195, `positioning/<app>.json`
   (clone ~/memcap-work/positioning/mi/positioning/). Film captions start from each USP's `line`

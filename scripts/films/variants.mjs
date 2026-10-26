@@ -13,7 +13,9 @@
  *   <outdir>/<name>-<lang>-voice.mp4     <outdir>/<name>-<lang>-novoice.mp4
  *
  * The page reads ?lang= and ?voice=0 (see variant() in preview/films/_lib/stage.js). A language the
- * film does not list in film.langs is skipped and reported, never rendered in the wrong language.
+ * film does not list in film.langs (or, without that list, its page's <html lang>) is skipped and
+ * reported, never rendered in the wrong language. A voiced variant of a film without voice takes is
+ * skipped too, since it would be the same film as the one without the voice-over.
  * --check 1 only exports the cue lists, so you can see which variants exist before a long render.
  * Variants render one after the other, so the memory a render needs is the memory of one render.
  */
@@ -56,6 +58,10 @@ for (const lang of langs) {
 		const meta = JSON.parse(await readFile(cues, 'utf8'))
 		if (!(meta.langs || []).includes(lang)) {
 			skipped.push({ id, reason: `the film has ${(meta.langs || []).join(', ') || 'no listed language'}, not ${lang}` })
+			continue
+		}
+		if (voice && !(meta.music?.voice || []).length) {
+			skipped.push({ id, reason: 'the film has no voice-over' })
 			continue
 		}
 		if (args.check) { done.push({ id, cues }); continue }

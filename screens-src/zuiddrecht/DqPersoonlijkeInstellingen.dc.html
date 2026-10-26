@@ -38,13 +38,19 @@ class Component extends DCLogic {
         { select: 'Weergave toevoegen', value: 'Kies een opgeslagen weergave', hint: 'Je ziet je eigen weergaven, de weergaven die met je zijn gedeeld en de standaardweergaven. Een nieuwe weergave komt onderaan.' }
       ] },
       { name: 'Meldingen', desc: 'Kies per soort melding waar je hem krijgt. Je organisatie bepaalt welke verplicht zijn.', rows: [
-        { select: 'Meldingsdomein', value: 'Zaken' },
-        { matrix: 'Melding', cols: ['In Nextcloud', 'Per e-mail'], lines: [
-          ['Een zaak is aan mij toegewezen', [true, true]],
-          ['Een termijn verloopt binnen 3 dagen', [true, true]],
-          ['Er is een document aan mijn zaak toegevoegd', [true, false]],
-          ['Een inwoner reageert op mijn zaak', [true, false]]
-        ] }
+        { select: 'Meldingsdomein', value: 'Al mijn werk' },
+        { matrix: 'Gebeurtenis', cols: ['In Nextcloud', 'Per e-mail'], lines: [
+          ['Zaak', null],
+          ['Een zaak wordt aan mij toegewezen', [true, false]],
+          ['Een zaak wordt opgeschaald naar calamiteit', [true, false]],
+          ['Een zaak komt via een overdracht bij ons binnen', [true, false]],
+          ['Een zaak die ik volg verandert van status', [true, false]],
+          ['Vervanging', null],
+          ['Ik word als waarnemer voor iemand geregistreerd', [true, false]],
+          ['Werkoverzicht', null],
+          ['Mijn dagelijkse werkoverzicht', [true, false]]
+        ] },
+        { disclosure: 'Bundeling en testbericht' }
       ] },
       { name: 'Dagoverzicht', desc: 'Elke werkdag een mail met je openstaande zaken en taken.', rows: [
         { switch: 'Stuur me elke dag een overzicht van mijn openstaande werk', on: true },

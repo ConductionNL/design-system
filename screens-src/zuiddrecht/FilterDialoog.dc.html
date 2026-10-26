@@ -27,7 +27,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         <label for="fd-wie" style="font-size: 14px; font-weight: 600">Delen met</label>
         <div style="position: relative">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#1b1c1d" aria-hidden="true" style="position: absolute; right: 12px; top: 12px"><path d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"></path></svg>
-          <input id="fd-wie" type="text" value="han" aria-expanded="true" aria-controls="fd-suggesties" aria-autocomplete="list" placeholder="Zoek een persoon of groep" style="box-sizing: border-box; width: 100%; height: 44px; padding: 0 40px 0 10px; border: 2px solid #234a78; border-radius: 8px 8px 0 0; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
+          <input id="fd-wie" type="text" value="han" aria-expanded="true" aria-controls="fd-suggesties" aria-autocomplete="list" placeholder="Zoek een persoon of groep" style="box-sizing: border-box; width: 100%; height: 44px; padding: 0 40px 0 10px; border: 2px solid #1b1c1d; border-radius: 8px 8px 0 0; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
           <ul id="fd-suggesties" role="listbox" aria-label="Gevonden personen en groepen" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 2; margin: 0; padding: 4px 6px; list-style: none; border: 1px solid #1b1c1d; border-top: 0; border-radius: 0 0 8px 8px; background: #ffffff; display: flex; flex-direction: column; gap: 0">
             <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="3">
               <li role="option" aria-selected="{{ s.selected }}" style="{{ s.style }}"><span style="{{ s.avatarStyle }}">{{ s.initials }}</span><span style="font-size: 14px; font-weight: 600; min-width: 0">{{ s.name }}</span><span style="margin-left: auto; padding: 2px 8px; border-radius: 10px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 600">{{ s.kind }}</span></li>
@@ -132,10 +132,10 @@ class Component extends DCLogic {
     };
     const [heading, intro] = headings[kind] ?? headings.delen;
     const dialogStyle = 'width: 100%; max-width: ' + (kind === 'verwijderen' ? '560px' : '640px') + '; background: #ffffff; border-radius: 12px; box-shadow: 0 16px 48px rgba(27,28,29,0.28); display: flex; flex-direction: column';
-    const avatar = (group) => 'flex: none; width: 32px; height: 32px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ' + (group ? 'background: #e4e6ea; color: #3d4047;' : 'background: #eaf0f7; color: #234a78;');
+    const avatar = (group) => 'flex: none; width: 32px; height: 32px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; ' + (group ? 'background: #e4e6ea; color: #3d4047;' : 'background: #eaf0f7; color: #234a78;');
     const optStyle = (on) => 'display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 8px; border-radius: 8px; cursor: pointer; ' + (on ? 'background: #eaf0f7;' : 'background: transparent;');
     const optStyle2 = (on) => 'display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-radius: 8px; ' + (on ? 'background: #f0f1f3;' : 'background: transparent;');
-    const ava = (group) => 'flex: none; width: 32px; height: 32px; box-sizing: border-box; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; ' + (group ? 'background: #3669a5; color: #ffffff;' : 'background: #ffffff; border: 1px solid #eef0f3; color: transparent;');
+    const ava = (group) => 'flex: none; width: 32px; height: 32px; box-sizing: border-box; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; ' + (group ? 'background: #3669a5; color: #ffffff;' : 'background: #ffffff; border: 1px solid #eef0f3; color: transparent;');
     const suggestions = [
       ['Hanna Bos', '', 'Persoon', false],
       ['Hanneke de Boer', '', 'Persoon', false],
@@ -154,8 +154,8 @@ class Component extends DCLogic {
       isDelen: kind === 'delen', isBewerken: kind === 'bewerken', isVerwijderen: kind === 'verwijderen',
       suggestions, shares,
       description: 'Status wacht op inwoner, gedeeld met team Woo',
-      savedCriteria: 'Status: wacht op inwoner. Team: Woo en informatie. Gesorteerd op termijn, oplopend.',
-      currentCriteria: 'Zoekterm "parkeer". Status: wacht op inwoner. Team: Woo en informatie. Gesorteerd op termijn, aflopend.',
+      savedCriteria: 'Status wacht op inwoner. Gesorteerd op termijn, oplopend.',
+      currentCriteria: 'Status wacht op inwoner, "parkeer". Gesorteerd op termijn, oplopend.',
       sharedLine: 'Het is gedeeld met de groep Woo en informatie en met Anouk Bakker. Ook bij hen verdwijnt het.'
     };
   }

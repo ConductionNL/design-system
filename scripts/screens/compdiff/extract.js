@@ -220,6 +220,18 @@ window.__compdiffExtract = function () {
 	const same = (a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect(); return Math.abs(p.x - q.x) <= 3 && Math.abs(p.y - q.y) <= 3 && Math.abs(p.right - q.right) <= 3 && Math.abs(p.bottom - q.bottom) <= 3 }
 	const nBorders = (el) => Object.values(borders(getComputedStyle(el))).filter((v) => v > 0).length
 	cards = cards.filter((c) => !cards.some((d) => d !== c && same(c.el, d.el) && ((c.el.contains(d.el) && nBorders(d.el) >= nBorders(c.el)) || (d.el.contains(c.el) && nBorders(d.el) > nBorders(c.el)))))
+	// A frame drawn in two boxes: a box open at the bottom (a table container) closed by the box right under it at the
+	// same x and width (its pager). People see one card; it takes the lower box's bottom border, and the lower box is
+	// not a card of its own.
+	const continuation = new Map()
+	for (const c of cards) {
+		const b = borders(getComputedStyle(c.el))
+		if (b.bottom || !b.left || !b.right) continue
+		const r = c.el.getBoundingClientRect()
+		const d = cards.find((o) => o !== c && !c.el.contains(o.el) && !o.el.contains(c.el) && (() => { const q = o.el.getBoundingClientRect(); const ob = borders(getComputedStyle(o.el)); return Math.abs(q.left - r.left) <= 1 && Math.abs(q.width - r.width) <= 1 && Math.abs(q.top - r.bottom) <= 1 && ob.bottom > 0 && ob.left > 0 && ob.right > 0 })())
+		if (d) continuation.set(c.el, d.el)
+	}
+	cards = cards.filter((c) => ![...continuation.values()].includes(c.el))
 	const cardEls = new Set(cards.map((c) => c.el))
 	const ownerCard = (el) => { for (let e = el.parentElement; e; e = e.parentElement) if (cardEls.has(e)) return e; return null }
 	const ownedBy = (node, card) => { const p = node.nodeType === 1 ? node : node.parentElement; if (!card.contains(p)) return false; for (let e = p; e && e !== card; e = e.parentElement) if (cardEls.has(e)) return false; return true }
@@ -370,7 +382,7 @@ window.__compdiffExtract = function () {
 		if (role === 'card' && popupOf(card)) comp.popup = true
 		for (let e = ownerCard(card); e; e = ownerCard(e)) comp.depth++
 		comp.props = {
-			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: seenBorders(cs), borderColor: seenBorderColour(cs),
+			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: continuation.has(card) ? { ...seenBorders(cs), bottom: seenBorders(getComputedStyle(continuation.get(card))).bottom } : seenBorders(cs), borderColor: seenBorderColour(cs),
 			borderRadius: radius(card, cs), background: bgBehind(card), boxShadow: shadowBeyondRing(cs),
 			gap: /flex|grid/.test(cs.display) ? px(cs.rowGap) : null,
 		}
@@ -463,7 +475,12 @@ window.__compdiffExtract = function () {
 			// A part centred on the first line is in the first row too, though it starts lower than the line's top (a pill
 			// beside a due date that wrapped to two lines).
 			const lead = content.filter((l) => l.y <= top + 6)
-			const firstRow = content.filter((l) => l.y <= top + 6 || (!l.text && l.y < lineBottom) || lead.some((f) => sameLine(f, l)))
+			// A control or icon in the same list row as the first line, set in the row's upper half (a drag handle centred on
+			// a two-line name), is part of that row too.
+			const ROWEL = 'li, [role=listitem], [role=row], [role=option]'
+			const leadRow = lead.map((f) => (f.node.nodeType === 1 ? f.node : f.node.parentElement).closest(ROWEL)).find(Boolean)
+			const inLeadRow = (l) => { if (!leadRow || l.text) return false; const rr = leadRow.getBoundingClientRect(); return leadRow.contains(l.node) && l.y < rr.top + rr.height / 2 }
+			const firstRow = content.filter((l) => l.y <= top + 6 || (!l.text && l.y < lineBottom) || lead.some((f) => sameLine(f, l)) || inLeadRow(l))
 			comp.content = {
 				firstRowInsetLeft: round(Math.min(...firstRow.map((l) => l.x)) - cr.left),
 				minInsetLeft: round(Math.min(...content.map((l) => l.x)) - cr.left),
@@ -765,6 +782,23 @@ window.__compdiffExtract = function () {
 	// bar shows follows the data, and a board draws them as buttons where the library may draw spans.
 	// Up to 40px: a 38px chip row and a 36px one are the same row of chips (their 2px is measured on the chips).
 	const chip = (c) => { const r = c.getBoundingClientRect(); return r.height <= 40 && radius(c, getComputedStyle(c)) >= r.height / 2 - 1 }
+	// A row of labelled fields (a form row: label over input, with perhaps the button that acts on them) is a form, not
+	// a toolbar: a board draws it as one flex row, the library as a grid of field wrappers, and neither is an action bar.
+	const labelledAbove = (c) => {
+		if (!c.matches(FIELD)) return false
+		const by = (c.getAttribute('aria-labelledby') || '').split(/\s+/).map((id) => id && document.getElementById(id)).filter(Boolean)
+		const ls = by.length ? by : [...(c.labels || [])]
+		const cr = c.getBoundingClientRect()
+		if (ls.some((l) => visible(l) && l.textContent.trim() && l.getBoundingClientRect().bottom <= cr.top + 2)) return true
+		// A board names the field with aria-label and sets the same words as a caption over it in its wrapper.
+		const name = (c.getAttribute('aria-label') || '').trim()
+		if (!name) return false
+		for (let w = c.parentElement, i = 0; w && i < 3; w = w.parentElement, i++) {
+			if ([...w.querySelectorAll('span, div, p, strong, b, legend')].some((t) => !t.children.length && t.textContent.trim() === name && visible(t) && t.getBoundingClientRect().bottom <= cr.top + 2)) return true
+		}
+		return false
+	}
+	const formRow = (cs) => cs.filter(labelledAbove).length * 2 >= cs.length
 	const headerBox = window.__compdiffPageHeader
 	// The page header's buttons are counted from its whole header block (scope), so a row of them beside the title
 	// block, on the title's line, is the header's and not a toolbar; counting it as both doubled the buttons or left an
@@ -820,7 +854,7 @@ window.__compdiffExtract = function () {
 			&& ![...used].some((u) => u.contains(el)) && !(headerBox && (headerBox.contains(el) || el.contains(headerBox) || onTitleLine(el)))) {
 			const line = firstLine(el)
 			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c)) : []
-			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
+			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72 && !formRow(lctrls)) {
 				line.items.forEach((i) => lineItems.add(i))
 				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
 				components.push({ role: 'toolbar', title: 'toolbar', rect: { x: round(r.x), y: round(line.top), w: round(r.width), h: round(line.bottom - line.top) }, gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: lctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
@@ -833,8 +867,13 @@ window.__compdiffExtract = function () {
 		if (el.closest('li, [role=listitem], [role=row], [role=option], tr')) continue
 		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c))
 		if (ctrls.length < 2) continue
+		if (formRow(ctrls)) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (tabStrips.some((s) => el.contains(s))) continue
+		// A wrapper whose one visible child is itself the flex or grid row of these controls (a form inside a widget
+		// box) is not the toolbar: the row is, and its gap is the one the controls stand apart by.
+		const shown = [...el.children].filter(visible)
+		if (shown.length === 1 && /flex|grid/.test(getComputedStyle(shown[0]).display) && ctrls.every((c) => shown[0].contains(c))) continue
 		if ([...used].some((u) => u.contains(el)) || [...lineItems].some((u) => u.contains(el))) continue
 		if (headerBox && (headerBox.contains(el) || el.contains(headerBox) || onTitleLine(el))) continue
 		used.add(el)
@@ -884,6 +923,9 @@ window.__compdiffExtract = function () {
 		const boxed = ownBg || nBorders(el) >= 3
 		// A pager's boxed items are its page links, including a disabled "Volgende" drawn as a span.
 		if (boxed && pagerRows.some((p) => p.contains(el))) return 'button'
+		// A button drawn as a plain text link (no ground, no border, no icon: "Alles wissen") is read as a plain link is:
+		// not an element.
+		if (el.matches('button, [role=button]') && !boxed && !el.querySelector('svg, img, [class*=icon]') && !opaque(cs.backgroundColor)) return null
 		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
 		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
 		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
@@ -978,13 +1020,19 @@ window.__compdiffExtract = function () {
 			})
 			continue
 		}
-		if (!visible(el0) || ariaHidden(el0) || outOfScope(el0) || inTabStrip(el0) || el0.matches('[role=tab], th, td, tr') || cardEls.has(el0)) continue
+		// Hidden from assistive tech is no reason to skip what people see: an initials tile marked aria-hidden is still a
+		// drawn tile. Only a hidden control (NcSelect's chevron button) is decoration.
+		if (!visible(el0) || (ariaHidden(el0) && el0.matches(INTERACTIVE)) || outOfScope(el0) || inTabStrip(el0) || el0.matches('[role=tab], th, td, tr') || cardEls.has(el0)) continue
 		const r0 = el0.getBoundingClientRect()
 		if (r0.width < 6 || r0.height < 6) continue
 		const cs0 = getComputedStyle(el0)
 		const kind = kindOf(el0, cs0, r0)
 		if (!kind) continue
-		const drawer = kind === 'row' ? rowDrawer(el0, cs0, r0) : null
+		// A tree row that holds its own sub-list (a folder with its children) is measured on its own line, not on the
+		// box that wraps the children too.
+		const ownLine = kind === 'row' && el0.querySelector(':scope > ul, :scope > ol, :scope > [role=group]')
+			? [...el0.children].find((c) => visible(c) && !c.matches('ul, ol, [role=group]') && c.textContent.trim()) : null
+		const drawer = kind === 'row' ? (ownLine ? (styled(getComputedStyle(ownLine)) ? ownLine : rowDrawer(el0, cs0, ownLine.getBoundingClientRect()) || ownLine) : rowDrawer(el0, cs0, r0)) : null
 		if (drawer) drawnBy.add(drawer)
 		const el = drawer || el0, cs = drawer ? getComputedStyle(drawer) : cs0, r = drawer ? drawer.getBoundingClientRect() : r0
 		// Inner parts of a control (the input inside a combobox, a button inside a button) are the control itself.

@@ -101,11 +101,11 @@ class Component extends DCLogic {
     const card = (number, title, who, ty, ownerName, d, lvl) => ({ title, sub: number + ' · ' + who, pill: ty, pillStyle: type[ty], due: d, dueStyle: dueS(lvl), owner: ownerName.split(' ').map((p) => p[0]).join(''), hasOwner: ownerName !== '', ownerName, box: box(lvl === 'late') });
     const PJ = 'Pieter Jansen', HB = 'Hanna Bos';
     const cols = [
-      { title: 'Ontvangen', dot: dot('#3669a5'), cards: [card('2026-4864', 'Afvalinzameling Oosthaven 2025', 'Marja Verbeek', 'Woo-verzoek', '', 'Termijn 31 okt', 'soon'), card('2026-4865', 'Vergunningen dakkapellen Beukenlaan', 'Henk Visser', 'Woo-verzoek', '', 'Termijn 2 nov', 'ok'), card('2026-4866', 'Afgewezen parkeervergunningen 2025', 'Linda Bakker', 'Woo-verzoek', '', 'Termijn 2 nov', 'ok'), card('2026-4845', 'Lakken offerte lantaarnpalen', 'Gemeente Zuiddrecht', 'Woo-verzoek', PJ, 'Termijn 18 nov', 'ok'), card('2026-4867', 'Kosten nieuw zwembad', 'Henk Visser', 'Woo-verzoek', '', 'Termijn 22 nov', 'ok')] },
-      { title: 'In behandeling', dot: dot('#4a3f8f'), cards: [card('2026-4837', 'Parkeervergunningen binnenstad', 'Linda Bakker', 'Woo-verzoek', PJ, 'Termijn 26 okt', 'soon'), card('2026-0110', 'Verlichting fietspad Lindelaan', 'Sanne de Vries', 'Woo-verzoek', PJ, 'Termijn 8 nov', 'ok'), card('2026-4838', 'Woo-verzoek vergunningen evenementen', 'Slagerij Van der Berg', 'Woo-verzoek', HB, 'Termijn 18 nov', 'ok')] },
-      { title: 'Besluit', dot: dot('#1d5e66'), cards: [card('2026-4841', 'Openbare verlichting fietspad Lindelaan', 'Henk Visser', 'Woo-verzoek', PJ, 'Termijn 28 okt', 'soon')] },
+      { title: 'Ontvangen', dot: dot('#3669a5'), total: 5, cards: [card('2026-4864', 'Afvalinzameling Oosthaven 2025', 'Marja Verbeek', 'Woo-verzoek', '', 'Termijn 31 okt', 'soon'), card('2026-4866', 'Afgewezen parkeervergunningen 2025', 'Linda Bakker', 'Woo-verzoek', '', 'Termijn 2 nov', 'ok'), card('2026-4865', 'Vergunningen dakkapellen Beukenlaan', 'Henk Visser', 'Woo-verzoek', '', 'Termijn 2 nov', 'ok')] },
+      { title: 'In behandeling', dot: dot('#4a3f8f'), cards: [card('2026-4837', 'Parkeervergunningen binnenstad', 'Linda Bakker', 'Woo-verzoek', PJ, 'Vandaag', 'soon'), card('2026-0110', 'Verlichting fietspad Lindelaan', 'Sanne de Vries', 'Woo-verzoek', PJ, 'Termijn 10 nov', 'ok'), card('2026-4838', 'Woo-verzoek vergunningen evenementen', 'Slagerij Van der Berg', 'Woo-verzoek', HB, 'Termijn 18 nov', 'ok')] },
+      { title: 'Besluit', dot: dot('#1d5e66'), cards: [card('2026-4841', 'Openbare verlichting fietspad Lindelaan', 'Henk Visser', 'Woo-verzoek', PJ, 'Termijn 8 nov', 'ok')] },
       { title: 'Publiceren', dot: dot('#1e6b2a'), cards: [] }
-    ].map((c) => ({ ...c, count: c.cards.length, empty: c.cards.length === 0, hasMore: false, more: '' }));
+    ].map((c) => { const total = c.total || c.cards.length; return { ...c, count: total, empty: total === 0, hasMore: total > c.cards.length, more: 'Toon ' + (total - c.cards.length) + ' meer' }; });
     return { views, modes, cols };
   }
 }

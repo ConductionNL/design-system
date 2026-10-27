@@ -270,3 +270,14 @@ export function routeId(route) {
 	const last = String(route).split(/[?#]/)[0].split('/').filter(Boolean).pop() || ''
 	return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(last) || /^\d+$/.test(last) ? last : null
 }
+
+/**
+ * The environment the measuring Chrome runs in: Dutch, so a native date or time input shows 28-10-2026, 10:00 as on
+ * a Dutch desktop and as the boards draw it. Chrome takes that format from LANG, not from --lang or the page locale.
+ *
+ * @param {object} env The process environment.
+ * @return {object} The environment for the browser.
+ */
+export function browserEnv(env) {
+	return { ...env, LANG: 'nl_NL.UTF-8', LANGUAGE: 'nl_NL', LC_ALL: 'nl_NL.UTF-8' }
+}

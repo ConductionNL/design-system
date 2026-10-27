@@ -34,7 +34,7 @@ import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
-import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, browserEnv, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -111,7 +111,7 @@ const measure = async (page) => {
 const t0 = Date.now(), timings = {}
 let tLast = t0
 const lap = (name) => { const t = Date.now(); timings[name] = (timings[name] || 0) + (t - tLast); tLast = t }
-const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/google/chrome/chrome', headless: true, args: ['--no-sandbox', '--hide-scrollbars', '--lang=nl-NL'] })
+const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/google/chrome/chrome', headless: true, args: ['--no-sandbox', '--hide-scrollbars', '--lang=nl-NL'], env: browserEnv(process.env) })
 try {
 	lap('launch')
 	const bctx = await browser.newContext({ viewport: { width, height: 1200 }, deviceScaleFactor: 1 })

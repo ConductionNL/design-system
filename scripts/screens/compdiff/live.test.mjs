@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, loadingCount, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, browserEnv, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, loadingCount, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -180,4 +180,16 @@ test('waits for a widget that fills seconds after the page, until no loading ind
 	await withPage('<span class="loading-icon" style="display:inline-block;width:20px;height:20px"></span>', async (page) => {
 		assert.equal(await waitForLoaded(page, { timeout: 600, still: 100 }), false)
 	})
+})
+
+test('the measuring Chrome shows a native date-time input in Dutch (28-10-2026, 10:00), as the boards draw it', { skip: !chromium || !fs.existsSync(CHROME) ? 'no playwright or Chrome' : false }, async () => {
+	const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox', '--lang=nl-NL'], env: browserEnv(process.env) })
+	try {
+		const page = await browser.newPage({ viewport: { width: 400, height: 80 } })
+		await page.setContent('<input type="datetime-local" value="2026-10-28T10:00" style="font:16px sans-serif;width:300px">')
+		const order = await page.evaluate(() => new Intl.DateTimeFormat().resolvedOptions().locale)
+		assert.match(order, /^nl/)
+	} finally {
+		await browser.close()
+	}
 })

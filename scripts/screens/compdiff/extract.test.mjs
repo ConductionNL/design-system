@@ -1202,3 +1202,29 @@ test('a switch\'s transparent hit-area border is not where it is drawn: the inse
 	const live = await measure(card('<span style="display:inline-block;width:36px;height:20px;background:#3669a5;border-radius:10px"></span>'))
 	assert.equal(board.components[0].content.minInsetLeft, live.components[0].content.minInsetLeft)
 })
+
+test('a switch inside a transparent hit-area border not painted under is measured on its drawn track', { skip }, async () => {
+	const sw = (style) => `<button role="switch" aria-checked="true" aria-label="Melden vanaf een aantal" style="position:absolute;left:300px;top:300px;${style}"></button>`
+	const board = await measure(sw('width:38px;height:22px;border:6px solid transparent;background:#3669a5;background-clip:padding-box;box-sizing:content-box;margin:-6px;padding:0;border-radius:17px'))
+	const live = await measure(sw('width:38px;height:22px;border:0;padding:0;background:#3669a5;border-radius:11px'))
+	const p = (r) => [r.elements[0].props.h, r.elements[0].props.borderRadius]
+	assert.deepEqual(p(board), p(live))
+	// Painted under (the background shorthand set after the clip resets it to border-box), the border is drawn: 34px.
+	const painted = await measure(sw('width:38px;height:22px;border:6px solid transparent;background-clip:padding-box;background:#3669a5;box-sizing:content-box;padding:0;border-radius:17px'))
+	assert.equal(painted.elements[0].props.h, 34)
+})
+
+test('a disclosure\'s summary is the button that opens it, as a board draws it', { skip }, async () => {
+	const r = await measure('<details style="position:absolute;left:400px;top:300px;width:500px"><summary>Bundeling en testbericht</summary><p>Inhoud</p></details>')
+	assert.deepEqual(r.elements.map((e) => [e.kind, e.label]), [['button', 'Bundeling en testbericht']])
+})
+
+test('a native date input counts its picker button as its icon, as a board draws the calendar glyph', { skip }, async () => {
+	const r = await measure('<label style="position:absolute;left:400px;top:300px">Geplande einddatum <input type="date" style="height:40px"></label>')
+	assert.equal(r.elements.find((e) => e.kind === 'field').props.icon, true)
+})
+
+test('a sort button in a column head is marked as in the head', { skip }, async () => {
+	const r = await measure('<table style="position:absolute;left:300px;top:300px;width:600px"><thead><tr><th aria-sort="none"><button style="height:34px;border:0;background:none">Grondslag<svg width="16" height="16"><path d="M7 10l5 5 5-5z"/></svg></button></th><th>Bedrag</th></tr></thead><tbody><tr><td>a</td><td>b</td></tr></tbody></table>')
+	assert.equal(r.elements.find((e) => e.label === 'Grondslag').inHead, true)
+})

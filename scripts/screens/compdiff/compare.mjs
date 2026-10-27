@@ -396,7 +396,8 @@ export function compareElement (b, l, by = 'label') {
 		add('fontSize', pb.fontSize, pl.fontSize, Math.abs(pl.fontSize - pb.fontSize) > THRESHOLDS.font ? 'font' : null)
 		add('fontWeight', pb.fontWeight, pl.fontWeight, Math.abs(pl.fontWeight - pb.fontWeight) >= THRESHOLDS.weight ? 'weight' : null)
 	}
-	add('icon', pb.icon, pl.icon, pb.icon !== pl.icon ? `icon ${pb.icon ? 'absent' : 'extra'} on live` : null)
+	// A native checkbox or radio draws its own glyph: no icon element on that side says nothing.
+	if (!(native && b.kind === 'toggle')) add('icon', pb.icon, pl.icon, pb.icon !== pl.icon ? `icon ${pb.icon ? 'absent' : 'extra'} on live` : null)
 	add('badge', pb.badge, pl.badge, pb.badge !== pl.badge ? `badge ${pb.badge ? 'absent' : 'extra'} on live` : null)
 	return rows
 }

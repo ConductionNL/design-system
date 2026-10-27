@@ -3,7 +3,7 @@
 // (r32: DqCatalogus table heads read 33% different from a 1.5px offset; DqZaakDoel's filled radio row stays flagged).
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { cropFlag, cropMismatch, wholePixels } from './crop.mjs'
+import { cropFlag, cropMismatch, pixelsFlag, wholePixels } from './crop.mjs'
 
 const W = 20, H = 10
 const image = (paint) => {
@@ -34,4 +34,11 @@ test('a small element or a rescaled crop needs a larger share to flag: a half pi
 	assert.equal(cropFlag({ w: 150, h: 34 }, { w: 150.5, h: 34 }, 30), 30)
 	// A different width beyond the tolerance is a property row's business; the crop keeps its own threshold.
 	assert.equal(cropFlag({ w: 150, h: 34 }, { w: 170, h: 34 }, 30), 30)
+})
+
+test('a column head\'s sort button is not flagged by its crop alone: label and chevron sit apart, its props are read', () => {
+	const e = (inHead) => ({ rect: { w: 120, h: 34 }, ...(inHead ? { inHead } : {}) })
+	assert.equal(pixelsFlag(e(true), e(true), 34, 30), false)
+	assert.equal(pixelsFlag(e(false), e(false), 34, 30), true)
+	assert.equal(pixelsFlag(e(false), e(false), null, 30), false)
 })

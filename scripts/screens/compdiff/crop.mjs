@@ -58,3 +58,17 @@ export function cropFlag(br, lr, base) {
 	const dw = Math.abs(br.w - lr.w)
 	return dw > 1 && dw <= 8 ? base + 10 : base
 }
+
+/**
+ * Whether an element pair's crop flags it as differing where no property does. A column head's sort button does not:
+ * its label and chevron sit a few pixels apart on either side, and its properties are all read.
+ *
+ * @param {{rect: object, inHead?: boolean}} b The board element.
+ * @param {{rect: object, inHead?: boolean}} l The live element.
+ * @param {number|null} crop The crop mismatch, in percent.
+ * @param {number} base The threshold for a crop of the same size.
+ * @return {boolean} Whether the pixels flag the pair.
+ */
+export function pixelsFlag(b, l, crop, base) {
+	return crop !== null && !(b.inHead || l.inHead) && crop > cropFlag(b.rect, l.rect, base)
+}

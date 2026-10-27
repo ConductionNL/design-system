@@ -208,3 +208,9 @@ test('a toolbar that wrapped is not compared on its control count: what wraps on
 	assert.ok(!compareProps(t(5, true, 86), t(6, true, 158)).some((r) => r.flag))
 	assert.ok(compareProps(t(5, false, 40), t(6, false, 40)).some((r) => r.flag === 'chrome'))
 })
+
+test('a native checkbox is not compared on its icon or radius against a board\'s drawn square', () => {
+	const t = (native, icon, borderRadius) => ({ kind: 'toggle', label: 'Een zaak wordt aan mij toegewezen', rect: { x: 0, y: 0, w: 18, h: 18 }, props: { h: 18, borderRadius, border: 0, background: null, native, color: 'rgb(0,0,0)', fontSize: 14, fontWeight: 400, paddingLeft: 0, paddingRight: 0, icon, text: false, badge: false } })
+	assert.ok(!compareElement(t(undefined, true, 0), t(true, false, 8)).some((r) => r.flag))
+	assert.ok(compareElement(t(undefined, true, 0), t(undefined, false, 0)).some((r) => r.flag))
+})

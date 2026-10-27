@@ -27,6 +27,7 @@ function fakePage(fail = {}) {
 		waitForTimeout: async () => {},
 		waitForSelector: async (s) => calls.push(`waitFor ${s}`),
 		$eval: async (s, fn, files) => calls.push(`drag ${s} ${files.join(',')}`),
+		evaluate: async () => calls.push('blur'),
 	}
 }
 
@@ -47,6 +48,7 @@ test('plays clicks and fills interleaved, in the order given', async () => {
 		'fill [role=dialog] .cn-search-select input=Juridische zaken',
 		'click [role=listbox] [role=option] >> nth=0',
 		'fill [role=dialog] textarea=De mail van de aannemer raakt een lopend geschil.',
+		'blur',
 	])
 })
 
@@ -149,4 +151,14 @@ test('--clock fixes the live page\'s date for a board drawn on one (a calendar o
 	assert.equal(parseClock('2026-12-01').getMonth(), 11)
 	assert.throws(() => parseClock('december'), /--clock/)
 	assert.throws(() => parseClock('2026-13-45'), /--clock/)
+})
+
+test('a filled field is left (blurred) so it is measured at rest; a typed one keeps its focus', async () => {
+	const page = fakePage()
+	await playSteps(page, parseSteps('[{"type":"#zoek","value":"han"},{"fill":"#notitie","value":"Gebeld"}]'))
+	assert.deepEqual(page.calls, ['type #zoek=han', 'fill #notitie=Gebeld', 'blur'])
+	// A fill followed by a click on the list it opened keeps its focus until the click.
+	const p2 = fakePage()
+	await playSteps(p2, parseSteps('[{"fill":"#zoek","value":"Jur"},{"click":"[role=option]"}]'))
+	assert.deepEqual(p2.calls, ['fill #zoek=Jur', 'click [role=option]'])
 })

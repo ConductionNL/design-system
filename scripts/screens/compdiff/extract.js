@@ -90,6 +90,11 @@ window.__compdiffExtract = function () {
 	const box = (cs, prop) => Object.fromEntries(SIDES.map((s) => [s.toLowerCase(), px(cs[prop + s])]))
 	// The top-left corner radius as drawn: a percentage resolves against the box, and radii larger than the box
 	// shrink the way CSS shrinks them, so 50%, 18px and 999px on a 36px circle all read 18.
+	// A transparent border the ground is not painted under (background-clip: padding-box; a switch's hit area) is not
+	// where the part is drawn: its widths, to take off the box.
+	const hitArea = (cs) => (cs.backgroundClip !== 'border-box' && !opaque(cs.borderTopColor)
+		? { top: px(cs.borderTopWidth), right: px(cs.borderRightWidth), bottom: px(cs.borderBottomWidth), left: px(cs.borderLeftWidth) }
+		: { top: 0, right: 0, bottom: 0, left: 0 })
 	const radius = (el, cs) => {
 		const r = el.getBoundingClientRect()
 		const len = (v, side) => (/%$/.test(v) ? (parseFloat(v) / 100) * side : px(v))
@@ -289,7 +294,10 @@ window.__compdiffExtract = function () {
 				: box.height >= 16 && box.height <= 48 && Math.abs(box.width - box.height) <= 4 && el.textContent.trim().length <= 3)
 			if (!isMedia && !isDot) continue
 			if (el.closest('svg') && el.tagName !== 'svg') continue
-			const q = el.getBoundingClientRect()
+			// A transparent border its ground is not painted under (a switch's hit area) is not where the part is drawn.
+			const b = hitArea(cs)
+			const q0 = el.getBoundingClientRect()
+			const q = { left: q0.left + b.left, top: q0.top + b.top, right: q0.right - b.right, bottom: q0.bottom - b.bottom, width: q0.width - b.left - b.right, height: q0.height - b.top - b.bottom }
 			if (q.width < 3 || q.height < 3) continue
 			out.push({ node: el, x: q.left, y: q.top, r: q.right, b: q.bottom, text: false })
 		}
@@ -912,7 +920,11 @@ window.__compdiffExtract = function () {
 				continue
 			}
 		}
-		if (r.height > 72 || r.width < 300) continue
+		// A wrapping row of short items (chips, Filter, a view switch) that wrapped onto a second or third line is still
+		// one toolbar: whether it wraps follows how many chips the data brings.
+		const wrapped = r.height > 72 && r.height <= 160 && /flex/.test(cs.display) && cs.flexWrap === 'wrap' && !cardEls.has(el)
+			&& [...el.children].filter(visible).every((c) => c.getBoundingClientRect().height <= 48)
+		if ((r.height > 72 && !wrapped) || r.width < 300) continue
 		// A list row with its open button and its row menu (the saved-views list), or the line inside one, is a row,
 		// not a toolbar.
 		if (el.closest('li, [role=listitem], [role=row], [role=option], tr')) continue
@@ -923,13 +935,15 @@ window.__compdiffExtract = function () {
 		if (tabStrips.some((s) => el.contains(s))) continue
 		// A wrapper whose one visible child is itself the flex or grid row of these controls (a form inside a widget
 		// box) is not the toolbar: the row is, and its gap is the one the controls stand apart by.
-		const shown = [...el.children].filter(visible)
+		// A caption set over that row ("Richting" over a segmented control) is the row's label, not part of the toolbar.
+		const caption = (c) => !c.querySelector(ctrl) && !c.matches(ctrl) && c.getBoundingClientRect().bottom <= Math.min(...ctrls.map((k) => k.getBoundingClientRect().top)) + 1
+		const shown = [...el.children].filter(visible).filter((c, i, a) => !(a.length > 1 && caption(c)))
 		if (shown.length === 1 && /flex|grid/.test(getComputedStyle(shown[0]).display) && ctrls.every((c) => shown[0].contains(c))) continue
 		if ([...used].some((u) => u.contains(el)) || [...lineItems].some((u) => u.contains(el))) continue
 		if (headerBox && (headerBox.contains(el) || el.contains(headerBox) || onTitleLine(el))) continue
 		used.add(el)
 		const c0 = ctrls[0], c0cs = getComputedStyle(c0)
-		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
+		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), ...(wrapped ? { wrapped: true } : {}), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
 	}
 	// A quick-actions row drawn as its own element beside or just under the page header (CnDetailPage) belongs to the
 	// header: its buttons count toward the header's buttons, and its offset from the title is reported on its own.
@@ -974,9 +988,11 @@ window.__compdiffExtract = function () {
 		const boxed = ownBg || nBorders(el) >= 3
 		// A pager's boxed items are its page links, including a disabled "Volgende" drawn as a span.
 		if (boxed && pagerRows.some((p) => p.contains(el))) return 'button'
-		// A button drawn as a plain text link (no ground, no border, no icon: "Alles wissen") is read as a plain link is:
-		// not an element.
-		if (el.matches('button, [role=button]') && !boxed && !el.querySelector('svg, img, [class*=icon]') && !opaque(cs.backgroundColor)) return null
+		// A disclosure's summary is the button that opens it, however it is drawn (a native summary has no box of its own).
+		if (el.tagName === 'SUMMARY') return 'button'
+		// A button drawn as a plain text link (no ground of its own, no border, no icon: "Alles wissen", NcButton's
+		// tertiary "Toon ze in de tabel" painted the card's white) is read as a plain link is: not an element.
+		if (el.matches('button, [role=button]') && !boxed && !el.querySelector('svg, img, [class*=icon]')) return null
 		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
 		// A filled label around a radio or checkbox, or beside one (NcCheckboxRadioSwitch fills the content next to its
 		// input on the checked row), is that toggle's state, not a badge.
@@ -1017,6 +1033,7 @@ window.__compdiffExtract = function () {
 	// its row is not the switch; an unstyled input stretched over its label (NcCheckboxRadioSwitch) is drawn by the
 	// icon beside it.
 	const drawnHeight = (el, kind, cs, r) => {
+		if (kind === 'toggle' && !el.matches('input')) { const h = hitArea(cs); return r.height - h.top - h.bottom }
 		if (kind !== 'toggle' || !el.matches('input')) return r.height
 		if (cs.appearance !== 'none') return Math.min(r.width, r.height)
 		const host = el.closest('label, [class*=checkbox], [class*=switch]')
@@ -1134,16 +1151,17 @@ window.__compdiffExtract = function () {
 			// Page links pair with page links: a lone "2" elsewhere on the page is not the pager's.
 			kind, label, inControl: inRecord(el) ? 'record card' : pagerRows.some((p) => p.contains(el)) ? 'pager' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			interactive: el.matches('button, a[href], [role=button], [role=link], [role=tab], [role=menuitem]'),
-			container: containerOf(el), rect: rect(el), ...(r.top >= window.innerHeight ? { belowFrame: true } : {}),
+			container: containerOf(el), rect: rect(el), ...(r.top >= window.innerHeight ? { belowFrame: true } : {}), ...(el.closest('th, [role=columnheader]') ? { inHead: true } : {}),
 			props: {
-				h: round(kind === 'field' && focusRing(el) ? focusRing(el).h : drawnHeight(el, kind, cs, r)), borderRadius: radius(el, cs), ...elementBorder(el, kind, cs),
+				h: round(kind === 'field' && focusRing(el) ? focusRing(el).h : drawnHeight(el, kind, cs, r)), borderRadius: kind === 'toggle' ? Math.max(0, radius(el, cs) - hitArea(cs).top) : radius(el, cs), ...elementBorder(el, kind, cs),
 				// A native checkbox or radio draws its own glyph: its computed background (grey when disabled, the accent
 				// when checked) is not painted anywhere, so it has none to compare.
 				background: nativeToggle(el, kind, cs) ? null : bgBehind(el), native: nativeToggle(el, kind, cs) || undefined, color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
 				// A native select draws its own arrow.
 				// A select library's open indicator sits in its own actions box beside the input (NcSelect's .vs__actions).
-				icon: (el.matches('select') && cs.appearance !== 'none') || [...(kind === 'field' ? (el.closest('.vs__dropdown-toggle, .v-select') || fieldBox(el)) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
+				// A native select's arrow and a native date or time input's picker button are drawn by the browser, not by an element.
+				icon: (el.matches('select, input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week]') && cs.appearance !== 'none') || [...(kind === 'field' ? (el.closest('.vs__dropdown-toggle, .v-select') || fieldBox(el)) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
 				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),
 				badge: !!(kind === 'button' || kind === 'pill') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
 				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,

@@ -128,7 +128,7 @@ function flatten (obj, prefix = '', out = {}) {
 	for (const [k, v] of Object.entries(obj)) flatten(v, prefix ? `${prefix}.${k}` : k, out)
 	return out
 }
-const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions|belowFrame|popup|inCard|headText)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
+const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions|belowFrame|popup|inCard|headText|wrapped)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
 // Properties whose value follows the data (row counts, text length), reported but never flagged.
 const DATA = /^rect\.h$|^pages$|^cell\.background$|^head\.background$/
 // Card padding and gap depend on where the DOM puts its padding (card vs header vs body); the effective insets
@@ -157,6 +157,8 @@ export function compareProps (b, l) {
 	const rows = []
 	// A legacy measurement whose quick actions sat in a separate row has no button count for them: skip the count.
 	if (b.legacyQuickActions || l.legacyQuickActions) { delete fb.buttons; delete fl.buttons }
+	// A toolbar that wrapped holds whatever the data put on its lines (a search row, more chips): its control count follows.
+	if (b.wrapped || l.wrapped) { delete fb.controls; delete fl.controls }
 	// Chrome presence: a title row on one side only.
 	if (CARDLIKE.has(role) && !!b.header !== !!l.header) rows.push({ prop: 'header (title row)', board: b.header ? 'present' : 'absent', live: l.header ? 'present' : 'absent', delta: null, flag: 'chrome' })
 	const keys = [...new Set([...Object.keys(fb), ...Object.keys(fl)])]
@@ -394,7 +396,8 @@ export function compareElement (b, l, by = 'label') {
 		add('fontSize', pb.fontSize, pl.fontSize, Math.abs(pl.fontSize - pb.fontSize) > THRESHOLDS.font ? 'font' : null)
 		add('fontWeight', pb.fontWeight, pl.fontWeight, Math.abs(pl.fontWeight - pb.fontWeight) >= THRESHOLDS.weight ? 'weight' : null)
 	}
-	add('icon', pb.icon, pl.icon, pb.icon !== pl.icon ? `icon ${pb.icon ? 'absent' : 'extra'} on live` : null)
+	// A native checkbox or radio draws its own glyph: no icon element on that side says nothing.
+	if (!(native && b.kind === 'toggle')) add('icon', pb.icon, pl.icon, pb.icon !== pl.icon ? `icon ${pb.icon ? 'absent' : 'extra'} on live` : null)
 	add('badge', pb.badge, pl.badge, pb.badge !== pl.badge ? `badge ${pb.badge ? 'absent' : 'extra'} on live` : null)
 	return rows
 }

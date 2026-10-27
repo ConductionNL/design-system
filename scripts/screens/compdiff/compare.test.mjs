@@ -214,3 +214,8 @@ test('a native checkbox is not compared on its icon or radius against a board\'s
 	assert.ok(!compareElement(t(undefined, true, 0), t(true, false, 8)).some((r) => r.flag))
 	assert.ok(compareElement(t(undefined, true, 0), t(undefined, false, 0)).some((r) => r.flag))
 })
+
+test('a native date field is not compared on its icon against a board\'s text field', () => {
+	const f = (native, icon) => ({ kind: 'field', label: 'Wanneer', rect: { x: 0, y: 0, w: 300, h: 40 }, props: { h: 40, borderRadius: 8, border: 1, borderColor: 'rgb(130,138,149)', background: null, native, color: 'rgb(0,0,0)', fontSize: 15, fontWeight: 400, paddingLeft: 12, paddingRight: 12, icon, text: true, badge: false } })
+	assert.ok(!compareElement(f(undefined, false), f(true, true)).some((r) => r.flag))
+})

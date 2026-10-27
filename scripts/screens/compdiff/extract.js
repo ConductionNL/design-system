@@ -261,6 +261,12 @@ window.__compdiffExtract = function () {
 	const ownedBy = (node, card) => { const p = node.nodeType === 1 ? node : node.parentElement; if (!card.contains(p)) return false; for (let e = p; e && e !== card; e = e.parentElement) if (cardEls.has(e)) return false; return true }
 
 	// Content leaves of a card: text runs, plus icons, images, inputs and coloured dots/bars.
+	const pseudoBox = (el) => ['::before', '::after'].some((w) => {
+		const ps = getComputedStyle(el, w)
+		if (!ps.content || ps.content === 'none' || ps.display === 'none') return false
+		const box = opaque(ps.backgroundColor) || Object.values(borders(ps)).some((v) => v > 0)
+		return box && px(ps.width) >= 8 && px(ps.height) >= 8
+	})
 	const leavesOf = (card) => {
 		const out = []
 		const range = document.createRange()
@@ -292,7 +298,9 @@ window.__compdiffExtract = function () {
 			const isDot = filled && (!el.textContent.trim()
 				? (![...el.children].some(visible) || (box.height <= 48 && box.width <= 96))
 				: box.height >= 16 && box.height <= 48 && Math.abs(box.width - box.height) <= 4 && el.textContent.trim().length <= 3)
-			if (!isMedia && !isDot) continue
+			// A box drawn by a pseudo-element (NcCheckboxRadioSwitch's checkbox as a ::before on .checkbox-content__icon)
+			// is a part where its element sits.
+			if (!isMedia && !isDot && !pseudoBox(el)) continue
 			if (el.closest('svg') && el.tagName !== 'svg') continue
 			// A transparent border its ground is not painted under (a switch's hit area) is not where the part is drawn.
 			const b = hitArea(cs)
@@ -851,12 +859,24 @@ window.__compdiffExtract = function () {
 	}
 	// The buttons that close a dialog or a form card (Annuleren, Volgende; Dag afsluiten) are its footer: nothing of the
 	// card follows them. A board draws them as a plain row, a dialog library as an actions bar: neither is a toolbar.
+	// An open listbox (a select's or a search field's suggestions) is a component of its own, placed over the page: its
+	// box, its frame and the height of its options. What it covers is not part of the card or dialog under it.
+	const listboxEls = new Set()
+	for (const lb of document.querySelectorAll('[role=listbox]')) {
+		if (!visible(lb) || outOfScope(lb)) continue
+		const opts = [...lb.querySelectorAll('[role=option]')].filter(visible)
+		const lr = lb.getBoundingClientRect()
+		if (!opts.length || lr.height < 40) continue
+		listboxEls.add(lb)
+		const lcs = getComputedStyle(lb)
+		components.push({ el: lb, role: 'listbox', title: 'listbox', popup: true, rect: rect(lb), props: { padding: box(lcs, 'padding'), border: seenBorders(lcs), borderRadius: radius(lb, lcs), background: bgBehind(lb) }, optionHeight: round(opts[0].getBoundingClientRect().height) })
+	}
 	const actionFooter = (el, cs) => {
 		if (!cs.every((c) => c.matches('button, [role=button], a'))) return false
 		const owner = el.closest('[role=dialog]') || (() => { for (let e = el.parentElement; e; e = e.parentElement) if (cardEls.has(e)) return e; return null })()
 		if (!owner) return false
 		const bottom = el.getBoundingClientRect().bottom
-		return ![...owner.querySelectorAll('*')].some((d) => !el.contains(d) && !d.contains(el) && visible(d) && d.getBoundingClientRect().top >= bottom - 1 && (d.textContent.trim() || d.matches(CONTROL_BOX)) && !d.children.length)
+		return ![...owner.querySelectorAll('*')].some((d) => !el.contains(d) && !d.contains(el) && ![...listboxEls].some((lb) => lb.contains(d)) && visible(d) && d.getBoundingClientRect().top >= bottom - 1 && (d.textContent.trim() || d.matches(CONTROL_BOX)) && !d.children.length)
 	}
 	const headerBox = window.__compdiffPageHeader
 	// The page header's buttons are counted from its whole header block (scope), so a row of them beside the title
@@ -1040,7 +1060,7 @@ window.__compdiffExtract = function () {
 		const icon = host && [...host.querySelectorAll('svg, [class*=icon]')].find((i) => visible(i) && i.getBoundingClientRect().height <= 40)
 		return icon ? icon.getBoundingClientRect().height : r.height
 	}
-	const nativeToggle = (el, kind, cs) => (kind === 'toggle' && el.matches('input') && cs.appearance !== 'none') || (kind === 'field' && el.matches('select') && cs.appearance !== 'none')
+	const nativeToggle = (el, kind, cs) => (kind === 'toggle' && el.matches('input') && cs.appearance !== 'none') || (kind === 'field' && el.matches('select, input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week]') && cs.appearance !== 'none')
 	const elements = []
 	const elementEls = new Set()
 	const recordEls = new Set(components.filter((c) => c.record).map((c) => c.el))
@@ -1053,7 +1073,8 @@ window.__compdiffExtract = function () {
 		const toggle = el.matches(TOGGLE)
 		if (!toggle && !el.matches(FIELD)) return ''
 		const by = (el.getAttribute('aria-labelledby') || '').split(/\s+/).map((id) => id && document.getElementById(id)).filter(Boolean)
-		const named = by.length ? by : [...(el.labels || [])]
+		// A drawn checkbox (a span with role=checkbox) has no .labels: the label that wraps it names it.
+		const named = by.length ? by : el.labels && el.labels.length ? [...el.labels] : el.parentElement && el.parentElement.closest('label') ? [el.parentElement.closest('label')] : []
 		// Only the label's own visible text: a wrapping label also holds the control and the value it shows.
 		const text = (l) => {
 			const w = document.createTreeWalker(l, NodeFilter.SHOW_TEXT)
@@ -1072,7 +1093,11 @@ window.__compdiffExtract = function () {
 		// A field with no label of its own takes the caption set right over it in its wrapper (a board's "Zichtbaarheid"
 		// over a select), not the text of the option it shows.
 		const cr = el.getBoundingClientRect()
+		const above = (t) => !t.contains(el) && !t.closest(FIELD) && t.textContent.trim() && visible(t) && t.getBoundingClientRect().bottom <= cr.top + 2 && cr.top - t.getBoundingClientRect().bottom <= 24
 		for (let w = el.parentElement, i = 0; w && i < 3; w = w.parentElement, i++) {
+			// A label element over the field is its name whole ("Bericht (niet verplicht)"), muted parts included.
+			const lab = [...w.querySelectorAll('label, legend')].find(above)
+			if (lab) return lab.textContent.trim().replace(/\s+/g, ' ')
 			const cap = [...w.querySelectorAll('span, div, p, strong, b, legend, label')].find((t) => !t.children.length && !t.closest(FIELD) && t.textContent.trim() && visible(t) && t.getBoundingClientRect().bottom <= cr.top + 2 && cr.top - t.getBoundingClientRect().bottom <= 24)
 			if (cap) return cap.textContent.trim()
 		}
@@ -1161,7 +1186,7 @@ window.__compdiffExtract = function () {
 				// A native select draws its own arrow.
 				// A select library's open indicator sits in its own actions box beside the input (NcSelect's .vs__actions).
 				// A native select's arrow and a native date or time input's picker button are drawn by the browser, not by an element.
-				icon: (el.matches('select, input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week]') && cs.appearance !== 'none') || [...(kind === 'field' ? (el.closest('.vs__dropdown-toggle, .v-select') || fieldBox(el)) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
+				icon: (el.matches('select, input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week]') && cs.appearance !== 'none') || [...(kind === 'field' ? (el.closest('.cn-search-select') || el.closest('.vs__dropdown-toggle, .v-select') || fieldBox(el)) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
 				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),
 				badge: !!(kind === 'button' || kind === 'pill') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
 				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,
@@ -1182,6 +1207,11 @@ window.__compdiffExtract = function () {
 		if (!ownBg && nBorders(el) < 3) continue
 		if (inTabStrip(el) || el.closest('table, [role=dialog] > *:first-child:empty') || [...elementEls].some((e) => e.contains(el)) || [...cardEls].some((c) => c === el)) continue
 		if (el.matches('svg, svg *, img, canvas, [role=progressbar], progress, hr') || (!el.textContent.trim() && r.height <= 16)) continue
+		// A box around controls that are each measured (a view switch's track around its icon buttons) is accounted for
+		// by them.
+		const kids = [...el.children].filter(visible)
+		if (kids.length >= 2 && kids.every((k) => measuredEls.has(k) || listboxEls.has(k))) continue
+		if (listboxEls.has(el)) continue
 		unmeasured.push({ tag: el.tagName.toLowerCase(), text: el.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), rect: rect(el) })
 	}
 

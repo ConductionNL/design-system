@@ -1081,3 +1081,88 @@ test('a menu row whose li is only rounded (NcActions focus) is still measured on
 	const rows = r.elements.filter((e) => /importeren|Sjablonen/.test(e.label))
 	assert.deepEqual(rows.map((e) => [e.kind, e.props.paddingLeft]), [['row', 10], ['row', 10]], JSON.stringify(rows.map((e) => [e.kind, e.label, e.props.paddingLeft])))
 })
+
+test('what sits in a closed disclosure is not measured; its summary is', { skip }, async () => {
+	const r = await measure('<details style="position:absolute;left:300px;top:300px;width:600px"><summary>Een regel proberen op een zaak</summary><div style="display:flex;gap:8px"><input aria-label="Regel" style="height:40px"><button style="height:40px;border:1px solid #888;border-radius:8px">Probeer het</button></div></details>')
+	assert.deepEqual(r.elements.filter((e) => /Regel|Probeer/.test(e.label)), [])
+})
+
+test('a launcher pinned to the window\'s lower right corner is chrome, not an element', { skip }, async () => {
+	const r = await measure('<button aria-label="AI-chat openen" style="position:fixed;right:24px;bottom:24px;width:56px;height:56px;border-radius:28px;background:#3669a5;border:0"><svg width="24" height="24"><rect width="24" height="24"/></svg></button><button style="position:absolute;left:300px;top:300px;height:40px;border:1px solid #888">Opslaan</button>')
+	assert.deepEqual(r.elements.map((e) => e.label), ['Opslaan'])
+})
+
+test('a meta line that is only a time of day reads as meta, not as a number', { skip }, async () => {
+	const card = (meta) => `<a href="#" style="display:flex;flex-direction:column;gap:6px;border:1px solid #ddd;border-radius:12px;padding:12px 14px;text-decoration:none;color:#1b1c1d"><strong style="font-size:15px">Havenstraat, speeltuin</strong><span style="font-size:13px;color:#5e6168">${meta}</span></a>`
+	const deck = (meta) => `<div style="position:absolute;left:300px;top:300px;width:300px;display:flex;flex-direction:column;gap:12px">${card(meta)}${card(meta)}${card(meta)}</div>`
+	const s = async (meta) => (await measure(deck(meta))).components.find((c) => c.role === 'card').structure
+	assert.equal(await s('15.00'), await s('15.00 · 12 vragen'))
+})
+
+test('a count inside a button is the button\'s badge, not a pill of its own', { skip }, async () => {
+	const r = await measure('<button style="position:absolute;left:300px;top:300px;height:36px;border:1px solid #3669a5;border-radius:8px;display:inline-flex;gap:8px;align-items:center">Filter<span aria-label="1 actief" style="min-width:20px;height:20px;border-radius:10px;background:#3669a5;color:#fff;font-size:12px;display:inline-flex;align-items:center;justify-content:center">1</span></button>')
+	assert.deepEqual(r.elements.map((e) => e.label), ['Filter'])
+	assert.equal(r.elements[0].props.badge, true)
+})
+
+test('a tinted list row is a row, not a badge, as the library draws the chosen folder', { skip }, async () => {
+	const r = await measure('<ul style="position:absolute;left:300px;top:300px;width:280px;list-style:none;margin:0;padding:0"><li style="height:34px;padding:0 10px;border-radius:8px;background:#eaf0f7;line-height:34px">Vergunningen</li><li style="height:34px;padding:0 10px">Handhaving</li></ul>')
+	assert.equal(r.elements.find((e) => e.label === 'Vergunningen').kind, 'row')
+})
+
+test('a card\'s title-line buttons and a closing button pair are not toolbars', { skip }, async () => {
+	const card = '<section style="position:absolute;left:764px;top:500px;width:600px;border:1px solid #ddd;padding:20px"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:17px">Historie</h2></div><div style="position:absolute;right:20px;top:18px;width:320px;display:flex;gap:8px;justify-content:flex-end"><button style="height:36px;border:1px solid #888;border-radius:8px">Notitie toevoegen</button><button style="height:36px;border:1px solid #888;border-radius:8px">Exporteren</button></div><p>Rij een</p><p>Rij twee</p><div style="display:flex;gap:8px;justify-content:flex-end;width:100%"><button style="height:40px;border:1px solid #888;border-radius:8px">Annuleren</button><button style="height:40px;border:1px solid #3669a5;border-radius:8px">Dag afsluiten</button></div></section>'
+	const r = await measure(card)
+	assert.deepEqual(r.components.filter((c) => c.role === 'toolbar'), [])
+	// A toolbar of controls in the body, with content after it, still is one.
+	const bar = await measure('<section style="position:absolute;left:300px;top:300px;width:700px;border:1px solid #ddd;padding:20px"><h2 style="margin:0">Zaken</h2><div style="display:flex;gap:8px;width:660px"><input type="search" style="height:40px;width:300px"><button style="height:40px;border:1px solid #888;border-radius:8px">Filter</button></div><p>rij</p></section>')
+	assert.equal(bar.components.filter((c) => c.role === 'toolbar').length, 1)
+})
+
+test('two tables pair by their columns\' names, not by their order, when one is missing on a side', { skip }, async () => {
+	const t = (top, cols) => `<table style="position:absolute;left:315px;top:${top}px;width:1000px"><thead><tr>${cols.map((c) => `<th>${c}</th>`).join('')}</tr></thead><tbody><tr>${cols.map(() => '<td>x</td>').join('')}</tr></tbody></table>`
+	const ing = ['Zaak', 'Ingebrekestelling', 'Verstuurd'], kw = ['Kwartaal', 'Afgehandeld', 'Binnen termijn']
+	const board = await measure(t(600, ing) + t(800, kw))
+	const live = await measure(t(600, kw))
+	const { pairs, missing } = pairComponents(board.components, live.components, 900)
+	assert.equal(pairs.find((p) => p.board.role === 'table').board.headText, live.components.find((c) => c.role === 'table').headText)
+	assert.match(missing.find((c) => c.role === 'table').headText, /Ingebrekestelling/)
+})
+
+test('a wide tinted line of text is a notice card on both sides, whatever its role', { skip }, async () => {
+	const r = await measure('<div style="position:absolute;left:292px;top:1064px;width:1120px;box-sizing:border-box;padding:10px 14px;background:#eaf0f7;border-radius:10px">Binnen termijn ziet alleen wie controleert of beheert.</div>')
+	assert.equal(r.components.filter((c) => c.role === 'card').length, 1)
+	// A tinted narrow row is no card.
+	const row = await measure('<div style="position:absolute;left:292px;top:400px;width:300px;padding:10px 14px;background:#eaf0f7">Wacht op inwoner</div>')
+	assert.equal(row.components.filter((c) => c.role === 'card').length, 0)
+})
+
+test('a focused field drawn with its ring on a wrapper reads like a board input with a 2px border', { skip }, async () => {
+	const live = await measure('<div class="wrap" style="position:absolute;left:424px;top:300px;width:400px;border:2px solid #3669a5;border-radius:10px"><input aria-label="Delen met" style="display:block;width:396px;box-sizing:border-box;height:40px;border:1px solid #828a95;border-radius:8px"></div><script>document.querySelector("input").focus()</script>')
+	const f = live.elements.find((e) => e.label === 'Delen met')
+	assert.deepEqual([f.props.h, f.props.border], [44, 2])
+	// Not focused, the field is its own 40px box and 1px line.
+	const rest = await measure('<div style="position:absolute;left:424px;top:300px;width:400px;border:2px solid #3669a5;border-radius:10px"><input aria-label="Delen met" style="display:block;width:396px;box-sizing:border-box;height:40px;border:1px solid #828a95;border-radius:8px"></div>')
+	assert.deepEqual([rest.elements[0].props.h, rest.elements[0].props.border], [40, 1])
+})
+
+test('a select with no label of its own is named by the caption over it, not by its chosen option', { skip }, async () => {
+	const r = await measure('<div style="position:absolute;left:300px;top:300px;display:flex;flex-direction:column;gap:6px;width:300px"><span style="font-weight:600">Zichtbaarheid</span><select style="height:40px"><option>Intern en openbaar</option></select></div>')
+	assert.equal(r.elements.find((e) => e.kind === 'field').label, 'Zichtbaarheid')
+})
+
+test('a note card beside 40px field boxes is a card: the field boxes are form parts, not rows of a list', { skip }, async () => {
+	const field = '<div style="height:40px;border:1px solid #828a95;border-radius:8px"><textarea aria-label="Reden" style="border:0;width:100%;height:36px"></textarea></div>'
+	const r = await measure(`<div role="dialog" aria-modal="true" style="position:absolute;left:400px;top:88px;width:640px;background:#fff;padding:24px;box-sizing:border-box"><h2>Zaak archiveren</h2><div>${field}<div style="margin-top:16px;padding:14px 20px;background:#eaf0f7;border-radius:8px"><p style="margin:0;font-weight:600">Daarna alleen lezen</p><p style="margin:0">De zaak is dicht.</p></div>${field}</div></div>`)
+	assert.ok(r.components.some((c) => c.role === 'dialog-card' && c.title === 'Daarna alleen lezen'), JSON.stringify(r.components.map((c) => [c.role, c.title])))
+})
+
+test('a link right under a widget title is its header action in a grid of widgets, wrapped there or set in the title stack', { skip }, async () => {
+	const rows = '<ul style="margin:0;padding:0;list-style:none">' + ['Uitbouw keuken', 'Dakkapel'].map((t) => `<li style="padding:12px 0;border-top:1px solid #eef0f3">${t}</li>`).join('') + '</ul>'
+	const live = (t) => `<section style="border:1px solid #ddd;border-radius:12px;padding:20px 22px"><div><div style="display:flex;flex-direction:column;gap:2px"><h2 style="margin:0;font-size:17px">${t}</h2><a href="#" style="font-size:14px;font-weight:600">Alles bekijken</a></div></div>${rows}</section>`
+	const board = (t) => `<section style="border:1px solid #ddd;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 16px"><div style="flex:1 1 260px"><h2 style="margin:0;font-size:17px">${t}</h2></div><div style="flex:none"><a href="#" style="font-size:14px;font-weight:600">Alles bekijken</a></div></div>${rows}</section>`
+	const grid = (card) => `<div style="position:absolute;left:292px;top:600px;width:1120px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px">${['Zaken die u volgt', 'Recent geopend', 'Vastgelopen zaken'].map(card).join('')}</div>`
+	const h = async (html) => (await measure(html)).components.find((c) => c.title === 'Zaken die u volgt').header.actions
+	assert.equal(await h(grid(live)), 1)
+	assert.equal(await h(grid(board)), 1)
+})

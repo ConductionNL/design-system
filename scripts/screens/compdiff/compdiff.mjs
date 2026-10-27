@@ -13,6 +13,7 @@
 //   through the OpenRegister API at run time (lookup.mjs)
 //   [--settle-mode quiet|fixed]   quiet (default): measure once requests and layout hold still for 1.5 s, at most
 //   --settle ms; fixed: wait the full --settle, as before
+//   [--board-frame "<css>"]   measure only that element of the board, as the whole board (one of several frames)
 //   [--allow-stale-board]   measure a flattened board that no longer matches its source (refused by default)
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
 // PLAYWRIGHT_MODULE (path to a playwright package when it is not resolvable from here).
@@ -32,6 +33,7 @@ import { cropMismatch, wholePixels } from './crop.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
+import { cropToFrame } from './frame.mjs'
 import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -116,6 +118,13 @@ try {
 	const bpage = await bctx.newPage()
 	await bpage.goto('file://' + boardFile, { waitUntil: 'load' })
 	await bpage.waitForTimeout(800)
+	// --board-frame: a board that draws several frames side by side (three phone screens on one canvas) is measured on
+	// one of them, as if it were the whole board.
+	if (args['board-frame']) {
+		const found = await bpage.evaluate(cropToFrame, args['board-frame'])
+		if (!found) throw new Error(`--board-frame ${args['board-frame']} matches nothing on the board`)
+		await bpage.waitForTimeout(300)
+	}
 	const boardHeight = await bpage.evaluate(() => Math.ceil((document.querySelector('[data-board]') || document.body).getBoundingClientRect().height) || 1070)
 	await bpage.setViewportSize({ width, height: boardHeight })
 	await bpage.waitForTimeout(300)

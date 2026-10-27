@@ -133,7 +133,15 @@ window.__compdiffExtract = function () {
 		// A map's attribution is the tile provider's credit, not part of the page.
 		if (el.closest('.leaflet-control-attribution, .maplibregl-ctrl-attrib, .mapboxgl-ctrl-attrib, .ol-attribution')) return true
 		if (modals.length && !modals.some((m) => m.contains(el))) return true
+		// The content of a closed disclosure is laid out but not shown: Chrome keeps its boxes.
+		const closed = el.closest('details:not([open])')
+		if (closed && !el.closest('summary') && el !== closed) return true
 		const r = el.getBoundingClientRect()
+		// A floating launcher pinned to the window's lower right corner (the AI assistant button) is app chrome: it
+		// sits over the content and follows the window, not the page.
+		if (r.width <= 72 && r.height <= 72 && r.right >= window.innerWidth - 120 && r.bottom >= window.innerHeight - 140 && !el.closest('[role=dialog]')) {
+			for (let e = el, i = 0; e && i < 4; e = e.parentElement, i++) if (/fixed|sticky/.test(getComputedStyle(e).position) || (getComputedStyle(e).position === 'absolute' && e.getBoundingClientRect().bottom >= window.innerHeight - 140)) return true
+		}
 		return (r.x < 250 && r.right < 300) || r.bottom <= 70
 	}
 	const all = [...document.body.querySelectorAll('*')].filter((el) => !['SCRIPT', 'STYLE', 'LINK', 'META', 'svg', 'path', 'TR', 'TD', 'TH', 'THEAD', 'TBODY', 'BR', 'OPTION'].includes(el.tagName))
@@ -202,8 +210,11 @@ window.__compdiffExtract = function () {
 		// A notice band (role note, status or alert) is a card at one line of text too: whether its words wrap to a
 		// second line follows the data.
 		const band = el.matches('[role=note], [role=status], [role=alert]') && r.height >= 32
-		if (r.width < 140 || (r.height < 48 && !band)) continue
+		if (r.width < 140 || r.height < 32 || (r.height < 48 && !band && r.width < 400)) continue
 		const cs = getComputedStyle(el)
+		// Under 48px only a notice band is a card: one with that role, or a wide tinted line of text with no control in
+		// it (a board's info note, a live banner widget).
+		if (r.height < 48 && !band && !(framed(el, cs) === 'background' && el.textContent.trim() && !el.querySelector(INTERACTIVE))) continue
 		if ((cs.position === 'fixed' || cs.position === 'absolute') && r.width >= VW * 0.9) continue
 		if (r.width >= VW * 0.75 && r.height >= window.innerHeight * 0.6) continue
 		// The column that holds the page's title is the page (narrowed by an open side panel), not a card on it.
@@ -220,7 +231,9 @@ window.__compdiffExtract = function () {
 	const sameBox = (a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect(); return Math.abs(p.x - q.x) <= 1 && Math.abs(p.y - q.y) <= 1 && Math.abs(p.right - q.right) <= 1 && Math.abs(p.bottom - q.bottom) <= 1 }
 	const itemOf = (el) => { let e = el; while (e.parentElement && e.parentElement !== document.body && sameBox(e, e.parentElement)) e = e.parentElement; return e }
 	const framedFill = (s) => { for (let e = s; e; e = [...e.children].find((k) => sameBox(k, s)) || null) if (framed(e, getComputedStyle(e))) return true; return false }
-	const rowSibling = (el) => { const item = itemOf(el); return !!item.parentElement && [...item.parentElement.children].some((s) => s !== item && s.tagName === item.tagName && visible(s) && framedFill(s) && s.getBoundingClientRect().height < 48) }
+	// A short framed sibling that holds a field or a control (a 40px input box) is a form part, not a row of a list.
+	const formPart = (s) => s.matches('input, select, textarea, button, [role=combobox]') || !!s.querySelector('input:not([type=hidden]), select, textarea, button, [role=combobox]')
+	const rowSibling = (el) => { const item = itemOf(el); return !!item.parentElement && [...item.parentElement.children].some((s) => s !== item && s.tagName === item.tagName && visible(s) && framedFill(s) && s.getBoundingClientRect().height < 48 && !formPart(s)) }
 	cards = cards.filter((c) => !c.el.parentElement || !rowSibling(c.el))
 	// Collapse wrappers that draw the same box (grid item around widget wrapper): keep the one with the most border sides, else the inner one.
 	const same = (a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect(); return Math.abs(p.x - q.x) <= 3 && Math.abs(p.y - q.y) <= 3 && Math.abs(p.right - q.right) <= 3 && Math.abs(p.bottom - q.bottom) <= 3 }
@@ -380,6 +393,7 @@ window.__compdiffExtract = function () {
 		}
 		return false
 	}
+	const titleBoxes = new Map()
 	const describeCard = (card, role, record = false) => {
 		const cs = getComputedStyle(card)
 		const cr = card.getBoundingClientRect()
@@ -398,6 +412,7 @@ window.__compdiffExtract = function () {
 		if (title) {
 			comp.title = title.textContent.trim().replace(/\s+/g, ' ').slice(0, 80)
 			titleBox = textRect(title) || rect(title)
+			titleBoxes.set(card, titleBox)
 			headerRow = title
 			// Climb to the header row: the widest ancestor that still holds only the title line.
 			for (let p = title.parentElement; p && p !== card && card.contains(p); p = p.parentElement) {
@@ -414,8 +429,10 @@ window.__compdiffExtract = function () {
 				// Actions that wrapped under the subtitle (DqZaaktype "Fasen en taken") end the header at the subtitle.
 				const titleAndSubtitle = leaves.every((l) => !p.contains(l.node) || l.y <= titleBox.y + titleBox.h + 4 || subtitle(l) || (inAction(l) && l.x >= titleBox.x + titleBox.w))
 				if (pr.height > titleBox.h + 56 && !titleAndSubtitle) break
-				// In a record card a line of text under the title (its number line) is a row of its own, however tight.
-				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + (record && l.text ? -1 : 4) && !(wraps && inAction(l)) && !subtitle(l))) break
+				// In a record card a line of text under the title (its number line) is a row of its own, however tight; a link
+				// or button there ("Alles bekijken" under a widget's title) stays in the header, as its action.
+				const ownControl = (l) => { const e = l.node.nodeType === 1 ? l.node : l.node.parentElement; const c = e && e.closest('a, button, [role=button]'); return !!c && c !== card && card.contains(c) }
+				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + (record && l.text && !ownControl(l) ? -1 : 4) && !(wraps && inAction(l)) && !subtitle(l))) break
 				headerRow = p
 			}
 			const hcs = getComputedStyle(headerRow)
@@ -590,7 +607,9 @@ window.__compdiffExtract = function () {
 		const maxFs = Math.max(0, ...texts.filter((x) => x.fw >= 600).map((x) => x.fs))
 		// A figure (a KPI tile's 76, 311 or 1.284, 12,5 %) is a number like a record number, however many digits it has.
 		const FIGURE = /^\d{1,3}([.,\s]\d{3})*([.,]\d+)?\s?%?$/
-		for (const x of texts) parts.push({ t: NUMBER.test(x.t) || FIGURE.test(x.t) ? 'number' : DATE.test(x.t) ? 'deadline' : x.fw >= 600 && x.fs >= maxFs ? 'title' : 'meta', y: x.y, b: x.b, x: x.x })
+		// A time of day ("15.00", "9:30") is a meta line, not a figure.
+		const TIME = /^([01]?\d|2[0-3])[.:][0-5]\d$/
+		for (const x of texts) parts.push({ t: TIME.test(x.t) ? 'meta' : NUMBER.test(x.t) || FIGURE.test(x.t) ? 'number' : DATE.test(x.t) ? 'deadline' : x.fw >= 600 && x.fs >= maxFs ? 'title' : 'meta', y: x.y, b: x.b, x: x.x })
 		if (cr.top < window.innerHeight) for (let i = parts.length - 1; i >= 0; i--) if (parts[i].y >= window.innerHeight) parts.splice(i, 1)
 		parts.sort((a, b) => a.y - b.y || a.x - b.x)
 		// One row is one line: parts whose tops are close, or a box centred on a line of text (a pill beside a due date
@@ -778,7 +797,9 @@ window.__compdiffExtract = function () {
 		// The titled card a table sits in: two tables pair only within cards of the same title.
 		const holder = ownerCard(t)
 		const inCard = holder ? (components.find((c) => c.el === holder) || {}).title || null : null
-		components.push({ role: 'table', title: 'table', rect: rect(t), inCard, head: cell(th), headRowHeight: hr ? rowH(hr) : null, cell: cell(td), rowHeight: dr ? rowH(dr) : null })
+		// The head's words: two tables pair by what their columns are called, not by order on the page.
+		const headText = heads.filter(visible).map((h) => h.textContent.trim()).filter(Boolean).slice(0, 5).join(' ').slice(0, 120) || null
+		components.push({ role: 'table', title: 'table', rect: rect(t), inCard, headText, head: cell(th), headRowHeight: hr ? rowH(hr) : null, cell: cell(td), rowHeight: dr ? rowH(dr) : null })
 	}
 
 	// 6. Toolbars: a row (not a card header, not the page header) that holds 2+ controls.
@@ -810,6 +831,25 @@ window.__compdiffExtract = function () {
 		return false
 	}
 	const formRow = (cs) => cs.filter(labelledAbove).length * 2 >= cs.length
+	// A card's title-line buttons ("Notitie toevoegen", "Exporteren" beside Historie) are its header actions, wherever
+	// the markup puts them: not a toolbar.
+	const headerActions = (el) => {
+		for (let e = el.parentElement; e; e = e.parentElement) {
+			if (!titleBoxes.has(e)) continue
+			const t = titleBoxes.get(e), r = el.getBoundingClientRect()
+			return r.top < t.y + t.h && r.bottom > t.y
+		}
+		return false
+	}
+	// The buttons that close a dialog or a form card (Annuleren, Volgende; Dag afsluiten) are its footer: nothing of the
+	// card follows them. A board draws them as a plain row, a dialog library as an actions bar: neither is a toolbar.
+	const actionFooter = (el, cs) => {
+		if (!cs.every((c) => c.matches('button, [role=button], a'))) return false
+		const owner = el.closest('[role=dialog]') || (() => { for (let e = el.parentElement; e; e = e.parentElement) if (cardEls.has(e)) return e; return null })()
+		if (!owner) return false
+		const bottom = el.getBoundingClientRect().bottom
+		return ![...owner.querySelectorAll('*')].some((d) => !el.contains(d) && !d.contains(el) && visible(d) && d.getBoundingClientRect().top >= bottom - 1 && (d.textContent.trim() || d.matches(CONTROL_BOX)) && !d.children.length)
+	}
 	const headerBox = window.__compdiffPageHeader
 	// The page header's buttons are counted from its whole header block (scope), so a row of them beside the title
 	// block, on the title's line, is the header's and not a toolbar; counting it as both doubled the buttons or left an
@@ -865,7 +905,7 @@ window.__compdiffExtract = function () {
 			&& ![...used].some((u) => u.contains(el)) && !(headerBox && (headerBox.contains(el) || el.contains(headerBox) || onTitleLine(el)))) {
 			const line = firstLine(el)
 			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c)) : []
-			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72 && !formRow(lctrls)) {
+			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72 && !formRow(lctrls) && !headerActions(el) && !actionFooter(el, lctrls)) {
 				line.items.forEach((i) => lineItems.add(i))
 				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
 				components.push({ role: 'toolbar', title: 'toolbar', rect: { x: round(r.x), y: round(line.top), w: round(r.width), h: round(line.bottom - line.top) }, gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: lctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
@@ -878,7 +918,7 @@ window.__compdiffExtract = function () {
 		if (el.closest('li, [role=listitem], [role=row], [role=option], tr')) continue
 		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c))
 		if (ctrls.length < 2) continue
-		if (formRow(ctrls)) continue
+		if (formRow(ctrls) || headerActions(el) || actionFooter(el, ctrls)) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (tabStrips.some((s) => el.contains(s))) continue
 		// A wrapper whose one visible child is itself the flex or grid row of these controls (a form inside a widget
@@ -941,12 +981,34 @@ window.__compdiffExtract = function () {
 		// A filled label around a radio or checkbox, or beside one (NcCheckboxRadioSwitch fills the content next to its
 		// input on the checked row), is that toggle's state, not a badge.
 		if (boxed && (el.querySelector(TOGGLE) || (el.parentElement && [...el.parentElement.children].some((c) => c !== el && c.matches(TOGGLE))))) return null
+		// A list row is a row, highlighted (the chosen folder) or not: a board's tinted li is no badge. A narrow tinted li
+		// (a tag in a list of tags) stays a pill.
+		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160 && r.width >= 160) return 'row'
+		// A count or tag inside a button ("1 actief" on Filter) is that button's badge, not an element of its own.
+		if (boxed && el.parentElement && el.parentElement.closest('button, [role=button]')) return null
 		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
-		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
 		return null
 	}
+	// A focused field whose ring is drawn on a wrapper around it (NcTextField's .input-field__main-wrapper: 2px around a
+	// 1px input) is seen as that wrapper: its height and its ring are the field's, as on a board that draws the ring as
+	// the input's own border.
+	const focusRing = (el) => {
+		const a = document.activeElement
+		if (!a || (a !== el && !el.contains(a))) return null
+		const own = fieldBorder(el).width
+		const r0 = el.getBoundingClientRect()
+		let best = null
+		for (let e = el.parentElement, i = 0; e && e !== document.body && i < 4; e = e.parentElement, i++) {
+			const r = e.getBoundingClientRect()
+			if (r.left < r0.left - 6 || r.top < r0.top - 6 || r.right > r0.right + 6 || r.bottom > r0.bottom + 6) break
+			const ecs = getComputedStyle(e), b = borders(ecs), g = ring(ecs)
+			const w = Math.max(Object.values(b).filter((v) => v > 0).length >= 3 ? b.top : 0, g ? g.width : 0)
+			if (w > own && (!best || w > best.width)) best = { width: w, color: g && g.width >= b.top ? g.color : ecs.borderTopColor, h: r.height }
+		}
+		return best
+	}
 	const elementBorder = (el, kind, cs) => {
-		if (kind === 'field') { const b = fieldBorder(el); return { border: b.width, borderColor: b.width ? b.color : null } }
+		if (kind === 'field') { const ring = focusRing(el); const b = ring || fieldBorder(el); return { border: b.width, borderColor: b.width ? b.color : null } }
 		const seen = seenBorders(cs)
 		const three = Object.values(seen).filter((v) => v > 0).length >= 3
 		return { border: three ? seen.top : 0, borderColor: three ? seenBorderColour(cs) : null }
@@ -961,7 +1023,7 @@ window.__compdiffExtract = function () {
 		const icon = host && [...host.querySelectorAll('svg, [class*=icon]')].find((i) => visible(i) && i.getBoundingClientRect().height <= 40)
 		return icon ? icon.getBoundingClientRect().height : r.height
 	}
-	const nativeToggle = (el, kind, cs) => kind === 'toggle' && el.matches('input') && cs.appearance !== 'none'
+	const nativeToggle = (el, kind, cs) => (kind === 'toggle' && el.matches('input') && cs.appearance !== 'none') || (kind === 'field' && el.matches('select') && cs.appearance !== 'none')
 	const elements = []
 	const elementEls = new Set()
 	const recordEls = new Set(components.filter((c) => c.record).map((c) => c.el))
@@ -988,7 +1050,16 @@ window.__compdiffExtract = function () {
 			return toggle ? parts[0] || '' : parts.join(' ')
 		}
 		// NcSelect inside a wrapping label carries a second, inner label with the same name.
-		return [...new Set(named.map(text).filter(Boolean))].join(' ')
+		const own = [...new Set(named.map(text).filter(Boolean))].join(' ')
+		if (own || toggle || el.getAttribute('aria-label')) return own
+		// A field with no label of its own takes the caption set right over it in its wrapper (a board's "Zichtbaarheid"
+		// over a select), not the text of the option it shows.
+		const cr = el.getBoundingClientRect()
+		for (let w = el.parentElement, i = 0; w && i < 3; w = w.parentElement, i++) {
+			const cap = [...w.querySelectorAll('span, div, p, strong, b, legend, label')].find((t) => !t.children.length && !t.closest(FIELD) && t.textContent.trim() && visible(t) && t.getBoundingClientRect().bottom <= cr.top + 2 && cr.top - t.getBoundingClientRect().bottom <= 24)
+			if (cap) return cap.textContent.trim()
+		}
+		return ''
 	}
 	// An element's own label, without the text of a count badge or tag nested inside it.
 	const ownLabel = (el) => {
@@ -1063,15 +1134,16 @@ window.__compdiffExtract = function () {
 			// Page links pair with page links: a lone "2" elsewhere on the page is not the pager's.
 			kind, label, inControl: inRecord(el) ? 'record card' : pagerRows.some((p) => p.contains(el)) ? 'pager' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			interactive: el.matches('button, a[href], [role=button], [role=link], [role=tab], [role=menuitem]'),
-			container: containerOf(el), rect: rect(el),
+			container: containerOf(el), rect: rect(el), ...(r.top >= window.innerHeight ? { belowFrame: true } : {}),
 			props: {
-				h: round(drawnHeight(el, kind, cs, r)), borderRadius: radius(el, cs), ...elementBorder(el, kind, cs),
+				h: round(kind === 'field' && focusRing(el) ? focusRing(el).h : drawnHeight(el, kind, cs, r)), borderRadius: radius(el, cs), ...elementBorder(el, kind, cs),
 				// A native checkbox or radio draws its own glyph: its computed background (grey when disabled, the accent
 				// when checked) is not painted anywhere, so it has none to compare.
 				background: nativeToggle(el, kind, cs) ? null : bgBehind(el), native: nativeToggle(el, kind, cs) || undefined, color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
 				// A native select draws its own arrow.
-				icon: (el.matches('select') && cs.appearance !== 'none') || [...(kind === 'field' ? fieldBox(el) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
+				// A select library's open indicator sits in its own actions box beside the input (NcSelect's .vs__actions).
+				icon: (el.matches('select') && cs.appearance !== 'none') || [...(kind === 'field' ? (el.closest('.vs__dropdown-toggle, .v-select') || fieldBox(el)) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
 				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),
 				badge: !!(kind === 'button' || kind === 'pill') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
 				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,

@@ -116,7 +116,11 @@ export function parseSteps(arg) {
  * @return {Promise<void>}
  */
 export async function playSteps(page, steps, warn = (m) => console.error(m)) {
+	// Which step last put the focus somewhere: a filled field is drawn at rest on a board, so after the steps it is left
+	// (blurred) and its border is not the focus ring; a typed one (a search as you type) or a click keeps the focus.
+	let focusBy = null
 	for (const step of steps) {
+		if (['fill', 'type', 'click', 'press'].includes(step.kind)) focusBy = step.kind
 		if (step.kind === 'click') {
 			await page.click(step.selector, { timeout: 60000 })
 			await page.waitForTimeout(1500)
@@ -153,4 +157,5 @@ export async function playSteps(page, steps, warn = (m) => console.error(m)) {
 			await page.waitForTimeout(1500)
 		}
 	}
+	if (focusBy === 'fill') await page.evaluate(() => { if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur() })
 }

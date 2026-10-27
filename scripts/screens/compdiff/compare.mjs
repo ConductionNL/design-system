@@ -77,6 +77,12 @@ export function pairComponents (board, live, H) {
 			// A table in a titled card is that card's table: it pairs with a table in a card of the same title.
 			// Two cards of one family ("StUF-ZKN-endpoints", "StUF-ZKN-auditlog") share words, not a title.
 			if (b.role === 'table' && b.inCard && l.inCard && titleSimilarity(b.inCard, l.inCard) < 0.8) continue
+			// Tables whose columns share no name are two tables (one missing on a side), however they sit in order.
+			if (b.role === 'table' && b.headText && l.headText) {
+				const sim = titleSimilarity(b.headText, l.headText)
+				if (sim < 0.2) continue
+				cost += (1 - sim) * 0.1
+			}
 			if (b.title && l.title && CARDLIKE.has(b.role)) cost += 0.12
 			// Two cards with different titles are a pair only as near neighbours or in the same grid slot (a board column
 			// titled by its data); a titled card and an untitled one only within a card's height of each other.
@@ -122,7 +128,7 @@ function flatten (obj, prefix = '', out = {}) {
 	for (const [k, v] of Object.entries(obj)) flatten(v, prefix ? `${prefix}.${k}` : k, out)
 	return out
 }
-const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions|belowFrame|popup|inCard)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
+const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions|belowFrame|popup|inCard|headText)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
 // Properties whose value follows the data (row counts, text length), reported but never flagged.
 const DATA = /^rect\.h$|^pages$|^cell\.background$|^head\.background$/
 // Card padding and gap depend on where the DOM puts its padding (card vs header vs body); the effective insets
@@ -321,7 +327,9 @@ export function pairElements (B = [], L = [], H = 2000) {
 		const freq = new Map()
 		for (const e of list) freq.set(styleKey(e), (freq.get(styleKey(e)) || 0) + 1)
 		const g = new Map()
-		for (const e of list) { if (used.has(e)) continue; const k = freq.get(styleKey(e)) >= 3 ? `*|${styleKey(e)}` : `${e.container}|${styleKey(e)}`; if (!g.has(k)) g.set(k, []); g.get(k).push(e) }
+		// An element below the captured frame pairs by its label only: by place it would meet whatever of another card
+		// sits there (a history row and an initials tile), and unpaired it is neither missing nor extra.
+		for (const e of list) { if (used.has(e) || e.belowFrame) continue; const k = freq.get(styleKey(e)) >= 3 ? `*|${styleKey(e)}` : `${e.container}|${styleKey(e)}`; if (!g.has(k)) g.set(k, []); g.get(k).push(e) }
 		return [...g.values()].map((m) => ({ rep: m.sort((a, b) => a.rect.y - b.rect.y || a.rect.x - b.rect.x)[0], count: m.length, members: m }))
 	}
 	const gb = groups(B, usedB), gl = groups(L, usedL)
@@ -368,13 +376,17 @@ export function compareElement (b, l, by = 'label') {
 	// An icon-only button shows no text: its font, text colour and inline padding (often browser defaults) do not show.
 	const iconOnly = (e) => e.props.text === false || (e.props.text === undefined && Math.abs(e.props.fontSize - 13.3333) < 0.01 && e.props.paddingLeft === 6)
 	const textless = iconOnly(b) || iconOnly(l)
+	// A native control draws its own glyph (a radio's circle, a select's arrow outside its padding): its border and
+	// inline padding are not what people see against a library's drawn control.
+	const native = pb.native || pl.native
 	for (const k of ['h', 'borderRadius', 'paddingLeft', 'paddingRight', 'gapNext']) {
 		if (textless && (k === 'paddingLeft' || k === 'paddingRight')) continue
+		if (native && (k === 'paddingRight' || k === 'borderRadius')) continue
 		if (pb[k] === null || pl[k] === null || pb[k] === undefined || pl[k] === undefined) continue
 		// A label paired by order (different text) changes the width, never the paddings, radius or height.
 		add(k, pb[k], pl[k], Math.abs(pl[k] - pb[k]) > THRESHOLDS.spacing ? (k === 'borderRadius' ? 'shape' : 'spacing') : null)
 	}
-	add('border', pb.border, pl.border, (pb.border > 0) !== (pl.border > 0) ? `border ${pb.border > 0 ? 'absent' : 'extra'} on live` : Math.abs(pl.border - pb.border) > 0.5 ? 'border' : null)
+	if (!native || b.kind !== 'toggle') add('border', pb.border, pl.border, (pb.border > 0) !== (pl.border > 0) ? `border ${pb.border > 0 ? 'absent' : 'extra'} on live` : Math.abs(pl.border - pb.border) > 0.5 ? 'border' : null)
 	if (pb.border > 0 && pl.border > 0) add('borderColor', pb.borderColor, pl.borderColor, colourDiff(pb.borderColor, pl.borderColor, THRESHOLDS.color) ? 'color' : null)
 	add('background', pb.background, pl.background, !semantic && !pb.native && !pl.native && colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
 	if (!textless) {

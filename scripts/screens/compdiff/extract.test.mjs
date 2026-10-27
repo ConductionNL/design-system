@@ -1228,3 +1228,46 @@ test('a sort button in a column head is marked as in the head', { skip }, async 
 	const r = await measure('<table style="position:absolute;left:300px;top:300px;width:600px"><thead><tr><th aria-sort="none"><button style="height:34px;border:0;background:none">Grondslag<svg width="16" height="16"><path d="M7 10l5 5 5-5z"/></svg></button></th><th>Bedrag</th></tr></thead><tbody><tr><td>a</td><td>b</td></tr></tbody></table>')
 	assert.equal(r.elements.find((e) => e.label === 'Grondslag').inHead, true)
 })
+
+test('a view switch\'s track around measured icon buttons is accounted for, not "not measured"', { skip }, async () => {
+	const btn = (l, on) => `<button aria-label="${l}" aria-pressed="${on}" style="width:40px;height:34px;border:0;border-radius:6px;background:${on ? '#fff' : 'transparent'}"><svg width="18" height="18"><rect width="18" height="18"/></svg></button>`
+	const r = await measure(`<div role="group" aria-label="Weergave" style="position:absolute;left:1240px;top:188px;display:flex;gap:2px;padding:3px;border-radius:8px;background:#eceef1">${btn('Tabel', true)}${btn('Kaarten', false)}${btn('Bord', false)}${btn('Kaart', false)}</div>`)
+	assert.deepEqual(r.unmeasured, [])
+	assert.equal(r.elements.length, 4)
+})
+
+test('an open listbox is a component of its own, and a dialog footer under it is still the footer, not a toolbar', { skip }, async () => {
+	const opt = (t) => `<li role="option" style="height:44px;display:flex;align-items:center;padding:0 10px">${t}</li>`
+	const r = await measure(`<div role="dialog" aria-modal="true" style="position:absolute;left:400px;top:120px;width:640px;background:#fff"><h2 style="margin:24px">Weergave delen</h2><div style="position:relative;margin:0 24px"><input aria-label="Delen met" style="width:100%;height:40px;box-sizing:border-box"><ul role="listbox" style="position:absolute;top:100%;left:0;right:0;z-index:2;margin:0;padding:4px 6px;list-style:none;border:1px solid #1b1c1d;border-radius:0 0 8px 8px;background:#fff">${opt('Hanna Bos')}${opt('Hanneke de Boer')}${opt('Juridische zaken')}${opt('Team Vergunningen')}${opt('Wijkteam Oost')}${opt('Woo-team')}${opt('Beheer')}</ul></div><p style="margin:24px">Mag gebruiken: ziet de weergave.</p><div style="display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid #eef0f3"><button style="height:40px;border:1px solid #828a95;border-radius:8px">Annuleren</button><button style="height:40px;border:0;border-radius:8px;background:#3669a5;color:#fff">Delen opslaan</button></div></div>`)
+	assert.deepEqual(r.components.filter((c) => c.role === 'toolbar'), [])
+	const lb = r.components.find((c) => c.role === 'listbox')
+	assert.deepEqual([lb.popup, lb.optionHeight], [true, 44])
+	assert.deepEqual(r.unmeasured, [])
+})
+
+test('a checkbox drawn as a ::before starts its row, as a board\'s svg box does', { skip }, async () => {
+	const row = (box) => `<section style="position:absolute;left:300px;top:300px;width:400px;border:1px solid #ddd;padding:16px 22px"><h2 style="margin:0 0 12px">Checklist</h2><label style="display:flex;gap:10px;align-items:center">${box}<span>Situatie ter plaatse bekeken</span></label></section>`
+	const board = await measure(row('<svg width="20" height="20"><rect width="20" height="20" fill="#3669a5"/></svg>'))
+	const live = await measure('<style>.checkbox-content__icon{display:inline-block;width:20px;height:20px;position:relative}.checkbox-content__icon::before{content:"";position:absolute;inset:0;width:16px;height:16px;border:2px solid #3669a5;border-radius:4px}</style>' + row('<span class="checkbox-content__icon"></span>'))
+	assert.equal(live.components[0].content.firstRowInsetLeft, board.components[0].content.firstRowInsetLeft)
+})
+
+test('a drawn checkbox wrapped by its label is named by that label', { skip }, async () => {
+	const r = await measure('<label style="position:absolute;left:300px;top:300px;display:inline-flex;gap:8px"><span role="checkbox" aria-checked="false" style="display:inline-flex"><svg width="20" height="20"><rect width="20" height="20"/></svg></span>Ook wie de zaak las</label>')
+	assert.equal(r.elements.find((e) => e.kind === 'toggle').label, 'Ook wie de zaak las')
+})
+
+test('a field under a label with a muted part is named by the whole label', { skip }, async () => {
+	const r = await measure('<div style="position:absolute;left:424px;top:450px;width:592px;display:flex;flex-direction:column;gap:6px"><label style="font-weight:600">Bericht <span style="font-weight:400;color:#5e6168">(niet verplicht)</span></label><input type="text" style="height:40px"></div>')
+	assert.equal(r.elements.find((e) => e.kind === 'field').label, 'Bericht (niet verplicht)')
+})
+
+test('a search select\'s magnifier is its field\'s icon', { skip }, async () => {
+	const r = await measure('<div class="cn-search-select" style="position:absolute;left:400px;top:300px;width:400px;display:flex;align-items:center;border:1px solid #828a95;border-radius:8px"><span class="cn-search-select__magnifier" style="padding:0 8px"><svg width="18" height="18"><circle cx="9" cy="9" r="6"/></svg></span><div class="v-select" style="flex:1"><div class="vs__dropdown-toggle"><input class="vs__search" role="combobox" aria-label="Adres zoeken" style="border:0;height:38px;width:100%"></div></div></div>')
+	assert.equal(r.elements.find((e) => e.kind === 'field').props.icon, true)
+})
+
+test('a native date-time input is marked native, so its picker glyph is not compared as an icon', { skip }, async () => {
+	const r = await measure('<label style="position:absolute;left:400px;top:300px">Wanneer <input type="datetime-local" style="height:40px"></label>')
+	assert.equal(r.elements.find((e) => e.kind === 'field').props.native, true)
+})

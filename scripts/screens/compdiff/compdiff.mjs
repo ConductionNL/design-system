@@ -111,7 +111,7 @@ const measure = async (page) => {
 const t0 = Date.now(), timings = {}
 let tLast = t0
 const lap = (name) => { const t = Date.now(); timings[name] = (timings[name] || 0) + (t - tLast); tLast = t }
-const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/google/chrome/chrome', headless: true, args: ['--no-sandbox', '--hide-scrollbars'] })
+const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/google/chrome/chrome', headless: true, args: ['--no-sandbox', '--hide-scrollbars', '--lang=nl-NL'] })
 try {
 	lap('launch')
 	const bctx = await browser.newContext({ viewport: { width, height: 1200 }, deviceScaleFactor: 1 })

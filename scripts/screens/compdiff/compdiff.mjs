@@ -34,7 +34,7 @@ import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
-import { accountFor, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, browserEnv, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -111,7 +111,7 @@ const measure = async (page) => {
 const t0 = Date.now(), timings = {}
 let tLast = t0
 const lap = (name) => { const t = Date.now(); timings[name] = (timings[name] || 0) + (t - tLast); tLast = t }
-const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/google/chrome/chrome', headless: true, args: ['--no-sandbox', '--hide-scrollbars', '--lang=nl-NL'] })
+const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/google/chrome/chrome', headless: true, args: ['--no-sandbox', '--hide-scrollbars', '--lang=nl-NL'], env: browserEnv(process.env) })
 try {
 	lap('launch')
 	const bctx = await browser.newContext({ viewport: { width, height: 1200 }, deviceScaleFactor: 1 })
@@ -263,10 +263,12 @@ try {
 	// Element pairs: properties first; a crop that differs while no property fired is flagged as unidentified
 	// (pixelsFlag: not on a column head's sort button).
 	lap('compare')
+	// Open menus and popovers on each side: a crop they lie over is not compared.
+	const covers = { board: B.components.filter((c) => c.popup).map((c) => c.rect), live: L.components.filter((c) => c.popup).map((c) => c.rect) }
 	const elementResults = ep.pairs.map((p, i) => {
 		const rows = compareElement(p.board, p.live)
 		const crop = crops[pairs.length + i]
-		if (!rows.some((r) => r.flag) && p.by === 'label' && pixelsFlag(p.board, p.live, crop, CROP_FLAG)) rows.push({ prop: 'pixels', board: null, live: crop, delta: null, flag: 'visually differs, property not identified' })
+		if (!rows.some((r) => r.flag) && p.by === 'label' && pixelsFlag(p.board, p.live, crop, CROP_FLAG, covers)) rows.push({ prop: 'pixels', board: null, live: crop, delta: null, flag: 'visually differs, property not identified' })
 		return { kind: p.board.kind, label: p.board.label || p.live.label, inControl: p.board.inControl, matchedBy: p.by, board: p.board, live: p.live, cropMismatchPct: crop, rows, flagged: rows.filter((r) => r.flag).length }
 	})
 	const results = pairs.map((p, i) => {

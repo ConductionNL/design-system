@@ -3,7 +3,7 @@
 // (r32: DqCatalogus table heads read 33% different from a 1.5px offset; DqZaakDoel's filled radio row stays flagged).
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { cropFlag, cropMismatch, pixelsFlag, wholePixels } from './crop.mjs'
+import { covered, cropFlag, cropMismatch, pixelsFlag, wholePixels } from './crop.mjs'
 
 const W = 20, H = 10
 const image = (paint) => {
@@ -41,4 +41,14 @@ test('a column head\'s sort button is not flagged by its crop alone: label and c
 	assert.equal(pixelsFlag(e(true), e(true), 34, 30), false)
 	assert.equal(pixelsFlag(e(false), e(false), 34, 30), true)
 	assert.equal(pixelsFlag(e(false), e(false), null, 30), false)
+})
+
+test('a crop an open menu lies over part of is not flagged; an element inside the menu still is', () => {
+	const menu = { x: 1100, y: 560, w: 260, h: 200 }
+	const pill = { rect: { x: 1050, y: 580, w: 90, h: 24 } }
+	assert.equal(covered(pill.rect, [menu]), true)
+	assert.equal(pixelsFlag(pill, pill, 52.4, 30, { board: [menu], live: [] }), false)
+	const item = { rect: { x: 1110, y: 600, w: 200, h: 40 } }
+	assert.equal(covered(item.rect, [menu]), false)
+	assert.equal(pixelsFlag(item, item, 52.4, 30, { board: [menu], live: [] }), true)
 })

@@ -137,7 +137,8 @@ window.__compdiffExtract = function () {
 		if (el.closest('header[data-sc-header], #header, #app-navigation, #app-navigation-vue, .app-navigation, #appmenu, [data-compdiff-ignore]')) return true
 		// A map's attribution is the tile provider's credit, not part of the page.
 		if (el.closest('.leaflet-control-attribution, .maplibregl-ctrl-attrib, .mapboxgl-ctrl-attrib, .ol-attribution')) return true
-		if (modals.length && !modals.some((m) => m.contains(el))) return true
+		// A select's listbox appended to the body (NcSelect) belongs to the dialog that opened it.
+		if (modals.length && !modals.some((m) => m.contains(el)) && !el.closest('[role=listbox]')) return true
 		// The content of a closed disclosure is laid out but not shown: Chrome keeps its boxes.
 		const closed = el.closest('details:not([open])')
 		if (closed && !el.closest('summary') && el !== closed) return true
@@ -218,8 +219,9 @@ window.__compdiffExtract = function () {
 		if (r.width < 140 || r.height < 32 || (r.height < 48 && !band && r.width < 400)) continue
 		const cs = getComputedStyle(el)
 		// Under 48px only a notice band is a card: one with that role, or a wide tinted line of text with no control in
-		// it (a board's info note, a live banner widget).
-		if (r.height < 48 && !band && !(framed(el, cs) === 'background' && el.textContent.trim() && !el.querySelector(INTERACTIVE))) continue
+		// it (a board's info note, a live banner widget), framed by its ground or by a border around its ground.
+		const tinted = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
+		if (r.height < 48 && !band && !((framed(el, cs) === 'background' || (framed(el, cs) === 'border' && tinted)) && el.textContent.trim() && !el.querySelector(INTERACTIVE))) continue
 		if ((cs.position === 'fixed' || cs.position === 'absolute') && r.width >= VW * 0.9) continue
 		if (r.width >= VW * 0.75 && r.height >= window.innerHeight * 0.6) continue
 		// The column that holds the page's title is the page (narrowed by an open side panel), not a card on it.
@@ -275,6 +277,8 @@ window.__compdiffExtract = function () {
 			if (!n.textContent.trim() || !n.parentElement || !visible(n.parentElement) || !ownedBy(n, card) || inMap(n.parentElement)) continue
 			range.selectNodeContents(n)
 			const q = [...range.getClientRects()].find((x) => x.width >= 1)
+			// Text placed off the page (an off-screen live region or a skip label at left -10000px) is not seen.
+			if (q && (q.right < 0 || q.left > VW || q.bottom < 0)) continue
 			// lb: the bottom of the whole run, past the first line when it wraps.
 			if (q) out.push({ node: n.parentElement, x: q.left, y: q.top, r: q.right, b: q.bottom, lb: range.getBoundingClientRect().bottom, text: true })
 		}
@@ -306,7 +310,7 @@ window.__compdiffExtract = function () {
 			const b = hitArea(cs)
 			const q0 = el.getBoundingClientRect()
 			const q = { left: q0.left + b.left, top: q0.top + b.top, right: q0.right - b.right, bottom: q0.bottom - b.bottom, width: q0.width - b.left - b.right, height: q0.height - b.top - b.bottom }
-			if (q.width < 3 || q.height < 3) continue
+			if (q.width < 3 || q.height < 3 || q.right < 0 || q.left > VW || q.bottom < 0) continue
 			out.push({ node: el, x: q.left, y: q.top, r: q.right, b: q.bottom, text: false })
 		}
 		// What starts below the captured frame is in neither picture: a card that runs on past it (a side column made
@@ -598,7 +602,10 @@ window.__compdiffExtract = function () {
 			// A map is one part, drawn as an svg or by a map library with its tiles and controls.
 			if (maps.includes(el)) { parts.push({ t: 'map', y: r.top, b: r.bottom, x: r.left }); seen.add(el); continue }
 			const ecs = getComputedStyle(el)
-			if (!el.closest(CONTROL_BOX) && (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4))) { parts.push({ t: 'divider', y: r.top, b: r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
+			// A rule on top of what follows a framed head (a column frame's "Vandaag" head) is that head's bottom rule, as a
+			// board draws it on the head itself: not a divider of the frame.
+			const headRule = (y) => [...cardEls].some((h) => h !== card && card.contains(h) && Math.abs(h.getBoundingClientRect().bottom - y) <= 2)
+			if (!el.closest(CONTROL_BOX) && (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4 && !headRule(r.top)))) { parts.push({ t: 'divider', y: r.top, b: r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
 			if (PILLISH(el)) { parts.push({ t: DATE.test(el.textContent) ? 'pill:deadline' : 'pill', y: r.top, b: r.bottom, x: r.left }); seen.add(el); continue }
 			// A chart is one part, whether it is drawn as an svg (whose axis labels are text) or on a canvas.
 			if (el.matches('svg, canvas') && r.height >= 60 && r.width >= 120) { parts.push({ t: 'chart', y: r.top, b: r.bottom, x: r.left }); seen.add(el); continue }

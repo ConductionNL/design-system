@@ -186,3 +186,19 @@ test('two icon-only buttons in the same place pair whatever each side names them
 	const t = pairElements([fab('Opslaan', true)], [fab('Bewaren', true)], 1100)
 	assert.equal(t.pairs.length, 0)
 })
+
+test('a native radio or select is not compared on its border or inline padding against a drawn one', () => {
+	const t = (native, border) => ({ kind: 'toggle', label: 'Verdagingsbrief', rect: { x: 0, y: 0, w: 20, h: 20 }, props: { h: 20, borderRadius: 10, border, background: null, native, color: 'rgb(0,0,0)', fontSize: 14, fontWeight: 400, paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false } })
+	assert.ok(!compareElement(t(true, 0), t(undefined, 2)).some((r) => r.flag))
+	const f = (native, pr) => ({ kind: 'field', label: 'Filteren op zaaktype', rect: { x: 0, y: 0, w: 200, h: 40 }, props: { h: 40, borderRadius: 8, border: 1, borderColor: 'rgb(130,138,149)', background: null, native, color: 'rgb(0,0,0)', fontSize: 15, fontWeight: 400, paddingLeft: 10, paddingRight: pr, icon: true, text: true, badge: false } })
+	assert.ok(!compareElement(f(true, 10), f(undefined, 30)).some((r) => r.flag))
+	assert.ok(compareElement(f(undefined, 10), f(undefined, 30)).some((r) => r.flag))
+})
+
+test('an element below the captured frame pairs by label only, never by place, and is not extra unpaired', () => {
+	const row = { kind: 'row', label: 'Inzage medisch verslag Fatma K', inControl: 'record card', container: 3, rect: { x: 1130, y: 1300, w: 260, h: 36 }, props: { h: 36, fontSize: 14 } }
+	const tile = { kind: 'row', label: 'FK', inControl: 'record card', container: 3, rect: { x: 1130, y: 1500, w: 260, h: 56 }, props: { h: 56, fontSize: 12 }, belowFrame: true }
+	const r = pairElements([row], [tile], 1417)
+	assert.equal(r.pairs.length, 0)
+	assert.equal(r.extra.length, 0)
+})

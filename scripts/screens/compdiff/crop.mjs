@@ -67,8 +67,25 @@ export function cropFlag(br, lr, base) {
  * @param {{rect: object, inHead?: boolean}} l The live element.
  * @param {number|null} crop The crop mismatch, in percent.
  * @param {number} base The threshold for a crop of the same size.
+ * @param {{board: Array, live: Array}} [covers] The overlays' rects per side.
  * @return {boolean} Whether the pixels flag the pair.
  */
-export function pixelsFlag(b, l, crop, base) {
-	return crop !== null && !(b.inHead || l.inHead) && crop > cropFlag(b.rect, l.rect, base)
+export function pixelsFlag(b, l, crop, base, covers = { board: [], live: [] }) {
+	return crop !== null && !(b.inHead || l.inHead) && !covered(b.rect, covers.board) && !covered(l.rect, covers.live) && crop > cropFlag(b.rect, l.rect, base)
+}
+
+/**
+ * Whether an overlay (an open menu or popover) lies over part of a rect: its crop then shows the overlay, at a place
+ * that differs per side, and says nothing about the element.
+ *
+ * @param {{x: number, y: number, w: number, h: number}} r The element's rect.
+ * @param {Array<{x: number, y: number, w: number, h: number}>} overlays The overlays' rects on that side.
+ * @return {boolean} Whether any overlay overlaps the rect without holding it whole.
+ */
+export function covered(r, overlays = []) {
+	return overlays.some((o) => {
+		const inside = r.x >= o.x - 1 && r.y >= o.y - 1 && r.x + r.w <= o.x + o.w + 1 && r.y + r.h <= o.y + o.h + 1
+		const meets = r.x < o.x + o.w && r.x + r.w > o.x && r.y < o.y + o.h && r.y + r.h > o.y
+		return meets && !inside
+	})
 }

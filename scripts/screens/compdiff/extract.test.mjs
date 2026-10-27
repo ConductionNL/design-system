@@ -1271,3 +1271,32 @@ test('a native date-time input is marked native, so its picker glyph is not comp
 	const r = await measure('<label style="position:absolute;left:400px;top:300px">Wanneer <input type="datetime-local" style="height:40px"></label>')
 	assert.equal(r.elements.find((e) => e.kind === 'field').props.native, true)
 })
+
+test('a one-line warning note with a border around its tinted ground is a card, not a divider in the card around it', { skip }, async () => {
+	const card = (note) => `<section style="position:absolute;left:292px;top:300px;width:1120px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:12px"><h2 style="margin:0;font-size:17px">AI-ondersteunde verwerking</h2><p style="margin:0">Kies welke functies AI mogen gebruiken.</p>${note}<h3 style="margin:0;font-size:16px">Verbindingstest</h3><p style="margin:0">Laatste test geslaagd.</p></section>`
+	const board = await measure(card('<p style="margin:0;padding:12px 14px;border:1px solid #f0c987;border-radius:10px;background:#fff4e5;font-size:14px;line-height:1.5">Een DPIA is verplicht voordat je AI-functies met persoonsgegevens gebruikt.</p>'))
+	const live = await measure(card('<div style="padding:12px 14px;border-radius:10px;background:#fff4e5;font-size:14px;line-height:1.5">Een DPIA is verplicht voordat je AI-functies met persoonsgegevens gebruikt.</div>'))
+	const s = (r) => r.components.find((c) => c.title === 'AI-ondersteunde verwerking').structure
+	assert.equal(s(board), s(live))
+	assert.equal(board.components.length, live.components.length)
+})
+
+test('a listbox a dialog\'s select appended to the body is measured with the dialog', { skip }, async () => {
+	const opt = (t) => `<li role="option" style="height:44px;display:flex;align-items:center;padding:0 10px">${t}</li>`
+	const r = await measure(`<div role="dialog" aria-modal="true" style="position:absolute;left:400px;top:120px;width:640px;height:400px;background:#fff"><h2 style="margin:24px">Weergave delen</h2><input aria-label="Delen met" style="margin:0 24px;width:592px;height:40px"></div><ul role="listbox" style="position:absolute;left:424px;top:250px;width:592px;margin:0;padding:4px;list-style:none;border:1px solid #1b1c1d;background:#fff;z-index:9">${opt('Hanna Bos')}${opt('Hanneke de Boer')}${opt('Hanneke Postma')}</ul>`)
+	assert.equal(r.components.filter((c) => c.role === 'listbox').length, 1)
+})
+
+test('a rule drawn on top of the list under a framed head is the head\'s rule, as a board draws it on the head', { skip }, async () => {
+	const col = (live) => `<section style="width:300px;height:500px;border:1px solid #ddd;border-radius:12px;overflow:hidden"><div style="height:72px;padding:12px 16px;box-sizing:border-box;background:#f5f6f8;${live ? '' : 'border-bottom:1px solid #ddd'}"><h3 style="margin:0">Vandaag</h3><span>4 adressen</span></div><ul style="margin:0;padding:12px;list-style:none;${live ? 'border-top:1px solid #ddd' : ''}"><li>Molenweg 4</li></ul></section>`
+	const frames = (live) => `<div style="position:absolute;left:300px;top:200px;display:flex;gap:20px">${col(live)}${col(live)}${col(live)}</div>`
+	const s = async (live) => (await measure(frames(live))).components.filter((c) => c.role === 'card' && !c.title).map((c) => c.structure).join('|')
+	assert.equal(await s(true), await s(false))
+})
+
+test('text placed off the page (a live region at left -10000px) does not set a card\'s insets', { skip }, async () => {
+	const card = (extra) => `<section style="position:absolute;left:294px;top:413px;width:796px;border:1px solid #ddd;padding:16px 20px"><h2 style="margin:0 0 8px">Wachtrij</h2><p style="margin:0">Geen zaken</p>${extra}</section>`
+	const a = await measure(card(''))
+	const b = await measure(card('<div style="position:absolute;left:-10000px;top:60px;width:200px;height:20px">3 zaken geladen</div>'))
+	assert.deepEqual(b.components[0].content, a.components[0].content)
+})

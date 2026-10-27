@@ -219,3 +219,10 @@ test('a native date field is not compared on its icon against a board\'s text fi
 	const f = (native, icon) => ({ kind: 'field', label: 'Wanneer', rect: { x: 0, y: 0, w: 300, h: 40 }, props: { h: 40, borderRadius: 8, border: 1, borderColor: 'rgb(130,138,149)', background: null, native, color: 'rgb(0,0,0)', fontSize: 15, fontWeight: 400, paddingLeft: 12, paddingRight: 12, icon, text: true, badge: false } })
 	assert.ok(!compareElement(f(undefined, false), f(true, true)).some((r) => r.flag))
 })
+
+test('a nav entry drawn as a button on the board and as a link row on live pairs by its label, without a kind flag', () => {
+	const e = (kind) => ({ kind, label: 'Weergaven in mijn menu', inControl: null, container: 1, rect: { x: 284, y: 502, w: 182, h: 36 }, props: { h: 36, borderRadius: 8, border: 0, borderColor: null, background: 'rgb(234, 240, 247)', color: 'rgb(27, 28, 29)', fontSize: 15, fontWeight: 500, paddingLeft: 10, paddingRight: 10, icon: false, text: true, badge: false, gapNext: null } })
+	const r = pairElements([e('button')], [e('row')], 1000)
+	assert.deepEqual([r.pairs.length, r.pairs[0] && r.pairs[0].by], [1, 'label'])
+	assert.ok(!compareElement(e('button'), e('row')).some((x) => x.flag))
+})

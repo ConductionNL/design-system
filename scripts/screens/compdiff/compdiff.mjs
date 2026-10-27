@@ -263,10 +263,12 @@ try {
 	// Element pairs: properties first; a crop that differs while no property fired is flagged as unidentified
 	// (pixelsFlag: not on a column head's sort button).
 	lap('compare')
+	// Open menus and popovers on each side: a crop they lie over is not compared.
+	const covers = { board: B.components.filter((c) => c.popup).map((c) => c.rect), live: L.components.filter((c) => c.popup).map((c) => c.rect) }
 	const elementResults = ep.pairs.map((p, i) => {
 		const rows = compareElement(p.board, p.live)
 		const crop = crops[pairs.length + i]
-		if (!rows.some((r) => r.flag) && p.by === 'label' && pixelsFlag(p.board, p.live, crop, CROP_FLAG)) rows.push({ prop: 'pixels', board: null, live: crop, delta: null, flag: 'visually differs, property not identified' })
+		if (!rows.some((r) => r.flag) && p.by === 'label' && pixelsFlag(p.board, p.live, crop, CROP_FLAG, covers)) rows.push({ prop: 'pixels', board: null, live: crop, delta: null, flag: 'visually differs, property not identified' })
 		return { kind: p.board.kind, label: p.board.label || p.live.label, inControl: p.board.inControl, matchedBy: p.by, board: p.board, live: p.live, cropMismatchPct: crop, rows, flagged: rows.filter((r) => r.flag).length }
 	})
 	const results = pairs.map((p, i) => {

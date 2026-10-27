@@ -317,6 +317,16 @@ export function pairElements (B = [], L = [], H = 2000) {
 		const l = list && list.filter((x) => !usedL.has(x)).sort((x, y) => near(x) - near(y))[0]
 		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
 	}
+	// A nav entry or a list action drawn as a button on one side and as a list row (a link in an li) on the other is one
+	// element: the same label in a control or a row pairs across the two.
+	const navKind = (e) => EGROUP[e.kind] === 'ctl' || e.kind === 'row'
+	const rest = (key) => (e) => `${e.inControl === 'record card' ? '' : norm(e.inControl || '')}|${norm(e.label)}` === key
+	for (const b of B) {
+		if (usedB.has(b) || !norm(b.label) || !navKind(b)) continue
+		const k = `${b.inControl === 'record card' ? '' : norm(b.inControl || '')}|${norm(b.label)}`
+		const l = L.find((x) => !usedL.has(x) && navKind(x) && (EGROUP[x.kind] === 'ctl') !== (EGROUP[b.kind] === 'ctl') && rest(k)(x))
+		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
+	}
 	// Page links pair in order inside the pager; how many pages there are follows the data, so the rest is neither
 	// missing nor extra.
 	const pagerOf = (list, used) => list.filter((e) => e.inControl === 'pager' && !used.has(e)).sort((a, b) => a.rect.x - b.rect.x)
@@ -372,8 +382,9 @@ export function compareElement (b, l, by = 'label') {
 	const rows = []
 	const add = (prop, vb, vl, flag) => rows.push({ prop, board: vb, live: vl, delta: typeof vb === 'number' && typeof vl === 'number' ? Math.round((vl - vb) * 10) / 10 : null, flag })
 	const pb = b.props, pl = l.props
-	// Pill and button differ only by radius and height, which the rows below compare: the kind does not count twice.
-	const shapeOnly = (b.kind === 'pill' && l.kind === 'button') || (b.kind === 'button' && l.kind === 'pill')
+	// Pill and button differ only by radius and height, which the rows below compare: the kind does not count twice. A
+	// button and a list row with the same label (a nav entry as a button or as a link in an li) are one entry too.
+	const shapeOnly = (b.kind === 'pill' && l.kind === 'button') || (b.kind === 'button' && l.kind === 'pill') || (b.kind === 'row' && l.kind === 'button') || (b.kind === 'button' && l.kind === 'row')
 	if (b.kind !== l.kind) add('kind', b.kind, l.kind, shapeOnly ? null : (b.kind === 'pill') !== (l.kind === 'pill') ? 'shape' : 'style')
 	// An icon-only button shows no text: its font, text colour and inline padding (often browser defaults) do not show.
 	const iconOnly = (e) => e.props.text === false || (e.props.text === undefined && Math.abs(e.props.fontSize - 13.3333) < 0.01 && e.props.paddingLeft === 6)

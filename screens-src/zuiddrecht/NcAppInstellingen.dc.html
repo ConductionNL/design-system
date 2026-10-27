@@ -69,6 +69,9 @@ body{margin:0}
             <sc-if value="{{ r.isButtons }}">
               <div style="display: flex; flex-wrap: wrap; gap: 10px"><sc-for list="{{ r.buttons }}" as="b" hint-placeholder-count="1"><button type="button" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
             </sc-if>
+            <sc-if value="{{ r.isLinks }}">
+              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px"><sc-for list="{{ r.links }}" as="l" hint-placeholder-count="2"><li><a href="#" style="display: inline-flex; align-items: center; gap: 4px; height: 40px; box-sizing: border-box; padding: 0 16px 0 10px; border-radius: 8px; font: 600 15px 'Fira Sans', sans-serif; color: #1b1c1d; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"></path></svg>{{ l.label }}</a></li></sc-for></ul>
+            </sc-if>
           </sc-for>
         </div>
       </section>
@@ -114,7 +117,7 @@ class Component extends DCLogic {
     const note = (tone) => 'margin: 0; padding: 10px 12px; border-radius: 8px; font-size: 14px; line-height: 1.5; ' +
       (tone === 'warn' ? 'background: #fff4e5; color: #1b1c1d' : tone === 'plain' ? 'padding: 0; color: #5e6168' : 'background: #eaf0f7; color: #1b1c1d');
     const arrow = (off) => 'flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: transparent; padding: 0;' + (off ? ' opacity: 0.4' : '');
-    const blank = { isSwitch: false, isCheck: false, isSelect: false, isText: false, isPair: false, isRadios: false, isItems: false, isMatrix: false, isFacts: false, isNote: false, isDisclosure: false, isButtons: false };
+    const blank = { isSwitch: false, isCheck: false, isSelect: false, isText: false, isPair: false, isRadios: false, isItems: false, isMatrix: false, isFacts: false, isNote: false, isDisclosure: false, isButtons: false, isLinks: false };
     let n = 0;
     const row = (r) => {
       const hint = r.hint || '';
@@ -134,6 +137,8 @@ class Component extends DCLogic {
       if ('disclosure' in r) return { ...blank, isDisclosure: true, text: r.disclosure };
       if ('note' in r) return { ...blank, isNote: true, text: r.note, noteStyle: note(r.tone) };
       if ('buttons' in r) return { ...blank, isButtons: true, buttons: r.buttons.map(([label, kind]) => ({ label, style: btn(kind) })) };
+      // links: a column of tertiary links to other apps, each with the open-in-new icon (CnAppRoot's "Koppelingen").
+      if ('links' in r) return { ...blank, isLinks: true, links: r.links.map((label) => ({ label })) };
       return blank;
     };
     const shown = raw.slice(at).map((s, i) => ({ id: 'nai-s' + (at + i), name: s.name, desc: s.desc || '', hasDesc: !!s.desc, rows: (s.rows || []).map(row) }));

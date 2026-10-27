@@ -173,3 +173,17 @@ test('after a click the pointer is moved off the page content, so nothing is mea
 	await playSteps(p2, parseSteps('[{"fill":"#a","value":"x"}]'))
 	assert.ok(!p2.calls.includes('mouse 0,0'))
 })
+
+test('opens other pages of the instance in order and returns, for a board drawn after visits (DqMijnWerk Verder werken)', async () => {
+	assert.deepEqual(normaliseStep({ goto: '/apps/dossiq/cases/a' }), { kind: 'goto', path: '/apps/dossiq/cases/a' })
+	assert.throws(() => normaliseStep({ goto: 'https://elsewhere.example/x' }), /path on the instance/)
+	const page = fakePage()
+	page.url = () => 'http://localhost:8080/index.php/apps/dossiq/'
+	page.goto = async (url) => page.calls.push(`goto ${url}`)
+	await playSteps(page, parseSteps('[{"goto":"/apps/dossiq/cases/a"},{"goto":"/apps/dossiq/cases/b"},{"goto":"/apps/dossiq/?view=mine"}]'))
+	assert.deepEqual(page.calls, [
+		'goto http://localhost:8080/apps/dossiq/cases/a',
+		'goto http://localhost:8080/apps/dossiq/cases/b',
+		'goto http://localhost:8080/apps/dossiq/?view=mine',
+	])
+})

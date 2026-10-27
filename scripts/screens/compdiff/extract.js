@@ -938,7 +938,7 @@ window.__compdiffExtract = function () {
 		if (headerBox && (headerBox.contains(el) || el.contains(headerBox) || onTitleLine(el))) continue
 		used.add(el)
 		const c0 = ctrls[0], c0cs = getComputedStyle(c0)
-		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
+		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), ...(wrapped ? { wrapped: true } : {}), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
 	}
 	// A quick-actions row drawn as its own element beside or just under the page header (CnDetailPage) belongs to the
 	// header: its buttons count toward the header's buttons, and its offset from the title is reported on its own.

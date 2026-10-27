@@ -202,3 +202,9 @@ test('an element below the captured frame pairs by label only, never by place, a
 	assert.equal(r.pairs.length, 0)
 	assert.equal(r.extra.length, 0)
 })
+
+test('a toolbar that wrapped is not compared on its control count: what wraps onto its lines follows the data', () => {
+	const t = (controls, wrapped, h) => ({ role: 'toolbar', title: 'toolbar', rect: { x: 292, y: 234, w: 760, h }, ...(wrapped ? { wrapped } : {}), gap: 8, padding: { top: 0, right: 0, bottom: 0, left: 0 }, controls, controlHeight: 36, controlRadius: 8, controlFontSize: 14 })
+	assert.ok(!compareProps(t(5, true, 86), t(6, true, 158)).some((r) => r.flag))
+	assert.ok(compareProps(t(5, false, 40), t(6, false, 40)).some((r) => r.flag === 'chrome'))
+})

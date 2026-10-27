@@ -42,3 +42,19 @@ export function cropMismatch(a, b, w, h, reach = 1, tolerance = 24) {
 export function wholePixels(r) {
 	return { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.w), h: Math.round(r.h) }
 }
+
+/**
+ * The share above which a crop flags, for one element pair. A small element (under 24px on a side) set half a pixel
+ * apart differs in a third of its pixels; a live crop rescaled to a board box a few pixels wider or narrower (the same
+ * label in another build of the font) shifts every glyph column. Both need a larger share before the pixels speak.
+ *
+ * @param {{w: number, h: number}} br The board rect.
+ * @param {{w: number, h: number}} lr The live rect.
+ * @param {number} base The threshold for a crop of the same size.
+ * @return {number} The threshold, in percent.
+ */
+export function cropFlag(br, lr, base) {
+	if (Math.min(br.w, br.h) < 24) return base + 15
+	const dw = Math.abs(br.w - lr.w)
+	return dw > 1 && dw <= 8 ? base + 10 : base
+}

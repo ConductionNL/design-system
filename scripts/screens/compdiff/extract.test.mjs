@@ -1166,3 +1166,39 @@ test('a link right under a widget title is its header action in a grid of widget
 	assert.equal(await h(grid(live)), 1)
 	assert.equal(await h(grid(board)), 1)
 })
+
+test('a text button drawn on the ground it stands on (a white NcButton on a white card) is a plain link, not a pill', { skip }, async () => {
+	const r = await measure('<div style="position:absolute;left:985px;top:600px;width:400px;background:#fff;padding:12px"><p>Twee zaken staan niet op de kaart.</p><button style="height:17px;padding:0;border:0;border-radius:8px;background:#fff;color:#234a78;font-weight:600;text-decoration:underline">Toon ze in de tabel</button></div>')
+	assert.deepEqual(r.elements.filter((e) => /Toon ze/.test(e.label)), [])
+})
+
+test('NcSelect\'s caret in its actions box is the field\'s icon, as a board select\'s chevron is', { skip }, async () => {
+	const live = await measure('<div class="v-select select" style="position:absolute;left:400px;top:300px;width:240px"><div class="vs__dropdown-toggle" style="display:flex;height:40px;border:1px solid #828a95;border-radius:8px"><div class="vs__selected-options" style="flex:1"><input class="vs__search" role="combobox" aria-label="Zaaktype:" style="border:0;height:36px;width:100%"></div><div class="vs__actions" style="display:flex;align-items:center;padding:0 8px"><button class="vs__open-indicator-button" aria-hidden="true" tabindex="-1" style="border:0;background:none;padding:0"><svg width="20" height="20"><path d="M7 10l5 5 5-5z"/></svg></button></div></div></div>')
+	assert.equal(live.elements.find((e) => e.kind === 'field').props.icon, true)
+})
+
+test('a caption over a segmented control is not part of the toolbar: the control is, as live draws it', { skip }, async () => {
+	const seg = '<div style="display:flex;gap:2px;padding:3px;background:#f0f1f3;border-radius:10px;width:300px;box-sizing:border-box"><button style="flex:1;height:34px;border:0;border-radius:8px;background:#fff">Oplopend</button><button style="flex:1;height:34px;border:0;border-radius:8px;background:none">Aflopend</button></div>'
+	const board = await measure(`<div style="position:absolute;left:1101px;top:372px;width:315px;display:flex;flex-direction:column;gap:6px"><span style="font-weight:600">Richting</span>${seg}</div>`)
+	const t = board.components.find((c) => c.role === 'toolbar')
+	assert.deepEqual([t.rect.h, t.gap], [40, 2])
+})
+
+test('a wrapping row of chips and controls is one toolbar, on one line or wrapped onto two', { skip }, async () => {
+	const chip = (t) => `<button aria-pressed="false" style="height:38px;padding:0 14px;border:1px solid #ddd;border-radius:19px;background:#fff">${t}</button>`
+	const row = (w, chips) => `<div style="position:absolute;left:292px;top:322px;width:${w}px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">${chips.map(chip).join('')}<span style="flex:1"></span><button style="height:40px;border:1px solid #888;border-radius:8px">Filter</button><div role="group" style="display:flex;gap:2px"><button aria-label="Lijst" style="width:40px;height:40px;border:1px solid #888;border-radius:8px"></button><button aria-label="Kaarten" style="width:40px;height:40px;border:1px solid #888;border-radius:8px"></button></div></div>`
+	const one = await measure(row(800, ['Alle typen 3', 'Woo-verzoek 3']))
+	const two = await measure(row(800, ['Alle typen 12', 'Woo-verzoek 4', 'Omgevingsvergunning 3', 'Bezwaar 2', 'Melding openbare ruimte 3']))
+	assert.equal(one.components.filter((c) => c.role === 'toolbar').length, 1)
+	assert.equal(two.components.filter((c) => c.role === 'toolbar').length, 1)
+	// A grid of cards that wraps is no toolbar.
+	const cards = await measure(`<div style="position:absolute;left:292px;top:322px;width:800px;display:flex;flex-wrap:wrap;gap:16px">${[1, 2, 3, 4].map((i) => `<div style="width:380px;height:120px;border:1px solid #ddd"><button>Open ${i}</button><button>Meer ${i}</button></div>`).join('')}</div>`)
+	assert.equal(cards.components.filter((c) => c.role === 'toolbar').length, 0)
+})
+
+test('a switch\'s transparent hit-area border is not where it is drawn: the inset reads the track', { skip }, async () => {
+	const card = (sw) => `<section style="position:absolute;left:300px;top:300px;width:400px;border:1px solid #ddd;padding:16px 22px"><h2 style="margin:0 0 8px">Opgeslagen zoekopdracht</h2><div style="display:flex;gap:10px;align-items:center">${sw}<span>Melden bij nieuwe resultaten</span></div></section>`
+	const board = await measure(card('<span style="display:inline-block;width:36px;height:20px;border:6px solid transparent;margin:-6px;background:#3669a5;background-clip:padding-box;border-radius:16px"></span>'))
+	const live = await measure(card('<span style="display:inline-block;width:36px;height:20px;background:#3669a5;border-radius:10px"></span>'))
+	assert.equal(board.components[0].content.minInsetLeft, live.components[0].content.minInsetLeft)
+})

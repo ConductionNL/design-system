@@ -29,7 +29,7 @@ import { fileURLToPath } from 'node:url'
 import { pairComponents, compareProps, scoreComponent, pairElements, compareElement } from './compare.mjs'
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
-import { cropMismatch, wholePixels } from './crop.mjs'
+import { cropFlag, cropMismatch, wholePixels } from './crop.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
@@ -265,7 +265,7 @@ try {
 	const elementResults = ep.pairs.map((p, i) => {
 		const rows = compareElement(p.board, p.live)
 		const crop = crops[pairs.length + i]
-		if (!rows.some((r) => r.flag) && p.by === 'label' && crop !== null && crop > CROP_FLAG) rows.push({ prop: 'pixels', board: null, live: crop, delta: null, flag: 'visually differs, property not identified' })
+		if (!rows.some((r) => r.flag) && p.by === 'label' && crop !== null && crop > cropFlag(p.board.rect, p.live.rect, CROP_FLAG)) rows.push({ prop: 'pixels', board: null, live: crop, delta: null, flag: 'visually differs, property not identified' })
 		return { kind: p.board.kind, label: p.board.label || p.live.label, inControl: p.board.inControl, matchedBy: p.by, board: p.board, live: p.live, cropMismatchPct: crop, rows, flagged: rows.filter((r) => r.flag).length }
 	})
 	const results = pairs.map((p, i) => {

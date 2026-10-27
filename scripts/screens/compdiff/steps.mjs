@@ -157,5 +157,7 @@ export async function playSteps(page, steps, warn = (m) => console.error(m)) {
 			await page.waitForTimeout(1500)
 		}
 	}
+	// The pointer stays where the last click left it: a row's menu toggle under it is measured in its hover colour.
+	if (steps.some((s) => s.kind === 'click')) await page.mouse.move(0, 0)
 	if (focusBy === 'fill') await page.evaluate(() => { if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur() })
 }

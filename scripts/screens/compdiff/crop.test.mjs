@@ -3,7 +3,7 @@
 // (r32: DqCatalogus table heads read 33% different from a 1.5px offset; DqZaakDoel's filled radio row stays flagged).
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { cropMismatch, wholePixels } from './crop.mjs'
+import { cropFlag, cropMismatch, wholePixels } from './crop.mjs'
 
 const W = 20, H = 10
 const image = (paint) => {
@@ -25,4 +25,13 @@ test('a filled box against an empty one reads different', () => {
 
 test('a rect is cut at whole pixels', () => {
 	assert.deepEqual(wholePixels({ x: 328.4, y: 273.5, w: 88.2, h: 17 }), { x: 328, y: 274, w: 88, h: 17 })
+})
+
+test('a small element or a rescaled crop needs a larger share to flag: a half pixel or a glyph metric is a third of it', () => {
+	assert.equal(cropFlag({ w: 18, h: 18 }, { w: 18, h: 18 }, 30), 45)
+	assert.equal(cropFlag({ w: 58, h: 15 }, { w: 58, h: 15 }, 30), 45)
+	assert.equal(cropFlag({ w: 153.7, h: 34 }, { w: 149.7, h: 34 }, 30), 40)
+	assert.equal(cropFlag({ w: 150, h: 34 }, { w: 150.5, h: 34 }, 30), 30)
+	// A different width beyond the tolerance is a property row's business; the crop keeps its own threshold.
+	assert.equal(cropFlag({ w: 150, h: 34 }, { w: 170, h: 34 }, 30), 30)
 })

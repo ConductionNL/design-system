@@ -12,6 +12,10 @@
    No build step, no shadow DOM — content stays authorable HTML,
    styled by cn-deck.css. Drop both files in and write slides.
 
+   Speaker notes: put <aside class="cn-notes"> in a slide. Hidden
+   by default; open the page with ?notes to read them under each
+   slide (and in its PDF).
+
    Layouts: title intro agenda content stats quote section
             horizons spotlight comparison columns questions
             image timeline contact logo-wall
@@ -50,7 +54,7 @@
       this._onKey = this._key.bind(this);
       this._onResize = this._fit.bind(this);
       // Defer until <cn-slide> children have upgraded.
-      requestAnimationFrame(this.number.bind(this));
+      requestAnimationFrame(function () { this.number(); this.notes(); }.bind(this));
       if (!this.hasAttribute('no-present-button')) this._addButton();
     }
 
@@ -69,6 +73,19 @@
           sl.appendChild(p);
         }
         p.textContent = pad(i + 1) + ' / ' + pad(total);
+      });
+    }
+
+    notes() {
+      if (!/[?&]notes\b/.test(location.search)) return;
+      this.slides.forEach(function (sl) {
+        var n = sl.querySelector(':scope > .cn-notes');
+        var next = sl.nextElementSibling;
+        if (!n || (next && next.classList.contains('cn-notes-view'))) return;
+        var v = document.createElement('div');
+        v.className = 'cn-notes-view';
+        v.innerHTML = n.innerHTML;
+        sl.after(v);
       });
     }
 

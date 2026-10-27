@@ -608,11 +608,26 @@ cn-deck.cn-present cn-slide {
 }
 cn-deck.cn-present cn-slide.is-current { opacity: 1; pointer-events: auto; }
 
+/* ===================== Speaker notes ===================== */
+/* <aside class="cn-notes"> inside a slide stays hidden. With ?notes in
+   the URL, cn-deck.js copies it into a .cn-notes-view under the slide. */
+cn-slide > .cn-notes { display: none; }
+.cn-notes-view {
+  width: var(--slide-w); box-sizing: border-box;
+  margin-top: calc(-1 * var(--space-10));
+  padding: var(--space-6) var(--space-8);
+  background: #fff; border: 1px solid var(--c-cobalt-100); border-top: 0;
+  color: var(--c-cobalt-900); font-size: 15px; line-height: 1.6;
+}
+.cn-notes-view p { margin: 0 0 var(--space-3); }
+cn-deck.cn-present .cn-notes-view { display: none; }
+
 /* ===================== Print =========================== */
 @media print {
   @page { size: 1280px 720px; margin: 0; }
   body { background: #fff; }
   cn-deck { display: block; padding: 0; gap: 0; background: #fff; }
   cn-slide { box-shadow: none; page-break-after: always; break-after: page; }
+  .cn-notes-view { margin: 0; border: 0; font-size: 18px; break-after: page; }
   cn-slide:last-child { page-break-after: auto; }
 }

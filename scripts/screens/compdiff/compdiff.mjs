@@ -29,7 +29,7 @@ import { fileURLToPath } from 'node:url'
 import { pairComponents, compareProps, scoreComponent, pairElements, compareElement } from './compare.mjs'
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
-import { cropMismatch, wholePixels } from './crop.mjs'
+import { cropMismatch, pixelsFlag, wholePixels } from './crop.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
@@ -260,12 +260,13 @@ try {
 	}, { a: b64(boardPng), b: b64(livePng), H: boardHeight, list: [...pairs, ...ep.pairs].map((p) => ({ br: p.board.rect, lr: p.live.rect })), fns: `${cropMismatch.toString()}\n${wholePixels.toString()}` })
 
 	const pageBg = { board: await pageBackground(dpage, boardPng, fs), live: await pageBackground(dpage, livePng, fs) }
-	// Element pairs: properties first; a crop that differs while no property fired is flagged as unidentified.
+	// Element pairs: properties first; a crop that differs while no property fired is flagged as unidentified
+	// (pixelsFlag: not on a column head's sort button).
 	lap('compare')
 	const elementResults = ep.pairs.map((p, i) => {
 		const rows = compareElement(p.board, p.live)
 		const crop = crops[pairs.length + i]
-		if (!rows.some((r) => r.flag) && p.by === 'label' && crop !== null && crop > CROP_FLAG) rows.push({ prop: 'pixels', board: null, live: crop, delta: null, flag: 'visually differs, property not identified' })
+		if (!rows.some((r) => r.flag) && p.by === 'label' && pixelsFlag(p.board, p.live, crop, CROP_FLAG)) rows.push({ prop: 'pixels', board: null, live: crop, delta: null, flag: 'visually differs, property not identified' })
 		return { kind: p.board.kind, label: p.board.label || p.live.label, inControl: p.board.inControl, matchedBy: p.by, board: p.board, live: p.live, cropMismatchPct: crop, rows, flagged: rows.filter((r) => r.flag).length }
 	})
 	const results = pairs.map((p, i) => {

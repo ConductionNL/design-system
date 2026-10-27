@@ -11,6 +11,10 @@
 //   { "waitFor": "<selector>" }
 //   { "dragFiles": "<selector>", "files": ["<name>", ...] }   drags files over a drop zone and holds them there,
 //                                                            without dropping (a board that draws the drop state)
+//   { "goto": "<path>" }                             opens another page of the same instance and waits for it, for
+//                                                    a board that draws what visiting pages leaves behind (DqMijnWerk
+//                                                    "Verder werken" lists the cases opened last); end on the route
+//                                                    the board is measured at
 //   { "offline": true }                              takes the page off the network (navigator.onLine false, the
 //                                                    'offline' event fires), for a board that draws the offline state;
 //                                                    { "offline": false } brings it back
@@ -18,14 +22,14 @@
 // form only meets that refusal.
 import fs from 'node:fs'
 
-const KINDS = ['click', 'fill', 'type', 'press', 'wait', 'waitFor', 'dragFiles', 'offline']
+const KINDS = ['click', 'fill', 'type', 'press', 'wait', 'waitFor', 'dragFiles', 'offline', 'goto']
 
 /**
  * Check one step and return it in its plain form.
  *
  * @param {object} step The step.
  * @param {number} index Its place in the list, for the error.
- * @return {{kind: string, selector?: string, value?: string, key?: string, ms?: number, offline?: boolean}} The step.
+ * @return {{kind: string, selector?: string, value?: string, key?: string, ms?: number, offline?: boolean, path?: string}} The step.
  */
 export function normaliseStep(step, index = 0) {
 	if (!step || typeof step !== 'object' || Array.isArray(step)) {
@@ -44,6 +48,10 @@ export function normaliseStep(step, index = 0) {
 	if (kind === 'offline') {
 		if (typeof step.offline !== 'boolean') throw new Error(`step ${index + 1}: offline needs true or false`)
 		return { kind, offline: step.offline }
+	}
+	if (kind === 'goto') {
+		if (typeof step.goto !== 'string' || !step.goto.startsWith('/')) throw new Error(`step ${index + 1}: goto needs a path on the instance, starting with /`)
+		return { kind, path: step.goto }
 	}
 	const selector = step[kind]
 	if (typeof selector !== 'string' || selector.trim() === '') {
@@ -152,10 +160,15 @@ export async function playSteps(page, steps, warn = (m) => console.error(m)) {
 				el.dispatchEvent(new DragEvent('dragover', at))
 			}, step.files)
 			await page.waitForTimeout(1000)
+		} else if (step.kind === 'goto') {
+			await page.goto(new URL(step.path, page.url()).href, { waitUntil: 'load', timeout: 90000 })
+			await page.waitForTimeout(3000)
 		} else if (step.kind === 'offline') {
 			await page.context().setOffline(step.offline)
 			await page.waitForTimeout(1500)
 		}
 	}
+	// The pointer stays where the last click left it: a row's menu toggle under it is measured in its hover colour.
+	if (steps.some((s) => s.kind === 'click')) await page.mouse.move(0, 0)
 	if (focusBy === 'fill') await page.evaluate(() => { if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur() })
 }

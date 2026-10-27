@@ -43,7 +43,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                   <h3 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3">{{ r.text }}</h3>
                 </sc-if>
                 <sc-if value="{{ r.isArea }}">
-                  <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; font-weight: 600">{{ r.label }}</span><textarea aria-label="{{ r.label }}" rows="{{ r.rows }}" style="box-sizing: border-box; width: 100%; padding: 8px 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; line-height: 1.1; color: #1b1c1d; resize: vertical">{{ r.value }}</textarea><sc-if value="{{ r.hasHint }}"><span style="font-size: 13px; color: #5e6168; line-height: 1.45">{{ r.hint }}</span></sc-if></div>
+                  <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; font-weight: 600">{{ r.label }}</span><textarea aria-label="{{ r.label }}" rows="{{ r.rows }}" style="box-sizing: border-box; width: 100%; padding: 8px 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; line-height: 1.5; color: #1b1c1d; resize: vertical">{{ r.value }}</textarea><sc-if value="{{ r.hasHint }}"><span style="font-size: 13px; color: #5e6168; line-height: 1.45">{{ r.hint }}</span></sc-if></div>
                 </sc-if>
                 <sc-if value="{{ r.isText }}">
                   <div style="display: flex; flex-direction: column; gap: 6px; max-width: 560px"><span style="font-size: 14px; font-weight: 600">{{ r.label }}</span><div style="display: flex; gap: 8px"><input type="text" aria-label="{{ r.label }}" value="{{ r.value }}" placeholder="{{ r.placeholder }}" style="flex: 1 1 auto; min-width: 0; box-sizing: border-box; height: 40px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"><sc-if value="{{ r.hasAction }}"><button type="button" style="flex: none; display: inline-flex; align-items: center; height: 40px; box-sizing: border-box; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap">{{ r.action }}</button></sc-if></div><sc-if value="{{ r.hasHint }}"><span style="font-size: 13px; color: #5e6168; line-height: 1.45">{{ r.hint }}</span></sc-if></div>
@@ -82,7 +82,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                   <p style="{{ r.noteStyle }}">{{ r.text }}</p>
                 </sc-if>
                 <sc-if value="{{ r.isButtons }}">
-                  <div style="{{ r.barStyle }}"><sc-for list="{{ r.buttons }}" as="b" hint-placeholder-count="1"><button type="button" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+                  <div style="{{ r.barStyle }}"><sc-for list="{{ r.buttons }}" as="b" hint-placeholder-count="1"><button type="button" style="{{ b.style }}"><sc-if value="{{ b.refresh }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="margin-inline-end: 8px"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg></sc-if>{{ b.label }}</button></sc-for></div>
                 </sc-if>
               </sc-for>
             </div>
@@ -159,7 +159,7 @@ class Component extends DCLogic {
       // or { buttons: [[label, kind]] }; without lines the empty text spans the table.
       if ('table' in r) {
         const pillStyle = (tone) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; ' +
-          (tone === 'success' ? 'background: #e7f3ea; color: #1e6b2a' : tone === 'warning' ? 'background: #fff4e5; color: #7a4a00' : 'background: #eef0f3; color: #3d4047');
+          (tone === 'success' ? 'background: #e7f3ea; color: #1e6b2a' : tone === 'warning' ? 'background: #fff4de; color: #7a4f00' : 'background: #eef0f3; color: #3d4047');
         const small = (kind) => btn(kind).replace('height: 40px', 'height: 34px').replace('padding: 0 16px', 'padding: 0 12px');
         const cell = (c) => {
           const base = { isText: false, isPill: false, isButtons: false };
@@ -178,7 +178,7 @@ class Component extends DCLogic {
       if ('link' in r) return { ...blank, isLink: true, text: r.link };
       if ('disclosure' in r) return { ...blank, isDisclosure: true, text: r.disclosure };
       if ('note' in r) return { ...blank, isNote: true, text: r.note, noteStyle: note(r.tone) };
-      if ('buttons' in r) return { ...blank, isButtons: true, barStyle: 'display: flex; flex-wrap: wrap; gap: 10px; ' + (r.buttons[0] && r.buttons[0][1] === 'primary' ? 'justify-content: flex-end' : ''), buttons: r.buttons.map(([label, kind]) => ({ label, style: btn(kind) })) };
+      if ('buttons' in r) return { ...blank, isButtons: true, barStyle: 'display: flex; flex-wrap: wrap; gap: 10px; ' + (r.buttons[0] && r.buttons[0][1] === 'primary' ? 'justify-content: flex-end' : ''), buttons: r.buttons.map(([label, kind, icon]) => ({ label, style: btn(kind), refresh: icon === 'refresh' })) };
       return blank;
     };
     const raw = Array.isArray(this.props.sections) ? this.props.sections : [];

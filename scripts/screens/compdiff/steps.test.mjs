@@ -28,6 +28,7 @@ function fakePage(fail = {}) {
 		waitForSelector: async (s) => calls.push(`waitFor ${s}`),
 		$eval: async (s, fn, files) => calls.push(`drag ${s} ${files.join(',')}`),
 		evaluate: async () => calls.push('blur'),
+		mouse: { move: async (x, y) => calls.push(`mouse ${x},${y}`) },
 	}
 }
 
@@ -48,6 +49,7 @@ test('plays clicks and fills interleaved, in the order given', async () => {
 		'fill [role=dialog] .cn-search-select input=Juridische zaken',
 		'click [role=listbox] [role=option] >> nth=0',
 		'fill [role=dialog] textarea=De mail van de aannemer raakt een lopend geschil.',
+		'mouse 0,0',
 		'blur',
 	])
 })
@@ -62,7 +64,7 @@ test('a fill that fails is reported and skipped; a click that fails stops the ru
 	const warnings = []
 	const page = fakePage({ fill: '#gone' })
 	await playSteps(page, parseSteps('[{"fill":"#gone","value":"x"},{"click":"#next"}]'), (m) => warnings.push(m))
-	assert.deepEqual(page.calls, ['click #next'])
+	assert.deepEqual(page.calls, ['click #next', 'mouse 0,0'])
 	assert.deepEqual(warnings, ['fill skipped: #gone not a field'])
 	await assert.rejects(playSteps(fakePage({ click: '#menu' }), parseSteps('[{"click":"#menu"},{"click":"#after"}]')), /no such element/)
 })
@@ -141,7 +143,7 @@ test('takes the page off the network and back, for a board that draws the offlin
 	const page = fakePage()
 	page.context = () => ({ setOffline: async (v) => page.calls.push(`offline ${v}`) })
 	await playSteps(page, parseSteps('[{"click":"#open"},{"offline":true},{"offline":false}]'))
-	assert.deepEqual(page.calls, ['click #open', 'offline true', 'offline false'])
+	assert.deepEqual(page.calls, ['click #open', 'offline true', 'offline false', 'mouse 0,0'])
 	assert.throws(() => normaliseStep({ offline: 'yes' }), /true or false/)
 })
 
@@ -160,5 +162,28 @@ test('a filled field is left (blurred) so it is measured at rest; a typed one ke
 	// A fill followed by a click on the list it opened keeps its focus until the click.
 	const p2 = fakePage()
 	await playSteps(p2, parseSteps('[{"fill":"#zoek","value":"Jur"},{"click":"[role=option]"}]'))
-	assert.deepEqual(p2.calls, ['fill #zoek=Jur', 'click [role=option]'])
+	assert.deepEqual(p2.calls, ['fill #zoek=Jur', 'click [role=option]', 'mouse 0,0'])
+})
+
+test('after a click the pointer is moved off the page content, so nothing is measured in its hover state', async () => {
+	const page = fakePage()
+	await playSteps(page, parseSteps('[{"click":".menutoggle"}]'))
+	assert.deepEqual(page.calls, ['click .menutoggle', 'mouse 0,0'])
+	const p2 = fakePage()
+	await playSteps(p2, parseSteps('[{"fill":"#a","value":"x"}]'))
+	assert.ok(!p2.calls.includes('mouse 0,0'))
+})
+
+test('opens other pages of the instance in order and returns, for a board drawn after visits (DqMijnWerk Verder werken)', async () => {
+	assert.deepEqual(normaliseStep({ goto: '/apps/dossiq/cases/a' }), { kind: 'goto', path: '/apps/dossiq/cases/a' })
+	assert.throws(() => normaliseStep({ goto: 'https://elsewhere.example/x' }), /path on the instance/)
+	const page = fakePage()
+	page.url = () => 'http://localhost:8080/index.php/apps/dossiq/'
+	page.goto = async (url) => page.calls.push(`goto ${url}`)
+	await playSteps(page, parseSteps('[{"goto":"/apps/dossiq/cases/a"},{"goto":"/apps/dossiq/cases/b"},{"goto":"/apps/dossiq/?view=mine"}]'))
+	assert.deepEqual(page.calls, [
+		'goto http://localhost:8080/apps/dossiq/cases/a',
+		'goto http://localhost:8080/apps/dossiq/cases/b',
+		'goto http://localhost:8080/apps/dossiq/?view=mine',
+	])
 })

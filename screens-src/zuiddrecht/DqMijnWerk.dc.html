@@ -36,8 +36,8 @@ a{color:#3669a5}a:hover{color:#234a78}
         <section aria-labelledby="eerst" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: inset 4px 0 0 #cc0000; padding: 20px 24px 20px 28px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center">
           <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px">
             <h2 id="eerst" style="margin: 0; font-size: 13px; font-weight: 700; color: #a30000">Vandaag eerst</h2>
-            <strong style="font-size: 20px; font-weight: 700">Parkeervergunningen binnenstad</strong>
-            <span style="font-size: 15px; color: #5e6168">2026-4837 · Woo-verzoek · de termijn loopt vandaag af. Wij wachten 9 dagen op een document van de inwoner.</span>
+            <strong style="font-size: 20px; font-weight: 700">Melding geluidsoverlast terras Markt</strong>
+            <span style="font-size: 15px; color: #5e6168">2026-4853 · Melding openbare ruimte · termijn 25 okt.</span>
           </div>
           <div style="display: flex; flex-wrap: wrap; gap: 10px">
             <a href="DqZaken.dc.html" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #1b1c1d; font-size: 14px; font-weight: 600; text-decoration: none">Alle zaken over termijn</a><a href="DqWerkbord.dc.html" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #1b1c1d; font-size: 14px; font-weight: 600; text-decoration: none">Naar het werkbord</a><button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Termijn opschorten</button>
@@ -76,7 +76,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             </section>
 
             <section aria-labelledby="stappen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
-              <div style="display: flex; justify-content: space-between; align-items: center"><h2 id="stappen" style="margin: 0; font-size: 17px; font-weight: 700">Mijn 14 zaken per stap</h2><a href="DqWerkbord.dc.html" style="font-size: 14px; font-weight: 600">Naar werkbord</a></div>
+              <div style="display: flex; justify-content: space-between; align-items: center"><h2 id="stappen" style="margin: 0; font-size: 17px; font-weight: 700">Mijn 8 zaken per stap</h2><a href="DqWerkbord.dc.html" style="font-size: 14px; font-weight: 600">Naar werkbord</a></div>
               <div aria-hidden="true" style="display: flex; gap: 3px; height: 12px">
                 <sc-for list="{{ stages }}" as="s" hint-placeholder-count="4"><span style="{{ s.bar }}"></span></sc-for>
               </div>
@@ -156,7 +156,7 @@ class Component extends DCLogic {
       box: 'display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 10px; min-height: 132px; background: ' + (today ? '#eaf0f7' : '#f5f6f8'),
       head: 'display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 13px; font-weight: 700; color: ' + (today ? '#234a78' : '#3d4047')
     }));
-    const stageData = [['Ontvangen', 3, '#8fb0d9'], ['In behandeling', 6, '#3669a5'], ['Besluit', 3, '#234a78'], ['Publiceren', 2, '#1b1c1d']];
+    const stageData = [['Ontvangen', 1, '#8fb0d9'], ['Wacht op informatie', 0, '#b9cde3'], ['In behandeling', 6, '#3669a5'], ['Besluit', 1, '#234a78']];
     const stages = stageData.map(([label, count, color]) => ({ label, count,
       bar: 'flex: ' + count + '; border-radius: 6px; background: ' + color,
       dot: 'width: 10px; height: 10px; border-radius: 3px; background: ' + color }));
@@ -168,10 +168,12 @@ class Component extends DCLogic {
     ];
     const due = (c, w) => 'font-weight: ' + (w || 500) + '; color: ' + c;
     const tasks = [
-      { title: 'Documenten beoordelen op openbaarheid', tag: 'Verlichting fietspad Lindelaan', due: 'Vandaag', dueStyle: due('#a30000', 700) },
-      { title: 'Inwoner bellen over ontbrekend ID-bewijs', tag: 'Parkeervergunningen binnenstad', due: 'Morgen', dueStyle: due('#5e6168') },
-      { title: 'Besluit laten tekenen door teamleider', tag: 'Aanbesteding jeugdzorg 2026', due: '8 okt', dueStyle: due('#5e6168') },
-      { title: 'Hoorzitting inplannen', tag: 'Bezwaar parkeerboete Havenstraat', due: '9 okt', dueStyle: due('#5e6168') }
+      { title: 'Bezwaarschrift aanvullen bij de indiener', tag: 'Bezwaar parkeerboete Havenstraat', due: '2 dagen over tijd', dueStyle: due('#a30000', 700) },
+      { title: 'Hoorzitting inplannen', tag: 'Bezwaar parkeerboete Havenstraat', due: 'Over tijd', dueStyle: due('#a30000', 700) },
+      { title: 'Documenten beoordelen', tag: 'Verlichting fietspad Lindelaan', due: 'Vandaag', dueStyle: due('#a30000', 700) },
+      { title: 'Advies boomdeskundige beoordelen', tag: 'Kapvergunning essen Parkweg', due: 'Over 2 dagen', dueStyle: due('#5e6168') },
+      { title: 'Herinnering sturen aan verzoeker', tag: 'Parkeervergunningen binnenstad', due: 'Over 6 dagen', dueStyle: due('#5e6168') },
+      { title: 'Inspectie: Brandveiligheid', tag: 'Bewonersvergunning Kerkplein', due: '', dueStyle: due('#5e6168') }
     ];
     const dot = (c) => 'width: 10px; height: 10px; flex: none; margin-top: 6px; border-radius: 5px; background: ' + c;
     const activity = [

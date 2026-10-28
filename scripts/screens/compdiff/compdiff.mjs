@@ -168,6 +168,8 @@ try {
 	// Under load the login page can take minutes to answer: each action gets 90 s, and a failed login is tried once more.
 	const login = () => retryOnce(async () => {
 		await lpage.goto(base + '/login', { waitUntil: 'domcontentloaded', timeout: 180000 })
+		// A session that is still valid is sent on from /login: there is nothing to fill.
+		if (!onLogin()) return
 		await lpage.fill('#user', account.user, { timeout: 90000 })
 		await lpage.fill('#password', account.password, { timeout: 90000 })
 		// Logged in once the browser leaves /login; the app it lands on need not finish loading.
@@ -188,6 +190,7 @@ try {
 			liveRoute = await resolveRoute(args.url, getJson)
 		} catch (e) {
 			if (!account) throw e
+			console.error(`lookup failed, logging in again: ${e.message.split('\n')[0]}`)
 			await login()
 			liveRoute = await resolveRoute(args.url, getJson)
 		}

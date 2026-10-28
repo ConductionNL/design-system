@@ -29,11 +29,32 @@ class Component extends DCLogic {
     // Replaces the Pipelinq section drawn inside Nextcloud's personal settings (decision 11 Oct 2026). Same sections
     // as PqSynchronisatie, which shows this dialog scrolled to E-mail en agenda.
     const sections = [
-      { name: 'Meldingen', desc: 'Wat je bereikt, en waar. Een termijnwaarschuwing op een ticket krijg je altijd.', rows: [
-        { matrix: 'Melding', cols: ['In de stroom', 'Per e-mail'], lines: [
-          ['Een lead, ticket of taak is aan jou gegeven', [true, false]],
-          ['Iets van jou gaat naar een andere fase, of is gewonnen of verloren', [true, true]],
-          ['Iemand noemt je of zet een notitie bij je werk', [true, false]]
+      // CnNotificationPreferences in the board look: OpenRegister's pipelinq notifications by schema, one column per
+      // channel the platform declares (pipelinq declares only Nextcloud's own).
+      { name: 'Meldingen', desc: 'Kies welke meldingen je wilt krijgen. Wat je niet aanpast, volgt de standaard van de app.', rows: [
+        { matrix: 'Gebeurtenis', cols: ['In Nextcloud'], lines: [
+          ['Lead', null],
+          ['Er komt een nieuwe lead binnen', [true]],
+          ['Een lead is gewonnen', [true]],
+          ['Een lead is verloren', [true]],
+          ['Een lead die aan mij is toegewezen verandert', [true]],
+          ['Klant', null],
+          ['Een klant van mij verandert', [true]],
+          ['Taak', null],
+          ['Een taak die aan mij is toegewezen is afgerond', [true]],
+          ['Een taak die aan mij is toegewezen verloopt', [true]],
+          ['Een taak die aan mij is toegewezen verandert', [true]],
+          ['Ticket', null],
+          ['Een ticket dat aan mij is toegewezen verandert', [true]],
+          ['Er komt een nieuw ticket binnen', [true]],
+          ['Enquêteantwoord', null],
+          ['Een ontevreden klant moet worden opgevolgd', [true]],
+          ['Contract', null],
+          ['Een contract van mij nadert de verlenging', [true]],
+          ['Contactpersoon', null],
+          ['Er is een nieuw contact toegevoegd', [true]],
+          ['Aanvraag', null],
+          ['Er komt een nieuwe aanvraag binnen via de website', [false]]
         ] }
       ] },
       { name: 'Contacten', desc: 'Je records in Pipelinq en je Nextcloud-adresboek.', rows: [
@@ -57,6 +78,11 @@ class Component extends DCLogic {
       ] },
       { name: 'Rondleiding', desc: 'Aan de slag: 13 stappen, van een klant tot een gefactureerd contract. Je rondde hem af op 3 september.', rows: [
         { buttons: [['Rondleiding opnieuw starten', '']] }
+      ] },
+      // CnAppRoot's saved-views section, last in the navigation; pieter has no view in his menu yet.
+      { name: 'Weergaven in mijn menu', desc: 'Deze opgeslagen weergaven staan onderaan je menu onder Mijn weergaven, in deze volgorde. Sleep een regel of gebruik de pijltjestoetsen. Een weergave zet je in het menu met Toevoegen aan menu in het zijpaneel van een lijst.', rows: [
+        { note: 'Je menu heeft nog geen weergaven.', tone: 'plain' },
+        { select: 'Weergave toevoegen', value: 'Kies een opgeslagen weergave', hint: 'Je ziet je eigen weergaven, de weergaven die met je zijn gedeeld en de standaardweergaven. Een nieuwe weergave komt onderaan.' }
       ] }
     ];
     return { sections };

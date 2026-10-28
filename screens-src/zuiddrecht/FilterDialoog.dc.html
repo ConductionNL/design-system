@@ -30,7 +30,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           <input id="fd-wie" type="text" value="han" aria-expanded="true" aria-controls="fd-suggesties" aria-autocomplete="list" placeholder="Zoek een persoon of groep" style="box-sizing: border-box; width: 100%; height: 44px; padding: 0 40px 0 10px; border: 2px solid #1b1c1d; border-radius: 8px 8px 0 0; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
           <ul id="fd-suggesties" role="listbox" aria-label="Gevonden personen en groepen" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 2; margin: 0; padding: 4px 6px; list-style: none; border: 1px solid #1b1c1d; border-top: 0; border-radius: 0 0 8px 8px; background: #ffffff; display: flex; flex-direction: column; gap: 0">
             <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="3">
-              <li role="option" aria-selected="{{ s.selected }}" style="{{ s.style }}"><span style="{{ s.avatarStyle }}">{{ s.initials }}</span><span style="font-size: 14px; font-weight: 600; min-width: 0">{{ s.name }}</span><span style="margin-left: auto; padding: 2px 8px; border-radius: 10px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 600">{{ s.kind }}</span></li>
+              <li role="option" aria-selected="{{ s.selected }}" style="{{ s.style }}"><sc-if value="{{ s.group }}" hint-placeholder-val="{{ true }}"><span style="{{ s.avatarStyle }}">{{ s.initials }}</span></sc-if><sc-if value="{{ s.person }}" hint-placeholder-val="{{ false }}"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="flex: none"><circle cx="16" cy="16" r="16" fill="{{ s.ground }}"></circle><text x="16" y="21" text-anchor="middle" font-size="14" font-weight="400" fill="{{ s.ink }}">{{ s.initials }}</text></svg></sc-if><span style="font-size: 14px; font-weight: 600; min-width: 0">{{ s.name }}</span><span style="margin-left: auto; padding: 2px 8px; border-radius: 10px; background: #edeff2; color: #3d4047; font-size: 12px; font-weight: 600">{{ s.kind }}</span></li>
             </sc-for>
           </ul>
         </div>
@@ -135,16 +135,16 @@ class Component extends DCLogic {
     const avatar = (group) => 'flex: none; width: 32px; height: 32px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; ' + (group ? 'background: #e4e6ea; color: #3d4047;' : 'background: #eaf0f7; color: #234a78;');
     const optStyle = (on) => 'display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 8px; border-radius: 8px; cursor: pointer; ' + (on ? 'background: #eaf0f7;' : 'background: transparent;');
     const optStyle2 = (on) => 'display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-radius: 8px; ' + (on ? 'background: #f0f1f3;' : 'background: transparent;');
-    const ava = (group) => 'flex: none; width: 32px; height: 32px; box-sizing: border-box; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; ' + (group ? 'background: #3669a5; color: #ffffff;' : 'background: #ffffff; border: 1px solid #eef0f3; color: transparent;');
+    const ava = (group) => 'flex: none; width: 32px; height: 32px; box-sizing: border-box; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; ' + (group ? 'background: #3669a5; color: #ffffff;' : 'background: #f0f1f3; color: #3d4047;');
     const suggestions = [
-      ['Hanna Bos', '', 'Persoon', false],
-      ['Hanneke de Boer', '', 'Persoon', false],
-      ['Hanneke Postma', '', 'Persoon', false],
+      ['Hanna Bos', 'HB', 'Persoon', false, '#f7f8ef', '#b8be68'],
+      ['Hanneke de Boer', 'HD', 'Persoon', false, '#f7f8ef', '#b8be68'],
+      ['Hanneke Postma', 'HP', 'Persoon', false, '#f4edf5', '#9750a4'],
       ['behandelaars', 'B', 'Groep', true],
       ['dso-behandelaars', 'D', 'Groep', true],
       ['handler', 'H', 'Groep', true],
       ['intakekanalen-behandelaars', 'I', 'Groep', true]
-    ].map(([n, initials, k, group], i) => ({ name: n, initials, kind: k, selected: i === 0 ? 'true' : 'false', style: optStyle2(i === 0), avatarStyle: ava(group) }));
+    ].map(([n, initials, k, group, ground, ink], i) => ({ name: n, initials, kind: k, group, person: !group, ground, ink, selected: i === 0 ? 'true' : 'false', style: optStyle2(i === 0), avatarStyle: ava(group) }));
     const shares = [
       ['Woo en informatie', 'Groep', 'W', true, 'read'],
       ['Anouk Bakker', 'Persoon', 'AB', false, 'write']

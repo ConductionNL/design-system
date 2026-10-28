@@ -26,6 +26,18 @@ window.__compdiffExtract = function () {
 		for (let e = el; e; e = e.parentElement) { const c = getComputedStyle(e).backgroundColor; if (opaque(c)) return c }
 		return 'rgb(255, 255, 255)'
 	}
+	// The colour painted under an element: its ground laid over the grounds behind it, so a 10% tint over a blue circle
+	// (NcAvatar's initials over its painted disc) reads as the blue people see, not as the tint.
+	const painted = (el) => {
+		const layers = []
+		for (let e = el; e; e = e.parentElement) {
+			const v = rgba(getComputedStyle(e).backgroundColor)
+			if (v && v[3] > 0) { layers.push(v); if (v[3] >= 0.999) break }
+		}
+		let c = [255, 255, 255]
+		for (let i = layers.length - 1; i >= 0; i--) { const [r, g, b, a] = layers[i]; c = [r * a + c[0] * (1 - a), g * a + c[1] * (1 - a), b * a + c[2] * (1 - a)] }
+		return `rgb(${c.map(Math.round).join(', ')})`
+	}
 	const SIDES = ['Top', 'Right', 'Bottom', 'Left']
 	const borders = (cs) => Object.fromEntries(SIDES.map((s) => [s.toLowerCase(), cs['border' + s + 'Style'] === 'none' || cs['border' + s + 'Style'] === 'hidden' || !opaque(cs['border' + s + 'Color']) ? 0 : px(cs['border' + s + 'Width'])]))
 	// A box-shadow ring (0 0 0 <spread> <colour>) draws a border without a border property.
@@ -58,6 +70,9 @@ window.__compdiffExtract = function () {
 		const rest = parts.filter((x) => !/^\S.*\)\s+0px\s+0px\s+0px\s+[\d.]+px(\s+inset)?$|^(inset\s+)?\S.*\)\s+0px\s+0px\s+0px\s+[\d.]+px$/.test(x))
 		return rest.length ? rest.join(', ') : 'none'
 	}
+	// A solid outline draws a ring outside the box (a focused input's 2px main-text outline). Chrome's own `auto` focus
+	// ring is the browser's, not the page's.
+	const outlineRing = (cs) => (/^(none|hidden|auto)$/.test(cs.outlineStyle) || !(px(cs.outlineWidth) > 0) || !opaque(cs.outlineColor) ? null : { width: px(cs.outlineWidth), color: cs.outlineColor, out: Math.max(0, px(cs.outlineWidth) + px(cs.outlineOffset)) })
 	// The colour of the border people see: the border's own, or the ring's when only a ring draws one.
 	const seenBorderColour = (cs) => (Object.values(borders(cs)).some((v) => v > 0) || !ring(cs) ? cs.borderTopColor : ring(cs).color)
 	// The border people see around a field: its own (3+ sides) or ring, else that of a wrapper that hugs it (NcInputField
@@ -845,11 +860,13 @@ window.__compdiffExtract = function () {
 		const ls = by.length ? by : [...(c.labels || [])]
 		const cr = c.getBoundingClientRect()
 		if (ls.some((l) => visible(l) && l.textContent.trim() && l.getBoundingClientRect().bottom <= cr.top + 2)) return true
-		// A board names the field with aria-label and sets the same words as a caption over it in its wrapper.
+		// A board names the field with aria-label and sets the same words as a caption over it in its wrapper, or sets a
+		// label element right over it without tying it to the field (no for, not wrapping it).
 		const name = (c.getAttribute('aria-label') || '').trim()
-		if (!name) return false
+		const over = (t) => visible(t) && t.textContent.trim() && t.getBoundingClientRect().bottom <= cr.top + 2 && cr.top - t.getBoundingClientRect().bottom <= 24 && t.getBoundingClientRect().left < cr.right && t.getBoundingClientRect().right > cr.left
 		for (let w = c.parentElement, i = 0; w && i < 3; w = w.parentElement, i++) {
-			if ([...w.querySelectorAll('span, div, p, strong, b, legend')].some((t) => !t.children.length && t.textContent.trim() === name && visible(t) && t.getBoundingClientRect().bottom <= cr.top + 2)) return true
+			if (name && [...w.querySelectorAll('span, div, p, strong, b, legend')].some((t) => !t.children.length && t.textContent.trim() === name && visible(t) && t.getBoundingClientRect().bottom <= cr.top + 2)) return true
+			if ([...w.querySelectorAll('label, legend')].some((t) => !t.contains(c) && over(t))) return true
 		}
 		return false
 	}
@@ -949,8 +966,12 @@ window.__compdiffExtract = function () {
 		}
 		// A wrapping row of short items (chips, Filter, a view switch) that wrapped onto a second or third line is still
 		// one toolbar: whether it wraps follows how many chips the data brings.
+		// A stack of one item per line (an Acties button over a search field, wrapping because each takes the full width) is
+		// no toolbar: a wrapped toolbar has a line with two or more items.
+		const kids = [...el.children].filter(visible)
 		const wrapped = r.height > 72 && r.height <= 160 && /flex/.test(cs.display) && cs.flexWrap === 'wrap' && !cardEls.has(el)
-			&& [...el.children].filter(visible).every((c) => c.getBoundingClientRect().height <= 48)
+			&& kids.every((c) => c.getBoundingClientRect().height <= 48)
+			&& kids.some((c) => kids.some((d) => d !== c && Math.abs(d.getBoundingClientRect().top - c.getBoundingClientRect().top) <= 4))
 		if ((r.height > 72 && !wrapped) || r.width < 300) continue
 		// A list row with its open button and its row menu (the saved-views list), or the line inside one, is a row,
 		// not a toolbar.
@@ -958,6 +979,9 @@ window.__compdiffExtract = function () {
 		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24 && !chip(c))
 		if (ctrls.length < 2) continue
 		if (formRow(ctrls) || headerActions(el) || actionFooter(el, ctrls)) continue
+		// A row of steps (CnStepper: done steps are buttons to jump back, the rest spans; a board draws them all as spans)
+		// is a progress indicator, not a toolbar.
+		if (el.querySelector('[aria-current=step]') || (el.closest('ol') && el.closest('ol').querySelector('[aria-current=step]'))) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (tabStrips.some((s) => el.contains(s))) continue
 		// A wrapper whose one visible child is itself the flex or grid row of these controls (a form inside a widget
@@ -1013,8 +1037,9 @@ window.__compdiffExtract = function () {
 		if (el.matches(TOGGLE)) return 'toggle'
 		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
 		const boxed = ownBg || nBorders(el) >= 3
-		// A pager's boxed items are its page links, including a disabled "Volgende" drawn as a span.
-		if (boxed && pagerRows.some((p) => p.contains(el))) return 'button'
+		// A pager's boxed items are its page links, including a disabled "Volgende" drawn as a span. The pager's own row,
+		// boxed around them, is not one.
+		if (boxed && pagerRows.some((p) => p.contains(el)) && !pagerRows.includes(el) && !el.querySelector('a, button, [role=button]')) return 'button'
 		// A disclosure's summary is the button that opens it, however it is drawn (a native summary has no box of its own).
 		if (el.tagName === 'SUMMARY') return 'button'
 		// A button drawn as a plain text link (no ground of its own, no border, no icon: "Alles wissen", NcButton's
@@ -1041,17 +1066,40 @@ window.__compdiffExtract = function () {
 		const own = fieldBorder(el).width
 		const r0 = el.getBoundingClientRect()
 		let best = null
-		for (let e = el.parentElement, i = 0; e && e !== document.body && i < 4; e = e.parentElement, i++) {
+		for (let e = el, i = 0; e && e !== document.body && i < 5; e = e.parentElement, i++) {
 			const r = e.getBoundingClientRect()
 			if (r.left < r0.left - 6 || r.top < r0.top - 6 || r.right > r0.right + 6 || r.bottom > r0.bottom + 6) break
-			const ecs = getComputedStyle(e), b = borders(ecs), g = ring(ecs)
+			const ecs = getComputedStyle(e), b = borders(ecs), g = ring(ecs), o = outlineRing(ecs)
+			// An outline drawn outside the box is the outermost line people see, around the box and its border.
+			if (o && o.width >= own && (!best || o.width >= best.width)) { best = { width: o.width, color: o.color, h: r.height + 2 * o.out, el: e }; continue }
+			if (i === 0) continue
 			const w = Math.max(Object.values(b).filter((v) => v > 0).length >= 3 ? b.top : 0, g ? g.width : 0)
-			if (w > own && (!best || w > best.width)) best = { width: w, color: g && g.width >= b.top ? g.color : ecs.borderTopColor, h: r.height }
+			if (w > own && (!best || w > best.width)) best = { width: w, color: g && g.width >= b.top ? g.color : ecs.borderTopColor, h: r.height, el: e }
 		}
 		return best
 	}
+	// A select library that frames its whole control (NcSelect's multiple .vs__dropdown-toggle: 2px main-text when open)
+	// draws the field people see: its box and its frame, not those of the search input inside it.
+	const selectFrame = (el) => {
+		const t = el.closest('.vs__dropdown-toggle')
+		if (!t || t === el) return null
+		const tcs = getComputedStyle(t), b = borders(tcs), g = ring(tcs)
+		const nb = Object.values(b).filter((v) => v > 0).length
+		if (nb < 3 && !g) return null
+		return nb >= 3 ? { width: b.left || b.top, color: opaque(tcs.borderLeftColor) ? tcs.borderLeftColor : tcs.borderTopColor, h: t.getBoundingClientRect().height, el: t } : { width: g.width, color: g.color, h: t.getBoundingClientRect().height, el: t }
+	}
+	// The frame people see around a field: the select's frame, a focus ring or outline around it, or its own border. A line
+	// of another colour inside that frame (the input's own primary line inside the select's dark ring) is its innerBorder.
+	const fieldFrame = (el) => {
+		const outer = selectFrame(el) || focusRing(el)
+		const own = fieldBorder(el)
+		if (!outer) return { ...own, inner: { width: 0, color: null } }
+		const ca = rgba(own.color), cb = rgba(outer.color)
+		const apart = own.width > 0 && ca && cb && Math.max(...[0, 1, 2].map((i) => Math.abs(ca[i] - cb[i]))) > 12
+		return { ...outer, inner: apart ? own : { width: 0, color: null } }
+	}
 	const elementBorder = (el, kind, cs) => {
-		if (kind === 'field') { const ring = focusRing(el); const b = ring || fieldBorder(el); return { border: b.width, borderColor: b.width ? b.color : null } }
+		if (kind === 'field') { const f = fieldFrame(el); return { border: f.width, borderColor: f.width ? f.color : null, innerBorder: f.inner.width, innerBorderColor: f.inner.width ? f.inner.color : null } }
 		const seen = seenBorders(cs)
 		const three = Object.values(seen).filter((v) => v > 0).length >= 3
 		return { border: three ? seen.top : 0, borderColor: three ? seenBorderColour(cs) : null }
@@ -1110,16 +1158,20 @@ window.__compdiffExtract = function () {
 		}
 		return ''
 	}
-	// An element's own label, without the text of a count badge or tag nested inside it.
+	// An element's own label, without the text of a count badge or tag nested inside it. A tag set on a ground of its own
+	// in the same colour as its row (a "Persoon" pill on a highlighted option) is still a tag: fully rounded, filled.
+	const tagShaped = (e) => { const ecs = getComputedStyle(e), r = e.getBoundingClientRect(); return r.height >= 12 && r.height <= 30 && r.width <= 160 && opaque(ecs.backgroundColor) && radius(e, ecs) >= r.height / 2 - 1 }
 	const ownLabel = (el) => {
 		const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
-		const parts = []
+		const parts = [], tags = []
 		for (let n = w.nextNode(); n; n = w.nextNode()) {
-			let nested = false
-			for (let e = n.parentElement; e && e !== el; e = e.parentElement) if (PILLISH(e)) { nested = true; break }
-			if (!nested && n.textContent.trim()) parts.push(n.textContent.trim())
+			let nested = false, tag = false
+			for (let e = n.parentElement; e && e !== el; e = e.parentElement) { if (PILLISH(e)) { nested = true; break } if (tagShaped(e)) tag = true }
+			if (!nested && n.textContent.trim()) (tag ? tags : parts).push(n.textContent.trim())
 		}
-		return (el.getAttribute('aria-label') || fieldLabel(el) || parts.join(' ') || el.getAttribute('placeholder') || el.value || '').trim().replace(/\s+/g, ' ').slice(0, 50)
+		// Text that is all in such a tag is the element's own (a chip drawn as a rounded span inside its button).
+		const text = (parts.length ? parts : tags).join(' ')
+		return (el.getAttribute('aria-label') || fieldLabel(el) || text || el.getAttribute('placeholder') || el.value || '').trim().replace(/\s+/g, ' ').slice(0, 50)
 	}
 	// A list row drawn by a full-width box inside it (cn-folder-tree: an unstyled li around a button; cn-menu-tree: a
 	// treeitem around a padded row div) is measured on that box, which is then not an element of its own.
@@ -1150,7 +1202,7 @@ window.__compdiffExtract = function () {
 			elementEls.add(hiddenToggle)
 			elements.push({
 				inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr'), kind: 'toggle', label: ownLabel(el0), inControl: inRecord(el0) ? 'record card' : null,
-				interactive: true, container: containerOf(hiddenToggle), rect: rect(hiddenToggle),
+				interactive: true, container: containerOf(hiddenToggle), rect: rect(hiddenToggle), ...(ir.top >= window.innerHeight ? { belowFrame: true } : {}),
 				props: { h: round(ir.height), borderRadius: radius(hiddenToggle, getComputedStyle(hiddenToggle)), border: 0, borderColor: null, background: null, color: getComputedStyle(hiddenToggle).color, fontSize: px(getComputedStyle(hiddenToggle).fontSize), fontWeight: Number(getComputedStyle(hiddenToggle).fontWeight), paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false, gapNext: null },
 			})
 			continue
@@ -1172,30 +1224,56 @@ window.__compdiffExtract = function () {
 		const el = drawer || el0, cs = drawer ? getComputedStyle(drawer) : cs0, r = drawer ? drawer.getBoundingClientRect() : r0
 		// Inner parts of a control (the input inside a combobox, a button inside a button) are the control itself.
 		if ([...elementEls].some((e) => e !== el && e.contains(el) && (e.matches(FIELD) || ((kind === 'button' || kind === 'field') && e.matches('button, [role=button], a'))))) continue
+		// The chosen value a select shows beside its search input (NcSelect's .vs__selected: an avatar chip and a name)
+		// is the field's content, as it is inside a board's drawn combobox.
+		if (kind !== 'field' && el.closest('.vs__selected, .vs__selected-options')) continue
+		// A tag drawn in two layers of one box (NcAvatar: a painted disc, and the initials over it on a 10% tint) is one
+		// tag: named by its text, coloured by what the layers paint together.
+		if (kind === 'pill' || kind === 'badge') {
+			const host = elements.find((x) => (x.kind === 'pill' || x.kind === 'badge') && x.el && x.el !== el && x.el.contains(el) && Math.abs(x.rect.x - r.x) <= 1 && Math.abs(x.rect.y - r.y) <= 1 && Math.abs(x.rect.w - r.width) <= 1 && Math.abs(x.rect.h - r.height) <= 1)
+			if (host) {
+				if (!host.label.trim()) host.label = ownLabel(el)
+				host.props.background = painted(el)
+				elementEls.add(el)
+				continue
+			}
+		}
 		elementEls.add(el)
 		const parentCtl = el.parentElement && el.parentElement.closest('button, [role=button], a')
 		const label = ownLabel(el)
 		const next = el.nextElementSibling && visible(el.nextElementSibling) ? el.nextElementSibling.getBoundingClientRect() : null
 		const te = textEl(el)
 		const tcs = te ? getComputedStyle(te) : cs
+		const tr = kind === 'row' || kind === 'button' ? textRect(el) : null
+		// A switch's transparent hit-area border is not where it is drawn: its box is the track.
+		const ha = kind === 'toggle' ? hitArea(cs) : { top: 0, right: 0, bottom: 0, left: 0 }
+		const box0 = rect(el)
+		const ground = bgBehind(el)
 		elements.push({
+			el,
 			inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr') && !el0.matches('li, [role=row], [role=listitem], [role=option]'),
 			// Page links pair with page links: a lone "2" elsewhere on the page is not the pager's.
 			kind, label, inControl: inRecord(el) ? 'record card' : pagerRows.some((p) => p.contains(el)) ? 'pager' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			interactive: el.matches('button, a[href], [role=button], [role=link], [role=tab], [role=menuitem]'),
-			container: containerOf(el), rect: rect(el), ...(r.top >= window.innerHeight ? { belowFrame: true } : {}), ...(el.closest('th, [role=columnheader]') ? { inHead: true } : {}),
+			container: containerOf(el), rect: { x: round(box0.x + ha.left), y: round(box0.y + ha.top), w: round(box0.w - ha.left - ha.right), h: round(box0.h - ha.top - ha.bottom) }, ...(r.top >= window.innerHeight ? { belowFrame: true } : {}), ...(el.closest('th, [role=columnheader]') ? { inHead: true } : {}),
 			props: {
-				h: round(kind === 'field' && focusRing(el) ? focusRing(el).h : drawnHeight(el, kind, cs, r)), borderRadius: kind === 'toggle' ? Math.max(0, radius(el, cs) - hitArea(cs).top) : radius(el, cs), ...elementBorder(el, kind, cs),
+				h: round(kind === 'field' && (selectFrame(el) || focusRing(el)) ? (selectFrame(el) || focusRing(el)).h : drawnHeight(el, kind, cs, r)), borderRadius: kind === 'toggle' ? Math.max(0, radius(el, cs) - hitArea(cs).top) : radius(el, cs), ...elementBorder(el, kind, cs),
 				// A native checkbox or radio draws its own glyph: its computed background (grey when disabled, the accent
 				// when checked) is not painted anywhere, so it has none to compare.
-				background: nativeToggle(el, kind, cs) ? null : bgBehind(el), native: nativeToggle(el, kind, cs) || undefined, color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
+				// A translucent ground reads as what it paints over what is behind it.
+				background: nativeToggle(el, kind, cs) ? null : (rgba(ground) || [0, 0, 0, 1])[3] < 0.999 ? painted(el) : ground, native: nativeToggle(el, kind, cs) || undefined, color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
+				// Where the text starts from the element's left edge, whatever places it (a padding, a dot beside it).
+				...(tr ? { textInsetLeft: round(tr.x - r.left) } : {}),
 				// A native select draws its own arrow.
 				// A select library's open indicator sits in its own actions box beside the input (NcSelect's .vs__actions).
 				// A native select's arrow and a native date or time input's picker button are drawn by the browser, not by an element.
-				icon: (el.matches('select, input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week]') && cs.appearance !== 'none') || [...(kind === 'field' ? (el.closest('.cn-search-select') || el.closest('.vs__dropdown-toggle, .v-select') || fieldBox(el)) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
+				// A drawn checkbox whose glyph fills its own box (a board's span[role=checkbox] around a 20px svg) is that glyph,
+				// as a hidden input drawn by its icon is: no icon of its own.
+				icon: (el.matches('select, input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week]') && cs.appearance !== 'none') || [...(kind === 'field' ? (el.closest('.cn-search-select') || el.closest('.vs__dropdown-toggle, .v-select') || fieldBox(el)) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6 && !(kind === 'toggle' && Math.abs(i.getBoundingClientRect().width - r.width) <= 4 && Math.abs(i.getBoundingClientRect().height - r.height) <= 4)),
 				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),
-				badge: !!(kind === 'button' || kind === 'pill') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
+				// A count pill in a list row (a folder's "120") is its badge, as it is in a button drawn as that row.
+				badge: !!(kind === 'button' || kind === 'pill' || kind === 'row') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
 				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,
 			},
 		})
@@ -1232,5 +1310,5 @@ window.__compdiffExtract = function () {
 	// that scrolls on past the page) is in neither picture. It is kept, marked, so that a component the board draws
 	// inside its frame can still find its counterpart on a taller live page; unpaired, it is neither missing nor extra.
 	for (const c of components) if (c.rect && c.rect.y >= window.innerHeight) c.belowFrame = true
-	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c), elements, unmeasured }
+	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c), elements: elements.map(({ el, ...e }) => e), unmeasured }
 }

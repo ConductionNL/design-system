@@ -1300,3 +1300,114 @@ test('text placed off the page (a live region at left -10000px) does not set a c
 	const b = await measure(card('<div style="position:absolute;left:-10000px;top:60px;width:200px;height:20px">3 zaken geladen</div>'))
 	assert.deepEqual(b.components[0].content, a.components[0].content)
 })
+
+test('an open multiple NcSelect is read on its frame: the toggle\'s box and ring, and the input\'s own line inside it', { skip }, async () => {
+	const sel = (toggle) => `<label style="position:absolute;left:424px;top:200px;width:592px;display:flex;flex-direction:column;gap:6px"><span>Delen met</span><div class="v-select select vs--multiple vs--open"><div class="vs__dropdown-toggle" style="display:flex;box-sizing:border-box;height:44px;padding:2px;${toggle}"><div class="vs__selected-options" style="flex:1"><div class="vs__search"><input aria-label="Delen met" style="box-sizing:border-box;width:100%;height:36px;border:1px solid #3669a5;border-radius:8px"></div></div><div class="vs__actions"><svg width="20" height="20"><path d="M7 10l5 5 5-5z"/></svg></div></div></div></label>`
+	const live = await measure(sel('border:2px solid #1b1c1d;border-radius:8px'))
+	const f = live.elements.find((e) => e.kind === 'field').props
+	assert.deepEqual([f.h, f.border, f.borderColor, f.innerBorder, f.innerBorderColor], [44, 2, 'rgb(27, 28, 29)', 1, 'rgb(54, 105, 165)'])
+	// Control: a toggle with no frame of its own leaves the input's border as the field's.
+	const bare = await measure(sel('border:0'))
+	const g = bare.elements.find((e) => e.kind === 'field').props
+	assert.deepEqual([g.border, g.borderColor, g.innerBorder], [1, 'rgb(54, 105, 165)', 0])
+})
+
+test('a focused input\'s solid outline is the ring people see around it, outside its own line', { skip }, async () => {
+	const page = (style) => `<style>#f:focus{${style}}</style><div style="position:absolute;left:424px;top:200px;width:592px;display:flex;flex-direction:column;gap:6px"><label for="f">Nieuw team</label><input id="f" style="box-sizing:border-box;height:40px;border:1px solid #3669a5;border-radius:8px"></div><script>document.getElementById('f').focus()</script>`
+	const live = await measure(page('outline:2px solid #1b1c1d;outline-offset:0'))
+	const f = live.elements.find((e) => e.kind === 'field').props
+	assert.deepEqual([f.h, f.border, f.borderColor, f.innerBorder], [44, 2, 'rgb(27, 28, 29)', 1])
+	// Control: Chrome's own auto focus ring is not read as the page's frame.
+	const auto = await measure(page('outline:auto 1px'))
+	assert.deepEqual([auto.elements.find((e) => e.kind === 'field').props.border, auto.elements.find((e) => e.kind === 'field').props.innerBorder], [1, 0])
+})
+
+test('an avatar drawn as a painted disc under a tinted initials layer is one pill, coloured by what it paints', { skip }, async () => {
+	const live = await measure('<div style="position:absolute;left:450px;top:420px;display:flex;gap:8px;align-items:center"><div class="avatardiv" style="width:32px;height:32px;border-radius:50%;background:#3669a5"><div class="avatardiv__initials-wrapper" style="width:32px;height:32px;border-radius:50%;background:rgba(121, 90, 171, 0.1);display:flex;align-items:center;justify-content:center;color:#fff">B</div></div><span>behandelaars</span></div>')
+	const pills = live.elements.filter((e) => e.kind === 'pill')
+	assert.deepEqual(pills.map((p) => [p.label, p.props.background]), [['B', 'rgb(61, 104, 166)']])
+	// Control: a disc painted another colour still reads as that colour.
+	const other = await measure('<div style="position:absolute;left:450px;top:420px;display:flex;gap:8px;align-items:center"><div style="width:32px;height:32px;border-radius:50%;background:#795aab"><div style="width:32px;height:32px;border-radius:50%;background:rgba(121, 90, 171, 0.1);display:flex;align-items:center;justify-content:center;color:#fff">B</div></div><span>behandelaars</span></div>')
+	assert.deepEqual(other.elements.filter((e) => e.kind === 'pill').map((p) => p.props.background), ['rgb(121, 90, 171)'])
+})
+
+test('the chosen value a select shows beside its search input is the field\'s content, not a pill of its own', { skip }, async () => {
+	const chip = '<span style="width:26px;height:26px;border-radius:13px;background:#3669a5;color:#fff;display:inline-flex;align-items:center;justify-content:center">PJ</span>'
+	const live = await measure(`<label style="position:absolute;left:730px;top:600px;width:324px">Toegewezen aan<div class="v-select"><div class="vs__dropdown-toggle" style="display:flex;height:40px"><div class="vs__selected-options" style="display:flex;flex:1;align-items:center"><span class="vs__selected" style="display:flex;gap:6px;align-items:center">${chip}Pieter Jansen</span><input class="vs__search" aria-label="Toegewezen aan" style="border:1px solid #828a95;height:38px;flex:1"></div></div></div></label>`)
+	assert.deepEqual(live.elements.filter((e) => e.kind === 'pill'), [])
+	// Control: the same chip outside a select is a pill.
+	const out = await measure(`<div style="position:absolute;left:730px;top:600px;display:flex;gap:6px;align-items:center">${chip}Pieter Jansen</div>`)
+	assert.equal(out.elements.filter((e) => e.kind === 'pill').length, 1)
+})
+
+test('a pager\'s boxed row is not a page link: its page buttons are', { skip }, async () => {
+	const r = await measure('<div style="position:absolute;left:0;top:0;width:1440px;height:900px;background:#f5f6f8"><div style="position:absolute;left:622px;top:100px;width:790px;height:300px;box-sizing:border-box;border:1px solid #ddd;border-bottom:0;background:#fff"><p style="margin:16px">Medewerkers</p></div><div class="cn-pagination" style="position:absolute;left:622px;top:400px;width:790px;height:61px;box-sizing:border-box;border:1px solid #ddd;border-top:0;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:#fff;color:#5e6168"><span>5 van 5</span><nav aria-label="Paginering" style="display:flex;gap:6px"><button aria-current="page" style="width:34px;height:34px;border:0;border-radius:8px;background:#3669a5;color:#fff">1</button><button style="height:36px;border:1px solid #e4e6ea;border-radius:8px;background:#fff">Volgende</button></nav></div></div>')
+	const pager = r.elements.filter((e) => e.inControl === 'pager')
+	assert.deepEqual(pager.map((e) => [e.label, e.props.h]), [['1', 34], ['Volgende', 36]])
+})
+
+test('a count pill in a list row is the row\'s badge, as it is in a button drawn as that row', { skip }, async () => {
+	const row = (pill) => `<ul style="position:absolute;left:307px;top:540px;width:280px;margin:0;padding:0;list-style:none"><li style="display:flex;justify-content:space-between;align-items:center;height:36px;padding:0 10px 0 28px;border-radius:8px">Sociaal domein${pill}</li></ul>`
+	const board = await measure(row('<span style="height:20px;padding:0 6px;border-radius:10px;background:#eceef1">120</span>'))
+	assert.equal(board.elements.find((e) => e.kind === 'row').props.badge, true)
+	// Control: a row with no count pill has no badge.
+	const bare = await measure(row(''))
+	assert.equal(bare.elements.find((e) => e.kind === 'row').props.badge, false)
+})
+
+test('a stack of one item per line that wraps is no toolbar (the wrapping chip row above stays one)', { skip }, async () => {
+	const r = await measure('<div style="position:absolute;left:292px;top:187px;width:1120px;display:flex;flex-wrap:wrap;gap:20px"><div style="flex:0 0 100%"><button style="height:40px;border:1px solid #888;border-radius:8px">Acties</button></div><div style="flex:0 0 360px"><input type="search" aria-label="Zoeken" style="height:40px;width:360px;box-sizing:border-box"></div></div>')
+	assert.deepEqual(r.components.filter((c) => c.role === 'toolbar'), [])
+})
+
+test('a row of steps is a progress indicator, not a toolbar; a row of buttons beside it still is', { skip }, async () => {
+	const step = (n, done) => `<li style="display:flex;align-items:center;gap:8px"${n === 4 ? ' aria-current="step"' : ''}>${done ? `<button style="height:28px;border:0;border-radius:14px;background:#1f7a3a;color:#fff">${n}</button>` : `<span style="width:28px;height:28px;border-radius:14px;border:2px solid #888">${n}</span>`}<span>Stap ${n}</span></li>`
+	const r = await measure(`<div style="position:absolute;left:384px;top:175px;width:672px"><ol style="display:flex;gap:12px;margin:0;padding:0;list-style:none">${[1, 2, 3, 4, 5].map((n) => step(n, n < 4)).join('')}</ol></div>`)
+	assert.deepEqual(r.components.filter((c) => c.role === 'toolbar'), [])
+	const bar = await measure(`<div style="position:absolute;left:384px;top:175px;width:672px;display:flex;gap:8px"><button style="height:36px">Vorige</button><button style="height:36px">Volgende</button></div>`)
+	assert.equal(bar.components.filter((c) => c.role === 'toolbar').length, 1)
+})
+
+test('a row of fields each under a label that is not tied to it is a form row, not a toolbar', { skip }, async () => {
+	const field = (l, labelled) => `<div style="display:flex;flex-direction:column;gap:6px">${labelled ? `<label style="font-weight:600">${l}</label>` : ''}<input type="text" style="height:40px;box-sizing:border-box"></div>`
+	const row = (labelled) => `<div style="position:absolute;left:315px;top:558px;width:1074px;display:grid;grid-template-columns:repeat(4, 1fr);gap:14px">${['Naam van de organisatie', 'Plaats van de gemeente', 'Naam van de app', 'Thema'].map((l) => field(l, labelled)).join('')}</div>`
+	assert.deepEqual((await measure(row(true))).components.filter((c) => c.role === 'toolbar'), [])
+	// Control: the same row without labels is still a toolbar.
+	assert.equal((await measure(row(false))).components.filter((c) => c.role === 'toolbar').length, 1)
+})
+
+test('a tag drawn in its row\'s own colour is not part of the row\'s name', { skip }, async () => {
+	const r = await measure('<ul role="listbox" style="position:absolute;left:424px;top:300px;width:592px;margin:0;padding:4px;list-style:none;border:1px solid #1b1c1d;background:#fff"><li role="option" style="display:flex;justify-content:space-between;align-items:center;height:48px;padding:0 14px;background:#f0f1f3">Hanna Bos<span style="height:18px;padding:0 8px;border-radius:9px;background:#f0f1f3;font-size:12px">Persoon</span></li><li role="option" style="display:flex;align-items:center;height:48px;padding:0 14px">Hanneke de Boer</li></ul>')
+	assert.equal(r.elements.find((e) => e.kind === 'row' && /^Hanna /.test(e.label)).label, 'Hanna Bos')
+	// Control: a chip whose only text sits in such a span keeps that text as its name.
+	const chip = await measure('<button style="position:absolute;left:300px;top:300px;height:30px;border:0;border-radius:15px;background:#eceef1;padding:0"><span style="display:inline-block;height:24px;line-height:24px;padding:0 10px;border-radius:12px;background:#eceef1">Woo</span></button>')
+	assert.equal(chip.elements[0].label, 'Woo')
+})
+
+test('a drawn checkbox whose svg glyph fills its box has no icon of its own, as a hidden input drawn by that glyph has none', { skip }, async () => {
+	const board = await measure('<label style="position:absolute;left:315px;top:300px;display:inline-flex;gap:8px"><span role="checkbox" aria-checked="false" style="display:inline-flex"><svg width="20" height="20"><rect x="2" y="2" width="16" height="16" fill="none" stroke="#000"/></svg></span>Ook wie de zaak las</label>')
+	const live = await measure('<span class="checkbox-radio-switch" style="position:absolute;left:315px;top:300px"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" style="position:absolute;opacity:0;width:1px;height:1px"><span class="checkbox-content__icon"><svg width="20" height="20"><rect x="2" y="2" width="16" height="16" fill="none" stroke="#000"/></svg></span><span>Ook wie de zaak las</span></label></span>')
+	const icon = (r) => r.elements.find((e) => e.kind === 'toggle').props.icon
+	assert.deepEqual([icon(board), icon(live)], [false, false])
+	// Control: a switch with a separate glyph inside its track (smaller than the box) still has an icon.
+	const sw = await measure('<button role="switch" aria-checked="true" aria-label="Melden" style="position:absolute;left:300px;top:400px;width:44px;height:24px;border:0;border-radius:12px;background:#3669a5;padding:0"><svg width="12" height="12"><path d="M1 6l3 3 7-7"/></svg></button>')
+	assert.equal(icon(sw), true)
+})
+
+test('a switch inside a transparent hit-area border is cropped at its drawn track', { skip }, async () => {
+	const sw = (style) => `<button role="switch" aria-checked="true" aria-label="Melden vanaf een aantal" style="position:absolute;left:300px;top:300px;${style}"></button>`
+	const board = await measure(sw('width:38px;height:22px;border:6px solid transparent;background-color:#3669a5;background-clip:padding-box;box-sizing:content-box;padding:0;border-radius:17px'))
+	assert.deepEqual(board.elements[0].rect, { x: 306, y: 306, w: 38, h: 22 })
+	// Control: painted under its border, the switch is the whole 50x34 box.
+	const painted = await measure(sw('width:38px;height:22px;border:6px solid transparent;background:#3669a5;box-sizing:content-box;padding:0;border-radius:17px'))
+	assert.deepEqual(painted.elements[0].rect, { x: 300, y: 300, w: 50, h: 34 })
+})
+
+test('a checkbox or switch drawn beside its hidden input below the captured frame is marked below it, as other elements are', { skip }, async () => {
+	const sw = (top) => `<span class="checkbox-radio-switch" style="position:absolute;left:495px;top:${top}px"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" style="position:absolute;opacity:0;width:1px;height:1px"><span class="checkbox-content__icon" style="display:inline-block;width:38px;height:22px;border-radius:11px;background:#3669a5"></span><span>Stuur me elke dag een overzicht</span></label></span>`
+	const below = await measure(`<div style="height:1600px"></div>${sw(1289)}`)
+	assert.equal(below.elements.find((e) => e.kind === 'toggle').belowFrame, true)
+	// Control: in the frame it is not.
+	const inFrame = await measure(sw(400))
+	assert.equal(inFrame.elements.find((e) => e.kind === 'toggle').belowFrame, undefined)
+})

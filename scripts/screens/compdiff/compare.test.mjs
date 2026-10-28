@@ -226,3 +226,42 @@ test('a nav entry drawn as a button on the board and as a link row on live pairs
 	assert.deepEqual([r.pairs.length, r.pairs[0] && r.pairs[0].by], [1, 'label'])
 	assert.ok(!compareElement(e('button'), e('row')).some((x) => x.flag))
 })
+
+test('a toolbar or listbox inside a dialog is placed from the dialog\'s top, as a dialog card is', () => {
+	const dialog = (y) => ({ role: 'dialog', rect: { x: 400, y, w: 640, h: 707 } })
+	const d = { board: dialog(120), live: dialog(88) }
+	const origin = { x: 292, y: 90 }
+	const tb = (y) => ({ role: 'toolbar', rect: { x: 424, y, w: 592, h: 75 } })
+	assert.deepEqual(positionReasons({ board: tb(455), live: tb(422.5) }, origin, origin, d), [])
+	// A listbox the select appended to the body runs on past the dialog's bottom: it starts inside it.
+	const lb = (y) => ({ role: 'listbox', rect: { x: 424, y, w: 592, h: 900 } })
+	assert.deepEqual(positionReasons({ board: lb(299), live: lb(264.5) }, origin, origin, d), [])
+	// Control: a toolbar 10px lower in its dialog still fails.
+	assert.deepEqual(positionReasons({ board: tb(455), live: tb(433) }, origin, origin, d), ['y +10'])
+	// Control: outside the dialog on a side, the page origin still places it.
+	assert.deepEqual(positionReasons({ board: tb(40), live: tb(8) }, origin, origin, d), ['y -32'])
+})
+
+test('a table at the same top-left corner pairs whatever its width, and its width difference is still reported', () => {
+	const table = (w, h) => ({ role: 'table', title: 'table', rect: { x: 293, y: 309, w, h } })
+	const r = pairComponents([table(1414.6, 655)], [table(1118, 1318)], 1200)
+	assert.equal(r.pairs.length, 1)
+	assert.ok(compareProps(r.pairs[0].board, r.pairs[0].live).some((x) => x.prop === 'rect.w' && Math.abs(x.delta) > 8))
+	// Control: a table that starts elsewhere does not pair by its corner.
+	const far = { role: 'table', title: 'table', rect: { x: 700, y: 309, w: 600, h: 600 } }
+	assert.equal(pairComponents([table(1414.6, 655)], [far], 1200).pairs.length, 0)
+})
+
+test('a row\'s left padding is not flagged when its text starts at the same place; a moved text still flags', () => {
+	const row = (paddingLeft, textInsetLeft) => ({ kind: 'row', label: 'Document beoordeeld', rect: { x: 315, y: 700, w: 753, h: 58 }, props: { h: 58, borderRadius: 0, border: 0, borderColor: null, background: 'rgb(255, 255, 255)', color: 'rgb(27, 28, 29)', fontSize: 15, fontWeight: 600, paddingLeft, paddingRight: 0, icon: true, text: true, badge: false, gapNext: null, textInsetLeft } })
+	assert.ok(!compareElement(row(0, 48), row(48, 48)).some((r) => r.flag))
+	assert.ok(compareElement(row(0, 48), row(48, 96)).some((r) => r.prop === 'paddingLeft' && r.flag))
+	// Stored runs without the text start keep the padding rule.
+	assert.ok(compareElement(row(0, undefined), row(48, undefined)).some((r) => r.prop === 'paddingLeft' && r.flag))
+})
+
+test('a line of another colour inside a field\'s frame on one side only is a border difference', () => {
+	const f = (innerBorder, innerBorderColor) => ({ kind: 'field', label: 'Delen met', rect: { x: 424, y: 255, w: 592, h: 44 }, props: { h: 44, borderRadius: 8, border: 2, borderColor: 'rgb(27, 28, 29)', innerBorder, innerBorderColor, background: 'rgb(255, 255, 255)', color: 'rgb(27, 28, 29)', fontSize: 15, fontWeight: 400, paddingLeft: 8, paddingRight: 38, icon: true, text: false, badge: false, gapNext: null } })
+	assert.ok(!compareElement(f(0, null), f(0, null)).some((r) => r.flag))
+	assert.ok(compareElement(f(0, null), f(1, 'rgb(54, 105, 165)')).some((r) => r.prop === 'innerBorder' && r.flag))
+})

@@ -70,7 +70,10 @@ export function pairComponents (board, live, H) {
 			// A toolbar starts where the row starts; how far it reaches follows what the row holds, so its width and centre
 			// do not keep it from its counterpart on the same line.
 			if (b.role === 'toolbar' && Math.abs(b.rect.y - l.rect.y) > 24 && Math.abs(b.rect.w - l.rect.w) > 8) continue
-			let cost = b.role === 'toolbar' && Math.abs(b.rect.y - l.rect.y) <= 24 ? Math.abs(b.rect.x - l.rect.x) / 1440 + 0.5 * Math.abs(b.rect.y - l.rect.y) / H : pos(b, l)
+			// A table starts where its frame starts; how wide it runs follows its columns (a board's table wider than its card),
+			// so a table at the same top-left corner is its counterpart whatever its width.
+			const corner = b.role === 'table' && Math.abs(b.rect.y - l.rect.y) <= 24 && Math.abs(b.rect.x - l.rect.x) <= 8
+			let cost = (b.role === 'toolbar' && Math.abs(b.rect.y - l.rect.y) <= 24) || corner ? Math.abs(b.rect.x - l.rect.x) / 1440 + 0.5 * Math.abs(b.rect.y - l.rect.y) / H : pos(b, l)
 			if (!!b.record !== !!l.record) cost += 0.15
 			// An open menu is not the row it opened from: a popup pairs by position only with a popup.
 			if (!!b.popup !== !!l.popup) continue
@@ -392,15 +395,24 @@ export function compareElement (b, l, by = 'label') {
 	// A native control draws its own glyph (a radio's circle, a select's arrow outside its padding): its border and
 	// inline padding are not what people see against a library's drawn control.
 	const native = pb.native || pl.native
+	// Where the text starts is what people see: a left padding is how one side places it (a timeline row pads 48px and
+	// draws its dot as a ::before, a board sets the dot as a flex item beside an unpadded text cell). The same start
+	// within 2px leaves the padding reported, not flagged.
+	const sameStart = typeof pb.textInsetLeft === 'number' && typeof pl.textInsetLeft === 'number' && Math.abs(pb.textInsetLeft - pl.textInsetLeft) <= THRESHOLDS.spacing
 	for (const k of ['h', 'borderRadius', 'paddingLeft', 'paddingRight', 'gapNext']) {
 		if (textless && (k === 'paddingLeft' || k === 'paddingRight')) continue
 		if (native && (k === 'paddingRight' || k === 'borderRadius')) continue
 		if (pb[k] === null || pl[k] === null || pb[k] === undefined || pl[k] === undefined) continue
 		// A label paired by order (different text) changes the width, never the paddings, radius or height.
-		add(k, pb[k], pl[k], Math.abs(pl[k] - pb[k]) > THRESHOLDS.spacing ? (k === 'borderRadius' ? 'shape' : 'spacing') : null)
+		add(k, pb[k], pl[k], Math.abs(pl[k] - pb[k]) > THRESHOLDS.spacing && !(k === 'paddingLeft' && sameStart) ? (k === 'borderRadius' ? 'shape' : 'spacing') : null)
 	}
 	if (!native || b.kind !== 'toggle') add('border', pb.border, pl.border, (pb.border > 0) !== (pl.border > 0) ? `border ${pb.border > 0 ? 'absent' : 'extra'} on live` : Math.abs(pl.border - pb.border) > 0.5 ? 'border' : null)
 	if (pb.border > 0 && pl.border > 0) add('borderColor', pb.borderColor, pl.borderColor, colourDiff(pb.borderColor, pl.borderColor, THRESHOLDS.color) ? 'color' : null)
+	// A second line of another colour inside a field's frame (an input's own primary line inside the select's dark ring).
+	if (typeof pb.innerBorder === 'number' && typeof pl.innerBorder === 'number') {
+		add('innerBorder', pb.innerBorder, pl.innerBorder, (pb.innerBorder > 0) !== (pl.innerBorder > 0) ? `border ${pb.innerBorder > 0 ? 'absent' : 'extra'} on live` : null)
+		if (pb.innerBorder > 0 && pl.innerBorder > 0) add('innerBorderColor', pb.innerBorderColor, pl.innerBorderColor, colourDiff(pb.innerBorderColor, pl.innerBorderColor, THRESHOLDS.color) ? 'color' : null)
+	}
 	add('background', pb.background, pl.background, !semantic && !pb.native && !pl.native && colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
 	if (!textless) {
 		add('color', pb.color, pl.color, !semantic && colourDiff(pb.color, pl.color, THRESHOLDS.color) ? 'color' : null)
@@ -468,7 +480,8 @@ export function markListElements (r) {
  *
  * A page component is placed from the content origin of its side. A dialog is placed in the viewport, by its x only:
  * the boards put a dialog's top anywhere from 88 to 120 px and Nextcloud fixes it, so its vertical position does not
- * count. What sits inside a dialog is placed from that dialog's top, so it still counts within the dialog.
+ * count. What sits inside a dialog (a dialog card, a toolbar, the listbox of its select) is placed from that dialog's
+ * top, so it still counts within the dialog.
  *
  * @param {{board: object, live: object}} c The pair.
  * @param {{x: number, y: number}} ob The board's content origin.
@@ -487,7 +500,10 @@ export function positionReasons(c, ob, ol, dialog, limit = 4) {
 		push('x', r1(c.live.rect.x - c.board.rect.x))
 		return reasons
 	}
-	if (role === 'dialog-card') {
+	// What starts inside the open dialog on both sides (a toolbar, the listbox its select appends to the body) is placed
+	// as a dialog-card is.
+	const inside = (r, d) => r.x >= d.x - 2 && r.x <= d.x + d.w + 2 && r.y >= d.y - 2 && r.y <= d.y + d.h + 2
+	if (role === 'dialog-card' || (dialog && inside(c.board.rect, dialog.board.rect) && inside(c.live.rect, dialog.live.rect))) {
 		push('x', r1(c.live.rect.x - c.board.rect.x))
 		if (dialog) push('y', r1((c.live.rect.y - dialog.live.rect.y) - (c.board.rect.y - dialog.board.rect.y)))
 		return reasons

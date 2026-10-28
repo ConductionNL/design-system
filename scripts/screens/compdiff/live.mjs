@@ -165,17 +165,21 @@ export async function waitForTables(page, { timeout = 20000, still = 1000, inter
 }
 
 /**
- * Runs in the page: how many loading indicators are on screen (a spinner, a skeleton, a busy region). A widget that
- * fills from another app (the Kaarten card asking Deck) shows one until its data is in.
+ * Runs in the page: the loading indicators on screen (a spinner, a skeleton, a busy region). A widget that fills from
+ * another app (the Kaarten card asking Deck) shows one until its data is in. A status line that
+ * names what is still loading (CnRelatedObjectsWidget's "Nog aan het laden: Objecten") is one: the card around it is
+ * not filled yet.
  *
- * @return {number} The visible loading indicators.
+ * @return {Array<string>} A short description of each indicator: its first class or tag, and its text.
  */
-export function loadingCount() {
-	const sel = '[aria-busy="true"], .icon-loading, .icon-loading-small, .loading-icon, [class*="loading-icon"], [class*="skeleton"], [class*="--loading"], [class*="__loading"]'
+export function loadingIndicators() {
+	const sel = '[aria-busy="true"], .icon-loading, .icon-loading-small, .loading-icon, [class*="loading-icon"], [class*="skeleton"], [class*="--loading"], [class*="__loading"], [data-testid$="-pending"], [role="status"]'
+	const pending = /^(nog aan het laden|still loading|bezig met laden|laden\s*(…|\.\.\.)|loading\s*(…|\.\.\.))/i
 	return [...document.querySelectorAll(sel)].filter((e) => {
 		const r = e.getBoundingClientRect(), cs = getComputedStyle(e)
-		return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05
-	}).length
+		if (!(r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05)) return false
+		return !e.matches('[role="status"]') || e.matches(sel.replace(', [role="status"]', '')) || pending.test(e.textContent.trim())
+	}).map((e) => `${e.classList[0] || e.tagName.toLowerCase()}${e.textContent.trim() ? ` "${e.textContent.trim().replace(/\s+/g, ' ').slice(0, 60)}"` : ''}`)
 }
 
 /**
@@ -191,7 +195,7 @@ export async function waitForLoaded(page, { timeout = 20000, still = 1000, inter
 	const start = Date.now()
 	let last = null, since = Date.now()
 	while (Date.now() - start < timeout) {
-		const [n, sig] = await page.evaluate(`[(${loadingCount.toString()})(), (${layoutSignature.toString()})()]`)
+		const [n, sig] = await page.evaluate(`[(${loadingIndicators.toString()})().length, (${layoutSignature.toString()})()]`)
 		if (n > 0 || sig !== last) { last = sig; since = Date.now() }
 		if (n === 0 && Date.now() - since >= still) return true
 		await page.waitForTimeout(interval)
@@ -281,3 +285,65 @@ export function routeId(route) {
 export function browserEnv(env) {
 	return { ...env, LANG: 'nl_NL.UTF-8', LANGUAGE: 'nl_NL', LC_ALL: 'nl_NL.UTF-8' }
 }
+
+/**
+ * Runs `fn`, and once more when it throws: a login page that times out under load usually answers the second time.
+ * A second failure is thrown, so a run never loops on a page that does not answer.
+ *
+ * @param {Function} fn The step, an async function.
+ * @param {(error: Error) => void} [onRetry] Told the first error before the retry.
+ * @return {Promise<*>} What `fn` returned.
+ */
+export async function retryOnce(fn, onRetry = () => {}) {
+	try {
+		return await fn()
+	} catch (e) {
+		onRetry(e)
+		return fn()
+	}
+}
+
+/**
+ * Slices a list into chunks of at most `size` items, in order.
+ *
+ * @param {Array} list The items.
+ * @param {number} size The largest chunk.
+ * @return {Array<Array>} The chunks.
+ */
+export function chunks(list, size) {
+	const out = []
+	for (let i = 0; i < list.length; i += size) out.push(list.slice(i, i + size))
+	return out
+}
+
+/**
+ * Leaves a select whose list is closed again: picking an option in an NcSelect closes the list but keeps the focus in
+ * its search input, which a board draws at rest. An open select keeps its focus, as the board draws it open.
+ *
+ * @param {object} page A Playwright page.
+ * @return {Promise<boolean>} Whether a closed select was left.
+ */
+export function leaveClosedSelect(page) {
+	return page.evaluate(() => {
+		const a = document.activeElement
+		if (!a || !a.matches('input') || !a.closest('.v-select') || a.closest('.v-select.vs--open')) return false
+		a.blur()
+		return true
+	})
+}
+
+/**
+ * Waits, at most `max` ms, until the page's finite transitions and animations have ended, so a colour is read at its
+ * end value and not halfway (a button's ground fading in). A spinner that turns for ever is not waited for.
+ *
+ * @param {object} page A Playwright page.
+ * @param {number} [max] The longest wait in milliseconds.
+ * @return {Promise<void>}
+ */
+export function waitForTransitions(page, max = 3000) {
+	return page.evaluate((ms) => Promise.race([
+		Promise.all(document.getAnimations().filter((a) => a.playState === 'running' && a.effect && a.effect.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => null))),
+		new Promise((resolve) => setTimeout(resolve, ms)),
+	]).then(() => undefined), max)
+}
+

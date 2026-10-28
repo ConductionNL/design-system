@@ -1032,6 +1032,26 @@ window.__compdiffExtract = function () {
 		return 0
 	}
 	const TOGGLE = 'input[type=checkbox], input[type=radio], [role=checkbox], [role=switch], [role=radio]'
+	// A box around a radio or checkbox, or beside one (NcCheckboxRadioSwitch's content next to its hidden input): the
+	// option the toggle belongs to.
+	const isOptionBox = (el) => !!(el.querySelector(TOGGLE) || (el.parentElement && [...el.parentElement.children].some((c) => c !== el && c.matches(TOGGLE))))
+	// The filled ground of a toggle's option (the chosen row of a radio list), from the boxed option around the toggle or
+	// beside its input, or null when the option draws none. The box is the toggle's state, so it is not measured again.
+	const optionGrounds = new Set()
+	const optionGround = (toggle) => {
+		const boxes = []
+		for (let a = toggle.parentElement, i = 0; a && a !== document.body && i < 3; a = a.parentElement, i++) {
+			boxes.push(a, ...[...a.children].filter((c) => c !== toggle && !c.contains(toggle)))
+			if (a.matches('label, .checkbox-radio-switch')) break
+		}
+		const box = boxes.find((b) => {
+			const cs = getComputedStyle(b), r = b.getBoundingClientRect()
+			return visible(b) && r.height <= 80 && isOptionBox(b) && b.parentElement && opaque(cs.backgroundColor) && cs.backgroundColor !== bgBehind(b.parentElement) && !b.querySelectorAll(TOGGLE)[1]
+		})
+		if (!box) return null
+		optionGrounds.add(box)
+		return getComputedStyle(box).backgroundColor
+	}
 	const kindOf = (el, cs, r) => {
 		if (el.matches(FIELD)) return 'field'
 		if (el.matches(TOGGLE)) return 'toggle'
@@ -1048,7 +1068,7 @@ window.__compdiffExtract = function () {
 		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
 		// A filled label around a radio or checkbox, or beside one (NcCheckboxRadioSwitch fills the content next to its
 		// input on the checked row), is that toggle's state, not a badge.
-		if (boxed && (el.querySelector(TOGGLE) || (el.parentElement && [...el.parentElement.children].some((c) => c !== el && c.matches(TOGGLE))))) return null
+		if (boxed && isOptionBox(el)) return null
 		// A list row is a row, highlighted (the chosen folder) or not: a board's tinted li is no badge. A narrow tinted li
 		// (a tag in a list of tags) stays a pill.
 		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160 && r.width >= 160) return 'row'
@@ -1193,6 +1213,13 @@ window.__compdiffExtract = function () {
 		const fits = (i) => visible(i) && i.getBoundingClientRect().height >= 8 && i.getBoundingClientRect().height <= 40
 		return host ? [...host.querySelectorAll('svg')].find(fits) || [...host.querySelectorAll('[class*="icon"]')].find(fits) || null : null
 	}
+	// A ::before or ::after that draws text on a filled ground of its own, lower than the element it sits in.
+	const pseudoBadge = (c, ground, height) => ['::before', '::after'].some((p) => {
+		const ps = getComputedStyle(c, p)
+		const text = ps.content.replace(/^["']|["']$/g, '').trim()
+		return ps.display !== 'none' && ps.content !== 'none' && ps.content !== 'normal' && !!text && opaque(ps.backgroundColor) && ps.backgroundColor !== ground && px(ps.height) < height
+	})
+	const withGround = (toggle) => { const g = optionGround(toggle); return g ? { optionGround: g } : {} }
 	for (const el0 of all) {
 		if (drawnBy.has(el0)) continue
 		const hiddenToggle = el0.matches('input[type=checkbox], input[type=radio]') && !visible(el0) && !outOfScope(el0) ? toggleIcon(el0) : null
@@ -1203,7 +1230,7 @@ window.__compdiffExtract = function () {
 			elements.push({
 				inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr'), kind: 'toggle', label: ownLabel(el0), inControl: inRecord(el0) ? 'record card' : null,
 				interactive: true, container: containerOf(hiddenToggle), rect: rect(hiddenToggle), ...(ir.top >= window.innerHeight ? { belowFrame: true } : {}),
-				props: { h: round(ir.height), borderRadius: radius(hiddenToggle, getComputedStyle(hiddenToggle)), border: 0, borderColor: null, background: null, color: getComputedStyle(hiddenToggle).color, fontSize: px(getComputedStyle(hiddenToggle).fontSize), fontWeight: Number(getComputedStyle(hiddenToggle).fontWeight), paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false, gapNext: null },
+				props: { h: round(ir.height), borderRadius: radius(hiddenToggle, getComputedStyle(hiddenToggle)), border: 0, borderColor: null, background: null, color: getComputedStyle(hiddenToggle).color, fontSize: px(getComputedStyle(hiddenToggle).fontSize), fontWeight: Number(getComputedStyle(hiddenToggle).fontWeight), paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false, gapNext: null, ...withGround(el0) },
 			})
 			continue
 		}
@@ -1273,15 +1300,18 @@ window.__compdiffExtract = function () {
 				icon: (el.matches('select, input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week]') && cs.appearance !== 'none') || [...(kind === 'field' ? (el.closest('.cn-search-select') || el.closest('.vs__dropdown-toggle, .v-select') || fieldBox(el)) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6 && !(kind === 'toggle' && Math.abs(i.getBoundingClientRect().width - r.width) <= 4 && Math.abs(i.getBoundingClientRect().height - r.height) <= 4)),
 				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),
 				// A count pill in a list row (a folder's "120") is its badge, as it is in a button drawn as that row.
-				badge: !!(kind === 'button' || kind === 'pill' || kind === 'row') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
+				// A count drawn as a ::before or ::after (the Filter menu's active-filter count) is a badge as well.
+				badge: !!(kind === 'button' || kind === 'pill' || kind === 'row') && ([...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height)
+					|| [el, ...el.querySelectorAll('*')].some((c) => visible(c) && pseudoBadge(c, bgBehind(el), r.height))),
 				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,
+				...(kind === 'toggle' ? withGround(el0) : {}),
 			},
 		})
 	}
 
 	// Coverage: board elements with a box of their own (ground, border or rounded ground) that no component or element
 	// above accounts for. Reported as "not measured", never read as "no differences".
-	const measuredEls = new Set([...cardEls, ...elementEls])
+	const measuredEls = new Set([...cardEls, ...elementEls, ...optionGrounds])
 	const unmeasured = []
 	for (const el of all) {
 		if (!visible(el) || outOfScope(el) || measuredEls.has(el)) continue

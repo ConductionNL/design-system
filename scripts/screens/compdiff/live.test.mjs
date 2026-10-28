@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, browserEnv, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, loadingCount, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, browserEnv, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, leaveClosedSelect, loadingIndicators, retryOnce, chunks, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -173,7 +173,7 @@ test('a session seed keyed by the record follows the route\'s record id ({routeI
 test('waits for a widget that fills seconds after the page, until no loading indicator shows', { skip }, async () => {
 	await withPage('<section><h2>Kaarten</h2><div class="cn-widget__loading"><span class="loading-icon" style="display:inline-block;width:20px;height:20px"></span></div></section>', async (page) => {
 		await page.evaluate(() => setTimeout(() => { document.querySelector('.cn-widget__loading').outerHTML = '<ul><li><a href="#">Hoorzitting voorbereiden</a></li></ul>' }, 1200))
-		assert.ok(await page.evaluate(loadingCount) > 0)
+		assert.ok((await page.evaluate(loadingIndicators)).length > 0)
 		assert.equal(await waitForLoaded(page, { timeout: 6000, still: 300 }), true)
 		assert.equal(await page.evaluate(() => document.querySelectorAll('li').length), 1)
 	})
@@ -193,3 +193,52 @@ test('the measuring Chrome shows a native date-time input in Dutch (28-10-2026, 
 		await browser.close()
 	}
 })
+
+test('a status line naming what is still loading keeps the wait going; another status line does not', { skip }, async () => {
+	await withPage('<section><h2>Gerelateerd</h2><ul><li>Klantcontact</li></ul><p class="cn-related-objects-widget__section-status" data-testid="cn-related-pending" role="status">Nog aan het laden: Objecten</p></section><p role="status">3 resultaten</p>', async (page) => {
+		assert.deepEqual(await page.evaluate(loadingIndicators), ['cn-related-objects-widget__section-status "Nog aan het laden: Objecten"'])
+		await page.evaluate(() => setTimeout(() => document.querySelector('[data-testid="cn-related-pending"]').remove(), 1000))
+		assert.equal(await waitForLoaded(page, { timeout: 6000, still: 300 }), true)
+	})
+	await withPage('<p role="status">Still loading: Files</p>', async (page) => {
+		assert.equal((await page.evaluate(loadingIndicators)).length, 1)
+	})
+})
+
+test('a step that fails once is tried once more, and a second failure is thrown', async () => {
+	let n = 0
+	const seen = []
+	assert.equal(await retryOnce(async () => { if (++n === 1) throw new Error('timeout'); return 'in' }, (e) => seen.push(e.message)), 'in')
+	assert.deepEqual(seen, ['timeout'])
+	n = 0
+	await assert.rejects(retryOnce(async () => { n++; throw new Error(`down ${n}`) }), /down 2/)
+	assert.equal(n, 2)
+})
+
+test('crops are taken in chunks, in order', () => {
+	assert.deepEqual(chunks([1, 2, 3, 4, 5], 2), [[1, 2], [3, 4], [5]])
+	assert.deepEqual(chunks([], 2), [])
+})
+
+test('a select whose list closed on a pick is left; an open one keeps its focus', { skip }, async () => {
+	await withPage('<div class="v-select" id="a"><input id="ia"></div><div class="v-select vs--open" id="b"><input id="ib"></div>', async (page) => {
+		await page.focus('#ia')
+		assert.equal(await leaveClosedSelect(page), true)
+		assert.equal(await page.evaluate(() => document.activeElement.id), '')
+		await page.focus('#ib')
+		assert.equal(await leaveClosedSelect(page), false)
+		assert.equal(await page.evaluate(() => document.activeElement.id), 'ib')
+	})
+})
+
+test('a colour is read once its transition has ended; a spinner turning for ever is not waited for', { skip }, async () => {
+	await withPage('<style>@keyframes s{to{transform:rotate(360deg)}}</style><span style="display:inline-block;width:10px;height:10px;animation:s 1s linear infinite"></span><button id="b" style="background:rgb(243,108,33);transition:background-color 800ms linear">buildiq</button>', async (page) => {
+		await page.evaluate(() => { document.getElementById('b').style.backgroundColor = 'rgb(198, 78, 11)' })
+		await page.waitForTimeout(100)
+		const start = Date.now()
+		await waitForTransitions(page, 3000)
+		assert.ok(Date.now() - start < 2500, 'waited on the endless spinner')
+		assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('b')).backgroundColor), 'rgb(198, 78, 11)')
+	})
+})
+

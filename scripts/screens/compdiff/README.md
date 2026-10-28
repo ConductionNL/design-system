@@ -43,7 +43,9 @@ Options:
 
 The live page is opened at its load event, not at network idle: Nextcloud keeps polling, so the network rarely goes idle and that wait ran into its timeout on most pages. Each report holds a `timings` object with the time spent per phase.
 
-After the settle the script waits, up to 20 seconds, until every table's head has as many columns as its first row and has held still for a second, so a selection column that renders late is in the measurement. It then waits, again up to 20 seconds, until no loading indicator is on screen (a spinner, a skeleton, an `aria-busy` region) and the layout has held still for a second, so a widget that fills from another app seconds after the page (the Kaarten card asking Deck) is measured filled.
+After the settle the script waits, up to 20 seconds, until every table's head has as many columns as its first row and has held still for a second, so a selection column that renders late is in the measurement. It then waits, up to 30 seconds (`--load-wait <ms>`), until no loading indicator is on screen (a spinner, a skeleton, an `aria-busy` region, or a status line that names what is still loading, such as "Nog aan het laden: Objecten") and the layout has held still for a second, so a widget that fills from another app seconds after the page (the Kaarten card asking Deck) is measured filled. When it gives up, the run log names the indicators still on screen, and the capture waits for the page to hold still first.
+
+The login gives each action 90 seconds and is tried once more when it fails, never more. The crop scores are taken 40 pairs at a time; a chunk whose renderer crashes gets no crop scores and the run still writes its report.
 
 It writes `<Board>.json` with every measurement and `<Board>.md` with a table per component: property, board, live, delta, flag. It also writes `<Board>-board.png` and `<Board>-live.png`.
 

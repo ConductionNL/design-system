@@ -1058,6 +1058,37 @@ test('a filled label around a checked radio is the toggle, not a badge', { skip 
 	assert.equal(r.elements.filter((e) => e.kind === 'toggle').length, 2)
 })
 
+test('the filled label of a checked radio is measured as its toggle\'s option ground, not left unmeasured', { skip }, async () => {
+	const r = await measure(`<fieldset style="position:absolute;left:464px;top:280px;border:0;padding:0;display:flex;flex-direction:column;gap:2px">
+		<label style="display:flex;align-self:flex-start;gap:10px;align-items:center;min-height:34px;padding:0 9px 0 7px;border-radius:8px;background:#dce6f2"><input type="radio" name="d" checked style="width:20px;height:20px;margin:0">Behandeling van de zaak</label>
+		<label style="display:flex;gap:10px;align-items:center;min-height:34px"><input type="radio" name="d" style="width:20px;height:20px;margin:0">Overig</label></fieldset>`)
+	assert.deepEqual(r.unmeasured, [])
+	const toggles = r.elements.filter((e) => e.kind === 'toggle')
+	assert.deepEqual(toggles.map((e) => e.props.optionGround || null), ['rgb(220, 230, 242)', null])
+})
+
+test('the filled content beside a checked hidden radio is its option ground (NcCheckboxRadioSwitch)', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:464px;top:280px;display:flex;flex-direction:column;gap:2px">
+		<span class="checkbox-radio-switch" style="display:flex"><input type="radio" name="d" checked style="position:absolute;opacity:0;width:1px;height:1px"><span style="display:flex;gap:10px;align-items:center;min-height:34px;padding:0 9px 0 7px;border-radius:8px;background:#dce6f2"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#3669a5"/></svg>Behandeling van de zaak</span></span>
+		<span class="checkbox-radio-switch" style="display:flex"><input type="radio" name="d" style="position:absolute;opacity:0;width:1px;height:1px"><span style="display:flex;gap:10px;align-items:center;min-height:34px"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#333"/></svg>Overig</span></span></div>`)
+	assert.deepEqual(r.unmeasured, [])
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'toggle').map((e) => e.props.optionGround || null), ['rgb(220, 230, 242)', null])
+})
+
+test('a filled box holding several radios is not one option\'s ground', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:464px;top:280px;padding:4px;background:#fde2e2;display:flex;gap:8px;height:40px;align-items:center">
+		<label><input type="radio" name="d" checked>Ja</label><label><input type="radio" name="d">Nee</label></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'toggle').map((e) => e.props.optionGround || null), [null, null])
+})
+
+test('a count drawn as a filled ::after on a button\'s label is the button\'s badge (CnActionsBar filter menu)', { skip }, async () => {
+	const css = `<style>.counted .t::after{content:var(--n);display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;margin-inline-start:6px;padding:0 6px;border-radius:10px;background:#3669a5;color:#fff;font-size:12px}</style>`
+	const b = (cls, n) => `<button class="${cls}" style="--n:${n};display:flex;align-items:center;height:40px;padding:0 14px;border:1px solid #888;border-radius:8px;background:#fff"><span class="t">Filter</span></button>`
+	const r = await measure(`${css}<div style="position:absolute;left:300px;top:200px;display:flex;gap:300px">${b('counted', "'2'")}</div><div style="position:absolute;left:300px;top:400px">${b('', '')}</div><div style="position:absolute;left:300px;top:600px">${b('counted', "''")}</div>`)
+	const filters = r.elements.filter((e) => e.label === 'Filter').sort((x, y) => x.rect.y - y.rect.y)
+	assert.deepEqual(filters.map((e) => e.props.badge), [true, false, false])
+})
+
 test('buttons that wrapped under a subtitle in the header row are not header actions', { skip }, async () => {
 	const r = await measure(`<section style="position:absolute;left:292px;top:268px;width:800px;box-sizing:border-box;border:1px solid #ccc;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
 		<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px">

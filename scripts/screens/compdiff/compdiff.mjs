@@ -15,6 +15,7 @@
 //   --settle ms; fixed: wait the full --settle, as before
 //   [--board-frame "<css>"]   measure only that element of the board, as the whole board (one of several frames)
 //   [--allow-stale-board]   measure a flattened board that no longer matches its source (refused by default)
+//   [--load-wait 30000]   the longest wait for loading indicators to clear after the settle (ms)
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
 // PLAYWRIGHT_MODULE (path to a playwright package when it is not resolvable from here).
 //
@@ -34,7 +35,7 @@ import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
-import { accountFor, browserEnv, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, browserEnv, chunks, leaveClosedSelect, loadingIndicators, markIgnored, parkPointer, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -60,6 +61,8 @@ const settle = Number(args.settle || 8000)
 const settleMode = args['settle-mode'] || 'quiet'
 // An element crop above this mismatch % with no property flagged is reported as visually different.
 const CROP_FLAG = Number(args['crop-flag'] || 30)
+// The longest wait for loading indicators to clear after the settle (ms).
+const loadWait = Number(args['load-wait'] || 30000)
 const slim = (e) => ({ kind: e.kind, label: e.label, inControl: e.inControl, inRow: e.inRow, count: e.count, repeated: e.repeated, rect: e.rect, props: e.props })
 if (!board || !args.url) {
 	console.error('usage: COMPDIFF_USER=... COMPDIFF_PASSWORD=... node compdiff.mjs --board <Name> --url </apps/...> [--out dir] [--width px]')
@@ -162,15 +165,16 @@ try {
 	})
 	let liveRoute = args.url
 	const onLogin = () => /\/login(\?|$)/.test(new URL(lpage.url()).pathname + new URL(lpage.url()).search)
-	const login = async () => {
+	// Under load the login page can take minutes to answer: each action gets 90 s, and a failed login is tried once more.
+	const login = () => retryOnce(async () => {
 		await lpage.goto(base + '/login', { waitUntil: 'domcontentloaded', timeout: 180000 })
-		await lpage.fill('#user', account.user)
-		await lpage.fill('#password', account.password)
+		await lpage.fill('#user', account.user, { timeout: 90000 })
+		await lpage.fill('#password', account.password, { timeout: 90000 })
 		// Logged in once the browser leaves /login; the app it lands on need not finish loading.
-		await Promise.all([lpage.waitForURL((u) => !/\/login(\?|$)/.test(u.pathname + u.search), { waitUntil: 'commit', timeout: 180000 }), lpage.press('#password', 'Enter')])
+		await Promise.all([lpage.waitForURL((u) => !/\/login(\?|$)/.test(u.pathname + u.search), { waitUntil: 'commit', timeout: 180000 }), lpage.press('#password', 'Enter', { timeout: 90000 })])
 		// Written whole and renamed into place: parallel slots of a batch may read it at any moment.
 		if (storage) { const tmp = `${storage}.${process.pid}`; fs.writeFileSync(tmp, JSON.stringify(await lctx.storageState())); fs.renameSync(tmp, storage) }
-	}
+	}, (e) => console.error('login failed, trying once more:', e.message.split('\n')[0]))
 	if (account && !kept) await login()
 	// A route that names a record by a lookup gets its uuid now, as the measuring user. A kept login can have expired:
 	// then the lookup is answered by the login page, so log in again and retry once.
@@ -219,45 +223,67 @@ try {
 	}
 	lap('load')
 	await playSteps(lpage, steps)
-	if (steps.length) await parkPointer(lpage)
+	if (steps.length) { await parkPointer(lpage); await leaveClosedSelect(lpage) }
 	lap('steps')
 	if (settleMode === 'fixed') await lpage.waitForTimeout(settle)
 	else await waitForQuiet(lpage, requests, { min: 1500, max: settle, quiet: 1500 })
 	lap('settle')
 	// A table's selection column can render after the settle: measure the head once it holds every column.
 	if (!(await waitForTables(lpage))) console.error('tables did not settle; measuring as they are')
-	if (!(await waitForLoaded(lpage))) console.error('a widget was still loading after 20 s; measuring as it is')
+	if (!(await waitForLoaded(lpage, { timeout: loadWait }))) {
+		const still = await lpage.evaluate(loadingIndicators).catch(() => [])
+		console.error(`a widget was still loading after ${loadWait / 1000} s; measuring as it is: ${still.join('; ') || '(nothing named)'}`)
+		await waitForQuiet(lpage, requests, { min: 500, max: 10000, quiet: 1500 })
+	}
 	lap('tables')
 	if (args['keep-scroll'] !== 'true' && (await resetScroll(lpage)) > 0) await lpage.waitForTimeout(500)
+	await waitForTransitions(lpage).catch(() => {})
 	await markIgnored(lpage, args.ignore)
 	const livePng = path.join(out, `${board}-live.png`)
 	await lpage.screenshot({ path: livePng, clip: { x: 0, y: 0, width, height: boardHeight } })
 	lap('screenshot')
 	const L = await measure(lpage)
 	lap('extract')
+	// Both pages are measured: free them before the crops, which decode two page-sized pictures.
+	await lctx.close().catch(() => {})
+	await bpage.close().catch(() => {})
 
 	const { pairs, missing, extra } = pairComponents(B.components, L.components, boardHeight)
 	const ep = pairElements(B.elements, L.elements, boardHeight)
 
 	// Per-pair pixel mismatch: the live crop is scaled to the board crop's size. Secondary to the properties.
-	const dpage = await bctx.newPage()
 	const b64 = (f) => 'data:image/png;base64,' + fs.readFileSync(f).toString('base64')
-	const crops = await dpage.evaluate(async ({ a, b, H, list, fns }) => {
-		const { cropMismatch, wholePixels } = new Function(`${fns}; return { cropMismatch, wholePixels }`)()
-		const load = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = src })
-		const [ia, ib] = await Promise.all([load(a), load(b)])
-		return list.map(({ br: bf, lr: lf }) => {
-			const ok = (r) => r.w >= 4 && r.h >= 4 && r.x >= 0 && r.y >= 0 && r.x + r.w <= 1441 && r.y + r.h <= H + 1
-			if (!ok(bf) || !ok(lf)) return null
-			const br = wholePixels(bf), lr = wholePixels(lf)
-			const w = br.w, h = br.h
-			const ca = document.createElement('canvas'); ca.width = w; ca.height = h
-			const xa = ca.getContext('2d'); xa.drawImage(ia, br.x, br.y, br.w, br.h, 0, 0, w, h)
-			const cb = document.createElement('canvas'); cb.width = w; cb.height = h
-			const xb = cb.getContext('2d'); xb.drawImage(ib, lr.x, lr.y, lr.w, lr.h, 0, 0, w, h)
-			return cropMismatch(xa.getImageData(0, 0, w, h).data, xb.getImageData(0, 0, w, h).data, w, h)
+	const cropList = [...pairs, ...ep.pairs].map((p) => ({ br: p.board.rect, lr: p.live.rect }))
+	const cropFns = `${cropMismatch.toString()}\n${wholePixels.toString()}`
+	// Crops are taken a chunk at a time on two reused canvases, so a page with hundreds of pairs does not hold a canvas
+	// per pair. A chunk whose page crashes gets no crop scores (null) and the run goes on with a fresh page.
+	let dpage = await bctx.newPage()
+	const crops = []
+	for (const list of chunks(cropList, 40)) {
+		const got = await dpage.evaluate(async ({ a, b, H, list, fns }) => {
+			const { cropMismatch, wholePixels } = new Function(`${fns}; return { cropMismatch, wholePixels }`)()
+			const load = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = src })
+			window.__crops = window.__crops || await Promise.all([load(a), load(b)])
+			const [ia, ib] = window.__crops
+			const ca = document.createElement('canvas'), cb = document.createElement('canvas')
+			const xa = ca.getContext('2d', { willReadFrequently: true }), xb = cb.getContext('2d', { willReadFrequently: true })
+			return list.map(({ br: bf, lr: lf }) => {
+				const ok = (r) => r.w >= 4 && r.h >= 4 && r.x >= 0 && r.y >= 0 && r.x + r.w <= 1441 && r.y + r.h <= H + 1
+				if (!ok(bf) || !ok(lf)) return null
+				const br = wholePixels(bf), lr = wholePixels(lf)
+				const w = br.w, h = br.h
+				ca.width = w; ca.height = h; cb.width = w; cb.height = h
+				xa.drawImage(ia, br.x, br.y, br.w, br.h, 0, 0, w, h)
+				xb.drawImage(ib, lr.x, lr.y, lr.w, lr.h, 0, 0, w, h)
+				return cropMismatch(xa.getImageData(0, 0, w, h).data, xb.getImageData(0, 0, w, h).data, w, h)
+			})
+		}, { a: b64(boardPng), b: b64(livePng), H: boardHeight, list, fns: cropFns }).catch((e) => {
+			console.error(`crops skipped for ${list.length} pairs: ${e.message.split('\n')[0]}`)
+			return null
 		})
-	}, { a: b64(boardPng), b: b64(livePng), H: boardHeight, list: [...pairs, ...ep.pairs].map((p) => ({ br: p.board.rect, lr: p.live.rect })), fns: `${cropMismatch.toString()}\n${wholePixels.toString()}` })
+		if (!got) { await dpage.close().catch(() => {}); dpage = await bctx.newPage() }
+		crops.push(...(got || list.map(() => null)))
+	}
 
 	const pageBg = { board: await pageBackground(dpage, boardPng, fs), live: await pageBackground(dpage, livePng, fs) }
 	// Element pairs: properties first; a crop that differs while no property fired is flagged as unidentified

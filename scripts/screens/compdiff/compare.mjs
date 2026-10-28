@@ -414,6 +414,8 @@ export function compareElement (b, l, by = 'label') {
 		if (pb.innerBorder > 0 && pl.innerBorder > 0) add('innerBorderColor', pb.innerBorderColor, pl.innerBorderColor, colourDiff(pb.innerBorderColor, pl.innerBorderColor, THRESHOLDS.color) ? 'color' : null)
 	}
 	add('background', pb.background, pl.background, !semantic && !pb.native && !pl.native && colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
+	// The filled ground of a toggle's option (the chosen row of a radio list).
+	if (pb.optionGround || pl.optionGround) add('optionGround', pb.optionGround || null, pl.optionGround || null, !pb.optionGround || !pl.optionGround ? `option ground ${pb.optionGround ? 'absent' : 'extra'} on live` : colourDiff(pb.optionGround, pl.optionGround, THRESHOLDS.background) ? 'color' : null)
 	if (!textless) {
 		add('color', pb.color, pl.color, !semantic && colourDiff(pb.color, pl.color, THRESHOLDS.color) ? 'color' : null)
 		add('fontSize', pb.fontSize, pl.fontSize, Math.abs(pl.fontSize - pb.fontSize) > THRESHOLDS.font ? 'font' : null)

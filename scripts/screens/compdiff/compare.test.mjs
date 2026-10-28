@@ -111,6 +111,15 @@ test('a native toggle is not compared on background', () => {
 	assert.equal(rows.find((r) => r.prop === 'background').flag, null)
 })
 
+test('a chosen option\'s filled ground is compared, and a missing one is flagged', () => {
+	const tog = (optionGround) => ({ kind: 'toggle', props: { h: 20, borderRadius: 10, border: 0, background: null, color: 'rgb(0, 0, 0)', fontSize: 14, fontWeight: 400, paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false, gapNext: null, ...(optionGround ? { optionGround } : {}) } })
+	const same = compareElement(tog('rgb(220, 230, 242)'), tog('rgb(221, 230, 242)'))
+	assert.equal(same.find((r) => r.prop === 'optionGround').flag, null)
+	assert.equal(compareElement(tog('rgb(220, 230, 242)'), tog(null)).find((r) => r.prop === 'optionGround').flag, 'option ground absent on live')
+	assert.equal(compareElement(tog('rgb(220, 230, 242)'), tog('rgb(255, 230, 200)')).find((r) => r.prop === 'optionGround').flag, 'color')
+	assert.equal(compareElement(tog(null), tog(null)).find((r) => r.prop === 'optionGround'), undefined)
+})
+
 test('buttons with different labels do not pair by position or group, unless they are per-row actions', () => {
 	const button = (label, x, y) => ({ kind: 'button', label, inControl: null, container: 1, rect: { x, y, w: 160, h: 34 }, props: { h: 34, borderRadius: 8, background: 'rgb(255, 255, 255)', border: 1, fontSize: 14 } })
 	const r = pairElements([button('Testen met een zaak', 900, 300), button('Opslaan', 1080, 300)], [button('Stappen automatisch ordenen', 905, 302), button('Bewaren', 1080, 400), button('Annuleren', 1080, 440)], 1200)

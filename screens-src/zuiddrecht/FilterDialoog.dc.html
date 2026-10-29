@@ -135,16 +135,17 @@ class Component extends DCLogic {
     const avatar = (group) => 'flex: none; width: 32px; height: 32px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; ' + (group ? 'background: #e4e6ea; color: #3d4047;' : 'background: #eaf0f7; color: #234a78;');
     const optStyle = (on) => 'display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 8px; border-radius: 8px; cursor: pointer; ' + (on ? 'background: #eaf0f7;' : 'background: transparent;');
     const optStyle2 = (on) => 'display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-radius: 8px; ' + (on ? 'background: #f0f1f3;' : 'background: transparent;');
-    const ava = (group) => 'flex: none; width: 32px; height: 32px; box-sizing: border-box; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; ' + (group ? 'background: #3669a5; color: #ffffff;' : 'background: #f0f1f3; color: #3d4047;');
+    const ava = (group) => 'flex: none; width: 32px; height: 32px; box-sizing: border-box; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; ' + (group ? 'background: ' + group + '; color: #ffffff;' : 'background: #f0f1f3; color: #3d4047;');
     const suggestions = [
       ['Hanna Bos', 'HB', 'Persoon', false, '#f7f8ef', '#b8be68'],
       ['Hanneke de Boer', 'HD', 'Persoon', false, '#f7f8ef', '#b8be68'],
       ['Hanneke Postma', 'HP', 'Persoon', false, '#f4edf5', '#9750a4'],
-      ['behandelaars', 'B', 'Groep', true],
-      ['dso-behandelaars', 'D', 'Groep', true],
-      ['handler', 'H', 'Groep', true],
-      ['intakekanalen-behandelaars', 'I', 'Groep', true]
-    ].map(([n, initials, k, group, ground, ink], i) => ({ name: n, initials, kind: k, group, person: !group, ground, ink, selected: i === 0 ? 'true' : 'false', style: optStyle2(i === 0), avatarStyle: ava(group) }));
+      ['behandelaars', 'B', 'Groep', '#3d68a6'],
+      ['dso-behandelaars', 'D', 'Groep', '#456e9f'],
+      ['handler', 'H', 'Groep', '#376aa7'],
+      ['intakekanalen-behandelaars', 'I', 'Groep', '#3d68a6']
+    ].map(([n, initials, k, group, ground, ink], i) => ({ name: n, initials, kind: k, group: !!group, person: !group, ground, ink, selected: i === 0 ? 'true' : 'false', style: optStyle2(i === 0), avatarStyle: ava(group) }));
+    // Group avatars: the primary disc under a 10% tint of the name's Nextcloud colour (usernameToColor).
     const shares = [
       ['Woo en informatie', 'Groep', 'W', true, 'read'],
       ['Anouk Bakker', 'Persoon', 'AB', false, 'write']

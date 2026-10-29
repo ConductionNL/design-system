@@ -45,13 +45,18 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
 
         <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
-          <section style="flex: 999 1 520px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; display: flex; flex-direction: column">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 18px 0"><div role="tablist" aria-label="Type" style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; background: #eceef1"><button type="button" role="tab" aria-selected="true" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; font: 600 14px 'Fira Sans', sans-serif; cursor: pointer; background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12);">Alle<span style="font-weight: 400; color: #5e6168">12</span></button><button type="button" role="tab" aria-selected="false" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; font: 600 14px 'Fira Sans', sans-serif; cursor: pointer; background: transparent; color: #3d4047;">Verzoeken<span style="font-weight: 400; color: #5e6168">6</span></button><button type="button" role="tab" aria-selected="false" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; font: 600 14px 'Fira Sans', sans-serif; cursor: pointer; background: transparent; color: #3d4047;">Klachten<span style="font-weight: 400; color: #5e6168">1</span></button><button type="button" role="tab" aria-selected="false" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; font: 600 14px 'Fira Sans', sans-serif; cursor: pointer; background: transparent; color: #3d4047;">Contactmomenten<span style="font-weight: 400; color: #5e6168">5</span></button></div><span style="font-size: 13px; color: #5e6168">Soort, dan kanaal</span></div>
-            <div role="tablist" aria-label="Kanaal" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 18px; border-bottom: 1px solid #eef0f3">
-              <sc-for list="{{ channels }}" as="c" hint-placeholder-count="5">
-                <button type="button" role="tab" aria-selected="{{ c.sel }}" style="{{ c.style }}">{{ c.label }}<span style="{{ c.countStyle }}">{{ c.count }}</span></button>
+          <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <div role="group" aria-label="Type" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+              <sc-for list="{{ types }}" as="v" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{ v.pressed }}" style="{{ v.style }}">{{ v.label }}<span style="{{ v.countStyle }}">{{ v.count }}</span></button>
               </sc-for>
             </div>
+            <div role="group" aria-label="Kanaal" style="display: flex; flex-wrap: wrap; gap: 8px">
+              <sc-for list="{{ channels }}" as="c" hint-placeholder-count="5">
+                <button type="button" aria-pressed="{{ c.sel }}" style="{{ c.style }}">{{ c.label }}<span style="{{ c.countStyle }}">{{ c.count }}</span></button>
+              </sc-for>
+            </div>
+          <section style="min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; display: flex; flex-direction: column">
             <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
               <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 18px; border-bottom: 1px solid #eef0f3">
                 <span style="{{ r.waitStyle }}">{{ r.wait }}</span>
@@ -64,6 +69,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             </sc-for>
             <div style="padding: 12px 18px; font-size: 14px; color: #5e6168">Oudste eerst. Een ticket verlaat de wachtrij zodra iemand het in behandeling neemt.</div>
           </section>
+          </div>
 
           <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
             <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
@@ -103,6 +109,10 @@ class Component extends DCLogic {
       { label: 'Binnen de termijn', value: '9 van 12', note: 'pak de rode eerst', noteStyle: 'font-size: 13px; color: #5e6168' }
     ];
     const chip = (on) => 'display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 17px; font: 600 14px \'Fira Sans\', sans-serif; cursor: pointer; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
+    const vwS = (on) => 'display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px \'Fira Sans\', sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
+    const vwC = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
+    const types = [['Alle', 12, true], ['Verzoeken', 6, false], ['Klachten', 1, false], ['Contactmomenten', 5, false]]
+      .map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: vwS(on), countStyle: vwC(on) }));
     const channels = [['Alle', 12, true], ['Telefoon', 4, false], ['Mijn Zuiddrecht', 5, false], ['E-mail', 2, false], ['Balie', 1, false]]
       .map(([label, count, on]) => ({ label, count, sel: on ? 'true' : 'false', style: chip(on), countStyle: 'font-weight: 400; ' + (on ? 'color: #d6d9de;' : 'color: #5e6168;') }));
     const st = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
@@ -125,7 +135,7 @@ class Component extends DCLogic {
       { initials: 'LM', name: 'Lotte Mulder', state: 'Aan de telefoon', load: '9 open', bar: bar(90, true) },
       { initials: 'TK', name: 'Tim de Koning', state: 'Vandaag vrij', load: '0 open', bar: bar(0, false) }
     ];
-    return { nav, kpis, channels, rows, team };
+    return { nav, kpis, types, channels, rows, team };
   }
 }
 </script>

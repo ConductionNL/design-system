@@ -320,6 +320,14 @@ export function pairElements (B = [], L = [], H = 2000) {
 		const l = list && list.filter((x) => !usedL.has(x)).sort((x, y) => near(x) - near(y))[0]
 		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
 	}
+	// A control whose accessible name starts with its visible text and a colon ("Beschikbaar: routering stelt je in de
+	// wachtrij") is the control the other side names by that text: one control, not one missing and one extra.
+	const named = (long, short) => { const a = (long || '').trim().toLowerCase(), b = (short || '').trim().toLowerCase(); return b.length >= 3 && a.startsWith(`${b}:`) }
+	for (const b of B) {
+		if (usedB.has(b) || !norm(b.label)) continue
+		const l = L.find((x) => !usedL.has(x) && EGROUP[x.kind] === EGROUP[b.kind] && norm(x.inControl || '') === norm(b.inControl || '') && (named(x.label, b.label) || named(b.label, x.label)))
+		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
+	}
 	// A nav entry or a list action drawn as a button on one side and as a list row (a link in an li) on the other is one
 	// element: the same label in a control or a row pairs across the two.
 	const navKind = (e) => EGROUP[e.kind] === 'ctl' || e.kind === 'row'

@@ -643,7 +643,9 @@ window.__compdiffExtract = function () {
 			const q = range.getBoundingClientRect()
 			// A text that wraps starts on its first line box and ends on its last.
 			const lines = [...range.getClientRects()].filter((l) => l.width >= 1)
-			const first = lines[0] || q, last = lines[lines.length - 1] || q
+			// A text with no line box (a textarea's value, drawn by the field) is no part of the card.
+			if (!lines.length) continue
+			const first = lines[0], last = lines[lines.length - 1]
 			const ecs = getComputedStyle(n.parentElement)
 			// Runs of one line in one type, split over spans ("2026-0110", " · ", "Woo-verzoek"), are one text, as they
 			// are when a board writes them as one string. So is such a run that wraps onto a next line.
@@ -696,7 +698,9 @@ window.__compdiffExtract = function () {
 		c.record = { deck: deckOf.get(row), index: sibs.indexOf(c.el), count: sibs.length }
 		// A record card proper (a card of a grid of cards, a link, a draggable or listed item) reads the line under its
 		// title as its first row; a column of widgets or settings sections keeps its descriptions.
-		const grid = sibs.some((e) => e !== c.el && Math.abs(e.getBoundingClientRect().top - c.el.getBoundingClientRect().top) <= 4)
+		// A card alone in the last row of a grid is a grid card too: the deck is a grid when any two of its cards stand side by side.
+		const sideBySide = (a) => sibs.some((e) => e !== a && Math.abs(e.getBoundingClientRect().top - a.getBoundingClientRect().top) <= 4)
+		const grid = sibs.some(sideBySide)
 		if (grid || c.el.matches('a, [role=listitem], [draggable=true]') || c.el.closest('a, [role=listitem], [draggable=true]') !== null) {
 			const asRecord = describeCard(c.el, 'card', true)
 			c.content = asRecord.content
@@ -708,6 +712,8 @@ window.__compdiffExtract = function () {
 	// 2. Dialogs: the visible dialog box (a full-screen role=dialog mask is narrowed to its framed child).
 	for (const d of document.querySelectorAll('[role=dialog], [role=alertdialog]')) {
 		if (!visible(d)) continue
+		// With a modal open, a non-modal dialog outside it (an incoming-call card) is behind it, as the page is.
+		if (modals.length && !modals.some((m) => m.contains(d) || d.contains(m))) continue
 		let boxEl = d
 		if (d.getBoundingClientRect().width >= VW * 0.9) {
 			boxEl = [...d.querySelectorAll('*')].filter((e) => visible(e) && framed(e, getComputedStyle(e)) && e.getBoundingClientRect().width < VW * 0.9 && e.getBoundingClientRect().width > 240).sort((a, b) => b.getBoundingClientRect().width * b.getBoundingClientRect().height - a.getBoundingClientRect().width * a.getBoundingClientRect().height)[0]
@@ -977,11 +983,13 @@ window.__compdiffExtract = function () {
 		// A wrapping row of short items (chips, Filter, a view switch) that wrapped onto a second or third line is still
 		// one toolbar: whether it wraps follows how many chips the data brings.
 		// A stack of one item per line (an Acties button over a search field, wrapping because each takes the full width) is
-		// no toolbar: a wrapped toolbar has a line with two or more items.
-		const kids = [...el.children].filter(visible)
+		// no toolbar: a wrapped toolbar has a line with two or more items. A line that is a flex row of two or more
+		// controls of its own (CnActionsBar's Filter + view switch unit, wrapped under the lens chips) is such a line.
+		const kids = flatItems(el).filter(visible)
+		const rowOfControls = (c) => /flex|grid/.test(getComputedStyle(c).display) && [...c.querySelectorAll(ctrl)].filter((k) => visible(k) && !ariaHidden(k) && k.getBoundingClientRect().height >= 24 && !chip(k)).length >= 2
 		const wrapped = r.height > 72 && r.height <= 160 && /flex/.test(cs.display) && cs.flexWrap === 'wrap' && !cardEls.has(el)
 			&& kids.every((c) => c.getBoundingClientRect().height <= 48)
-			&& kids.some((c) => kids.some((d) => d !== c && Math.abs(d.getBoundingClientRect().top - c.getBoundingClientRect().top) <= 4))
+			&& (kids.some((c) => kids.some((d) => d !== c && Math.abs(d.getBoundingClientRect().top - c.getBoundingClientRect().top) <= 4)) || kids.some(rowOfControls))
 		if ((r.height > 72 && !wrapped) || r.width < 300) continue
 		// A list row with its open button and its row menu (the saved-views list), or the line inside one, is a row,
 		// not a toolbar.
@@ -1221,7 +1229,9 @@ window.__compdiffExtract = function () {
 	const toggleIcon = (input) => {
 		const host = input.parentElement && input.parentElement.closest('.checkbox-radio-switch, label, [class*="checkbox"], [class*="switch"]')
 		const fits = (i) => visible(i) && i.getBoundingClientRect().height >= 8 && i.getBoundingClientRect().height <= 40
-		return host ? [...host.querySelectorAll('svg')].find(fits) || [...host.querySelectorAll('[class*="icon"]')].find(fits) || null : null
+		// A board draws it as a plain box with no text (a switch track with its knob, a radio ring with its dot).
+		const drawnBox = (i) => fits(i) && i.getBoundingClientRect().width <= 60 && !i.textContent.trim() && (opaque(getComputedStyle(i).backgroundColor) || nBorders(i) >= 3)
+		return host ? [...host.querySelectorAll('svg')].find(fits) || [...host.querySelectorAll('[class*="icon"]')].find(fits) || [...host.querySelectorAll('span, div, i')].find(drawnBox) || null : null
 	}
 	// A ::before or ::after that draws text on a filled ground of its own, lower than the element it sits in.
 	const pseudoBadge = (c, ground, height) => ['::before', '::after'].some((p) => {
@@ -1322,7 +1332,18 @@ window.__compdiffExtract = function () {
 	// Coverage: board elements with a box of their own (ground, border or rounded ground) that no component or element
 	// above accounts for. Reported as "not measured", never read as "no differences".
 	const measuredEls = new Set([...cardEls, ...elementEls, ...optionGrounds])
+	// Small buttons fixed over the page (the AI chat button in the corner) lie over whatever scrolls under them.
+	// A fixed box inside another such button is part of it; a fixed app content box around it (#content) is not one.
+	const floating = all.filter((el) => { if (!visible(el) || getComputedStyle(el).position !== 'fixed') return false; const q = el.getBoundingClientRect(); return q.width >= 24 && q.height >= 24 && q.width <= 120 && q.height <= 120 })
+	const floaters = floating.filter((el) => !floating.some((f) => f !== el && f.contains(el))).map(rect)
 	const unmeasured = []
+	const icons = []
+	const iconTile = (el, r) => {
+		if (r.width > 64 || r.height > 64 || el.matches('button, a, [role=button], input, select, textarea')) return false
+		const text = el.textContent.trim()
+		if (text && !(el.matches('[role=img]') && text.length <= 3)) return false
+		return [...el.querySelectorAll('*')].every((d) => !visible(d) || d.matches('svg, svg *, img, [class*="icon"], [class*="icon"] *') || !d.textContent.trim())
+	}
 	for (const el of all) {
 		if (!visible(el) || outOfScope(el) || measuredEls.has(el)) continue
 		const r = el.getBoundingClientRect()
@@ -1337,6 +1358,9 @@ window.__compdiffExtract = function () {
 		const kids = [...el.children].filter(visible)
 		if (kids.length >= 2 && kids.every((k) => measuredEls.has(k) || listboxEls.has(k))) continue
 		if (listboxEls.has(el)) continue
+		// A tile that only draws an icon, a step marker or a logo's initials (a KPI's tinted disc around its glyph, a done
+		// step's check, an empty step ring) is an icon of what it sits in, seen in that component's crop.
+		if (iconTile(el, r)) { icons.push({ tag: el.tagName.toLowerCase(), text: el.textContent.trim().slice(0, 4), rect: rect(el) }); continue }
 		unmeasured.push({ tag: el.tagName.toLowerCase(), text: el.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), rect: rect(el) })
 	}
 
@@ -1350,5 +1374,5 @@ window.__compdiffExtract = function () {
 	// that scrolls on past the page) is in neither picture. It is kept, marked, so that a component the board draws
 	// inside its frame can still find its counterpart on a taller live page; unpaired, it is neither missing nor extra.
 	for (const c of components) if (c.rect && c.rect.y >= window.innerHeight) c.belowFrame = true
-	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c), elements: elements.map(({ el, ...e }) => e), unmeasured }
+	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c), elements: elements.map(({ el, ...e }) => e), unmeasured, icons, floaters }
 }

@@ -79,13 +79,15 @@ export function pixelsFlag(b, l, crop, base, covers = { board: [], live: [] }) {
  * that differs per side, and says nothing about the element.
  *
  * @param {{x: number, y: number, w: number, h: number}} r The element's rect.
- * @param {Array<{x: number, y: number, w: number, h: number}>} overlays The overlays' rects on that side.
+ * @param {Array<{x: number, y: number, w: number, h: number, float?: boolean}>} overlays The overlays' rects on that side; a floating button's is marked float.
  * @return {boolean} Whether any overlay overlaps the rect without holding it whole.
  */
 export function covered(r, overlays = []) {
 	return overlays.some((o) => {
 		const inside = r.x >= o.x - 1 && r.y >= o.y - 1 && r.x + r.w <= o.x + o.w + 1 && r.y + r.h <= o.y + o.h + 1
 		const meets = r.x < o.x + o.w && r.x + r.w > o.x && r.y < o.y + o.h && r.y + r.h > o.y
+		// A floating button (float: true) holds nothing measured: whatever it lies over is hidden, all but the button itself.
+		if (o.float) return meets && !(Math.abs(r.x - o.x) <= 1 && Math.abs(r.y - o.y) <= 1 && Math.abs(r.w - o.w) <= 1 && Math.abs(r.h - o.h) <= 1)
 		return meets && !inside
 	})
 }

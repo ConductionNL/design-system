@@ -52,3 +52,17 @@ test('a crop an open menu lies over part of is not flagged; an element inside th
 	assert.equal(covered(item.rect, [menu]), false)
 	assert.equal(pixelsFlag(item, item, 52.4, 30, { board: [menu], live: [] }), true)
 })
+
+test('a crop a floating button lies over, in part or whole, is not flagged; the floating button itself still is', () => {
+	const fab = { x: 1340, y: 1010, w: 56, h: 60, float: true }
+	const acties = { rect: { x: 1361, y: 1044.9, w: 34, h: 34 } }
+	assert.equal(covered(acties.rect, [fab]), true)
+	const under = { x: 1350, y: 1020, w: 34, h: 34 }
+	assert.equal(covered(under, [fab]), true)
+	assert.equal(pixelsFlag(acties, acties, 70.2, 30, { board: [], live: [fab] }), false)
+	const self = { rect: { x: 1340, y: 1010, w: 56, h: 60 } }
+	assert.equal(covered(self.rect, [fab]), false)
+	// Control: an element the button does not reach still flags.
+	const far = { rect: { x: 900, y: 1044.9, w: 34, h: 34 } }
+	assert.equal(pixelsFlag(far, far, 70.2, 30, { board: [], live: [fab] }), true)
+})

@@ -274,3 +274,12 @@ test('a line of another colour inside a field\'s frame on one side only is a bor
 	assert.ok(!compareElement(f(0, null), f(0, null)).some((r) => r.flag))
 	assert.ok(compareElement(f(0, null), f(1, 'rgb(54, 105, 165)')).some((r) => r.prop === 'innerBorder' && r.flag))
 })
+
+test('a control named by an aria-label that starts with its visible text pairs with the board\'s control of that text', () => {
+	const el = (label, x) => ({ kind: 'button', label, inControl: null, container: 1, interactive: true, rect: { x, y: 96, w: 140, h: 40 }, props: { h: 40, borderRadius: 20, background: 'rgb(231, 243, 234)', border: 0, fontSize: 14 } })
+	const r = pairElements([el('Beschikbaar', 1000)], [el('Beschikbaar: routering stelt je in de wachtrij', 1004)], 900)
+	assert.deepEqual([r.pairs.length, r.missing.length, r.extra.length], [1, 0, 0])
+	// Control: a different control whose name only shares a first word ("Beschikbaarheid plannen") stays two controls.
+	const c = pairElements([el('Beschikbaar', 1000)], [el('Beschikbaarheid plannen', 1004)], 900)
+	assert.deepEqual([c.pairs.length, c.missing.length, c.extra.length], [0, 1, 1])
+})

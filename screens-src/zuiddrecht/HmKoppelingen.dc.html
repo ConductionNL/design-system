@@ -39,7 +39,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="display: flex; flex-direction: column; gap: 4px">
               <h2 id="ko-health" style="margin: 0; font-size: 13px; font-weight: 700; color: #234a78">Gezondheid van de chat</h2>
               <strong style="font-size: 20px">Chat werkt, 1 onderdeel heeft een storing</strong>
-              <span style="font-size: 14px; color: #5e6168">Agents antwoorden. Voorlezen en dicteren werken niet zolang de spraakdienst niet bereikbaar is. Gecontroleerd om 10.42 uur.</span>
+              <span style="font-size: 14px; color: #5e6168">Agents antwoorden. Voorlezen en dicteren werken niet zolang de spraakdienst niet bereikbaar is. Gecontroleerd om 10:42 uur.</span>
             </div>
             <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg>Nu controleren</button>
           </div>
@@ -132,12 +132,12 @@ class Component extends DCLogic {
     const P = { 'Werkt': ['#e7f3ea', '#1e6b2a'], 'Storing': ['#fcedec', '#a30000'], 'Niet ingesteld': ['#f0f1f3', '#3d4047'] };
     const pill = (s) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + P[s][0] + '; color: ' + P[s][1];
     const rows = [
-      ['AI-aanbieder', 'Het taalmodel waar de agents op draaien.', 'Werkt', 'Ollama op ai.zuiddrecht.local, 3 modellen', 'vandaag 10.42', 'Sectie AI-aanbieder'],
+      ['AI-aanbieder', 'Het taalmodel waar de agents op draaien.', 'Werkt', 'Ollama op ai.zuiddrecht.local, 3 modellen', 'vandaag 10:42', 'Sectie AI-aanbieder'],
       ['LLM-runner', 'De ExApp die Anthropic-beurten via de claude CLI draait.', 'Niet ingesteld', 'Nog niet gecontroleerd. Alleen nodig bij Anthropic met uitvoering via de CLI.', 'nooit', 'geen instelpagina'],
-      ['Spraakdiensten', 'Whisper en Kokoro: spraak naar tekst en tekst naar spraak.', 'Storing', 'Geen speech_base_url ingesteld, de standaard 127.0.0.1:8000 antwoordt niet. Stel het adres in met occ.', 'vandaag 10.42', 'via occ'],
-      ['Web zoeken', 'SearXNG, waarmee agents op het web zoeken.', 'Werkt', 'zoeken.zuiddrecht.local antwoordt', 'vandaag 10.42', 'Sectie web zoeken'],
-      ['Webhooks', 'Bezorgt webhooks van geplande taken aan andere systemen.', 'Werkt', '3 webhooks, laatste bezorging 09.58', 'vandaag 10.40', 'Sectie webhooks'],
-      ['GitHub-winkel', 'Zoeken en publiceren van sjablonen en skills op GitHub.', 'Werkt', 'Token van Lars de Koning, verloopt 1 december', 'vandaag 10.37', 'Sectie winkel']
+      ['Spraakdiensten', 'Whisper en Kokoro: spraak naar tekst en tekst naar spraak.', 'Storing', 'Geen speech_base_url ingesteld, de standaard 127.0.0.1:8000 antwoordt niet. Stel het adres in met occ.', 'vandaag 10:42', 'via occ'],
+      ['Web zoeken', 'SearXNG, waarmee agents op het web zoeken.', 'Werkt', 'zoeken.zuiddrecht.local antwoordt', 'vandaag 10:42', 'Sectie web zoeken'],
+      ['Webhooks', 'Bezorgt webhooks van geplande taken aan andere systemen.', 'Werkt', '3 webhooks, laatste bezorging 09:58', 'vandaag 10:40', 'Sectie webhooks'],
+      ['GitHub-winkel', 'Zoeken en publiceren van sjablonen en skills op GitHub.', 'Werkt', 'Token van Lars de Koning, verloopt 1 december', 'vandaag 10:37', 'Sectie winkel']
     ].map(([title, desc, status, msg, checked, link]) => ({ title, desc, status, pill: pill(status), msg, checked, link, hasLink: link !== 'via occ' && link !== 'geen instelpagina', noLink: link === 'via occ' || link === 'geen instelpagina', selectLabel: 'Selecteer ' + title, actionsLabel: 'Acties voor ' + title + ': nu controleren, openen in integriq' }));
     const view = (on) => 'display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px \'Fira Sans\', sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
     const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');

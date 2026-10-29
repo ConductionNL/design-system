@@ -10,7 +10,7 @@ import path from 'node:path'
 import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { parseColour } from './colour.mjs'
-import { compareProps, pairComponents } from './compare.mjs'
+import { compareElement, compareProps, pairComponents } from './compare.mjs'
 
 const require = createRequire(import.meta.url)
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -1383,16 +1383,6 @@ test('an open multiple NcSelect is read on its frame: the toggle\'s box and ring
 	assert.deepEqual([g.border, g.borderColor, g.innerBorder], [1, 'rgb(54, 105, 165)', 0])
 })
 
-test('a focused input\'s solid outline is the ring people see around it, outside its own line', { skip }, async () => {
-	const page = (style) => `<style>#f:focus{${style}}</style><div style="position:absolute;left:424px;top:200px;width:592px;display:flex;flex-direction:column;gap:6px"><label for="f">Nieuw team</label><input id="f" style="box-sizing:border-box;height:40px;border:1px solid #3669a5;border-radius:8px"></div><script>document.getElementById('f').focus()</script>`
-	const live = await measure(page('outline:2px solid #1b1c1d;outline-offset:0'))
-	const f = live.elements.find((e) => e.kind === 'field').props
-	assert.deepEqual([f.h, f.border, f.borderColor, f.innerBorder], [44, 2, 'rgb(27, 28, 29)', 1])
-	// Control: Chrome's own auto focus ring is not read as the page's frame.
-	const auto = await measure(page('outline:auto 1px'))
-	assert.deepEqual([auto.elements.find((e) => e.kind === 'field').props.border, auto.elements.find((e) => e.kind === 'field').props.innerBorder], [1, 0])
-})
-
 test('an avatar drawn as a painted disc under a tinted initials layer is one pill, coloured by what it paints', { skip }, async () => {
 	const live = await measure('<div style="position:absolute;left:450px;top:420px;display:flex;gap:8px;align-items:center"><div class="avatardiv" style="width:32px;height:32px;border-radius:50%;background:#3669a5"><div class="avatardiv__initials-wrapper" style="width:32px;height:32px;border-radius:50%;background:rgba(121, 90, 171, 0.1);display:flex;align-items:center;justify-content:center;color:#fff">B</div></div><span>behandelaars</span></div>')
 	const pills = live.elements.filter((e) => e.kind === 'pill')
@@ -1563,4 +1553,78 @@ test('a non-modal dialog card outside an open modal dialog is not measured, as n
 	// Control: with no modal open, the incoming-call card is measured as a dialog.
 	const alone = await measure(card)
 	assert.deepEqual(alone.components.filter((c) => /dialog/.test(c.role)).map((c) => c.title), ['Inkomend gesprek'])
+})
+
+test('a switch track drawn beside its hidden input is the switch, not the ground of its option', { skip }, async () => {
+	const sw = (track) => `<label style="position:absolute;left:315px;top:300px;display:flex;gap:12px;align-items:flex-start"><input type="checkbox" role="switch" checked style="position:absolute;opacity:0;width:1px;height:1px">${track}<span>Mail op zaaknummer aan zaken koppelen</span></label>`
+	const board = await measure(sw('<span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;width:38px;height:22px;border-radius:11px;background:#3669a5;justify-content:flex-end"><span style="width:18px;height:18px;border-radius:9px;background:#fff;margin:0 2px"></span></span>'))
+	const live = await measure(`<span class="checkbox-radio-switch">${sw('<span class="checkbox-content__icon"><svg width="38" height="22" viewBox="0 0 38 22"><rect width="38" height="22" rx="11" fill="#3669a5"/></svg></span>')}</span>`)
+	const tog = (r) => r.elements.find((e) => e.kind === 'toggle')
+	assert.deepEqual([tog(board).props.optionGround, tog(live).props.optionGround], [undefined, undefined])
+	assert.equal(compareElement(tog(board), tog(live)).filter((x) => x.flag).length, 0, JSON.stringify(compareElement(tog(board), tog(live)).filter((x) => x.flag)))
+	// Control: a filled option beside a checked hidden radio, with the option's text, is still its ground.
+	const chosen = await measure('<span class="checkbox-radio-switch" style="position:absolute;left:464px;top:280px;display:flex"><input type="radio" checked style="position:absolute;opacity:0;width:1px;height:1px"><span style="display:flex;gap:10px;align-items:center;min-height:34px;padding:0 9px 0 7px;border-radius:8px;background:#dce6f2"><svg width="20" height="20"><circle cx="10" cy="10" r="8" fill="#3669a5"/></svg>Behandeling van de zaak</span></span>')
+	assert.equal(tog(chosen).props.optionGround, 'rgb(220, 230, 242)')
+})
+
+test('a toggle drawn by an svg glyph has no corner radius to read: its shape is the glyph\'s', { skip }, async () => {
+	const radio = (icon) => `<label style="position:absolute;left:315px;top:300px;display:flex;gap:10px;align-items:flex-start"><input type="radio" name="m" checked style="position:absolute;opacity:0;width:1px;height:1px">${icon}<span>Eenvoudig</span></label>`
+	const board = await measure(radio('<span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;box-sizing:border-box;border-radius:10px;border:2px solid #3669a5"><span style="width:10px;height:10px;border-radius:5px;background:#3669a5"></span></span>'))
+	const live = await measure(`<span class="checkbox-radio-switch">${radio('<span class="checkbox-content__icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#3669a5" d="M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg></span>')}</span>`)
+	const tog = (r) => r.elements.find((e) => e.kind === 'toggle')
+	assert.equal(tog(live).props.borderRadius, null)
+	assert.equal(compareElement(tog(board), tog(live)).find((x) => x.prop === 'borderRadius'), undefined)
+	// Control: the radio a board draws as a rounded box keeps that box's radius.
+	assert.equal(tog(board).props.borderRadius, 10)
+})
+
+test('a checkbox drawn by its svg glyph is filled with the glyph\'s colour, not the ground behind it', { skip }, async () => {
+	const glyph = (fill, d) => `<span role="checkbox" aria-checked="true" aria-label="Een zaak wordt aan mij toegewezen" style="display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:${fill}"><path d="${d}"/></svg></span>`
+	const checked = 'M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z'
+	const board = await measure(`<table style="position:absolute;left:600px;top:300px;background:#fff"><tr><td>Een zaak wordt aan mij toegewezen</td><td>${glyph('#3669a5', checked)}</td></tr></table>`)
+	const live = await measure('<table style="position:absolute;left:600px;top:300px;background:#fff"><tr><td>Een zaak wordt aan mij toegewezen</td><td><input type="checkbox" checked aria-label="Een zaak wordt aan mij toegewezen" style="appearance:none;margin:0;width:24px;height:20px;padding:0 12px;box-sizing:border-box;border-radius:8px;background:#3669a5"></td></tr></table>')
+	const tog = (r) => r.elements.find((e) => e.kind === 'toggle')
+	assert.deepEqual([tog(board).props.background, tog(board).props.borderRadius], ['rgb(54, 105, 165)', null])
+	assert.equal(compareElement(tog(board), tog(live)).filter((x) => x.flag).length, 0, JSON.stringify(compareElement(tog(board), tog(live)).filter((x) => x.flag)))
+	// Control: a drawn checkbox that paints its own box (a filled, rounded span) is measured on that box.
+	const box = await measure('<div style="position:absolute;left:600px;top:300px;background:#fff"><span role="checkbox" aria-checked="true" aria-label="Per e-mail" style="display:inline-block;width:20px;height:20px;border-radius:4px;background:#5e6168"></span></div>')
+	assert.deepEqual([tog(box).props.background, tog(box).props.borderRadius], ['rgb(94, 97, 104)', 4])
+})
+
+test('a focus outline around a field is not its frame: the field is measured on its own box and line', { skip }, async () => {
+	const page = (style) => `<style>#f:focus-visible{${style}} .vs__dropdown-toggle:focus-within{outline:2px solid #1b1c1d}</style><div style="position:absolute;left:424px;top:200px;width:592px;display:flex;flex-direction:column;gap:6px"><label for="f">Nieuw team</label><div class="v-select"><div class="vs__dropdown-toggle" style="display:flex;width:592px"><input id="f" style="flex:1;box-sizing:border-box;height:40px;border:1px solid #3669a5;border-radius:8px"></div></div></div><script>document.getElementById('f').focus()</script>`
+	const live = await measure(page('outline:2px solid #1b1c1d !important;outline-offset:2px'))
+	const f = live.elements.find((e) => e.kind === 'field').props
+	assert.deepEqual([f.h, f.border, f.borderColor, f.innerBorder], [40, 1, 'rgb(54, 105, 165)', 0])
+	// Control: a 2px line the field draws on a wrapper when focused is still its frame.
+	const ring = await measure('<div style="position:absolute;left:424px;top:300px;width:400px;border:2px solid #3669a5;border-radius:10px"><input aria-label="Delen met" style="display:block;width:396px;box-sizing:border-box;height:40px;border:1px solid #828a95;border-radius:8px"></div><script>document.querySelector("input").focus()</script>')
+	assert.deepEqual([ring.elements[0].props.h, ring.elements[0].props.border], [44, 2])
+})
+
+test('a keyboard focus ring drawn as a box shadow on a focused button is not its border', { skip }, async () => {
+	const page = (focus) => `<style>.close:focus-visible{box-shadow:0 0 0 6px rgba(54, 105, 165, 0.5)} .ring{box-shadow:0 0 0 6px rgba(54, 105, 165, 0.5)}</style><div role="dialog" style="position:absolute;left:600px;top:200px;width:400px;height:300px;background:#fff"><button class="close${focus ? '' : ' ring'}" aria-label="Sluiten" style="position:absolute;right:8px;top:8px;width:36px;height:36px;border:0;border-radius:18px;background:#fff"><svg width="20" height="20"><path d="M2 2l16 16M18 2L2 18" stroke="#000"/></svg></button></div>${focus ? '<script>document.querySelector(".close").focus()</script>' : ''}`
+	const focused = await measure(page(true))
+	assert.equal(focused.elements.find((e) => e.label === 'Sluiten').props.border, 0)
+	// Control: the same ring drawn without focus is the button's border.
+	const drawn = await measure(page(false))
+	assert.equal(drawn.elements.find((e) => e.label === 'Sluiten').props.border, 6)
+})
+
+test('a drawn map placeholder and the parcel drawn on it are the map, not unmeasured boxes', { skip }, async () => {
+	const map = (label) => `<div style="position:absolute;left:384px;top:277px;width:460px"><div role="img" aria-label="${label}" style="position:relative;height:200px;border-radius:8px;background:#dfe8d8;overflow:hidden"><span style="position:absolute;left:0;right:0;top:90px;height:14px;background:#fff"></span><span style="position:absolute;left:120px;top:30px;width:110px;height:56px;border:2px dashed #4a3f8f;background:rgba(74,63,143,0.12)"></span></div></div>`
+	const r = await measure(map('Kaart met het perceel Molenweg 4 en een pin'))
+	assert.equal(r.components.filter((c) => c.role === 'map').length, 1)
+	assert.deepEqual(r.unmeasured, [])
+	// Control: the same boxes in a picture that is not a map are still reported.
+	const other = await measure(map('Plattegrond van de verdieping'))
+	assert.ok(other.unmeasured.length >= 1, JSON.stringify(other.unmeasured))
+})
+
+test('a selected row beside an unselected one is not the unselected row\'s option ground', { skip }, async () => {
+	const row = (checked) => `<tr style="background:${checked ? '#f4f7fb' : '#fff'}"><td style="padding:12px 6px 12px 18px"><input type="checkbox" aria-label="Rij selecteren"${checked ? ' checked' : ''} style="width:18px;height:18px;margin:0"></td><td style="padding:12px">Losse stoeptegels</td></tr>`
+	const r = await measure(`<table style="position:absolute;left:292px;top:300px;width:1000px;border-collapse:collapse;background:#fff"><tbody>${row(true)}${row(false)}${row(false)}</tbody></table>`)
+	const grounds = r.elements.filter((e) => e.kind === 'toggle').map((e) => e.props.optionGround || null)
+	assert.deepEqual(grounds.slice(1), [null, null])
+	// Control: the selected row's own tint is its toggle's ground.
+	assert.equal(grounds[0], 'rgb(244, 247, 251)')
 })

@@ -307,6 +307,10 @@ const styleKey = (e) => [e.kind, Math.round(e.props.h / 4), e.props.borderRadius
 // a chip, and a control (the "Volgen" button) does not stand for a status tag. Stored runs without the flag pass.
 const nested = (e) => !!e.inControl && e.inControl !== 'record card'
 const sameRole = (b, l) => nested(b) === nested(l) && (b.interactive === undefined || l.interactive === undefined || b.interactive === l.interactive)
+// A list's tags (each record's type pill, in its row) do not stand for a set of tags outside the rows (the active-filter
+// chips in the toolbar). Two lone tags in the same place still pair by position.
+const TAG = new Set(['pill', 'badge'])
+const rowsApart = (b, l) => (b.count > 1 || l.count > 1) && TAG.has(b.rep.kind) && TAG.has(l.rep.kind) && b.rep.inRow !== undefined && l.rep.inRow !== undefined && b.rep.inRow !== l.rep.inRow
 
 export function pairElements (B = [], L = [], H = 2000) {
 	const pairs = [], usedB = new Set(), usedL = new Set()
@@ -359,7 +363,7 @@ export function pairElements (B = [], L = [], H = 2000) {
 	const cand = []
 	for (const b of gb) {
 		for (const l of gl) {
-			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind] || !sameRole(b.rep, l.rep)) continue
+			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind] || !sameRole(b.rep, l.rep) || rowsApart(b, l)) continue
 			// Two lone elements with different labels are two different controls, not one control restyled.
 			const cost = Math.abs(b.rep.rect.x - l.rep.rect.x) / 1440 + 0.5 * Math.abs(b.rep.rect.y - l.rep.rect.y) / H + (b.rep.kind === l.rep.kind ? 0 : 0.05)
 			// An icon-only control shows no label: its name is for assistive tech ("Open AI chat", "AI-chat openen"), so two

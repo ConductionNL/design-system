@@ -205,6 +205,18 @@ test('a status line naming what is still loading keeps the wait going; another s
 	})
 })
 
+test('a map widget whose Leaflet has not loaded into its mount point yet keeps the wait going', { skip }, async () => {
+	await withPage('<section><h2>Locaties</h2><div class="cn-map-widget"><div class="cn-map-widget__leaflet cn-map-widget__leaflet--captioned" style="width:344px;height:200px;background:#edeff2"></div></div></section>', async (page) => {
+		assert.deepEqual(await page.evaluate(loadingIndicators), ['cn-map-widget__leaflet'])
+		await page.evaluate(() => setTimeout(() => document.querySelector('.cn-map-widget__leaflet').classList.add('leaflet-container'), 1000))
+		assert.equal(await waitForLoaded(page, { timeout: 6000, still: 300 }), true)
+	})
+	// Leaflet's own panes are no mount points.
+	await withPage('<div class="leaflet-container" style="width:300px;height:200px"><div class="leaflet-pane leaflet-map-pane" style="width:10px;height:10px"></div></div>', async (page) => {
+		assert.deepEqual(await page.evaluate(loadingIndicators), [])
+	})
+})
+
 test('a step that fails once is tried once more, and a second failure is thrown', async () => {
 	let n = 0
 	const seen = []

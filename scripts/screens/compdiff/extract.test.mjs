@@ -729,6 +729,29 @@ test('a line under the card title split over spans reads as the one line a board
 	assert.match(first(board), /title \/ number \/ meta/)
 })
 
+test('a line split over spans that wraps onto a second line is still the one line a board writes as one string', { skip }, async () => {
+	const card = (sub) => `<article style="background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;width:180px">
+		<strong style="font-size:15px">Losliggende stoeptegels Kerkplein</strong>${sub}<span style="font-size:13px">Termijn 8 nov</span></article>`
+	const deck = (sub) => `<div style="position:absolute;left:300px;top:300px;display:grid;grid-template-columns:repeat(3,212px);gap:20px">${card(sub)}${card(sub)}${card(sub)}</div>`
+	const board = await measure(deck('<span style="font-size:13px">2026-4870 · Melding openbare ruimte</span>'))
+	const live = await measure(deck('<p style="margin:0;font-size:13px"><span>2026-4870</span><span> · </span><span>Melding openbare ruimte</span></p>'))
+	const first = (r) => r.components.find((c) => c.role === 'card').structure
+	assert.equal(first(live), first(board))
+	// A run that continues on another line, not where the last one ended, is a part of its own.
+	const apart = await measure(deck('<p style="margin:0;font-size:13px"><span>2026-4870</span><br><span>Melding openbare ruimte</span></p>'))
+	assert.match(first(apart), /number \/ meta/)
+})
+
+test('a map widget\'s Leaflet mount point is the map before Leaflet has loaded into it, not an untitled card', { skip }, async () => {
+	const card = (map) => `<section style="position:absolute;left:702px;top:1110px;width:390px;box-sizing:border-box;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px"><h2 style="margin:0 0 12px;font-size:17px">Locaties</h2>${map}<p style="margin:12px 0 0">Lindelaan 4</p></section>`
+	const r = await measure(card('<div class="cn-map-widget"><div class="cn-map-widget__leaflet cn-map-widget__leaflet--captioned" style="width:344px;height:200px;background:#edeff2"></div></div>'))
+	assert.deepEqual(r.components.filter((c) => c.role === 'map').map((c) => [c.rect.w, c.rect.h]), [[344, 200]])
+	assert.deepEqual(r.components.filter((c) => c.role === 'card').map((c) => c.title), ['Locaties'])
+	// A tinted box that is no map mount point is still a card of its own.
+	const box = await measure(card('<div class="cn-note"><div class="cn-note__body" style="width:344px;height:200px;background:#edeff2"><p>Geen locatie</p></div></div>'))
+	assert.equal(box.components.filter((c) => c.role === 'map').length, 0)
+})
+
 test('a map in a card is its first row at its own box, not the zoom control laid over it', { skip }, async () => {
 	const card = (map) => `<section style="position:absolute;left:292px;top:300px;width:420px;border:1px solid #ddd;border-radius:12px;padding:20px 22px"><h2 style="margin:0 0 12px;font-size:17px">Locaties</h2>${map}<p style="margin:12px 0 0">Lindelaan 4</p></section>`
 	const board = await measure(card('<svg role="img" aria-label="Kaart met de locatie" width="374" height="200" style="display:block"><rect width="374" height="200" fill="#e9eef3"/><text x="20" y="40">Lindelaan</text></svg>'))
@@ -1196,6 +1219,23 @@ test('a link right under a widget title is its header action in a grid of widget
 	const h = async (html) => (await measure(html)).components.find((c) => c.title === 'Zaken die u volgt').header.actions
 	assert.equal(await h(grid(live)), 1)
 	assert.equal(await h(grid(board)), 1)
+})
+
+test('a link stacked 10px under a widget title is its header action, and the first row\'s rule under it is the header separator', { skip }, async () => {
+	const li = (t, rule) => `<li style="padding:12px 0;border-top:1px solid ${rule}"><strong style="font-size:15px">${t}</strong><br><span style="font-size:13px">8 dagen stil</span></li>`
+	const rows = (rule) => `<ul style="margin:0;padding:0;list-style:none">${li('Dakkapel Kerkstraat 12', rule)}${li('Schuur Molenweg 3', rule)}</ul>`
+	const live = (t) => `<div style="border:1px solid #e4e6ea;border-radius:12px"><div style="padding:20px 22px 0"><div style="display:flex;flex-direction:column;gap:10px"><h2 style="margin:0;font-size:17px;line-height:21px">${t}</h2><a href="#" style="font-size:14px;font-weight:600">Alles bekijken</a></div></div><div style="padding:6px 22px 20px">${rows('#e4e6ea')}</div></div>`
+	const board = (t) => `<section style="border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 16px"><div style="flex:1 1 260px"><h2 style="margin:0;font-size:17px;line-height:21px">${t}</h2></div><div style="flex:none"><a href="#" style="font-size:14px;font-weight:600">Alles bekijken</a></div></div>${rows('#eef0f3')}</section>`
+	const grid = (card) => `<div style="position:absolute;left:292px;top:600px;width:1120px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px">${['Zaken die u volgt', 'Recent geopend', 'Vastgelopen zaken'].map(card).join('')}</div>`
+	const head = async (html) => { const c = (await measure(html)).components.find((x) => x.title === 'Vastgelopen zaken'); return [c.header.actions, c.header.separator, c.content.gapBelowTitle] }
+	const b = await head(grid(board))
+	const l = await head(grid(live))
+	assert.deepEqual(l.slice(0, 2), [1, 1])
+	assert.deepEqual(l.slice(0, 2), b.slice(0, 2))
+	assert.ok(Math.abs(l[2] - b[2]) <= 3, JSON.stringify([b, l]))
+	// A widget with no link under its title still has no header action, so a link the board draws and live lacks fails.
+	const bare = await head(grid((t) => live(t).replace('<a href="#" style="font-size:14px;font-weight:600">Alles bekijken</a>', '')))
+	assert.equal(bare[0], 0)
 })
 
 test('a text button drawn on the ground it stands on (a white NcButton on a white card) is a plain link, not a pill', { skip }, async () => {

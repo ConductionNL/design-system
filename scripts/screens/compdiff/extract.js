@@ -70,9 +70,6 @@ window.__compdiffExtract = function () {
 		const rest = parts.filter((x) => !/^\S.*\)\s+0px\s+0px\s+0px\s+[\d.]+px(\s+inset)?$|^(inset\s+)?\S.*\)\s+0px\s+0px\s+0px\s+[\d.]+px$/.test(x))
 		return rest.length ? rest.join(', ') : 'none'
 	}
-	// A solid outline draws a ring outside the box (a focused input's 2px main-text outline). Chrome's own `auto` focus
-	// ring is the browser's, not the page's.
-	const outlineRing = (cs) => (/^(none|hidden|auto)$/.test(cs.outlineStyle) || !(px(cs.outlineWidth) > 0) || !opaque(cs.outlineColor) ? null : { width: px(cs.outlineWidth), color: cs.outlineColor, out: Math.max(0, px(cs.outlineWidth) + px(cs.outlineOffset)) })
 	// The colour of the border people see: the border's own, or the ring's when only a ring draws one.
 	const seenBorderColour = (cs) => (Object.values(borders(cs)).some((v) => v > 0) || !ring(cs) ? cs.borderTopColor : ring(cs).color)
 	// The border people see around a field: its own (3+ sides) or ring, else that of a wrapper that hugs it (NcInputField
@@ -1064,7 +1061,10 @@ window.__compdiffExtract = function () {
 		}
 		const box = boxes.find((b) => {
 			const cs = getComputedStyle(b), r = b.getBoundingClientRect()
-			return visible(b) && r.height <= 80 && isOptionBox(b) && b.parentElement && opaque(cs.backgroundColor) && cs.backgroundColor !== bgBehind(b.parentElement) && !b.querySelectorAll(TOGGLE)[1]
+			// An option's ground holds its text: a switch track or radio ring beside the input draws the toggle itself.
+			// A box beside this toggle that holds a toggle of its own (a selected sibling row) is that toggle's option.
+			if (!b.contains(toggle) && b.querySelector(TOGGLE)) return false
+			return visible(b) && r.height <= 80 && b.textContent.trim() && isOptionBox(b) && b.parentElement && opaque(cs.backgroundColor) && cs.backgroundColor !== bgBehind(b.parentElement) && !b.querySelectorAll(TOGGLE)[1]
 		})
 		if (!box) return null
 		optionGrounds.add(box)
@@ -1097,7 +1097,8 @@ window.__compdiffExtract = function () {
 	}
 	// A focused field whose ring is drawn on a wrapper around it (NcTextField's .input-field__main-wrapper: 2px around a
 	// 1px input) is seen as that wrapper: its height and its ring are the field's, as on a board that draws the ring as
-	// the input's own border.
+	// the input's own border. An outline is not: a keyboard focus outline (thematiq's :focus-visible, vue-select's
+	// :focus-within) lies outside the layout and is not the field's frame.
 	const focusRing = (el) => {
 		const a = document.activeElement
 		if (!a || (a !== el && !el.contains(a))) return null
@@ -1107,10 +1108,8 @@ window.__compdiffExtract = function () {
 		for (let e = el, i = 0; e && e !== document.body && i < 5; e = e.parentElement, i++) {
 			const r = e.getBoundingClientRect()
 			if (r.left < r0.left - 6 || r.top < r0.top - 6 || r.right > r0.right + 6 || r.bottom > r0.bottom + 6) break
-			const ecs = getComputedStyle(e), b = borders(ecs), g = ring(ecs), o = outlineRing(ecs)
-			// An outline drawn outside the box is the outermost line people see, around the box and its border.
-			if (o && o.width >= own && (!best || o.width >= best.width)) { best = { width: o.width, color: o.color, h: r.height + 2 * o.out, el: e }; continue }
 			if (i === 0) continue
+			const ecs = getComputedStyle(e), b = borders(ecs), g = ring(ecs)
 			const w = Math.max(Object.values(b).filter((v) => v > 0).length >= 3 ? b.top : 0, g ? g.width : 0)
 			if (w > own && (!best || w > best.width)) best = { width: w, color: g && g.width >= b.top ? g.color : ecs.borderTopColor, h: r.height, el: e }
 		}
@@ -1126,7 +1125,7 @@ window.__compdiffExtract = function () {
 		if (nb < 3 && !g) return null
 		return nb >= 3 ? { width: b.left || b.top, color: opaque(tcs.borderLeftColor) ? tcs.borderLeftColor : tcs.borderTopColor, h: t.getBoundingClientRect().height, el: t } : { width: g.width, color: g.color, h: t.getBoundingClientRect().height, el: t }
 	}
-	// The frame people see around a field: the select's frame, a focus ring or outline around it, or its own border. A line
+	// The frame people see around a field: the select's frame, a focus ring drawn around it, or its own border. A line
 	// of another colour inside that frame (the input's own primary line inside the select's dark ring) is its innerBorder.
 	const fieldFrame = (el) => {
 		const outer = selectFrame(el) || focusRing(el)
@@ -1138,9 +1137,11 @@ window.__compdiffExtract = function () {
 	}
 	const elementBorder = (el, kind, cs) => {
 		if (kind === 'field') { const f = fieldFrame(el); return { border: f.width, borderColor: f.width ? f.color : null, innerBorder: f.inner.width, innerBorderColor: f.inner.width ? f.inner.color : null } }
-		const seen = seenBorders(cs)
+		// A keyboard focus ring drawn as a box shadow on the focused control is not part of its look.
+		const focusShown = el.matches(':focus-visible')
+		const seen = focusShown ? borders(cs) : seenBorders(cs)
 		const three = Object.values(seen).filter((v) => v > 0).length >= 3
-		return { border: three ? seen.top : 0, borderColor: three ? seenBorderColour(cs) : null }
+		return { border: three ? seen.top : 0, borderColor: three ? (focusShown ? cs.borderTopColor : seenBorderColour(cs)) : null }
 	}
 	// The switch people see. A native checkbox or radio draws a square glyph centred in its box, so a box stretched by
 	// its row is not the switch; an unstyled input stretched over its label (NcCheckboxRadioSwitch) is drawn by the
@@ -1240,6 +1241,15 @@ window.__compdiffExtract = function () {
 		return ps.display !== 'none' && ps.content !== 'none' && ps.content !== 'normal' && !!text && opaque(ps.backgroundColor) && ps.backgroundColor !== ground && px(ps.height) < height
 	})
 	const withGround = (toggle) => { const g = optionGround(toggle); return g ? { optionGround: g } : {} }
+	// A toggle drawn by an svg glyph (a radio's circle icon, a drawn checkbox's 20px icon in a span that paints nothing)
+	// has no corner radius to read: its shape is the glyph's. Its ground is the glyph's fill.
+	const paintsBox = (e) => { const ecs = getComputedStyle(e); return opaque(ecs.backgroundColor) || nBorders(e) >= 3 || !!ring(ecs) }
+	const fillingGlyph = (e) => {
+		const r = e.getBoundingClientRect()
+		return [...e.querySelectorAll('svg')].find((i) => visible(i) && Math.abs(i.getBoundingClientRect().width - r.width) <= 4 && Math.abs(i.getBoundingClientRect().height - r.height) <= 4) || null
+	}
+	const glyphFill = (svg) => { const f = getComputedStyle(svg.querySelector('path, circle, rect, polygon, ellipse') || svg).fill; return opaque(f) ? f : null }
+	const glyphToggle = (e, kind) => kind === 'toggle' && !e.matches('input') && !paintsBox(e) ? fillingGlyph(e) : null
 	for (const el0 of all) {
 		if (drawnBy.has(el0)) continue
 		const hiddenToggle = el0.matches('input[type=checkbox], input[type=radio]') && !visible(el0) && !outOfScope(el0) ? toggleIcon(el0) : null
@@ -1250,7 +1260,7 @@ window.__compdiffExtract = function () {
 			elements.push({
 				inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr'), kind: 'toggle', label: ownLabel(el0), inControl: inRecord(el0) ? 'record card' : null,
 				interactive: true, container: containerOf(hiddenToggle), rect: rect(hiddenToggle), ...(ir.top >= window.innerHeight ? { belowFrame: true } : {}),
-				props: { h: round(ir.height), borderRadius: radius(hiddenToggle, getComputedStyle(hiddenToggle)), border: 0, borderColor: null, background: null, color: getComputedStyle(hiddenToggle).color, fontSize: px(getComputedStyle(hiddenToggle).fontSize), fontWeight: Number(getComputedStyle(hiddenToggle).fontWeight), paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false, gapNext: null, ...withGround(el0) },
+				props: { h: round(ir.height), borderRadius: paintsBox(hiddenToggle) ? radius(hiddenToggle, getComputedStyle(hiddenToggle)) : null, border: 0, borderColor: null, background: null, color: getComputedStyle(hiddenToggle).color, fontSize: px(getComputedStyle(hiddenToggle).fontSize), fontWeight: Number(getComputedStyle(hiddenToggle).fontWeight), paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false, gapNext: null, ...withGround(el0) },
 			})
 			continue
 		}
@@ -1296,6 +1306,7 @@ window.__compdiffExtract = function () {
 		const ha = kind === 'toggle' ? hitArea(cs) : { top: 0, right: 0, bottom: 0, left: 0 }
 		const box0 = rect(el)
 		const ground = bgBehind(el)
+		const glyph = glyphToggle(el, kind)
 		elements.push({
 			el,
 			inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr') && !el0.matches('li, [role=row], [role=listitem], [role=option]'),
@@ -1304,11 +1315,11 @@ window.__compdiffExtract = function () {
 			interactive: el.matches('button, a[href], [role=button], [role=link], [role=tab], [role=menuitem]'),
 			container: containerOf(el), rect: { x: round(box0.x + ha.left), y: round(box0.y + ha.top), w: round(box0.w - ha.left - ha.right), h: round(box0.h - ha.top - ha.bottom) }, ...(r.top >= window.innerHeight ? { belowFrame: true } : {}), ...(el.closest('th, [role=columnheader]') ? { inHead: true } : {}),
 			props: {
-				h: round(kind === 'field' && (selectFrame(el) || focusRing(el)) ? (selectFrame(el) || focusRing(el)).h : drawnHeight(el, kind, cs, r)), borderRadius: kind === 'toggle' ? Math.max(0, radius(el, cs) - hitArea(cs).top) : radius(el, cs), ...elementBorder(el, kind, cs),
+				h: round(kind === 'field' && (selectFrame(el) || focusRing(el)) ? (selectFrame(el) || focusRing(el)).h : drawnHeight(el, kind, cs, r)), borderRadius: glyph ? null : kind === 'toggle' ? Math.max(0, radius(el, cs) - hitArea(cs).top) : radius(el, cs), ...elementBorder(el, kind, cs),
 				// A native checkbox or radio draws its own glyph: its computed background (grey when disabled, the accent
 				// when checked) is not painted anywhere, so it has none to compare.
 				// A translucent ground reads as what it paints over what is behind it.
-				background: nativeToggle(el, kind, cs) ? null : (rgba(ground) || [0, 0, 0, 1])[3] < 0.999 ? painted(el) : ground, native: nativeToggle(el, kind, cs) || undefined, color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
+				background: glyph ? glyphFill(glyph) : nativeToggle(el, kind, cs) ? null : (rgba(ground) || [0, 0, 0, 1])[3] < 0.999 ? painted(el) : ground, native: nativeToggle(el, kind, cs) || undefined, color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
 				// Where the text starts from the element's left edge, whatever places it (a padding, a dot beside it).
 				...(tr ? { textInsetLeft: round(tr.x - r.left) } : {}),
@@ -1351,6 +1362,8 @@ window.__compdiffExtract = function () {
 		const cs = getComputedStyle(el)
 		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
 		if (!ownBg && nBorders(el) < 3) continue
+		// A map is measured for its place and size: its tint and what is drawn on it (a parcel, a road) are the map.
+		if (inMap(el)) continue
 		if (inTabStrip(el) || el.closest('table, [role=dialog] > *:first-child:empty') || [...elementEls].some((e) => e.contains(el)) || [...cardEls].some((c) => c === el)) continue
 		if (el.matches('svg, svg *, img, canvas, [role=progressbar], progress, hr') || (!el.textContent.trim() && r.height <= 16)) continue
 		// A box around controls that are each measured (a view switch's track around its icon buttons) is accounted for

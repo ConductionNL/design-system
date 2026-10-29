@@ -283,3 +283,14 @@ test('a control named by an aria-label that starts with its visible text pairs w
 	const c = pairElements([el('Beschikbaar', 1000)], [el('Beschikbaarheid plannen', 1004)], 900)
 	assert.deepEqual([c.pairs.length, c.missing.length, c.extra.length], [0, 1, 1])
 })
+
+test('a tag in a list row does not stand for a chip outside the rows (an active-filter chip in the toolbar)', () => {
+	const tag = (label, x, y, h, inRow, background) => ({ kind: 'pill', label, inControl: null, interactive: false, inRow, container: inRow ? 6 : 5, rect: { x, y, w: 60, h }, props: { h, borderRadius: h / 2, border: 0, background, color: 'rgb(0, 0, 0)', fontSize: 13, fontWeight: 600, paddingLeft: 10, paddingRight: 10, icon: false, text: true, badge: false, gapNext: null } })
+	const chips = [tag('Soort: Verzoek', 713, 253, 30, false, 'rgb(234, 240, 247)'), tag('Status: Nieuw', 860, 253, 30, false, 'rgb(234, 240, 247)')]
+	const rowTags = (y0) => ['Klacht', 'Verzoek', 'Vraag'].map((t, i) => tag(t, 709, y0 + i * 52, 21, true, 'rgb(252, 237, 236)'))
+	const r = pairElements(chips, rowTags(374), 1400)
+	assert.deepEqual(r.pairs.filter((p) => p.board.label === 'Soort: Verzoek'), [])
+	// Control: tags in the rows on both sides pair as one group, whatever their values.
+	const rows = pairElements(rowTags(380).map((t) => ({ ...t, label: `${t.label} x` })), rowTags(374), 1400)
+	assert.equal(rows.pairs.filter((p) => p.by.startsWith('group')).length, 1)
+})

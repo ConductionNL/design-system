@@ -1482,3 +1482,85 @@ test('a checkbox or switch drawn beside its hidden input below the captured fram
 	const inFrame = await measure(sw(400))
 	assert.equal(inFrame.elements.find((e) => e.kind === 'toggle').belowFrame, undefined)
 })
+
+test('a wrapped bar whose lines are rows of their own (CnActionsBar: lens chips, Filter + view switch, search) is one toolbar', { skip }, async () => {
+	const chipEl = (t) => `<button style="height:38px;border-radius:19px;border:1px solid #888;padding:0 14px">${t}</button>`
+	const r = await measure(`<div class="cn-actions-bar" style="position:absolute;left:292px;top:248px;width:1120px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+		<div style="display:contents">
+			<div style="display:flex;flex-wrap:wrap;gap:8px;flex:0 0 950px">${chipEl('Pieter Jansen')}${chipEl('Hanna Bos')}${chipEl('Anouk Bakker')}${chipEl('Fatma Yildiz')}${chipEl('Thomas Kuiper')}${chipEl('Tim Mulder')}</div>
+			<div style="display:flex;gap:8px;margin-left:auto;width:292px"><button style="height:36px;border:1px solid #828a95;border-radius:8px">Filter</button><div style="display:flex"><button aria-label="Lijst" style="height:36px;width:40px;border:1px solid #828a95;border-radius:8px"></button><button aria-label="Kaarten" style="height:36px;width:40px;border:1px solid #828a95;border-radius:8px"></button></div></div>
+		</div>
+		<div style="display:flex;flex:0 0 100%;margin-top:12px"><input type="search" aria-label="Zoeken" style="height:40px;width:360px;box-sizing:border-box"></div>
+	</div>`)
+	const bars = r.components.filter((c) => c.role === 'toolbar')
+	assert.equal(bars.length, 1, JSON.stringify(bars.map((b) => b.rect)))
+	assert.equal(bars[0].rect.y, 248)
+	// Control: a stack of lines that each hold one control (a row with an Acties button, a row with a search field) stays no toolbar.
+	const stack = await measure('<div style="position:absolute;left:292px;top:187px;width:1120px;display:flex;flex-wrap:wrap;gap:20px"><div style="display:flex;flex:0 0 100%"><button style="height:40px;border:1px solid #888;border-radius:8px">Acties</button><span>3 geselecteerd</span></div><div style="display:flex;flex:0 0 360px"><input type="search" aria-label="Zoeken" style="height:40px;width:360px;box-sizing:border-box"></div></div>')
+	assert.deepEqual(stack.components.filter((c) => c.role === 'toolbar'), [])
+})
+
+test('a card alone in the last row of a card grid is a record card, as its siblings are', { skip }, async () => {
+	const card = (t) => `<article style="width:240px;box-sizing:border-box;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;flex-direction:column;gap:10px"><a href="#" style="font-size:17px;font-weight:700;color:#1b1c1d;text-decoration:none">${t}</a><span style="font-size:14px;color:#5e6168">2026-4871 · Woo-verzoek</span></div><div style="display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid #eef0f3;font-size:14px"><span>—</span><span>22 nov</span></div></article>`
+	const r = await measure(`<div style="position:absolute;left:292px;top:200px;width:760px;display:grid;grid-template-columns:repeat(3, 240px);gap:16px">${['Afvalinzameling', 'Losliggende tegels', 'Lakken offerte', 'Kosten nieuw zwembad'].map(card).join('')}</div>`)
+	const last = r.components.find((c) => c.title === 'Kosten nieuw zwembad')
+	const first = r.components.find((c) => c.title === 'Afvalinzameling')
+	assert.deepEqual([last.header.rowHeight, last.header.separator, last.content.gapBelowTitle], [first.header.rowHeight, first.header.separator, first.content.gapBelowTitle])
+	assert.ok(last.header.rowHeight <= 21, String(last.header.rowHeight))
+	// Control: a column of widgets (no two side by side) keeps the line under each title as its description.
+	const col = await measure(`<div style="position:absolute;left:292px;top:200px;width:240px;display:flex;flex-direction:column;gap:16px">${['Een', 'Twee', 'Drie'].map(card).join('')}</div>`)
+	assert.ok(col.components.find((c) => c.title === 'Een').header.rowHeight > 40)
+})
+
+test('a switch or radio drawn by a plain box beside its hidden input is measured on that box', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:315px;top:300px;display:flex;flex-direction:column;gap:12px">
+		<label style="display:flex;gap:12px;align-items:flex-start"><input type="checkbox" role="switch" checked style="position:absolute;opacity:0;width:1px;height:1px"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;width:38px;height:22px;border-radius:11px;background:#3669a5;justify-content:flex-end"><span style="width:18px;height:18px;border-radius:9px;background:#fff;margin:0 2px"></span></span><span>Mail op zaaknummer aan zaken koppelen</span></label>
+		<label style="display:flex;gap:10px;align-items:flex-start"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;box-sizing:border-box;border-radius:10px;border:2px solid #3669a5"><span style="width:10px;height:10px;border-radius:5px;background:#3669a5"></span></span><input type="radio" name="r1" checked style="position:absolute;opacity:0;width:1px;height:1px"><span>Elke dag</span></label>
+	</div>`)
+	const toggles = r.elements.filter((e) => e.kind === 'toggle')
+	assert.deepEqual(toggles.map((t) => [t.label, t.rect.w, t.rect.h]), [['Mail op zaaknummer aan zaken koppelen', 38, 22], ['Elke dag', 20, 20]])
+	assert.deepEqual(r.unmeasured, [])
+})
+
+test('a tile that only draws an icon, a step marker or initials is an icon of its component, not an unmeasured box', { skip }, async () => {
+	const check = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>'
+	const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:600px;border:1px solid #ccc;padding:20px">
+		<h2 style="margin:0">Open zaken</h2>
+		<span style="width:32px;height:32px;border-radius:16px;background:#eaf0f7;display:inline-flex;align-items:center;justify-content:center">${check}</span>
+		<ol style="display:flex;gap:12px;list-style:none;padding:0"><li style="display:flex;gap:8px;align-items:center"><span style="width:28px;height:28px;border-radius:14px;background:#1e6b2a;display:flex;align-items:center;justify-content:center">${check}</span>Organisatie</li><li style="display:flex;gap:8px;align-items:center"><span style="width:20px;height:20px;box-sizing:border-box;border-radius:10px;border:2px solid #3669a5"></span><strong>Stuur de waarschuwing</strong></li></ol>
+		<span role="img" aria-label="Logo Zuiddrecht" style="width:56px;height:56px;border-radius:10px;background:#fcedec;display:flex;align-items:center;justify-content:center;font-weight:700">ZD</span>
+	</section>`)
+	assert.deepEqual(r.unmeasured, [])
+	assert.deepEqual(r.icons.map((i) => [i.rect.w, i.text]), [[32, ''], [28, ''], [56, 'ZD']])
+	// Control: a filled panel larger than a tile, with nothing in it, is still reported as not measured.
+	const panel = await measure('<section style="position:absolute;left:300px;top:200px;width:600px;border:1px solid #ccc;padding:20px"><h2 style="margin:0">Kaart</h2><div style="width:120px;height:80px;background:#eaf0f7"></div></section>')
+	assert.equal(panel.unmeasured.length, 1)
+})
+
+test('a small fixed button floating over the page (the AI chat button) is reported as a floater; a fixed header is not', { skip }, async () => {
+	const fab = '<button aria-label="Open AI chat" style="position:fixed;right:44px;bottom:30px;width:56px;height:60px;border:0;background:#234a78"><span style="position:fixed;right:50px;bottom:40px;width:30px;height:30px"></span></button>'
+	const r = await measure(`<header style="position:fixed;left:0;top:0;width:1440px;height:50px;background:#00679e"></header>${fab}`)
+	assert.deepEqual(r.floaters, [{ x: 1340, y: 810, w: 56, h: 60 }])
+	// Inside a fixed app content box (Nextcloud's #content), the button still floats over what scrolls in it.
+	const inApp = await measure(`<div style="position:fixed;left:0;top:68px;width:1440px;height:832px">${fab}</div>`)
+	assert.deepEqual(inApp.floaters, [{ x: 1340, y: 810, w: 56, h: 60 }])
+})
+
+test('the text a textarea holds is not a part of its card\'s structure: it has no line box of its own', { skip }, async () => {
+	const card = (body) => `<section style="border:1px solid #ccc;padding:20px;display:flex;flex-direction:column;gap:10px"><h2 style="margin:0;font-size:17px">Gesprek met de inwoner</h2><span style="font-size:13px">Inkomend · 3 okt, 14:10</span>${body}</section>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:100px;width:800px;display:flex;flex-direction:column;gap:20px">${card('<textarea rows="2">U hoort binnen vijf dagen van ons, vandaag nog.</textarea>')}${card('')}${card('')}</div>`)
+	const first = r.components.find((c) => c.role === 'card')
+	assert.ok(first.structure.startsWith('title'), first.structure)
+	// Control: the dated line under the title is still read as a deadline.
+	assert.ok(/^title \/ deadline/.test(first.structure), first.structure)
+})
+
+test('a non-modal dialog card outside an open modal dialog is not measured, as nothing else outside it is', { skip }, async () => {
+	const card = '<div role="dialog" aria-modal="false" style="position:fixed;left:1016px;top:102px;width:400px;height:265px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;z-index:3000"><h2 style="margin:16px">Inkomend gesprek</h2>' + btn('Kies contact') + '</div>'
+	const modal = `<div role="dialog" aria-modal="true" style="position:fixed;inset:0;background:rgba(0,0,0,.45)"><div style="position:absolute;left:520px;top:190px;width:400px;background:#fff;border-radius:8px;padding:12px"><h2>Gespreksuitkomst</h2><textarea></textarea>${btn('Opslaan en sluiten')}</div></div>`
+	const r = await measure(card + modal)
+	assert.deepEqual(r.components.filter((c) => /dialog/.test(c.role)).map((c) => c.title), ['Gespreksuitkomst'])
+	// Control: with no modal open, the incoming-call card is measured as a dialog.
+	const alone = await measure(card)
+	assert.deepEqual(alone.components.filter((c) => /dialog/.test(c.role)).map((c) => c.title), ['Inkomend gesprek'])
+})

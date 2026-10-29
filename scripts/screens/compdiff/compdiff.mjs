@@ -119,7 +119,8 @@ try {
 	lap('launch')
 	const bctx = await browser.newContext({ viewport: { width, height: 1200 }, deviceScaleFactor: 1 })
 	const bpage = await bctx.newPage()
-	await bpage.goto('file://' + boardFile, { waitUntil: 'load' })
+	// The board is a local file, but its fonts and images load slowly on a busy box: 90 seconds, and once more.
+	await retryOnce(() => bpage.goto('file://' + boardFile, { waitUntil: 'load', timeout: 90000 }), (e) => console.error(`board load failed, trying once more: ${e.message.split('\n')[0]}`))
 	await bpage.waitForTimeout(800)
 	// --board-frame: a board that draws several frames side by side (three phone screens on one canvas) is measured on
 	// one of them, as if it were the whole board.
@@ -293,7 +294,7 @@ try {
 	// (pixelsFlag: not on a column head's sort button).
 	lap('compare')
 	// Open menus and popovers on each side: a crop they lie over is not compared.
-	const covers = { board: B.components.filter((c) => c.popup).map((c) => c.rect), live: L.components.filter((c) => c.popup).map((c) => c.rect) }
+	const covers = { board: [...B.components.filter((c) => c.popup).map((c) => c.rect), ...(B.floaters || []).map((f) => ({ ...f, float: true }))], live: [...L.components.filter((c) => c.popup).map((c) => c.rect), ...(L.floaters || []).map((f) => ({ ...f, float: true }))] }
 	const elementResults = ep.pairs.map((p, i) => {
 		const rows = compareElement(p.board, p.live)
 		const crop = crops[pairs.length + i]
@@ -314,6 +315,7 @@ try {
 		missingElements: ep.missing.map(slim),
 		extraElements: ep.extra.map(slim),
 		notMeasured: B.unmeasured || [],
+		icons: B.icons || [],
 		missingOnLive: missing.map((c) => ({ role: c.role, title: c.title || null, rect: c.rect })),
 		blockedWrites: blocked,
 		extraOnLive: extra.map((c) => ({ role: c.role, title: c.title || null, rect: c.rect })),

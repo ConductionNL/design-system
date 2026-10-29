@@ -175,9 +175,12 @@ export async function waitForTables(page, { timeout = 20000, still = 1000, inter
 export function loadingIndicators() {
 	const sel = '[aria-busy="true"], .icon-loading, .icon-loading-small, .loading-icon, [class*="loading-icon"], [class*="skeleton"], [class*="--loading"], [class*="__loading"], [data-testid$="-pending"], [role="status"]'
 	const pending = /^(nog aan het laden|still loading|bezig met laden|laden\s*(…|\.\.\.)|loading\s*(…|\.\.\.))/i
-	return [...document.querySelectorAll(sel)].filter((e) => {
+	// A map widget's Leaflet mount point that Leaflet has not loaded into yet (it is imported lazily).
+	const unmounted = (e) => !e.classList.contains('leaflet-container') && [...e.classList].some((c) => /(^|__)leaflet$/.test(c))
+	return [...document.querySelectorAll(`${sel}, [class*="leaflet"]`)].filter((e) => {
 		const r = e.getBoundingClientRect(), cs = getComputedStyle(e)
 		if (!(r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05)) return false
+		if (!e.matches(sel)) return unmounted(e)
 		return !e.matches('[role="status"]') || e.matches(sel.replace(', [role="status"]', '')) || pending.test(e.textContent.trim())
 	}).map((e) => `${e.classList[0] || e.tagName.toLowerCase()}${e.textContent.trim() ? ` "${e.textContent.trim().replace(/\s+/g, ' ').slice(0, 60)}"` : ''}`)
 }

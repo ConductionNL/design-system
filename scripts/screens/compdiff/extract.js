@@ -209,7 +209,9 @@ window.__compdiffExtract = function () {
 	// A map: a map library's container, or a drawn placeholder (role=img named as a map). It is measured for its place
 	// and size only: tiles, a placeholder's tint and its corners are not styling to compare.
 	const MAPLIB = '.leaflet-container, .maplibregl-map, .mapboxgl-map, .ol-viewport'
-	const isMap = (el) => el.matches(MAPLIB) || (el.matches('[role=img]') && /^kaart\b|\bmap\b/i.test(el.getAttribute('aria-label') || ''))
+	// A widget's Leaflet mount point (CnMapWidget's `__leaflet` box) is the map's box before Leaflet has loaded into it.
+	const mapMount = (el) => [...el.classList].some((c) => /(^|__)leaflet$/.test(c))
+	const isMap = (el) => el.matches(MAPLIB) || mapMount(el) || (el.matches('[role=img]') && /^kaart\b|\bmap\b/i.test(el.getAttribute('aria-label') || ''))
 	// A drawn map is often an svg (role=img), which `all` leaves out, so those are looked at too.
 	const mapCandidates = [...all, ...document.querySelectorAll('svg[role=img]')]
 	const maps = mapCandidates.filter((el) => visible(el) && !outOfScope(el) && isMap(el) && !mapCandidates.some((o) => o !== el && o.contains(el) && isMap(o)))
@@ -467,7 +469,12 @@ window.__compdiffExtract = function () {
 				// In a record card a line of text under the title (its number line) is a row of its own, however tight; a link
 				// or button there ("Alles bekijken" under a widget's title) stays in the header, as its action.
 				const ownControl = (l) => { const e = l.node.nodeType === 1 ? l.node : l.node.parentElement; const c = e && e.closest('a, button, [role=button]'); return !!c && c !== card && card.contains(c) }
-				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + (record && l.text && !ownControl(l) ? -1 : 4) && !(wraps && inAction(l)) && !subtitle(l))) break
+				// So is one line of links or buttons stacked right under the title in the title's own block (CnWidgetWrapper's
+				// title stack with "Alles bekijken" under the title), when that block holds nothing else.
+				const under = leaves.filter((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + 4)
+				const rowOf = (l) => (l.node.nodeType === 1 ? l.node : l.node.parentElement).closest('li, tr, [role=row], [role=listitem]')
+				const stackedAction = under.length > 0 && under.every((l) => ownControl(l) && !rowOf(l) && l.y <= titleBox.y + titleBox.h + 16 && Math.abs(l.y - under[0].y) <= 4)
+				if (!stackedAction && leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + (record && l.text && !ownControl(l) ? -1 : 4) && !(wraps && inAction(l)) && !subtitle(l))) break
 				headerRow = p
 			}
 			const hcs = getComputedStyle(headerRow)
@@ -634,13 +641,16 @@ window.__compdiffExtract = function () {
 			if (!t || !n.parentElement || !visible(n.parentElement) || !ownedBy(n, card) || ariaHidden(n.parentElement) || [...seen].some((s) => s.contains(n.parentElement))) continue
 			range.selectNodeContents(n)
 			const q = range.getBoundingClientRect()
+			// A text that wraps starts on its first line box and ends on its last.
+			const lines = [...range.getClientRects()].filter((l) => l.width >= 1)
+			const first = lines[0] || q, last = lines[lines.length - 1] || q
 			const ecs = getComputedStyle(n.parentElement)
 			// Runs of one line in one type, split over spans ("2026-0110", " · ", "Woo-verzoek"), are one text, as they
-			// are when a board writes them as one string.
+			// are when a board writes them as one string. So is such a run that wraps onto a next line.
 			const prev = texts[texts.length - 1]
 			const fs = px(ecs.fontSize), fw = Number(ecs.fontWeight)
-			if (prev && prev.fs === fs && prev.fw === fw && Math.abs(prev.y - q.top) <= 2 && q.left - prev.r >= -1 && q.left - prev.r <= fs * 1.2) { prev.t += ' ' + t; prev.r = q.right; continue }
-			texts.push({ t, y: q.top, b: q.bottom, x: q.left, r: q.right, fs, fw })
+			if (prev && prev.fs === fs && prev.fw === fw && Math.abs(prev.ly - first.top) <= 2 && first.left - prev.r >= -1 && first.left - prev.r <= fs * 1.2) { prev.t += ' ' + t; prev.r = last.right; prev.ly = last.top; prev.b = Math.max(prev.b, q.bottom); continue }
+			texts.push({ t, y: q.top, b: q.bottom, x: q.left, r: last.right, ly: last.top, fs, fw })
 		}
 		const maxFs = Math.max(0, ...texts.filter((x) => x.fw >= 600).map((x) => x.fs))
 		// A figure (a KPI tile's 76, 311 or 1.284, 12,5 %) is a number like a record number, however many digits it has.

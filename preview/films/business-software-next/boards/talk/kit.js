@@ -72,7 +72,7 @@ export function statRow(g, items, ink, { y = 640, x0 = X, x1 = W - X, size = 168
 
 /** The unlit honeycomb behind a scene (depth by opacity). */
 export function field(g, { cx = 1500, cy = 540, r = 64, gap = 10, scale = 1, skip } = {}) {
-	return honeyField(g, cx, cy, r, gap, { scale, skip })
+	return honeyField(g, cx, cy, r, gap, { scale, skip, top: -Infinity })
 }
 
 /** A labelled hex cell: a text cell for a brand we hold no mark for, or an app cell. */

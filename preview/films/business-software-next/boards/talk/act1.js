@@ -8,16 +8,23 @@ import { hex, honeyAt } from '../../../_lib/ui.js'
 import { rand } from '../../../_lib/core.js'
 import { ground, eyebrow, headline, body, statRow, strip, board, X, W } from './kit.js'
 
-/** The audience as a honeycomb: lit cells are raised hands. */
-function hands(g, share, seed) {
+/**
+ * The audience as a honeycomb: lit cells are raised hands. `was` is the share lit in the scene before
+ * (the same seed, so its lit cells are a superset): the film turns those cells out. The data-anim hints
+ * only steer the film's animation; they draw nothing.
+ */
+function hands(g, share, seed, was = share) {
 	const at = honeyAt(1460, 560, 46, 8)
 	const r = rand(seed)
 	for (let q = -7; q <= 7; q++) {
 		for (let rr = -6; rr <= 6; rr++) {
 			const [x, y] = at(q, rr)
 			if (x < 980 || x > W - 40 || y < 80 || y > 1040) continue
-			const up = r() < share
-			hex(g, x, y, 46, up ? C.white : C.cobalt400, 4, { 'fill-opacity': up ? 1 : 0.35 })
+			const v = r()
+			const up = v < share
+			const hint = up && was === share ? { 'data-anim': 'light', 'data-off-fill': C.cobalt400, 'data-off-opacity': 0.35 }
+				: !up && v < was ? { 'data-anim': 'out', 'data-on-fill': C.white, 'data-on-opacity': 1 } : {}
+			hex(g, x, y, 46, up ? C.white : C.cobalt400, 4, { 'fill-opacity': up ? 1 : 0.35, ...hint })
 		}
 	}
 }
@@ -48,7 +55,7 @@ export const act1 = [
 		material: 'kinetic type; most lit cells go out, a few stay lit',
 		draw(ctx) {
 			const { ink, mute } = ground(ctx)
-			hands(ctx.g, 0.2, 11)
+			hands(ctx.g, 0.2, 11, 0.62)
 			headline(ctx.g, 'Keep it up if\nyou patched\nsomething\nlast week.', ink, { y: 360 })
 			body(ctx.g, 'How was your last week?', mute, { y: 880 })
 		},

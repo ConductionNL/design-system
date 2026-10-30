@@ -5,7 +5,7 @@
  * the final line, then the two fixed brand pieces from _lib/scenes/closing.js.
  */
 import { C } from '../../../_lib/brand.js'
-import { textBlock } from '../../../_lib/stage.js'
+import { el, textBlock } from '../../../_lib/stage.js'
 import { hex, honeyAt, rect, topbar, nav, panel, bar, button, idlePill } from '../../../_lib/ui.js'
 import { rand } from '../../../_lib/core.js'
 import { builtOnFrame, installFrame, closingWords } from '../../../_lib/scenes/closing.js'
@@ -158,10 +158,12 @@ export const act7to8 = [
 			steps.forEach((s, i) => {
 				const x = X + i * step
 				const r = 36
-				comb(ctx.g, x + step / 2 - 50, 820, r, 8, s.rings, { alpha: s.accent ? 0.5 : 0.6, clip: { x0: x - 20, x1: x + step - 70, y0: 660, y1: 1160 } })
-				bigNumber(ctx.g, s.value, { x, y: 540, size, fill: ink, accent: s.accent })
-				eyebrow(ctx.g, s.label, { x, y: 596, fill: s.accent ? C.orange : C.cobalt200, size: 24 })
-				if (i < 3) textBlock(ctx.g, '→', { x: x + step - 56, y: 536, size: 64, weight: 500, family: MONO, fill: C.cobalt300, anchor: 'middle', clip: false })
+				// One group per step, so the film can morph the number from step to step (draws nothing itself).
+				const sg = el('g', { 'data-step': i }, ctx.g)
+				comb(sg, x + step / 2 - 50, 820, r, 8, s.rings, { alpha: s.accent ? 0.5 : 0.6, clip: { x0: x - 20, x1: x + step - 70, y0: 660, y1: 1160 } })
+				bigNumber(sg, s.value, { x, y: 540, size, fill: ink, accent: s.accent })
+				eyebrow(sg, s.label, { x, y: 596, fill: s.accent ? C.orange : C.cobalt200, size: 24 })
+				if (i < 3) textBlock(sg, '→', { x: x + step - 56, y: 536, size: 64, weight: 500, family: MONO, fill: C.cobalt300, anchor: 'middle', clip: false })
 			})
 		},
 	}),
@@ -249,7 +251,8 @@ export const act7to8 = [
 				const [x, y] = at(q, rr)
 				if (x < 1180 || x > W - 40 || y < 80 || y > 1040) continue
 				const up = r() < 0.72
-				hex(ctx.g, x, y, 46, up ? C.white : C.cobalt400, 4, { 'fill-opacity': up ? 1 : 0.35 })
+				const hint = up ? { 'data-anim': 'light', 'data-off-fill': C.cobalt400, 'data-off-opacity': 0.35 } : {}
+				hex(ctx.g, x, y, 46, up ? C.white : C.cobalt400, 4, { 'fill-opacity': up ? 1 : 0.35, ...hint })
 			}
 			headline(ctx.g, 'Thousands of\nangry citizens.\nLet\'s *empower*\nthem.', ink, { y: 300, size: 96 })
 			body(ctx.g, 'The browser got wilded. The web got wilded. Publishing got wilded. Business software is next, if we are willing to do it.', soft, { y: 760, size: 32, maxWidth: 960 })

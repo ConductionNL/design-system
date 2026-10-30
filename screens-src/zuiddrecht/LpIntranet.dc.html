@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 2200px">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 2434px">
   <dc-import name="DqKop" app="Launchpad" placeholder="Zoek dashboards, widgets en apps" role="Medewerker" hint-size="100%,68px"></dc-import>
   <div role="alert" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 28px; background: #234a78; color: #ffffff; font-size: 15px">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="flex: none"><path d="M22.7,19L13.6,9.9C14.5,7.6 14,4.9 12.1,3C10.1,1 7.1,0.6 4.7,1.7L9,6L6,9L1.6,4.7C0.4,7.1 0.9,10.1 2.9,12.1C4.8,14 7.5,14.5 9.8,13.6L18.9,22.7C19.3,23.1 19.9,23.1 20.3,22.7L22.6,20.4C23.1,20 23.1,19.3 22.7,19Z"></path></svg>
@@ -176,6 +176,11 @@ a{color:#3669a5}a:hover{color:#234a78}
             <sc-for list="{{ oldnews }}" as="n" hint-placeholder-count="3">
               <a href="#" style="display: flex; flex-direction: column; gap: 2px; padding: 10px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none"><span style="font-size: 15px; font-weight: 600">{{ n.title }}</span><span style="font-size: 13px; color: #5e6168">{{ n.when }}</span></a>
             </sc-for>
+            <h3 style="margin: 10px 0 0; padding-top: 10px; border-top: 1px solid #e4e6ea; font-size: 14px; font-weight: 700">Laatste documenten</h3>
+            <span style="font-size: 13px; color: #5e6168; padding-bottom: 4px">Uit de documentbibliotheek van het oude intranet, opent in SharePoint</span>
+            <sc-for list="{{ olddocs }}" as="d" hint-placeholder-count="3">
+              <a href="#" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5e6168" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M6,4H13V9H18V20H6V4M8,12V14H16V12H8M8,16V18H13V16H8Z"></path></svg><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 15px; font-weight: 600">{{ d.title }}</span><span style="font-size: 13px; color: #5e6168">gewijzigd {{ d.when }} door {{ d.who }}</span></span></a>
+            </sc-for>
           </section>
 
           <section aria-labelledby="w-comm" style="grid-column: span 2; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 8px; display: flex; flex-direction: column; gap: 2px">
@@ -202,7 +207,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2434}}'>
 class Component extends DCLogic {
   renderVals() {
     const nav = [
@@ -251,7 +256,8 @@ class Component extends DCLogic {
       ['Feest', 'M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z', '3', false],
       ['Goed idee', 'M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z', '2', false]
     ].map(([label, e, n, on]) => ({ label, e, n, on: on ? 'true' : 'false', style: rx(on) }));
-    return { nav, news, newbies, bdays, experts, menu, oldnews, questions, reactions };
+    const olddocs = [['Werkinstructie Woo-verzoeken 2026.docx', '8 oktober', 'Anouk Bakker'], ['Declaratieformulier dienstreizen.xlsx', '2 oktober', 'Fatima Ouali'], ['Huisstijlhandboek Zuiddrecht.pdf', '29 september', 'Communicatie']].map(([title, when, who]) => ({ title, when, who }));
+    return { nav, news, newbies, bdays, experts, menu, oldnews, olddocs, questions, reactions };
   }
 }
 </script>

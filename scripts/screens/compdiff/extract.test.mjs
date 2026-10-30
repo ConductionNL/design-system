@@ -1671,3 +1671,18 @@ test('a text button with an empty, hidden icon wrapper is a plain link, as one w
 	const shown = await measure(page('<span class="button-vue__icon"><svg width="16" height="16"><rect width="16" height="16"/></svg></span>'))
 	assert.equal(shown.elements.filter((e) => e.label === 'Toon ze in de tabel').length, 1)
 })
+
+test('a select-all switch in a tinted head row takes the row\'s ground, as a bare checkbox in the same row does', { skip }, async () => {
+	const table = (cell) => `<table style="position:absolute;left:300px;top:300px;width:800px;border-collapse:collapse"><thead><tr style="background:#fafbfc"><th style="padding:10px 12px;width:18px">${cell}</th><th style="padding:10px 12px">Naam</th></tr></thead><tbody><tr><td style="padding:10px 12px"><input type="checkbox" aria-label="Selecteren"></td><td>Offerte.pdf</td></tr></tbody></table>`
+	const ground = async (cell) => (await measure(table(cell))).elements.find((e) => e.label === 'Selecteer alle documenten').props.optionGround || null
+	const board = await ground('<input type="checkbox" aria-label="Selecteer alle documenten" style="width:18px;height:18px;margin:0">')
+	const live = await ground('<span class="checkbox-radio-switch"><label style="display:flex"><input type="checkbox" aria-label="Selecteer alle documenten" style="position:absolute;opacity:0;width:1px;height:1px"><span class="checkbox-content__icon"><svg width="20" height="20"><rect x="2" y="2" width="16" height="16" fill="none" stroke="#000"/></svg></span></label></span>')
+	assert.equal(board, 'rgb(250, 251, 252)')
+	assert.equal(live, board)
+	// The files browser tints the head cells, not the row: the select cell's ground is the row's.
+	const cellTint = (await measure(table('<input type="checkbox" aria-label="Selecteer alle documenten">').replace('<tr style="background:#fafbfc"><th style="', '<tr><th style="background:#fafbfc;'))).elements.find((e) => e.label === 'Selecteer alle documenten').props.optionGround
+	assert.equal(cellTint, 'rgb(250, 251, 252)')
+	// Control: the unselected body row draws no ground, so its checkbox has none.
+	const r = await measure(table('<input type="checkbox" aria-label="Selecteer alle documenten">'))
+	assert.equal(r.elements.find((e) => e.label === 'Selecteren').props.optionGround || null, null)
+})

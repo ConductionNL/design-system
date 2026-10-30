@@ -1088,6 +1088,15 @@ window.__compdiffExtract = function () {
 			boxes.push(a, ...[...a.children].filter((c) => c !== toggle && !c.contains(toggle)))
 			if (a.matches('label, .checkbox-radio-switch')) break
 		}
+		// A toggle in a table cell takes the ground of its row, however deep the library sets it in the cell (a board's
+		// bare input in the th, NcCheckboxRadioSwitch's label and wrapper in it), whether the row paints it or each of its
+		// cells does (the files browser's tinted th): the row holds the text.
+		const cell = toggle.closest('td, th, [role=cell], [role=gridcell], [role=columnheader]')
+		const row = cell && cell.closest('tr, [role=row]')
+		if (row && row.textContent.trim() && row.getBoundingClientRect().height <= 80 && !row.querySelectorAll(TOGGLE)[1]) {
+			const painted = [cell, row].find((b) => { const c = getComputedStyle(b).backgroundColor; return opaque(c) && c !== bgBehind(b.parentElement) })
+			if (painted) { optionGrounds.add(painted); return getComputedStyle(painted).backgroundColor }
+		}
 		const box = boxes.find((b) => {
 			const cs = getComputedStyle(b), r = b.getBoundingClientRect()
 			// An option's ground holds its text: a switch track or radio ring beside the input draws the toggle itself.
@@ -1188,6 +1197,12 @@ window.__compdiffExtract = function () {
 	const elements = []
 	const elementEls = new Set()
 	const recordEls = new Set(components.filter((c) => c.record).map((c) => c.el))
+	// The title of the innermost titled card around an element: a list row pairs only with a row of the same card.
+	const cardTitleOf = (el) => {
+		let best = null
+		for (const c of components) if (c.el && c.title && c.el !== el && c.el.contains(el) && (!best || best.el.contains(c.el))) best = c
+		return best ? best.title : null
+	}
 	const inRecord = (el) => { for (let e = el; e; e = e.parentElement) if (recordEls.has(e)) return true; return false }
 	// A field's name from its markup: aria-labelledby, then a <label for> or a wrapping <label>. A textarea's text is
 	// its value, not its name.
@@ -1343,7 +1358,7 @@ window.__compdiffExtract = function () {
 			// Page links pair with page links: a lone "2" elsewhere on the page is not the pager's.
 			kind, label, inControl: inRecord(el) ? 'record card' : pagerRows.some((p) => p.contains(el)) ? 'pager' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			interactive: el.matches('button, a[href], [role=button], [role=link], [role=tab], [role=menuitem]'),
-			container: containerOf(el), rect: { x: round(box0.x + ha.left), y: round(box0.y + ha.top), w: round(box0.w - ha.left - ha.right), h: round(box0.h - ha.top - ha.bottom) }, ...(r.top >= window.innerHeight ? { belowFrame: true } : {}), ...(el.closest('th, [role=columnheader]') ? { inHead: true } : {}),
+			container: containerOf(el), ...(kind === 'row' && cardTitleOf(el) ? { inCard: cardTitleOf(el) } : {}), rect: { x: round(box0.x + ha.left), y: round(box0.y + ha.top), w: round(box0.w - ha.left - ha.right), h: round(box0.h - ha.top - ha.bottom) }, ...(r.top >= window.innerHeight ? { belowFrame: true } : {}), ...(el.closest('th, [role=columnheader]') ? { inHead: true } : {}),
 			props: {
 				h: round(kind === 'field' && (selectFrame(el) || focusRing(el)) ? (selectFrame(el) || focusRing(el)).h : drawnHeight(el, kind, cs, r)), borderRadius: glyph ? null : kind === 'toggle' ? Math.max(0, radius(el, cs) - hitArea(cs).top) : radius(el, cs), ...elementBorder(el, kind, cs),
 				// A native checkbox or radio draws its own glyph: its computed background (grey when disabled, the accent

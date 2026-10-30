@@ -63,6 +63,14 @@ a{color:#3669a5}a:hover{color:#234a78}
             <input id="pqbiexport-search" type="search" placeholder="Filter op taaknaam" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px 0 38px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
           </form>
         </div>
+        <section aria-label="Uitgeschakelde taak" style="display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; padding: 14px 16px; border-radius: 12px; background: #fff4de; color: #7a4f00; font-size: 14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path></svg>
+          <span style="flex: 1 1 420px; line-height: 1.5"><strong>Leads en waarde in de pijplijn is uitgeschakeld</strong> na 3 mislukte uitvoeringen op rij, op 6 oktober om 01:00. Laatste fout: verbinding geweigerd. Elke beheerder kreeg hiervan één melding; de taak wordt niet meer ingepland tot iemand hem weer inschakelt. Inschakelen begint opnieuw te tellen.</span>
+          <span style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+            <button type="button" style="height: 34px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap">Weer inschakelen</button>
+            <a href="PqBeheer.dc.html" style="font-size: 13px; font-weight: 600; color: #7a4f00">Drempel: 3 op rij, in de instellingen</a>
+          </span>
+        </section>
         <div style="border: 1px solid #e4e6ea; border-radius: 10px; overflow: hidden">
           <div style="overflow-x: auto">
             <table style="border-collapse: collapse; width: 100%; min-width: 900px; font-size: 14px">
@@ -85,8 +93,8 @@ a{color:#3669a5}a:hover{color:#234a78}
                     <td style="padding: 12px"><span style="display: flex; flex-wrap: wrap; gap: 4px"><sc-for list="{{ r.data }}" as="d" hint-placeholder-count="2"><span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; background: #f0f1f3; color: #3d4047; white-space: nowrap">{{ d }}</span></sc-for></span></td>
                     <td style="padding: 12px"><span style="display: flex; flex-direction: column; gap: 2px"><span style="white-space: nowrap">{{ r.dest }}</span><span style="font-size: 13px; color: #5e6168">{{ r.destType }}</span></span></td>
                     <td style="padding: 12px"><span style="display: flex; flex-direction: column; gap: 2px"><span>{{ r.sched }}</span><code style="font-size: 12px; color: #5e6168">{{ r.cron }}</code></span></td>
-                    <td style="padding: 12px"><span style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start"><span style="{{ r.runStyle }}">{{ r.run }}</span><span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ r.runAt }}</span></span></td>
-                    <td style="padding: 12px"><button type="button" role="switch" aria-checked="{{ r.checked }}" aria-label="{{ r.switchLabel }}" style="{{ r.track }}"><span style="{{ r.knob }}"></span></button></td>
+                    <td style="padding: 12px"><span style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start"><span style="{{ r.runStyle }}">{{ r.run }}</span><span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ r.runAt }}</span><sc-if value="{{ r.off }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #7a4f00"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path></svg>Uitgeschakeld na 3 mislukte uitvoeringen op rij</span></sc-if></span></td>
+                    <td style="padding: 12px"><span style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start"><button type="button" role="switch" aria-checked="{{ r.checked }}" aria-label="{{ r.switchLabel }}" style="{{ r.track }}"><span style="{{ r.knob }}"></span></button><sc-if value="{{ r.off }}" hint-placeholder-val="{{ false }}"><button type="button" style="height: 30px; padding: 0 10px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 13px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap">Weer inschakelen</button></sc-if></span></td>
                     
                   <td style="padding: 14px 16px; text-align: right"><button type="button" aria-label="Actions for {{ r.name }}" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button></td></tr>
                 </sc-for>
@@ -132,7 +140,7 @@ class Component extends DCLogic {
       ['Afspraken en niet verschenen', 'CSV · volledig', ['appointmentBooking'], 'Regionaal datameer', 'Azure Data Lake', 'Maandag om 03:00', '0 3 * * 1', 'Gedeeltelijk', '5 okt, 03:12 · 2 van 3 bestanden', '12 okt, 03:00', true],
       ['Leads en waarde in de pijplijn', 'JSONL · volledig', ['lead', 'pipeline'], 'Datawarehouse', 'PostgreSQL', 'Elke nacht om 01:00', '@daily', 'Mislukt', '6 okt, 01:00 · verbinding geweigerd', 'Niet ingepland', false]
     ].map(([name, fmt, data, dest, destType, sched, cron, run, runAt, next, en]) => ({
-      name, fmt, data, dest, destType, sched, cron, run, runAt, next, runStyle: R[run], checked: en ? 'true' : 'false', switchLabel: 'Ingeschakeld: ' + name, testLabel: 'Testrun: ' + name,
+      name, fmt, data, dest, destType, sched, cron, run, runAt, next, runStyle: R[run], checked: en ? 'true' : 'false', off: !en, switchLabel: 'Ingeschakeld: ' + name, testLabel: 'Testrun: ' + name,
       track: 'position: relative; width: 40px; height: 24px; border: 6px solid transparent; background-clip: padding-box; box-sizing: content-box; margin: -6px; padding: 0; border-radius: 18px; cursor: pointer; background-color: ' + (en ? '#3669a5' : '#8a8d93'),
       knob: 'position: absolute; top: 3px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff; left: ' + (en ? '19px' : '3px')
     }));

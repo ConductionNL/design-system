@@ -307,3 +307,12 @@ test('a table inside a paired card whose counterpart draws its rows without a ta
 	const { extra: outside } = pairComponents(board, [live[0], table(300, 400, 254, 72)], 1400)
 	assert.equal(outside.length, 1)
 })
+
+test('a list row pairs only with a row of the same card, never by group across cards', () => {
+	const row = (label, card, y) => ({ kind: 'row', label, inControl: 'record card', interactive: false, container: 1, inCard: card, rect: { x: 315, y, w: 754, h: 56 }, props: { h: 56, fontSize: 15, fontWeight: 600, background: 'rgb(255, 255, 255)' } })
+	const board = [row('Toelichting stukken aan de verzoeker 14 okt, 10:00', 'Afspraken', 1520), row('Hoorzitting 21 okt, 14:00', 'Afspraken', 1576)]
+	const live = (card) => [row('Besluit opstellen Eigenaar Pieter Jansen', card, 1175), row('Besluit verzenden Eigenaar Pieter Jansen', card, 1236)]
+	assert.equal(pairElements(board, live('Wat hierna komt'), 2000).pairs.length, 0)
+	// Control: the same rows in cards of the same title pair by group, as before.
+	assert.equal(pairElements(board, live('Afspraken'), 2000).pairs.length, 1)
+})

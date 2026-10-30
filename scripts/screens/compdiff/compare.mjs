@@ -372,6 +372,8 @@ export function pairElements (B = [], L = [], H = 2000) {
 	for (const b of gb) {
 		for (const l of gl) {
 			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind] || !sameRole(b.rep, l.rep) || rowsApart(b, l)) continue
+			// A list row in one card does not stand for a row in another card ("Afspraken" against "Wat hierna komt").
+			if (b.rep.kind === 'row' && l.rep.kind === 'row' && b.rep.inCard && l.rep.inCard && titleSimilarity(b.rep.inCard, l.rep.inCard) < 0.8) continue
 			// Two lone elements with different labels are two different controls, not one control restyled.
 			const cost = Math.abs(b.rep.rect.x - l.rep.rect.x) / 1440 + 0.5 * Math.abs(b.rep.rect.y - l.rep.rect.y) / H + (b.rep.kind === l.rep.kind ? 0 : 0.05)
 			// An icon-only control shows no label: its name is for assistive tech ("Open AI chat", "AI-chat openen"), so two

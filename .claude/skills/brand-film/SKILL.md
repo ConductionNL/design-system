@@ -52,6 +52,43 @@ A film that is not about one app (the ConNext film, the archiving film) writes i
 same engine and still closes with Built on and the install board, unless the bible says otherwise for
 that film.
 
+## One movie, not a collection of screens
+
+A film that is a row of self-contained scenes reads as a slide deck, however good each frame is.
+Ruben rejected two cuts of the "Business software is next" film for exactly this (Oct 2026): first
+hard cuts between slide-like scenes, then a camera gliding over a wall of cards ("too much the same,
+I see screens"). Plan continuity in the storyboard, not as an effect added afterwards.
+
+- **One shared anchor per cut.** Every seam names the element that survives it: a shape, a word, a
+  number or a position that carries into the next scene and changes role there (the 497 digits drop
+  into hexes that tile the next honeycomb; a headline word becomes the next screen's label). Write
+  the anchor in the board's `note`. A seam with no anchor is a hard cut and needs a reason.
+- **A hero that never leaves.** One recurring element, usually the scene's single orange hex,
+  travels the whole film and changes role (cursor, record, status, the answer). It ties the film
+  together and keeps the one-orange rule.
+- **One world, no screens.** No card edges, no visible frames, no dimmed neighbouring scenes, no
+  ground that resets every scene. Scenes live in one space; the main seam is a zoom through a cell
+  (push into a hex until it is the next scene, or pull out and the scene turns out to be one cell).
+- **Vary the seams.** Zoom-through, morph (hex into panel), motion match (leave right, enter left at
+  the same speed and height), wipes made of the scene's own hexes. The same seam everywhere is the
+  slideshow again.
+- **Overlap every cut.** The next scene's first element moves 0.25 to 0.5 s before the current one
+  has left. Never fade everything out and rebuild from empty.
+- **No dead holds.** While the viewer reads, keep a slow secondary motion: a 1 to 2 % drift, a
+  ticking number.
+- **Chapters live in the world.** A section slide is presentation furniture. In a film the chapter
+  is a label on the world the camera passes, never its own screen.
+- **A film of a talk speaks to one viewer.** "Do you write code?", never "Who here writes code?".
+  Audience questions, hands and "this room" do not survive the move from stage to screen.
+- **Without a voice, pace by reading.** Each line stays fully readable for 1 s plus 0.35 s per
+  word (at least 2 s) after its entrance; entrances and exits take 8 to 12 frames; scene lengths
+  snap to musical phrases and cuts land on downbeats.
+
+References that do this well: the *Catch Me If You Can* titles (one figure through a flat graphic
+world, scenes joined by graphic matches), the Eames' *Powers of Ten* (one continuous zoom), Buck's
+*Good Books "Metamorphosis"* (every scene morphs into the next), and School of Motion's
+[match cuts](https://www.schoolofmotion.com/blog/match-cuts) guide.
+
 ## The process
 
 Seven steps. Do not skip one because the request says "just make a video". The gates are the film
@@ -100,7 +137,9 @@ Do not build before the storyboard is approved.
 
 ### 4 · Build the approved direction
 
-The approved stills become the scenes' resting frames; animation is added around them. The film page
+The approved stills become the scenes' resting frames; animation is added around them, and the
+seams join them into one movie (see "One movie, not a collection of screens"): each still is a
+moment in one world, not a slide. The film page
 is `preview/films/<slug>[/<direction>]/index.html` with its `film.js`. Times come from the film's
 timeline and the grid ([`_lib/timeline.js`](../../../preview/films/_lib/timeline.js)), moves from the
 motion tokens ([`_lib/motion.js`](../../../preview/films/_lib/motion.js)), seams from the transitions

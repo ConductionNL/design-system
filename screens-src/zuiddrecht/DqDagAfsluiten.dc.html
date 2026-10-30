@@ -74,7 +74,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                   <span style="width: 24px; height: 24px; flex: none; border-radius: 12px; background: #e7f3ea; color: #1e6b2a; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span>
                   <span style="flex: 1; display: flex; flex-direction: column; gap: 4px">
                     <span style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center"><span style="{{ d.kindStyle }}">{{ d.kind }}</span><a href="{{ d.href }}" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ d.title }}</a><span style="font-size: 13px; color: #5e6168">{{ d.meta }}</span></span>
-                    <span style="font-size: 15px; color: #3d4047">{{ d.note }}</span>
+                    <span style="display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: baseline"><span style="flex: 1 1 280px; min-width: 0; font-size: 15px; color: #3d4047">{{ d.note }}</span><span style="flex: none; font-size: 14px; font-weight: 600; color: #3d4047; white-space: nowrap">{{ d.hours }}</span></span>
                   </span>
                 </div>
               </sc-for>
@@ -119,15 +119,15 @@ class Component extends DCLogic {
     const K = { 'Zaak': pill('#eaf0f7', '#234a78'), 'Taak': pill('#e8e6f6', '#4a3f8f') };
     const dueS = (lvl) => 'font-size: 14px; white-space: nowrap; ' + (lvl === 'late' ? 'font-weight: 700; color: #a30000' : lvl === 'soon' ? 'font-weight: 600; color: #7a4f00' : 'color: #3d4047');
     const open = [
+      ['Zaak', 'Melding geluidsoverlast terras Markt', '2026-4853 · In behandeling', '2 dagen te laat', 'late', '', '', 'DqZaak.dc.html'],
       ['Zaak', 'Bezwaar parkeerboete Havenstraat', '2026-4836 · In behandeling', 'Termijn vandaag', 'late', 'Hoorzitting gepland op 21 oktober, indiener per brief uitgenodigd', '1,5', 'DqZaak.dc.html'],
-      ['Taak', 'Advies boomdeskundige beoordelen', 'bij 2026-4839 Kapvergunning essen Parkweg', 'Vrijdag 9 okt', 'soon', 'Advies gelezen, twee essen zijn ziek, conceptbesluit volgt', '1', '#'],
-      ['Zaak', 'Melding geluidsoverlast terras Markt', '2026-4853 · In behandeling', '2 dagen te laat', 'late', '', '', 'DqZaak.dc.html']
+      ['Taak', 'Advies boomdeskundige beoordelen', 'bij 2026-4839 Kapvergunning essen Parkweg', 'Vrijdag 9 okt', 'soon', 'Advies gelezen, twee essen zijn ziek, conceptbesluit volgt', '1', '#']
     ].map(([kind, title, meta, due, lvl, text, hours, href], i) => ({ kind, kindStyle: K[kind], title, meta, due, dueStyle: dueS(lvl), text, hours, href, fieldId: 'eod-wat-' + i, hoursId: 'eod-uren-' + i }));
     const done = [
-      ['Zaak', 'Verlichting fietspad Lindelaan', '2026-0110 · 15:40', 'Drie documenten beoordeeld, offerte lantaarnpalen deels openbaar. 2 uur.', 'DqZaak.dc.html'],
-      ['Taak', 'Hoorzitting inplannen', 'bij 2026-4836 · 11:15', 'Zaal en commissie vastgelegd voor 21 oktober. 0,5 uur.', '#'],
-      ['Zaak', 'Parkeervergunningen binnenstad', '2026-4837 · 09:30', 'Verzoeker herinnerd aan de ontbrekende machtiging. 0,25 uur.', 'DqZaak.dc.html']
-    ].map(([kind, title, meta, note, href]) => ({ kind, kindStyle: K[kind], title, meta, note, href }));
+      ['Zaak', 'Verlichting fietspad Lindelaan', '2026-0110 · 15:40', 'Drie documenten beoordeeld, offerte lantaarnpalen deels openbaar.', '2 uur', 'DqZaak.dc.html'],
+      ['Taak', 'Hoorzitting inplannen', 'bij 2026-4836 · 11:15', 'Zaal en commissie vastgelegd voor 21 oktober.', '0,5 uur', '#'],
+      ['Zaak', 'Parkeervergunningen binnenstad', '2026-4837 · 09:30', 'Verzoeker herinnerd aan de ontbrekende machtiging.', '0,25 uur', 'DqZaak.dc.html']
+    ].map(([kind, title, meta, note, hours, href]) => ({ kind, kindStyle: K[kind], title, meta, note, hours, href }));
     const stats = [
       ['Geopend', '6', '4 zaken, 2 taken'], ['Vastgelegd', '3', 'van de 6'],
       ['Uren', '2,75', 'nu al in humaniq']

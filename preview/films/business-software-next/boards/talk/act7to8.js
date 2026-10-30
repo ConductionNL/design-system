@@ -1,7 +1,7 @@
 /**
  * Act 7 and 8: the store and the close. Section 05 (a platform and a store),
  * the store growing from 600 to 6,000 to 60,000 to no limit, the Buildiq store
- * redrawn, who the store pays, the IP stake, the three questions for the room,
+ * redrawn, who the store pays, the IP stake, the three questions for the viewer,
  * the final line, then the two fixed brand pieces from _lib/scenes/closing.js.
  */
 import { C } from '../../../_lib/brand.js'
@@ -241,10 +241,10 @@ export const act7to8 = [
 	}),
 	board('final-line', 'Thousands of angry citizens. Let\'s empower them.', {
 		words: 'The browser got wilded. The web got wilded. Publishing got wilded. Business software is next, if we are willing to do it. We have thousands of angry citizens. Let\'s empower them.',
-		material: 'kinetic type, hard cuts on "wilded"; the raised hands of the opening come back as lit cells on the right; the follow-along line in mono at the foot',
+		material: 'kinetic type, hard cuts on "wilded"; the honeycomb of the opening comes back with most cells lit: everyone empowered; the follow-along line in mono at the foot',
 		draw(ctx) {
 			const { ink, soft } = ground(ctx)
-			// The audience of the opening, every hand up now.
+			// The honeycomb of the opening, most cells lit now: everyone empowered.
 			const at = honeyAt(1520, 600, 46, 8)
 			const r = rand(7)
 			for (let q = -6; q <= 6; q++) for (let rr = -6; rr <= 6; rr++) {

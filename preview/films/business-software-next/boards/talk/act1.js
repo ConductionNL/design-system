@@ -1,30 +1,34 @@
 /**
- * Act 0 and 1: the opening sting and the hook. Who writes code, who patched,
- * how was your week, and WordPress's week (Wordfence weekly reports 5 to 18 Oct
+ * Act 0 and 1: the opening sting and the hook, to one viewer. Do you write code, did you
+ * patch, how was your week, and WordPress's week (Wordfence weekly reports 5 to 18 Oct
  * 2026, Patchstack State of WordPress Security 2026).
  */
 import { C } from '../../../_lib/brand.js'
+import { el } from '../../../_lib/stage.js'
 import { hex, honeyAt } from '../../../_lib/ui.js'
 import { rand } from '../../../_lib/core.js'
 import { ground, eyebrow, headline, body, statRow, strip, board, X, W } from './kit.js'
 
 /**
- * The audience as a honeycomb: lit cells are raised hands. `was` is the share lit in the scene before
- * (the same seed, so its lit cells are a superset): the film turns those cells out. The data-anim hints
- * only steer the film's animation; they draw nothing.
+ * Everyone who writes code, as a honeycomb; the one orange cell is you, the viewer. `patched` lights
+ * that share of the others white (the few who patched last week). `youLights` and `patchLights` add
+ * data-anim hints that only steer the film's animation (the cell turns over into its colour); they draw nothing.
  */
-function hands(g, share, seed, was = share) {
+const YOU = [0, 0]
+function coders(g, { patched = 0, seed = 11, youLights = false, patchLights = false } = {}) {
 	const at = honeyAt(1460, 560, 46, 8)
 	const r = rand(seed)
+	const off = { 'data-off-fill': C.cobalt400, 'data-off-opacity': 0.35 }
 	for (let q = -7; q <= 7; q++) {
 		for (let rr = -6; rr <= 6; rr++) {
 			const [x, y] = at(q, rr)
 			if (x < 980 || x > W - 40 || y < 80 || y > 1040) continue
-			const v = r()
-			const up = v < share
-			const hint = up && was === share ? { 'data-anim': 'light', 'data-off-fill': C.cobalt400, 'data-off-opacity': 0.35 }
-				: !up && v < was ? { 'data-anim': 'out', 'data-on-fill': C.white, 'data-on-opacity': 1 } : {}
-			hex(g, x, y, 46, up ? C.white : C.cobalt400, 4, { 'fill-opacity': up ? 1 : 0.35, ...hint })
+			const lit = r() < patched
+			if (q === YOU[0] && rr === YOU[1]) {
+				hex(g, x, y, 46, C.orange, 4, youLights ? { 'data-anim': 'light', ...off } : {})
+				continue
+			}
+			hex(g, x, y, 46, lit ? C.white : C.cobalt400, 4, { 'fill-opacity': lit ? 1 : 0.35, ...(lit && patchLights ? { 'data-anim': 'light', ...off } : {}) })
 		}
 	}
 }
@@ -40,33 +44,33 @@ export const act1 = [
 			body(ctx.g, 'The same three bars in front of every film.', mute, { y: 660 })
 		},
 	}),
-	board('who-codes', 'Who here writes code?', {
-		words: 'Who here writes code? Hands up.',
-		material: 'kinetic type; the audience as a honeycomb, lit cells are raised hands',
-		draw(ctx) {
-			const { ink, mute } = ground(ctx)
-			hands(ctx.g, 0.62, 11)
-			headline(ctx.g, 'Who here\nwrites code?', ink)
-			body(ctx.g, 'Hands up.', mute, { y: 780 })
-		},
-	}),
-	board('who-patched', 'Keep your hand up if you patched', {
-		words: 'Keep your hand up if you patched something last week.',
-		material: 'kinetic type; most lit cells go out, a few stay lit',
-		draw(ctx) {
-			const { ink, mute } = ground(ctx)
-			hands(ctx.g, 0.2, 11, 0.62)
-			headline(ctx.g, 'Keep it up if\nyou patched\nsomething\nlast week.', ink, { y: 360 })
-			body(ctx.g, 'How was your last week?', mute, { y: 880 })
-		},
-	}),
-	board('fun-week', 'Had a fun week?', {
-		words: 'Had a fun week? Mine sucked.',
-		material: 'kinetic type, a hard cut on "Mine sucked."',
+	board('who-codes', 'Do you write code?', {
+		words: 'Do you write code?',
+		material: 'kinetic type; everyone who writes code as a honeycomb, one cell turns orange: you',
 		draw(ctx) {
 			const { ink } = ground(ctx)
-			headline(ctx.g, 'Had a fun week?', ink, { y: 470, size: 150, wide: true })
-			headline(ctx.g, 'Mine *sucked.*', ink, { y: 680, size: 150, wide: true })
+			coders(ctx.g, { youLights: true })
+			headline(ctx.g, 'Do you\nwrite code?', ink)
+		},
+	}),
+	board('who-patched', 'Did you patch something last week?', {
+		words: 'Did you patch something last week?',
+		material: 'kinetic type; the same honeycomb, you stay orange, a few others light up: the ones who patched',
+		draw(ctx) {
+			const { ink } = ground(ctx)
+			coders(ctx.g, { patched: 0.2, patchLights: true })
+			headline(ctx.g, 'Did you patch\nsomething\nlast week?', ink, { y: 400 })
+		},
+	}),
+	board('fun-week', 'How was your week?', {
+		words: 'How was your week? Mine sucked.',
+		material: 'kinetic type; "How was your week?" alone, then after the silence a hard cut within the card to "Mine sucked."',
+		draw(ctx) {
+			const { ink } = ground(ctx)
+			// The first beat of the card: hidden in the still, shown by the film until the hard cut.
+			const before = el('g', { 'data-beat': 'before', display: 'none' }, ctx.g)
+			headline(before, 'How was your week?', ink, { y: 580, size: 150, wide: true })
+			headline(ctx.g, 'Mine *sucked.*', ink, { y: 580, size: 150, wide: true })
 		},
 	}),
 	board('wordpress-week', 'WordPress had 497 new holes', {

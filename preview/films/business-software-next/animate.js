@@ -202,7 +202,12 @@ export function animateBoard(ctx, board, plan) {
 	const first = cam.firstElementChild
 	if (first?.tagName === 'rect' && +first.getAttribute('width') >= W && +first.getAttribute('height') >= H) root.insertBefore(first, cam)
 
-	// Measure with the scene shown; the film hides it again on its next render.
+	// A two-beat card: its first beat is drawn hidden (the still shows the second); the film shows it until the cut.
+	const beatG = cam.querySelector(':scope > [data-beat=before]')
+	if (beatG) beatG.removeAttribute('display')
+
+	// Measure with the scene shown, then give the display back to whoever owns it.
+	const prevDisplay = root.getAttribute('display')
 	root.setAttribute('display', 'inline')
 	const pieces = []
 	for (const n of [...cam.children]) {
@@ -280,7 +285,16 @@ export function animateBoard(ctx, board, plan) {
 	}
 
 	/* the intro: eyebrows and headlines at the top of the draw */
-	const rest0 = roots.filter((p) => !bg.includes(p))
+	const beatP = beatG ? roots.find((p) => p.node === beatG) : null
+	const rest0 = beatP ? [beatP] : roots.filter((p) => !bg.includes(p))
+	if (beatP) {
+		// the hard cut within the card: the first beat leaves and the still's words are there, on the spoken word
+		const w = plan.wordAt(spec.beatWord || '')
+		const cut = Math.round(((w ?? plan.lead + plan.voice * 0.6) - F(1)) * 24) / 24
+		const others = roots.filter((p) => p !== beatP && !bg.includes(p))
+		jobs.push({ end: cut, update: (l) => { const after = l >= cut; beatP.w.setAttribute('display', after ? 'none' : 'inline'); for (const p of others) { if (after) p.w.removeAttribute('display'); else p.w.setAttribute('display', 'none') } if (after) beatP.w.setAttribute('display', 'none') } })
+		cue(cut, 'click', { gain: 0.22, freq: 2600, seed: 47, dry: true })
+	}
 	// The cut lands inside the first move (the scene's first frame already shows its words rising), so no frame is empty.
 	let t = -F(3)
 	let introEnd = 0
@@ -497,7 +511,7 @@ export function animateBoard(ctx, board, plan) {
 
 	/* the camera: a gentle push onto the scene's largest picture, settling before the voice ends */
 	const big = roots.filter((p) => isContainer(p) && p.kind !== 'hex').sort((a, b) => b.area - a.area)[0]
-	const camOn = spec.camera ?? (big && big.area >= 200000)
+	const camOn = spec.camera ?? false
 	const camEnd = Math.min(plan.dur - 1, Math.max(lastEnd + 0.4, spec.cameraEnd ?? Math.min(plan.dur * 0.6, 4.5)))
 	const pivot = spec.pivot || (big ? [big.cx, big.cy] : [W / 2, H / 2])
 	const camFrom = spec.cameraFrom ?? 0.955
@@ -514,7 +528,8 @@ export function animateBoard(ctx, board, plan) {
 	}
 
 	const end = Math.max(...jobs.map((j) => j.end), 0)
-	root.setAttribute('display', 'none')
+	if (prevDisplay === null) root.removeAttribute('display')
+	else root.setAttribute('display', prevDisplay)
 	return {
 		end,
 		cues,

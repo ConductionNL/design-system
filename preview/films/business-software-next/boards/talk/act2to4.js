@@ -93,7 +93,7 @@ export const act2to4 = [
 		},
 	}),
 	board('title', 'Business software is next', {
-		words: 'Now look at the hands that stayed down. They know exactly what software they need. Business software is next.',
+		words: 'Not everyone writes code. But almost everyone knows exactly what software they need. Business software is next.',
 		material: 'kinetic type, the title lands on "next"; the honeycomb fades up behind',
 		draw(ctx) {
 			const { ink, soft } = ground(ctx)

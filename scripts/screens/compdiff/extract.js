@@ -318,7 +318,10 @@ window.__compdiffExtract = function () {
 				: box.height >= 16 && box.height <= 48 && Math.abs(box.width - box.height) <= 4 && el.textContent.trim().length <= 3)
 			// A box drawn by a pseudo-element (NcCheckboxRadioSwitch's checkbox as a ::before on .checkbox-content__icon)
 			// is a part where its element sits.
-			if (!isMedia && !isDot && !pseudoBox(el)) continue
+			// So is an empty box drawn by its border alone (a board's checkbox as a bordered span), as the svg glyph that
+			// draws the same box on live is.
+			const isFrame = !el.textContent.trim() && ![...el.children].some(visible) && box.height <= 48 && box.width <= 48 && nBorders(el) >= 3
+			if (!isMedia && !isDot && !isFrame && !pseudoBox(el)) continue
 			if (el.closest('svg') && el.tagName !== 'svg') continue
 			// A transparent border its ground is not painted under (a switch's hit area) is not where the part is drawn.
 			const b = hitArea(cs)
@@ -375,7 +378,8 @@ window.__compdiffExtract = function () {
 			// A card that is itself one link (a record card) is no control around its own title.
 			const ctl = n.parentElement.closest(INTERACTIVE)
 			const own = ctl && (ctl === card || ctl.contains(card))
-			const plainLink = ctl && ctl.tagName === 'A' && !opaque(getComputedStyle(ctl).backgroundColor) && !Object.values(borders(getComputedStyle(ctl))).some((v) => v > 0)
+			// So is a button drawn as text around it (a map list's name, which a board sets as a link).
+			const plainLink = ctl && (ctl.tagName === 'A' || (ctl.tagName === 'BUTTON' && !ctl.querySelector('svg, img') && px(cs.fontSize) >= 15)) && !opaque(getComputedStyle(ctl).backgroundColor) && !Object.values(borders(getComputedStyle(ctl))).some((v) => v > 0)
 			// A choice row's label (a radio or checkbox with its option title, nested in the option's card beside its
 			// details) carries the option's title, as it does when the label is the whole card.
 			const choiceLabel = ctl && ctl.tagName === 'LABEL' && !!ctl.querySelector('input[type=radio], input[type=checkbox], [role=radio], [role=checkbox]')
@@ -531,7 +535,26 @@ window.__compdiffExtract = function () {
 		// height follows the row it sits in, so a gap measured past that line lands on a footer pinned to the bottom.
 		// A line marked as a description (a settings section's __desc) stays one in a column of such cards.
 		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || (!record && plainLine(next))) ? next : null
-		const inHeader = (n) => (headerRow && headerRow.contains(n)) || (desc && desc.contains(n))
+		// A title read from the first row of a list card (a queue row's "6 dagen") takes that whole row with it: what
+		// follows the title in its own row (the row's checkbox, its name and meta line) is not the card's content.
+		let titleRows = []
+		const titleRow = (() => {
+			if (!title) return null
+			for (let r = title.parentElement; r && r !== card && card.contains(r); r = r.parentElement) {
+				const { width: w, height: h } = r.getBoundingClientRect()
+				if (w < cr.width * 0.8) continue
+				if (h > 160) return null
+				const alike = r.parentElement ? [...r.parentElement.children].filter((s) => {
+					const sr = s.getBoundingClientRect()
+					return s !== r && s.tagName === r.tagName && s.children.length === r.children.length && visible(s) && Math.abs(sr.width - w) <= 2 && sr.height >= h * 0.6 && sr.height <= h * 1.6
+				}) : []
+				if (alike.length < 2) return null
+				titleRows = alike
+				return r
+			}
+			return null
+		})()
+		const inHeader = (n) => (headerRow && headerRow.contains(n)) || (desc && desc.contains(n)) || (titleRow && titleRow.contains(n))
 		const content = leaves.filter((l) => !inHeader(l.node) && l.y >= below)
 		if (content.length) {
 			const top = Math.min(...content.map((l) => l.y))
@@ -546,7 +569,10 @@ window.__compdiffExtract = function () {
 			const ROWEL = 'li, [role=listitem], [role=row], [role=option]'
 			const leadRow = lead.map((f) => (f.node.nodeType === 1 ? f.node : f.node.parentElement).closest(ROWEL)).find(Boolean)
 			const inLeadRow = (l) => { if (!leadRow || l.text) return false; const rr = leadRow.getBoundingClientRect(); return leadRow.contains(l.node) && l.y < rr.top + rr.height / 2 }
-			const firstRow = content.filter((l) => l.y <= top + 6 || (!l.text && l.y < lineBottom) || lead.some((f) => sameLine(f, l)) || inLeadRow(l))
+			// In a list card titled by its first row, the first content row is the next row, all of it: its parts are
+			// centred on the row, so a two-line name starts higher than the checkbox and the label beside it.
+			const leadSibling = titleRows.find((s) => lead.some((f) => s.contains(f.node)))
+			const firstRow = content.filter((l) => l.y <= top + 6 || (!l.text && l.y < lineBottom) || lead.some((f) => sameLine(f, l)) || inLeadRow(l) || (leadSibling && leadSibling.contains(l.node)))
 			comp.content = {
 				firstRowInsetLeft: round(Math.min(...firstRow.map((l) => l.x)) - cr.left),
 				minInsetLeft: round(Math.min(...content.map((l) => l.x)) - cr.left),
@@ -873,6 +899,9 @@ window.__compdiffExtract = function () {
 		const ls = by.length ? by : [...(c.labels || [])]
 		const cr = c.getBoundingClientRect()
 		if (ls.some((l) => visible(l) && l.textContent.trim() && l.getBoundingClientRect().bottom <= cr.top + 2)) return true
+		// A label that wraps its field sets its caption over the field inside it (humaniq's "Uren" row).
+		const captionOver = (l) => [...l.querySelectorAll('*')].some((t) => !t.contains(c) && !c.contains(t) && !t.children.length && visible(t) && t.textContent.trim() && t.getBoundingClientRect().bottom <= cr.top + 2)
+		if (ls.some((l) => l.contains(c) && visible(l) && captionOver(l))) return true
 		// A board names the field with aria-label and sets the same words as a caption over it in its wrapper, or sets a
 		// label element right over it without tying it to the field (no for, not wrapping it).
 		const name = (c.getAttribute('aria-label') || '').trim()
@@ -1082,7 +1111,8 @@ window.__compdiffExtract = function () {
 		if (el.tagName === 'SUMMARY') return 'button'
 		// A button drawn as a plain text link (no ground of its own, no border, no icon: "Alles wissen", NcButton's
 		// tertiary "Toon ze in de tabel" painted the card's white) is read as a plain link is: not an element.
-		if (el.matches('button, [role=button]') && !boxed && !el.querySelector('svg, img, [class*=icon]')) return null
+		// An icon wrapper left empty or hidden (NcButton's .button-vue__icon without an icon) draws no icon.
+		if (el.matches('button, [role=button]') && !boxed && !el.querySelector('svg, img') && ![...el.querySelectorAll('[class*=icon]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 4)) return null
 		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
 		// A filled label around a radio or checkbox, or beside one (NcCheckboxRadioSwitch fills the content next to its
 		// input on the checked row), is that toggle's state, not a badge.

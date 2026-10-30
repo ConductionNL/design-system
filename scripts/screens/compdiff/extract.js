@@ -534,7 +534,10 @@ window.__compdiffExtract = function () {
 		// A record card's line under its title (number, type, handler) is its first row, not a description: the card's
 		// height follows the row it sits in, so a gap measured past that line lands on a footer pinned to the bottom.
 		// A line marked as a description (a settings section's __desc) stays one in a column of such cards.
-		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || (!record && plainLine(next))) ? next : null
+		// A marked line belongs to the header only when it sits right under the title: set below a category line or an
+		// icon row taller than the title (a catalogue card, a module card), it is the card's body text.
+		const marked = (e) => e.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') && (!titleBox || e.getBoundingClientRect().top - (titleBox.y + titleBox.h) <= 12)
+		const desc = next && (marked(next) || (!record && plainLine(next))) ? next : null
 		// A title read from the first row of a list card (a queue row's "6 dagen") takes that whole row with it: what
 		// follows the title in its own row (the row's checkbox, its name and meta line) is not the card's content.
 		let titleRows = []

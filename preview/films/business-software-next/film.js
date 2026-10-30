@@ -156,8 +156,8 @@ for (const p of plan) {
 			anim.update(l)
 			if (cap) cap.tb.items.forEach((it, i) => {
 				const e = arrive(inv(cap.at + i * F(1), cap.at + i * F(1) + F(7), l))
-				it.node.setAttribute('transform', e >= 1 ? null : `translate(0 ${((1 - e) * 50).toFixed(2)})`)
 				if (e >= 1) it.node.removeAttribute('transform')
+				else it.node.setAttribute('transform', `translate(0 ${((1 - e) * 50).toFixed(2)})`)
 			})
 		}
 	})

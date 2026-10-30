@@ -1686,3 +1686,34 @@ test('a select-all switch in a tinted head row takes the row\'s ground, as a bar
 	const r = await measure(table('<input type="checkbox" aria-label="Selecteer alle documenten">'))
 	assert.equal(r.elements.find((e) => e.label === 'Selecteren').props.optionGround || null, null)
 })
+
+const catalogueIcon = '<span style="display:flex;flex:none;width:42px;height:42px;border-radius:10px;background:#e8f0fb"></span>'
+const catalogue = (titles, card) => `<div style="position:absolute;left:316px;top:200px;width:1073px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px">${titles.map(card).join('')}</div>`
+
+test('a marked description under a report card\'s category line is the card\'s body, as the board\'s plain line is', { skip }, async () => {
+	const footer = '<div style="margin-top:auto;padding-top:10px;border-top:1px solid #eef0f3;display:flex;justify-content:space-between;align-items:center;min-height:34px"><span style="font-size:13px;color:#5e6168">Opent een eigen pagina</span><a href="#" style="display:inline-flex;align-items:center;height:34px;padding:0 12px;border:1px solid #828a95;border-radius:8px">Open</a></div>'
+	const report = (p) => (t) => `<article style="background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px;height:230px;box-sizing:border-box"><div style="display:flex;gap:12px;align-items:flex-start">${catalogueIcon}<div style="display:flex;flex-direction:column;gap:4px"><h3 style="margin:0;font-size:17px;line-height:1.3">${t}</h3><span style="font-size:13px;color:#5e6168">Mensen en prestaties</span></div></div>${p}${footer}</article>`
+	const text = 'Afhandeltijden en werkdruk per medewerker.'
+	const titles = ['Prestaties medewerkers', 'SLA-realisatie']
+	const board = await measure(catalogue(titles, report(`<p style="margin:0;font-size:14px;line-height:1.5;color:#3d4047">${text}</p>`)))
+	const live = await measure(catalogue(titles, report(`<p class="cn-reports-page__card-description" style="margin:0;font-size:14px;line-height:1.5;color:#6b6f75">${text}</p>`)))
+	const card = (r) => r.components.find((c) => c.title === 'Prestaties medewerkers')
+	assert.ok(Math.abs(card(live).content.gapBelowTitle - card(board).content.gapBelowTitle) <= 2, `live ${card(live).content.gapBelowTitle}, board ${card(board).content.gapBelowTitle}`)
+	// The footer's rule is below the body, not a header separator.
+	assert.equal(card(live).header.separator, card(board).header.separator)
+})
+
+test('a marked description under a module card\'s icon row is the card\'s body, as the board\'s plain line is', { skip }, async () => {
+	const module = (cls) => (t) => `<article style="display:flex;flex-direction:column;gap:12px;padding:20px;border:1px solid #e4e6ea;border-radius:12px;background:#fff"><div style="display:flex;align-items:center;gap:12px">${catalogueIcon}<h3 style="flex:1 1 auto;margin:0;font-size:17px">${t}</h3><span style="padding:2px 8px;border-radius:12px;background:#e6f4ea;font-size:12px">In het menu</span></div><p${cls} style="margin:0;font-size:15px;line-height:1.5">Contacten, organisaties en hun gegevens.</p><span style="font-size:13px;color:#5e6168">3 pagina's</span><ul style="display:flex;gap:12px;margin:0;padding:0;list-style:none"><li><a href="#">Contacten</a></li><li><a href="#">Organisaties</a></li></ul></article>`
+	const titles = ['Verkoop', 'Marketing', 'Producten']
+	const board = await measure(catalogue(titles, module('')))
+	const live = await measure(catalogue(titles, module(' class="cn-module-card__description"')))
+	const card = (r) => r.components.find((c) => c.title === 'Verkoop')
+	assert.ok(Math.abs(card(live).content.gapBelowTitle - card(board).content.gapBelowTitle) <= 2, `live ${card(live).content.gapBelowTitle}, board ${card(board).content.gapBelowTitle}`)
+})
+
+test('a marked description right under a card\'s title stays its description', { skip }, async () => {
+	const card = (t) => `<section style="border:1px solid #e4e6ea;border-radius:12px;padding:20px;margin-bottom:16px;background:#fff"><h2 style="margin:0 0 4px;font-size:17px">${t}</h2><p class="card__description" style="margin:0;font-size:14px;color:#5e6168">Waar zaken wachten.</p><table style="margin-top:24px"><tr><td>Vergunningen</td></tr></table></section>`
+	const r = await measure(`<div style="position:absolute;left:316px;top:200px;width:700px">${card('Knelpunten')}</div>`)
+	assert.ok(r.components.find((c) => c.title === 'Knelpunten').content.gapBelowTitle > 30)
+})

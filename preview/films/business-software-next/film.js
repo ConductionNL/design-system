@@ -1,410 +1,629 @@
 /**
- * "Business software is next": the film of Ruben's talk (28 Oct 2026), English, 16:9, 24 fps, 128 BPM.
+ * "Business software is next": the film of Ruben's talk, as ONE movie (Ruben, 30 Oct 2026, after test60).
+ * English, 16:9, 24 fps, 128 BPM, no voice-over, reading pace.
  *
- *   0 to 5.625 s     the shared Conduction opening (_lib/scenes/opening.js), 3 bars, never voiced
- *   body             a storyboard wall (Ruben, 30 Oct): every body board is a 1920 x 1080 card pinned on
- *                    one wall, one row per chapter, the rows running as a snake. The camera glides from card
- *                    to card along a row (a slight pull-back mid-move, then in) and pulls back between rows,
- *                    past the chapter header written on the wall (its number and title, the section's line
- *                    as voice-over), into the next row. On each card the still is animated into place by
- *                    ./animate.js as the camera lands; a card at rest is its approved still, pixel for pixel.
- *                    After the last card the camera pulls out over the whole wall.
+ *   0 to 5.625 s     the shared Conduction opening (_lib/scenes/opening.js)
+ *   body             the storyboard's 37 content boards and the four chapters, in one continuous world: no
+ *                    screens, no frame edges. The approved stills are the vocabulary; every frame is a moment
+ *                    in one move. Scenes hand over by zoom-through, pull-out, motion match, morph, hex wipe and
+ *                    the wilded step that grows into the title; every cut carries something across.
  *   then             Built on Nextcloud (lead Buildiq) and the install board (_lib/scenes/closing.js)
  *
- * Timing reads voice/takes.json ({ "<board id>": { file, dur, words, wer } }) on every load, so new
- * takes re-time the film with no code change: the camera holds on a card for LEAD + its take + TAIL,
- * rounded up to the next beat; a glide or a row change follows. A board without a take is timed from
- * its line at WPS words a second (at least MIN_VOICE). The section takes (section-01 to section-04) play
- * during their row change. Without the voice-over (?voice=0) the timing stays the same, the written text
- * stays, and two cards add their spoken point as a caption.
+ * The device is the hero hex, "you": born from the word "you" in "Do you write code?", it builds every
+ * scene (each element appears where it goes) and always rests in a place that means something there:
+ * the word "you", a headline's full stop, the marker on the number it counted, the bullet of a strip,
+ * the cell it plugs into, the button it presses, the step on a timeline, finally the lead cell of Built
+ * on Nextcloud. It is each scene's one orange, so the stills' orange words are white here.
  *
- * Every frame is a pure function of time. No rotation, no bounce, no gradients, no shadows: depth is
- * the opacity of the cards the camera is not on.
+ * Reading pace: a line is readable for 1 s + 0.35 s per word (at least 2 s) after it is up; a UI window
+ * is a glance (at most 3.5 s). The plan is computed from the stills themselves (a measuring pass reads
+ * each board's slots and words), so the timing follows the storyboard. Every frame is a pure function of
+ * time. No rotation, no bounce, no gradients, no shadows.
  */
-import { Film, loadFonts, variant, el, textBlock } from '../_lib/stage.js'
+import { Film, loadFonts, el, textBlock } from '../_lib/stage.js'
 import { C, FONTS } from '../_lib/brand.js'
 import { loadBrandAssets } from '../_lib/assets.js'
 import { addOpening, OPENING } from '../_lib/scenes/opening.js'
 import { builtOnScene, installScene, BUILT_ON_DUR, INSTALL_DUR } from '../_lib/scenes/closing.js'
 import { timeline, wordCount } from '../_lib/timeline.js'
-import { inv, lerp, ease } from '../_lib/core.js'
+import { inv, lerp, mix, hexPath, ease } from '../_lib/core.js'
 import { curve, F } from '../_lib/motion.js'
-import { TYPE } from '../_lib/ui.js'
+import { hex, honeyAt } from '../_lib/ui.js'
 import { boards } from './boards/talk/board.js'
-import { animateBoard } from './animate.js'
+import { bigNumber, headline, body } from './boards/talk/kit.js'
+import { animateBoard, parseNum, formatNum } from './animate.js'
 
 const SLUG = 'business-software-next'
-const LEAD = 0.35
-const TAIL = 0.45
-const WPS = 2.6
-const MIN_VOICE = 3
-const BRAND = ['opening', 'built-on', 'install']
-const CLOSE = { lead: 'buildiq', lang: 'en' }
-const V = variant('en')
-
-/* ---------- the voice takes ---------- */
-const takes = {}
-try {
-	const res = await fetch(new URL('./voice/takes.json', import.meta.url), { cache: 'no-store' })
-	if (res.ok) Object.assign(takes, await res.json())
-} catch { /* no takes yet: every scene is timed from its words */ }
-for (const take of Object.values(takes)) {
-	// words may be inline ([{ word, start, end }]) or a path to a words JSON beside the take
-	if (typeof take.words === 'string') {
-		try {
-			const r = await fetch(new URL(`./voice/${take.words}`, import.meta.url), { cache: 'no-store' })
-			const j = r.ok ? await r.json() : null
-			take.words = Array.isArray(j) ? j : j?.words || null
-		} catch { take.words = null }
-	}
-}
-
-/* ---------- the wall: rows of cards, one row per chapter ---------- */
 const BOARD = Object.fromEntries(boards.map((b) => [b.id, b]))
-const ROWS = [
-	{ id: 'intro', cards: ['who-codes', 'who-patched', 'fun-week', 'wordpress-week', 'headlines', 'core-vs-ecosystem', 'wordpress-share', 'wilded', 'title'] },
-	{ id: '01', section: 'section-01', cards: ['suite-vs-workspace', 'office-landscape', 'workspace-landscape', 'gates-quote', 'open-workspace', 'office-vs-business'] },
-	{ id: '02', section: 'section-02', cards: ['power-platform', 'buyout', 'cloud-act', 'out-hire', 'angry-citizens', 'sanne', 'yusuf', 'two-things'] },
-	{ id: '03', section: 'section-03', cards: ['framework-basics', 'describe-review-use', 'manifest', 'one-data-layer', 'evidence', 'common-core', 'honest-limits', 'where-it-wins'] },
-	{ id: '04', section: 'section-04', cards: ['store-growth', 'store-find', 'who-pays', 'ip-stake'] },
-	{ id: 'close', cards: ['three-questions', 'final-line'] },
-]
-{
-	const placed = new Set(ROWS.flatMap((r) => [...r.cards, r.section].filter(Boolean)))
-	const missing = boards.filter((b) => !BRAND.includes(b.id) && !placed.has(b.id)).map((b) => b.id)
-	if (missing.length) console.error('wall: boards not on the wall:', missing.join(', '))
-}
-const CW = 1920, CH = 1080
-const GAP = 320 // between cards in a row
-const PITCH = CH + 620 // row to row
-const HEAD_W = 2500, HEAD_GAP = 360 // the chapter header beside a row's first card
-const DIM = 0.38 // the opacity of a card the camera is not on
-
-// The snake: row 0 runs left to right; each next row starts under the last card of the row above and runs back.
-const CARDS = []
-const HEADS = []
-{
-	let x = 0
-	ROWS.forEach((row, r) => {
-		const dir = r % 2 === 0 ? 1 : -1
-		const y = r * PITCH
-		if (row.section) {
-			const hx = dir === 1 ? x - HEAD_GAP - HEAD_W : x + CW + HEAD_GAP
-			HEADS.push({ row: r, section: row.section, x: hx, y, w: HEAD_W })
-		}
-		row.cards.forEach((id, i) => {
-			CARDS.push({ id, b: BOARD[id], row: r, x, y })
-			if (i < row.cards.length - 1) x += dir * (CW + GAP)
-		})
-	})
-}
-const WALL = (() => {
-	const xs = [...CARDS.map((c) => [c.x, c.x + CW]), ...HEADS.map((h) => [h.x, h.x + h.w])].flat()
-	const ys = CARDS.map((c) => [c.y, c.y + CH]).flat()
-	return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }
-})()
-
-/* ---------- the timeline: holds on cards, glides between them, row changes past the headers ---------- */
+const camera = curve('camera'), rest = curve('rest'), leave = curve('leave')
+const CX = 960, CY = 540
+const ZOOM_R = 1300 // a nested scene sits in a hex this big in its own coordinates: it covers the frame
 const G0 = timeline({ bpm: 128, fps: 24 }).grid
 const ceilBeat = (t) => G0.beatAt(Math.ceil(t / G0.spb - 1e-6))
 const ceilBar = (t) => G0.barAt(Math.ceil(t / G0.bar - 1e-6))
-const snapF = (t) => Math.round(t * 24) / 24
-const norm = (w) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '')
-const voiceOf = (b) => {
-	const take = takes[b.id]
-	return { take, voice: take?.dur ? +take.dur : Math.max(MIN_VOICE, wordCount(b.words) / WPS) }
-}
-const GLIDE = 3.5 * G0.spb // 1.64 s card to card
-const INTRO_PUSH = G0.bar // the wall's first push, onto the first card
-const ROW_OUT = 1.6, ROW_IN = 1.6 // pulling back from a row, pushing into the next
-const FINAL_OUT = 3.2, FINAL_HOLD = 1.6
-const CLOCK_GLIDE = 0.15 // within a row a card starts building just after the camera sets off towards it
-const CLOCK_PUSH = 1.2 // after a row change (and the first push) it starts this long before the camera lands
-const BODY_START = OPENING.duration
+const readFor = (words) => Math.max(2, 1 + 0.35 * words)
+const GROUND = { cobalt: C.cobalt, light: C.cobalt50, white: C.white }
+const CLOSE = { lead: 'buildiq', lang: 'en' }
 
-const cardK = (c) => ({ cx: c.x + CW / 2, cy: c.y + CH / 2, s: 1 })
-const fitK = (x0, y0, x1, y1, k = 1) => ({ cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, s: k * Math.min(1920 / (x1 - x0), 1080 / (y1 - y0)) })
-
-const MOVES = [] // camera segments: { t0, t1, from, to, kind }
-const SECTION_VOICE = [] // { id, at }
-let t = BODY_START
-{
-	const c0 = CARDS[0]
-	MOVES.push({ t0: t, t1: t + INTRO_PUSH, from: { ...cardK(c0), s: 0.42 }, to: cardK(c0), kind: 'push' })
-	t += INTRO_PUSH
-}
-CARDS.forEach((c, i) => {
-	const { take, voice } = voiceOf(c.b)
-	c.take = take
-	c.voice = voice
-	c.arrive = snapF(t)
-	c.voiceAt = c.arrive + LEAD
-	c.leave = ceilBeat(c.voiceAt + voice + TAIL)
-	t = c.leave
-	const next = CARDS[i + 1]
-	if (!next) return
-	if (next.row === c.row) {
-		MOVES.push({ t0: t, t1: t + GLIDE, from: cardK(c), to: cardK(next), kind: 'glide' })
-		t += GLIDE
-		return
+/* ---------- chapters: labels in the world, built from the section boards ---------- */
+function chapterBoard(sectionId) {
+	const sec = BOARD[sectionId]
+	const [num, ...rest] = sec.title.split(' · ')
+	return {
+		id: `chapter-${num}`, title: sec.title, words: sec.words,
+		draw(ctx) {
+			bigNumber(ctx.g, num, { x: 120, y: 470, size: 260, fill: C.white })
+			headline(ctx.g, rest.join(' · '), C.white, { y: 640, size: 112, wide: true })
+			body(ctx.g, sec.words, C.cobalt200, { y: 760, size: 40, maxWidth: 1400 })
+		},
 	}
-	// a row change: pull back so this row's end, the next chapter header and the next row show, drift, push in
-	const head = HEADS.find((h) => h.row === next.row)
-	const sec = head ? voiceOf(BOARD[head.section]) : null
-	const xs = [c.x, c.x + CW, next.x, next.x + CW, ...(head ? [head.x, head.x + head.w] : [])]
-	const wide = fitK(Math.min(...xs) - 200, c.y - 120, Math.max(...xs) + 200, next.y + CH + 120, 1.0)
-	const toward = head ? { cx: head.x + head.w / 2, cy: next.y + CH / 2 } : cardK(next)
-	const wide2 = { cx: lerp(wide.cx, toward.cx, 0.35), cy: lerp(wide.cy, toward.cy, 0.35), s: wide.s * 1.12 }
-	const voiceAt = t + 0.9
-	const mid = Math.max(0.9, sec ? voiceAt + sec.voice + 0.35 - (t + ROW_OUT) - ROW_IN * 0.4 : 0.9)
-	const total = ceilBeat(t + ROW_OUT + mid + ROW_IN) - t
-	const midEnd = t + total - ROW_IN
-	MOVES.push({ t0: t, t1: t + ROW_OUT, from: cardK(c), to: wide, kind: 'out' })
-	MOVES.push({ t0: t + ROW_OUT, t1: midEnd, from: wide, to: wide2, kind: 'drift' })
-	MOVES.push({ t0: midEnd, t1: t + total, from: wide2, to: cardK(next), kind: 'in' })
-	if (head && sec.take?.file) SECTION_VOICE.push({ id: head.section, take: sec.take, at: voiceAt })
-	if (head) { head.voiceAt = voiceAt; head.t0 = t; head.t1 = t + total }
-	t += total
-})
-{
-	const last = CARDS[CARDS.length - 1]
-	const all = fitK(WALL.x0 - 400, WALL.y0 - 300, WALL.x1 + 400, WALL.y1 + 300, 1)
-	MOVES.push({ t0: t, t1: t + FINAL_OUT, from: cardK(last), to: all, kind: 'final' })
-	t += FINAL_OUT
-	const end = ceilBar(t + FINAL_HOLD)
-	MOVES.push({ t0: t, t1: end, from: all, to: { ...all, s: all.s * 1.03 }, kind: 'hold' })
-	t = end
 }
-const BODY_END = t
-const DURATION = BODY_END + BUILT_ON_DUR + INSTALL_DUR
-CARDS.forEach((c, i) => {
-	const prev = CARDS[i - 1], next = CARDS[i + 1]
-	c.enter = prev ? prev.leave : BODY_START // the camera starts moving towards it
-	// the card's own time 0: it builds while the camera glides in, so it is never seen empty for long
-	c.clock = !prev ? BODY_START - F(2) : prev.row === c.row ? c.enter + CLOCK_GLIDE : c.arrive - CLOCK_PUSH
-	c.exit = next ? next.arrive : BODY_END // the camera has left it
-	const tokens = c.b.words.split(/\s+/).filter(Boolean)
-	const lead = c.voiceAt - c.clock
-	/** Card-clock seconds at which a word is spoken: from the take's alignment, else from its place in the line. */
-	c.wordAt = (word, after = 0) => {
-		const w = norm(word || '')
-		if (!w) return null
-		if (Array.isArray(c.take?.words)) {
-			const hit = c.take.words.find((x) => x.start >= after - lead && norm(x.word) === w)
-			if (hit) return lead + hit.start
+
+/* ---------- the scenes in order: ground, how the hero rests, and the seam that brings each in ---------- */
+const at = (cx, cy, r, gap) => honeyAt(cx, cy, r, gap)
+const cellOf = (h, q, r, rad) => { const [x, y] = h(q, r); return { x, y, r: rad } }
+const WHO = at(1460, 560, 46, 8)
+const OPEN_WS = at(1400, 540, 112, 14)
+const CORE = { x: 1560, y: 300, r: 40, gap: 6 }
+
+const SCENES = [
+	{ id: 'who-codes', ground: 'cobalt', rest: { word: 'you' }, seam: { type: 'open' } },
+	{ id: 'who-patched', ground: 'cobalt', rest: { word: 'you' }, seam: { type: 'swap' }, spec: { bg: 'hold' } },
+	{ id: 'fun-week', ground: 'cobalt', rest: { stop: true }, seam: { type: 'zoomIn', anchor: { ...cellOf(WHO, -4, 0, 46), tint: 0.35, tintFill: C.cobalt400 } } },
+	{ id: 'wordpress-week', ground: 'cobalt', rest: { marker: 0 }, seam: { type: 'pan', dir: [0, 1] } },
+	{ id: 'headlines', ground: 'cobalt', rest: { bullet: 0 }, seam: { type: 'pan', dir: [1, 0] } },
+	{ id: 'core-vs-ecosystem', ground: 'cobalt', rest: { marker: 1 }, seam: { type: 'zoomOut', target: { x: CORE.x, y: CORE.y, r: CORE.r, fill: C.cobalt600 } }, cluster: true, caption: 'Citizen coders will not patch every week. The platform has to do it for them' },
+	{ id: 'wordpress-share', ground: 'cobalt', rest: { marker: 0 }, seam: { type: 'morph' }, spec: { skip: (p) => p.kind === 'number' } },
+	{ id: 'wilded', ground: 'cobalt', rest: { orangeCell: true }, seam: { type: 'wipe' } },
+	{ id: 'title', ground: 'cobalt', rest: { stop: true }, seam: { type: 'grow' } },
+	{ chapter: 'section-01', rest: { marker: 0 }, seam: { type: 'zoomIn', anchor: { x: 1560, y: 420, r: 72, tint: 0.1, tintFill: C.cobalt400 } } },
+	{ id: 'suite-vs-workspace', ground: 'cobalt', rest: { orangeCell: true }, seam: { type: 'pan', dir: [1, 0] } },
+	{ id: 'office-landscape', ground: 'light', rest: { stop: true }, seam: { type: 'wipe' } },
+	{ id: 'workspace-landscape', ground: 'white', rest: { stop: true }, seam: { type: 'wipe' } },
+	{ id: 'gates-quote', ground: 'cobalt', rest: { stop: true }, seam: { type: 'wipe' } },
+	{ id: 'open-workspace', ground: 'cobalt', rest: { stop: true }, seam: { type: 'zoomOut', target: { ...cellOf(OPEN_WS, 0, -1, 112), fill: mix(C.cobalt, C.white, 0.15) } } },
+	{ id: 'office-vs-business', ground: 'cobalt', rest: { stop: true }, seam: { type: 'pan', dir: [1, 0] } },
+	{ chapter: 'section-02', rest: { marker: 0 }, seam: { type: 'pan', dir: [0, 1] } },
+	{ id: 'power-platform', ground: 'cobalt', rest: { marker: 2 }, seam: { type: 'pan', dir: [1, 0] } },
+	{ id: 'buyout', ground: 'white', rest: { bullet: 1 }, seam: { type: 'wipe' } },
+	{ id: 'cloud-act', ground: 'cobalt', rest: { stop: true }, seam: { type: 'wipe' } },
+	{ id: 'out-hire', ground: 'cobalt', rest: { marker: 2 }, seam: { type: 'pan', dir: [0, 1] } },
+	{ id: 'angry-citizens', ground: 'cobalt', rest: { stop: true }, seam: { type: 'pan', dir: [1, 0] } },
+	{ id: 'sanne', ground: 'cobalt', rest: { point: { x: 1770, y: 700, r: 14 } }, seam: { type: 'zoomIn', anchor: { x: 1620, y: 300, r: 72, tint: 0.06, tintFill: C.cobalt400 } } },
+	{ id: 'yusuf', ground: 'cobalt', rest: { stop: true }, seam: { type: 'pan', dir: [1, 0] } },
+	{ id: 'two-things', ground: 'cobalt', rest: { stop: true }, seam: { type: 'pan', dir: [0, 1] } },
+	{ chapter: 'section-03', rest: { marker: 0 }, seam: { type: 'wipe' } },
+	{ id: 'framework-basics', ground: 'light', rest: { point: { x: 1140, y: 134, r: 26 } }, seam: { type: 'wipe' } },
+	{ id: 'describe-review-use', ground: 'cobalt', rest: { point: { x: 1714, y: 887, r: 16 } }, seam: { type: 'wipe' } },
+	{ id: 'manifest', ground: 'white', rest: { stop: true }, seam: { type: 'zoomIn', anchor: { x: 1714, y: 887, r: 30, portal: true } } },
+	{ id: 'one-data-layer', ground: 'cobalt', rest: { point: { x: 86, y: 686, r: 12 } }, seam: { type: 'wipe' } },
+	{ id: 'evidence', ground: 'cobalt', rest: { marker: 0 }, seam: { type: 'pan', dir: [0, 1] } },
+	{ id: 'common-core', ground: 'light', rest: { point: { x: 866, y: 852, r: 12 } }, seam: { type: 'wipe' } },
+	{ id: 'honest-limits', ground: 'cobalt', rest: { marker: 0 }, seam: { type: 'wipe' } },
+	{ id: 'where-it-wins', ground: 'cobalt', rest: { point: { x: 1034, y: 710, r: 16 } }, seam: { type: 'pan', dir: [1, 0] } },
+	{ chapter: 'section-04', rest: { marker: 0 }, seam: { type: 'pan', dir: [0, 1] } },
+	{ id: 'store-growth', ground: 'cobalt', rest: { point: { x: 1462, y: 512, r: 16 } }, seam: { type: 'pan', dir: [1, 0] }, steps: true },
+	{ id: 'store-find', ground: 'light', rest: { stop: true }, seam: { type: 'zoomIn', anchor: { x: 1540, y: 820, r: 36, tint: 0.5, tintFill: C.cobalt400 } } },
+	{ id: 'who-pays', ground: 'cobalt', rest: { point: { x: 739, y: 602, r: 12 } }, seam: { type: 'wipe' } },
+	{ id: 'ip-stake', ground: 'white', rest: { stop: true }, seam: { type: 'wipe' } },
+	{ id: 'three-questions', ground: 'cobalt', rest: { stop: true }, seam: { type: 'wipe' } },
+	{ id: 'final-line', ground: 'cobalt', rest: { stop: true }, seam: { type: 'pan', dir: [0, 1] }, spec: { lightSpan: 1.6, bgSpread: 0.5 } },
+]
+SCENES.forEach((s, i) => {
+	if (s.chapter) { s.board = chapterBoard(s.chapter); s.id = s.board.id; s.ground = 'cobalt' } else s.board = BOARD[s.id]
+	s.k = `s${i}`
+	s.i = i
+})
+const SEAM_DUR = { open: 0, swap: 0.33, zoomIn: 1.41, zoomOut: 1.41, pan: 0.94, morph: 0.94, wipe: 1.17, grow: 0.94 }
+
+/* ---------- changes the film makes to a still before it is read (the storyboard never sees them) ---------- */
+const isOrange = (n) => (n.getAttribute('fill') || '').toUpperCase() === C.orange.toUpperCase()
+const unlight = (n) => { n.setAttribute('fill', C.cobalt400); n.setAttribute('fill-opacity', 0.35); n.removeAttribute('data-anim') }
+function afterDraw(sc) {
+	return (cam) => {
+		// an orange word takes the ink of its own line (white on cobalt, cobalt on a light ground)
+		const ink = sc.ground === 'cobalt' ? C.white : C.cobalt
+		for (const n of cam.querySelectorAll('text')) {
+			if (!isOrange(n)) continue
+			const block = n.parentNode?.parentNode
+			const sib = block && [...block.querySelectorAll('text')].find((x) => !isOrange(x))
+			n.setAttribute('fill', sib ? sib.getAttribute('fill') : ink)
 		}
-		const k = tokens.findIndex((x) => norm(x) === w)
-		if (k < 0) return null
-		return lead + ((k + 0.25) / tokens.length) * c.voice
+		for (const p of cam.querySelectorAll('path')) {
+			if (!isOrange(p)) continue
+			if (sc.id === 'who-codes' || sc.id === 'who-patched') unlight(p)
+			else p.setAttribute('fill-opacity', 0) // the hero takes this cell's place
+		}
+		if (sc.rest.stop) {
+			// the hero is the headline's full stop
+			const heads = [...cam.querySelectorAll('text')].filter((n) => +n.getAttribute('font-weight') === 700 && +n.getAttribute('font-size') >= 64)
+			const last = heads[heads.length - 1]
+			if (last && /\.$/.test(last.textContent)) last.textContent = last.textContent.slice(0, -1)
+		}
+		if (sc.cluster) {
+			const h = honeyAt(CORE.x, CORE.y, CORE.r, CORE.gap)
+			for (let q = -2; q <= 2; q++) for (let r = -2; r <= 2; r++) {
+				const d = Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r))
+				if (d > 2) continue
+				const [x, y] = h(q, r)
+				hex(cam, x, y, CORE.r, d === 0 ? C.cobalt600 : C.cobalt400, CORE.r * 0.1, { 'fill-opacity': d === 0 ? 1 : 0.5 - d * 0.12 })
+			}
+		}
+		if (sc.caption) textBlock(cam, sc.caption, { x: 120, y: 930, size: 36, weight: 600, fill: C.cobalt200, tracking: -0.01, maxWidth: 1600, lineHeight: 1.2, clip: false })
 	}
-	c.lead = lead
-	c.dur = c.leave - c.clock
-})
-
-/** The camera at film time t: world centre and zoom. Zoom moves in log space, so a pull-back feels even. */
-const camCurve = curve('camera'), driftCurve = curve('drift')
-const logLerp = (a, b, e) => Math.exp(lerp(Math.log(a), Math.log(b), e))
-function cameraAt(tt) {
-	const m = MOVES.find((x) => tt >= x.t0 && tt < x.t1)
-	if (!m) {
-		const before = MOVES.filter((x) => x.t1 <= tt).pop()
-		if (before) return before.to
-		return MOVES[0].from
-	}
-	const u = inv(m.t0, m.t1, tt)
-	const e = m.kind === 'drift' || m.kind === 'hold' ? driftCurve(u) : camCurve(u)
-	let s = logLerp(m.from.s, m.to.s, e)
-	// a glide pulls back a little in the middle of the move and comes in again (sin², so it starts and ends still)
-	if (m.kind === 'glide') s *= 1 - 0.42 * Math.sin(Math.PI * u) ** 2
-	return { cx: lerp(m.from.cx, m.to.cx, e), cy: lerp(m.from.cy, m.to.cy, e), s }
 }
 
-/* ---------- what each card's `material` asks for, beyond the defaults in animate.js ---------- */
-const SPEC = {
-	'who-codes': (w) => ({ lightAt: (w('you') ?? 1.0) - 0.1, lightSpan: 0.05, bgSpread: 0.5 }),
-	'who-patched': (w) => ({ bg: 'hold', lightAt: (w('patch') ?? 0.8) - 0.1, lightSpan: 1.2 }),
-	'fun-week': () => ({ beatWord: 'Mine' }),
-	'wordpress-week': () => ({ at: ['497', '176', '69'] }),
-	headlines: () => ({ at: ['update', 'Stolen', 'million', 'PHP'] }),
-	'core-vs-ecosystem': () => ({ at: ['six', 'eleven', 'five'] }),
-	'wordpress-share': () => ({ from: { '39.6%': 43.6 }, at: [null, 'Small', 'core'] }),
-	wilded: () => ({ at: [null, 'server', 'Knowledge', 'Publishing', 'browser', 'Business'] }),
-	'suite-vs-workspace': () => ({ runOrder: 'draw', runSpan: 2.4, at: [null, null, null, null, null, 'workspace'] }),
-	'office-landscape': () => ({ runOrder: 'draw', runSpan: 3.2 }),
-	'open-workspace': () => ({ runOrder: 'draw', runSpan: 3.4, at: [null, 'Nextcloud'] }),
-	'office-vs-business': () => ({ runSpan: 2.6 }),
-	'power-platform': () => ({ at: ['33', '56', '500'] }),
-	sanne: () => ({ at: [null, 'accepted', 'hours', 'invoice'] }),
-	yusuf: () => ({ at: [null, 'Leave', 'spreadsheet'] }),
-	'describe-review-use': () => ({ at: ['describe', 'review', 'Then', 'describe', 'review', 'Then'] }),
-	buyout: () => ({ at: ['reasoning', 'Ours'] }),
-	'cloud-act': () => ({ spread: 0.7 }),
-	'out-hire': () => ({ at: ['170', '223000'] }),
-	'store-growth': () => ({ stepWords: ['600', '6000', '60000', 'stop'] }),
-	'ip-stake': () => ({ runOrder: 'draw', runSpan: 1.2 }),
-	'three-questions': () => ({ at: ['really', 'try', 'IP'] }),
-	'final-line': (w) => ({ lightAt: w('citizens') ?? 4, lightSpan: 1.6, bgSpread: 0.5 }),
-}
-
-/** The spoken point, shown as a caption in the version without the voice-over, where the still does not say it. */
-const CAPTIONS = {
-	'core-vs-ecosystem': { text: 'Citizen coders will not patch every week. The platform has to do it for them', y: 930, after: 'We' },
-	'gates-quote': { text: 'By that test, a suite is never a platform', y: 770, after: 'By' },
-}
-
-/* ---------- the film ---------- */
-const TL = timeline({
-	bpm: 128, fps: 24, duration: DURATION,
-	scenes: [
-		{ id: 'opening', from: 0, to: OPENING.duration },
-		{ id: 'wall', from: { s: BODY_START }, to: { s: BODY_END } },
-		{ id: 'builtOn', from: { s: BODY_END }, to: { s: BODY_END + BUILT_ON_DUR } },
-		{ id: 'install', from: { s: BODY_END + BUILT_ON_DUR }, to: { s: DURATION } },
-	],
-	voice: [
-		...CARDS.filter((c) => c.take?.file).map((c) => ({ id: c.id, src: `preview/films/${SLUG}/voice/${c.take.file}`, at: c.voiceAt, words: Array.isArray(c.take.words) ? c.take.words : [] })),
-		...SECTION_VOICE.map((v) => ({ id: v.id, src: `preview/films/${SLUG}/voice/${v.take.file}`, at: v.at, words: Array.isArray(v.take.words) ? v.take.words : [] })),
-	].sort((a, b) => a.at - b.at),
-})
-
-const film = new Film({ mount: document.getElementById('film'), format: '16x9', fps: 24, duration: DURATION, bpm: 128, background: C.cobalt, safe: { top: 96, bottom: 150, left: 120, right: 120 } })
+/* ---------- the measuring pass: each still's slots and words, so the plan reads the storyboard ---------- */
+const film = new Film({ mount: document.getElementById('film'), format: '16x9', fps: 24, duration: 600, bpm: 128, background: C.cobalt, safe: { top: 96, bottom: 150, left: 120, right: 120 } })
 film.langs = ['en']
 await loadFonts(FONTS)
 await loadBrandAssets(film.defs)
 
-addOpening(film, { at: 0 })
-const arrive = curve('arrive')
-const FAR = 1e6 // a card's clock when it is not the camera's: its approved still
+const textWords = (p) => wordCount([p, ...(p.members || [])].map((q) => q.node.textContent && q.node.querySelectorAll ? [...q.node.querySelectorAll('text')].map((n) => n.textContent).join(' ') : '').join(' '))
+const probe = el('g', {}, film.root)
+for (const sc of SCENES) {
+	const g = el('g', {}, probe)
+	const ctx = { g, film, W: 1920, H: 1080, defs: film.defs, cue: () => {} }
+	const a = animateBoard(ctx, sc.board, { start: 0, dur: 30, lead: 0.5, voice: 20, wordAt: () => null, spec: { ...(sc.spec || {}), skip: undefined }, orange: C.orange, afterDraw: afterDraw(sc) })
+	// the still's own ground, read from what it drew (cobalt when it drew none)
+	const gr = g.firstElementChild
+	const gf = gr && gr.tagName === 'rect' && +gr.getAttribute('width') >= 1920 ? (gr.getAttribute('fill') || '').toUpperCase() : ''
+	sc.ground = gf === C.white.toUpperCase() ? 'white' : gf === C.cobalt50.toUpperCase() ? 'light' : 'cobalt'
+	sc.introWords = a.intro.filter((p) => p.kind === 'headline').reduce((n, p) => n + p.node.querySelectorAll('text').length, 0)
+	sc.introEndL = a.introEnd
+	sc.slotRead = a.slotList.map((s) => {
+		const big = s.items.some((p) => (p.members || []).length > 6 || p.area > 250000)
+		const words = s.items.reduce((n, p) => n + textWords(p), 0)
+		const run = s.kind === 'run'
+		return run ? 1.4 : big ? Math.min(3.5, readFor(words)) : Math.min(6, readFor(words))
+	})
+	g.remove()
+}
+probe.remove()
 
-/** The chapter header on the wall: the section's number in orange mono, its title, and its lede. */
-function drawHead(g, h) {
-	const sec = BOARD[h.section]
-	const [num, ...rest] = sec.title.split(' · ')
-	const title = rest.join(' · ')
-	const x = h.x + 80
-	textBlock(g, num, { x, y: h.y + 420, size: 400, weight: 500, family: 'IBM Plex Mono', fill: C.orange, tracking: -0.03, clip: false })
-	textBlock(g, title, { x, y: h.y + 640, size: 150, weight: 700, fill: C.white, tracking: -0.02, lineHeight: 1.05, maxWidth: h.w - 160, clip: false })
-	const lede = sec.words
-	textBlock(g, lede, { x, y: h.y + (title.length > 22 ? 960 : 820), size: 64, weight: 500, fill: C.cobalt200, lineHeight: 1.25, maxWidth: h.w - 160, clip: false })
+// a slide between two different grounds would show the edge of a ground: those seams become hex wipes
+SCENES.forEach((sc, i) => { if (i && ['pan', 'morph'].includes(sc.seam.type) && sc.ground !== SCENES[i - 1].ground) sc.seam = { type: 'wipe' } })
+
+/* ---------- the plan: seam, clock, slot times and when the scene can leave ---------- */
+let t = OPENING.duration
+const LAST = SCENES.length - 1
+SCENES.forEach((sc, i) => {
+	const D = SEAM_DUR[sc.seam.type]
+	sc.seam.t0 = i === 0 ? t : t
+	sc.seam.t1 = t + D
+	sc.from = sc.seam.t0
+	// the scene's own time 0: it starts building while it travels in, so it is never seen empty
+	const lead = { open: -F(2), swap: -0.1, zoomIn: D * 0.35, zoomOut: D * 0.75, pan: 0.15, morph: 0.1, wipe: 0, grow: D - F(1) }[sc.seam.type]
+	sc.clock = t + lead
+	const introRead = sc.introWords ? readFor(sc.introWords) : 0
+	let tl = Math.max(0.4, sc.introEndL - F(2)) // local time of the first slot
+	sc.slotAt = sc.slotRead.map((r) => { const s = tl; tl += Math.min(1.5, Math.max(0.55, r * 0.3)); return s })
+	let ready = Math.max(0.6 + introRead, ...sc.slotAt.map((s, j) => s + 0.35 + sc.slotRead[j]))
+	if (sc.id === 'who-codes') { sc.birth = 1.1; ready = Math.max(ready, 3.2) }
+	if (sc.id === 'who-patched') ready = Math.max(ready, 4.0)
+	if (sc.id === 'fun-week') { sc.cut = 0.6 + readFor(4) ; ready = sc.cut + 2.2 }
+	if (sc.steps) { sc.slotAt = sc.slotAt.map((s, j) => 0.9 + j * 1.6); ready = 0.9 + 3 * 1.6 + 3.2 }
+	sc.restAt = (sc.slotAt.length ? sc.slotAt[sc.slotAt.length - 1] + 0.7 : Math.max(0.5, sc.introEndL))
+	ready = Math.max(ready, sc.restAt + 1.2)
+	t = ceilBeat(sc.clock + ready)
+	if (i === LAST) t = ceilBar(t + 0.6)
+	sc.to = t
+})
+const BODY_END = SCENES[LAST].to
+SCENES.forEach((sc, i) => {
+	const next = SCENES[i + 1]
+	sc.out = next ? next.seam : null
+	sc.until = next ? next.seam.t1 : BODY_END
+})
+const DURATION = BODY_END + BUILT_ON_DUR + INSTALL_DUR
+film.duration = DURATION
+
+/* ---------- each scene's camera: a slow lateral drift while it is read, the seams around it ---------- */
+function drift(sc, t) {
+	const a = sc.seam.t1, b = sc.out ? sc.out.t0 : sc.to
+	const u = inv(a, b, t)
+	const s = 1 + 0.012 * Math.sin(Math.PI * u) ** 2
+	const dx = -26 * (u - 0.5) * Math.sin(Math.PI * u) ** 2 * 2 // drifts left and back to rest at the seams
+	return { X: CX - s * CX + dx, Y: CY - s * CY, s }
+}
+const compose = (m, n) => ({ X: m.X + m.s * n.X, Y: m.Y + m.s * n.Y, s: m.s * n.s })
+const apply = (m, x, y) => [m.X + m.s * x, m.Y + m.s * y]
+const ID = { X: 0, Y: 0, s: 1 }
+function zoomPair(e, anchor, innerDrift) {
+	const Z = ZOOM_R / anchor.r
+	const z = Math.pow(Z, e)
+	const px = lerp(anchor.x, CX, e), py = lerp(anchor.y, CY, e)
+	return { outer: { X: px - z * anchor.x, Y: py - z * anchor.y, s: z }, inner: compose({ X: px - (z / Z) * CX, Y: py - (z / Z) * CY, s: z / Z }, innerDrift) }
+}
+function sceneMap(sc, t) {
+	const m = drift(sc, t)
+	const o = sc.out, inn = sc.seam
+	const isA = o && t >= o.t0 && t < o.t1
+	const seam = isA ? o : t >= inn.t0 && t < inn.t1 ? inn : null
+	if (!seam) return m
+	const u = inv(seam.t0, seam.t1, t)
+	if (seam.type === 'pan') {
+		const e = camera(u)
+		const D = seam.dir[1] ? 1280 : 2120
+		const dx = seam.dir[0] * D, dy = seam.dir[1] * D
+		return isA ? compose({ X: -dx * e, Y: -dy * e, s: 1 }, m) : compose({ X: dx * (1 - e), Y: dy * (1 - e), s: 1 }, m)
+	}
+	if (seam.type === 'zoomIn') {
+		const { outer, inner } = zoomPair(camera(u), seam.anchor, ID)
+		return isA ? compose(outer, m) : inner
+	}
+	if (seam.type === 'zoomOut') {
+		const { outer, inner } = zoomPair(1 - camera(u), seam.target, isA ? m : ID)
+		return isA ? inner : outer
+	}
+	return m
 }
 
-film.scene('wall', BODY_START, BODY_END, (ctx) => {
-	ctx.g.setAttribute('display', 'inline') // the cards measure their pieces while they build
-	el('rect', { width: 1920, height: 1080, fill: C.cobalt900 }, ctx.g)
-	const world = el('g', { 'data-part': 'world' }, ctx.g)
-	const clipId = 'bsn-card-clip'
-	const cp = el('clipPath', { id: clipId }, film.defs)
-	el('rect', { x: 0, y: 0, width: CW, height: CH }, cp)
-	for (const h of HEADS) drawHead(el('g', { 'data-head': h.section }, world), h)
-	for (const c of CARDS) {
-		const g = el('g', { 'data-card': c.id, transform: `translate(${c.x} ${c.y})`, 'clip-path': `url(#${clipId})` }, world)
-		el('rect', { width: CW, height: CH, fill: C.cobalt }, g) // the card's own ground: the stage colour of the stills
-		const inner = el('g', {}, g)
-		const cctx = Object.assign(Object.create(ctx), { g: inner, start: c.clock, end: c.leave })
-		const anim = animateBoard(cctx, c.b, { start: c.clock, dur: c.dur, lead: c.lead, voice: c.voice, wordAt: c.wordAt, spec: SPEC[c.id]?.(c.wordAt) || {}, orange: C.orange, seed: Math.round(c.arrive * 100) })
-		for (const { at, kind, ...o } of anim.cues) film.cue(c.clock + at, kind, o)
-		c.g = g
-		c.anim = anim
-		c.settled = c.clock + anim.end
-		const cap = CAPTIONS[c.id]
-		if (cap && !V.voice) {
-			const tb = textBlock(el('g', { 'data-part': 'caption' }, inner), cap.text, { x: TYPE.x, y: cap.y, size: 36, weight: 600, fill: C.cobalt200, tracking: -0.01, maxWidth: 1600, lineHeight: 1.2 })
-			const at = Math.max(anim.end, (c.wordAt(cap.after, 2) ?? anim.end) - F(2))
-			c.cap = { tb, at }
-			TL.captions.push({ id: c.id, text: cap.text, up: G0.snap(c.clock + at), out: c.leave, rise: 0.3, exit: 0 })
-		}
-		c.lastL = null
+/* ---------- the hex wipe: the scene's own cells turn over from the hero, cover, and turn back in the next ground ---------- */
+const WIPE_R = 84
+const wipeLattice = (() => {
+	const cells = []
+	const h = honeyAt(CX, CY, WIPE_R, 0)
+	for (let r = -8; r <= 8; r++) for (let q = -14; q <= 14; q++) {
+		const [x, y] = h(q, r)
+		if (x < -WIPE_R || x > 1920 + WIPE_R || y < -WIPE_R || y > 1080 + WIPE_R) continue
+		cells.push({ x, y })
 	}
-	ctx.g.removeAttribute('display')
-	return (tt) => {
-		const k = cameraAt(tt)
-		world.setAttribute('transform', `translate(960 540) scale(${k.s.toFixed(5)}) translate(${(-k.cx).toFixed(2)} ${(-k.cy).toFixed(2)})`)
-		const hw = 960 / k.s, hh = 540 / k.s
-		for (const c of CARDS) {
-			const seen = c.x < k.cx + hw && c.x + CW > k.cx - hw && c.y < k.cy + hh && c.y + CH > k.cy - hh
-			c.g.setAttribute('display', seen ? 'inline' : 'none')
-			if (!seen) continue
-			// on its turn the card plays its own clock (from the moment the camera sets off towards it); otherwise it is its still
-			const l = tt >= c.enter && tt < c.exit ? tt - c.clock : tt < c.enter ? FAR : FAR
-			if (l !== c.lastL) {
-				c.anim.update(l)
-				if (c.cap) c.cap.tb.items.forEach((it, i) => {
-					const e = arrive(inv(c.cap.at + i * F(1), c.cap.at + i * F(1) + F(7), l))
-					if (e >= 1) it.node.removeAttribute('transform')
-					else it.node.setAttribute('transform', `translate(0 ${((1 - e) * 50).toFixed(2)})`)
-				})
-				c.lastL = l
+	return cells
+})()
+
+/* ---------- build the scenes ---------- */
+const BUILT = {}
+const hexClip = el('clipPath', { id: 'bsn-zoom-clip' }, film.defs)
+el('path', { d: hexPath(CX, CY, ZOOM_R, 0) }, hexClip)
+addOpening(film, { at: 0 })
+
+const drawOrder = [...SCENES]
+// a scene that shrinks into the next one draws above it
+for (let i = 0; i < SCENES.length - 1; i++) if (SCENES[i + 1].seam.type === 'zoomOut') { const a = drawOrder.indexOf(SCENES[i]), b = drawOrder.indexOf(SCENES[i + 1]); drawOrder.splice(a, 1); drawOrder.splice(b, 0, SCENES[i]) }
+
+for (const sc of drawOrder) {
+	film.scene(sc.k, sc.from, sc.until, (ctx) => {
+		ctx.g.setAttribute('display', 'inline')
+		const xf = el('g', { 'data-scene-xf': sc.id }, ctx.g)
+		const backdrop = el('path', { d: hexPath(CX, CY, ZOOM_R, 0), fill: GROUND[sc.ground], display: 'none' }, xf)
+		const holder = el('g', {}, xf)
+		const spec = { ...(sc.spec || {}), at: sc.slotAt }
+		if (sc.id === 'who-patched') Object.assign(spec, { lightAt: 1.2, lightSpan: 1.4 })
+		if (sc.id === 'final-line') spec.lightAt = sc.slotAt[0] ?? 1.5
+		const wordAt = (w) => (sc.id === 'fun-week' && w === 'Mine' ? sc.cut + F(1) : null)
+		if (sc.id === 'fun-week') spec.beatWord = 'Mine'
+		if (sc.steps) spec.stepWords = ['a', 'b', 'c', 'd']
+		const stepAt = (w) => ({ a: sc.slotAt[0], b: sc.slotAt[1], c: sc.slotAt[2], d: sc.slotAt[3] }[w] ?? null)
+		const anim = animateBoard(Object.assign(Object.create(ctx), { g: holder }), sc.board, {
+			start: sc.clock, dur: sc.to - sc.clock, lead: 0.5, voice: sc.to - sc.clock - 1, wordAt: sc.steps ? stepAt : wordAt,
+			spec, orange: C.orange, seed: Math.round(sc.clock * 100), afterDraw: afterDraw(sc),
+		})
+		for (const { at: a, kind, ...o } of anim.cues) film.cue(sc.clock + a, kind, o)
+		const B = { xf, backdrop, holder, anim, pieces: anim.pieces, byKind: (kind) => anim.pieces.filter((p) => p.kind === kind) }
+		BUILT[sc.k] = B
+		ctx.g.removeAttribute('display')
+		return (tt) => {
+			anim.update(tt - sc.clock)
+			const m = sceneMap(sc, tt)
+			xf.setAttribute('transform', `translate(${m.X.toFixed(2)} ${m.Y.toFixed(2)}) scale(${m.s.toFixed(5)})`)
+			// nested in a cell during a zoom: clipped to the cell, on a ground that turns from the cell's colour to its own
+			const zin = sc.seam.type === 'zoomIn' && tt >= sc.seam.t0 && tt < sc.seam.t1 ? sc.seam : null
+			const zout = sc.out && sc.out.type === 'zoomOut' && tt >= sc.out.t0 && tt < sc.out.t1 ? sc.out : null
+			if (zin || zout) {
+				const s = zin || zout
+				const u = inv(s.t0, s.t1, tt)
+				xf.setAttribute('clip-path', 'url(#bsn-zoom-clip)')
+				backdrop.removeAttribute('display')
+				if (zin) {
+					const cell = zin.anchor.portal ? GROUND[sc.ground] : mix(GROUND[SCENES[sc.i - 1].ground], zin.anchor.tintFill, zin.anchor.tint)
+					backdrop.setAttribute('fill', mix(cell, GROUND[sc.ground], Math.min(1, camera(u) * 1.4)))
+					holder.removeAttribute('opacity')
+				} else {
+					// shrinking into the next scene's cell: it settles into that cell's colour, its content goes quiet
+					const p = camera(u)
+					backdrop.setAttribute('fill', mix(GROUND[sc.ground], zout.target.fill, Math.min(1, Math.max(0, (p - 0.35) / 0.55))))
+					holder.setAttribute('opacity', (1 - Math.min(1, Math.max(0, (p - 0.45) / 0.45))).toFixed(3))
+				}
+			} else {
+				xf.removeAttribute('clip-path')
+				backdrop.setAttribute('display', 'none')
+				holder.removeAttribute('opacity')
 			}
-			// depth by opacity: full while the camera comes to it and holds, dim elsewhere
-			const prev = MOVES.find((m) => m.t1 === c.arrive || Math.abs(m.t1 - c.arrive) < 1e-6)
-			const next = MOVES.find((m) => Math.abs(m.t0 - c.leave) < 1e-6)
-			let o = DIM
-			if (tt >= c.arrive && tt < c.leave) o = 1
-			else if (prev && tt >= c.enter && tt < c.arrive) o = lerp(DIM, 1, driftCurve(inv(c.enter, c.arrive, tt)))
-			else if (next && tt >= c.leave && tt < c.exit) o = lerp(1, DIM, driftCurve(inv(c.leave, c.exit, tt)))
-			if (o >= 1) c.g.removeAttribute('opacity')
-			else c.g.setAttribute('opacity', o.toFixed(3))
+			// a hex wipe: hide this scene once the cells cover it (outgoing), or until they do (incoming)
+			const hidIn = sc.seam.type === 'wipe' && tt < (sc.seam.t0 + sc.seam.t1) / 2
+			const hidOut = sc.out && sc.out.type === 'wipe' && tt >= (sc.out.t0 + sc.out.t1) / 2
+			if (hidIn || hidOut) xf.setAttribute('display', 'none')
+			else xf.removeAttribute('display')
+			B.after?.(tt)
+		}
+	})
+}
+
+/* ---------- pieces the seams move by hand ---------- */
+const leaveAll = (pieces, t0, t) => {
+	const step = Math.min(F(1), 0.3 / Math.max(1, pieces.length))
+	pieces.forEach((p, i) => {
+		const e = leave(inv(t0 + i * step, t0 + i * step + F(8), t))
+		if (e <= 0) return
+		p.w.setAttribute('transform', `translate(0 ${(-44 * e).toFixed(2)})`)
+		p.w.setAttribute('opacity', (1 - e).toFixed(3))
+	})
+}
+const firstText = (p) => [...p.node.querySelectorAll('text')].find((n) => /\d/.test(n.textContent)) || p.node.querySelector('text')
+const itemPos = (n) => ({ x: +n.getAttribute('x'), y: +n.getAttribute('y'), size: +n.getAttribute('font-size') })
+const find = (id) => SCENES.find((s) => s.id === id)
+
+// swap: who-codes' line leaves upward as who-patched's rises over the same honeycomb
+{
+	const a = find('who-codes'), b = find('who-patched')
+	BUILT[a.k].after = (t) => leaveAll(BUILT[a.k].byKind('headline'), b.seam.t0 - 0.2, t)
+}
+// morph: core-vs-ecosystem's numbers roll and slide into wordpress-share's
+{
+	const a = find('core-vs-ecosystem'), b = find('wordpress-share'), seam = b.seam
+	const A = BUILT[a.k], Bq = BUILT[b.k]
+	const nA = A.byKind('number'), nB = Bq.byKind('number')
+	const pairs = nA.map((p, i) => {
+		const q = nB[i], na = firstText(p), nb = firstText(q)
+		return { p, na, nb, from: itemPos(na), to: itemPos(nb), fa: parseNum(na.textContent), fb: parseNum(nb.textContent), others: [...p.node.querySelectorAll('text')].filter((n) => n !== na) }
+	})
+	A.after = (t) => {
+		leaveAll(A.pieces.filter((p) => !nA.includes(p)), seam.t0 - 0.3, t)
+		if (t < seam.t0) return
+		const u = inv(seam.t0, seam.t1, t), e = rest(u)
+		for (const pr of pairs) {
+			const k = lerp(1, pr.to.size / pr.from.size, e)
+			pr.p.w.setAttribute('transform', `translate(${lerp(pr.from.x, pr.to.x, e).toFixed(2)} ${lerp(pr.from.y, pr.to.y, e).toFixed(2)}) scale(${k.toFixed(4)}) translate(${(-pr.from.x).toFixed(2)} ${(-pr.from.y).toFixed(2)})`)
+			pr.na.textContent = formatNum(pr.fb, lerp(pr.fa.value, pr.fb.value, ease.inOutCubic(u)))
+			pr.others.forEach((n) => n.setAttribute('display', u > 0.3 ? 'none' : 'inline'))
+		}
+	}
+	Bq.after = (t) => { for (const q of nB) q.w.setAttribute('display', t < seam.t1 ? 'none' : 'inline') }
+}
+// grow: wilded's last step, "Business software", grows into the title's first two words
+{
+	const a = find('wilded'), b = find('title'), seam = b.seam
+	const A = BUILT[a.k], Bq = BUILT[b.k]
+	const label = A.pieces.find((p) => p.node.textContent.replace(/\s/g, '') === 'Businesssoftware')
+	const head = Bq.byKind('headline')[0]
+	const from = [...label.node.querySelectorAll('text')]
+	const to = [...head.node.querySelectorAll('text')].slice(0, 2)
+	A.after = (t) => {
+		leaveAll(A.pieces.filter((p) => p !== label), seam.t0 - 0.25, t)
+		if (t < seam.t0) return
+		const u = inv(seam.t0, seam.t1, t)
+		const e1 = rest(inv(0, 0.35, u)), e2 = camera(inv(0.25, 1, u))
+		const a0 = itemPos(from[0]), a1 = itemPos(from[1]), b0 = itemPos(to[0])
+		const K = b0.size / a0.size
+		const beside = { x: a0.x + (itemPos(to[1]).x - b0.x) / K, y: a0.y }
+		const k = Math.exp(lerp(0, Math.log(K), e2))
+		const ox = lerp(a0.x, b0.x, e2), oy = lerp(a0.y, b0.y, e2)
+		from[0].setAttribute('transform', `translate(${ox.toFixed(2)} ${oy.toFixed(2)}) scale(${k.toFixed(4)}) translate(${(-a0.x).toFixed(2)} ${(-a0.y).toFixed(2)})`)
+		const sx = lerp(a1.x, beside.x, e1), sy = lerp(a1.y, beside.y, e1)
+		from[1].setAttribute('transform', `translate(${(ox + (sx - a0.x) * k).toFixed(2)} ${(oy + (sy - a0.y) * k).toFixed(2)}) scale(${k.toFixed(4)}) translate(${(-a1.x).toFixed(2)} ${(-a1.y).toFixed(2)})`)
+	}
+	Bq.after = (t) => to.forEach((n) => {
+		if (t < seam.t1) n.setAttribute('display', 'none')
+		else { n.removeAttribute('display'); n.removeAttribute('transform') }
+	})
+}
+
+/* ---------- the hero: where it builds, where it rests ---------- */
+const heroRest = (sc) => {
+	const B = BUILT[sc.k], r = sc.rest
+	const boxOf = (p) => p.box
+	if (r.point) return r.point
+	if (r.word) {
+		const n = [...B.holder.querySelectorAll('text')].find((x) => x.textContent === r.word)
+		const b = n.getBBox(), size = +n.getAttribute('font-size')
+		return { x: b.x + b.width / 2, y: +n.getAttribute('y') - size * 0.34, r: size * 0.36, node: n }
+	}
+	if (r.stop) {
+		const heads = B.byKind('headline')
+		const h = heads[heads.length - 1]
+		const items = [...h.node.querySelectorAll('text')]
+		const last = items[items.length - 1]
+		const size = +last.getAttribute('font-size')
+		const bb = last.getBBox()
+		return { x: bb.x + bb.width + size * 0.16, y: +last.getAttribute('y') - size * 0.13, r: Math.max(9, size * 0.11) }
+	}
+	if (r.marker != null) {
+		const p = B.byKind('number')[r.marker]
+		const b = boxOf(p)
+		return { x: b.x + b.width + 30, y: b.y + b.height * 0.55, r: 16 }
+	}
+	if (r.bullet != null) {
+		const strips = B.pieces.filter((p) => p.kind === 'rect' && p.box.height <= 100 && p.box.width >= 500)
+		const b = strips[r.bullet].box
+		return { x: b.x - 30, y: b.y + b.height / 2, r: 12 }
+	}
+	if (r.orangeCell) {
+		const p = [...B.holder.querySelectorAll('path')].find((x) => x.getAttribute('fill-opacity') === '0' && (x.getAttribute('fill') || '').toUpperCase() === C.orange.toUpperCase())
+		const b = p.getBBox()
+		return { x: b.x + b.width / 2, y: b.y + b.height / 2, r: b.height / 2 }
+	}
+	return { x: 120, y: 900, r: 12 }
+}
+// measure while every scene is shown, untransformed
+film.root.querySelectorAll('[data-scene]').forEach((g) => g.setAttribute('display', 'inline'))
+const STOPS = []
+for (const sc of SCENES) {
+	const B = BUILT[sc.k]
+	B.xf.removeAttribute('transform')
+	const restP = heroRest(sc)
+	sc.restP = restP
+	// building: the hero goes to each slot as it enters, so each element appears where it is
+	const visits = sc.id === 'who-codes' || sc.id === 'who-patched' || sc.id === 'fun-week' ? [] : B.anim.slotList.map((s, j) => {
+		const items = s.items
+		const x0 = Math.min(...items.map((p) => p.box.x)), y0 = Math.min(...items.map((p) => p.box.y)), y1 = Math.max(...items.map((p) => p.box.y + p.box.height))
+		if (s.kind === 'run') { const p = items[0]; return { x: p.cx, y: p.cy, r: Math.min(30, p.box.height * 0.3), at: sc.clock + s.at } }
+		return { x: Math.max(40, x0 - 28), y: Math.min(y1, y0 + 40), r: 12, at: sc.clock + s.at }
+	}).filter((v) => Number.isFinite(v.x))
+	visits.forEach((v, j) => STOPS.push({ sc, p: v, t0: v.at, t1: (visits[j + 1]?.at ?? sc.clock + sc.restAt) - F(8) }))
+	const r0 = sc.id === 'who-codes' ? sc.clock + sc.birth : sc.id === 'fun-week' ? sc.clock + 0.9 : visits.length ? sc.clock + sc.restAt : Math.max(sc.seam.t1, sc.clock + sc.restAt)
+	STOPS.push({ sc, p: restP, t0: r0, t1: sc.out ? sc.out.t0 + (sc.out.type === 'zoomIn' || sc.out.type === 'wipe' ? 0.15 : 0) : BODY_END, rest: true })
+	if (sc.id === 'fun-week') {
+		// two beats: the cursor after the question, then the full stop of the answer
+		const before = B.pieces.find((p) => p.node.getAttribute('data-beat') === 'before')
+		const items = [...before.node.querySelectorAll('text')]
+		const last = items[items.length - 1], bb = last.getBBox(), size = +last.getAttribute('font-size')
+		const how = { x: bb.x + bb.width + size * 0.16, y: +last.getAttribute('y') - size * 0.13, r: size * 0.11 }
+		const restStop = STOPS.pop()
+		STOPS.push({ sc, p: how, t0: sc.clock + 0.9, t1: sc.clock + sc.cut })
+		STOPS.push({ ...restStop, t0: sc.clock + sc.cut + F(8) })
+	}
+}
+film.root.querySelectorAll('[data-scene]').forEach((g) => g.setAttribute('display', 'none'))
+STOPS.sort((a, b) => a.t0 - b.t0)
+for (let i = 0; i < STOPS.length - 1; i++) STOPS[i].t1 = Math.min(STOPS[i].t1, STOPS[i + 1].t0 - F(4))
+const HERO_BORN = STOPS[0].t0
+const BUILT_ON = { x: 1482, y: 538, r: 92 } // the lead cell of Built on Nextcloud at its first frame
+function heroAt(t) {
+	if (t < HERO_BORN) return null
+	const at = (st, tt) => { const [x, y] = apply(sceneMap(st.sc, Math.min(tt, st.sc.until - 1e-4)), st.p.x, st.p.y); return { x, y, r: st.p.r } }
+	for (let i = 0; i < STOPS.length; i++) {
+		const s = STOPS[i], n = STOPS[i + 1]
+		if (t >= s.t0 && t < s.t1) return at(s, t)
+		if (n && t >= s.t1 && t < n.t0) {
+			const e = rest(inv(s.t1, n.t0, t))
+			const a = at(s, s.t1 - 1e-4), b = at(n, t)
+			return { x: lerp(a.x, b.x, e), y: lerp(a.y, b.y, e), r: lerp(a.r, b.r, e) }
+		}
+	}
+	// after the last stop: into the lead cell of Built on Nextcloud, on the bar
+	const last = STOPS[STOPS.length - 1]
+	const a = at(last, last.t1 - 1e-4)
+	const e = rest(inv(last.t1, BODY_END, t))
+	if (t >= BODY_END + F(2)) return null
+	return { x: lerp(a.x, BUILT_ON.x, e), y: lerp(a.y, BUILT_ON.y, e), r: lerp(a.r, BUILT_ON.r, e) }
+}
+STOPS[STOPS.length - 1].t1 = Math.min(STOPS[STOPS.length - 1].t1, BODY_END - 1.0)
+
+// who-codes: the word "you" folds into the hex; from then on "you" is the hex
+{
+	const sc = find('who-codes'), sp = find('who-patched')
+	const word = sc.restP.node, word2 = sp.restP.node
+	const tb = sc.clock + sc.birth
+	BUILT[sc.k].after = ((prev) => (t) => {
+		prev?.(t)
+		const e = ease.inCubic(inv(tb - F(6), tb, t))
+		if (t >= tb) word.setAttribute('display', 'none')
+		else if (e > 0) {
+			const b = { x: sc.restP.x, y: sc.restP.y }
+			word.setAttribute('transform', `translate(${b.x} ${b.y}) scale(${(1 - e).toFixed(4)}) translate(${-b.x} ${-b.y})`)
+		}
+	})(BUILT[sc.k].after)
+	BUILT[sp.k].after = ((prev) => (t) => { prev?.(t); word2.setAttribute('display', 'none') })(BUILT[sp.k].after)
+}
+
+film.scene('hero', HERO_BORN - F(6), BODY_END + F(3), (ctx) => {
+	const path = el('path', { fill: C.orange }, ctx.g)
+	return (t) => {
+		let h = heroAt(t)
+		if (!h && t >= HERO_BORN - F(6) && t < HERO_BORN) h = { ...STOPS[0].p }
+		if (!h) { path.setAttribute('display', 'none'); return }
+		path.removeAttribute('display')
+		// born from the word: it grows out of the letters as they fold away
+		const g = ease.outCubic(inv(HERO_BORN - F(4), HERO_BORN + F(2), t))
+		const r = h.r * g
+		if (r < 0.5) { path.setAttribute('display', 'none'); return }
+		path.setAttribute('d', hexPath(h.x, h.y, r, r * 0.08))
+	}
+}, { post: 0.001 })
+
+/* ---------- the wipe layer: cells from the hero, in the next ground ---------- */
+film.scene('wipes', OPENING.duration, BODY_END, (ctx) => {
+	const layer = el('g', {}, ctx.g)
+	const wipes = SCENES.filter((s) => s.seam.type === 'wipe').map((s) => ({ s, prev: SCENES[s.i - 1] }))
+	return (t) => {
+		layer.replaceChildren()
+		const w = wipes.find((x) => t >= x.s.seam.t0 && t < x.s.seam.t1)
+		if (!w) return
+		const { t0, t1 } = w.s.seam
+		const tm = (t0 + t1) / 2
+		const o = heroAt(t0) || { x: CX, y: CY }
+		const cover = w.s.ground === 'cobalt' ? C.cobalt600 : GROUND[w.s.ground]
+		const dmax = 2300
+		for (const c of wipeLattice) {
+			const d = Math.hypot(c.x - o.x, c.y - o.y) / dmax
+			const inAt = t0 + d * (tm - t0 - F(4)), outAt = tm + d * (t1 - tm - F(4))
+			let sx = 0, fill = cover
+			if (t < tm) sx = ease.outCubic(inv(inAt, inAt + F(4), t))
+			else { sx = 1 - ease.inCubic(inv(outAt, outAt + F(4), t)); fill = cover }
+			if (sx <= 0.001) continue
+			const tf = `translate(${c.x.toFixed(1)} 0) scale(${sx.toFixed(4)} 1) translate(${(-c.x).toFixed(1)} 0)`
+			el('path', { d: hexPath(c.x, c.y, WIPE_R * 1.16, 0), fill: GROUND[w.s.ground], transform: tf }, layer)
+			el('path', { d: hexPath(c.x, c.y, WIPE_R * 0.92, WIPE_R * 0.09), fill, transform: tf }, layer)
 		}
 	}
 })
+
+/* ---------- the closing pieces ---------- */
 film.scene('builtOn', BODY_END, BODY_END + BUILT_ON_DUR, (ctx) => builtOnScene(ctx, CLOSE))
 film.scene('install', BODY_END + BUILT_ON_DUR, DURATION, (ctx) => installScene(ctx, CLOSE), { post: 0.001 })
+// the hero layer stays above the closing piece's first frames
+film.root.appendChild(film.root.querySelector('[data-scene=hero]'))
 
-/* ---------- sound for the camera: a soft whoosh under each glide, a longer one under each row change ---------- */
-for (const m of MOVES) {
-	if (m.kind === 'glide') film.cue(m.t0 + 0.1, 'whoosh', { dur: m.t1 - m.t0 - 0.2, from: 700, to: 1600, gain: 0.035, panFrom: 0.4, panTo: -0.4 })
-	if (m.kind === 'out' || m.kind === 'final') film.cue(m.t0, 'whoosh', { dur: m.t1 - m.t0, from: 1800, to: 500, gain: 0.05, panFrom: 0, panTo: 0.2 })
-	if (m.kind === 'in') film.cue(m.t0, 'whoosh', { dur: m.t1 - m.t0, from: 500, to: 1900, gain: 0.05, panFrom: 0.2, panTo: 0 })
-	if (m.kind === 'in' || m.kind === 'push') film.cue(m.t1, 'tick', { freq: 1760, gain: 0.05, decay: 0.06 })
+/* ---------- sound: the seams, the hero's landings, and a bed whose phrases turn at the chapters ---------- */
+for (const sc of SCENES) {
+	const s = sc.seam
+	if (s.type === 'zoomIn') film.cue(s.t0, 'whoosh', { dur: s.t1 - s.t0, from: 400, to: 2600, gain: 0.07 })
+	if (s.type === 'zoomOut') film.cue(s.t0, 'whoosh', { dur: s.t1 - s.t0, from: 2600, to: 500, gain: 0.07 })
+	if (s.type === 'pan') film.cue(s.t0, 'whoosh', { dur: s.t1 - s.t0, from: 800, to: 2000, gain: 0.05, panFrom: s.dir[0] ? 0.6 : 0, panTo: s.dir[0] ? -0.6 : 0 })
+	if (s.type === 'wipe') for (let i = 0; i < 6; i++) film.cue(s.t0 + i * 0.09, 'tick', { freq: 1318.5 + i * 120, gain: 0.04, decay: 0.03, pan: -0.3 + i * 0.12 })
+	if (s.type === 'morph' || s.type === 'grow') film.cue(s.t1, 'click', { gain: 0.16, freq: 2600, seed: 33, dry: true })
 }
+for (const st of STOPS) if (st.rest) film.cue(st.t0, 'pluck', { freq: 1174.66, gain: 0.09, decay: 0.5 })
+film.cue(HERO_BORN, 'click', { gain: 0.22, freq: 2800, seed: 31, dry: true })
 
-/* ---------- the bed: in D, one progression per row, the pad under everything, the pulse in the build rows ---------- */
 const D = [50, 54, 57, 62], Dmaj9 = [50, 54, 61, 64], Bm9 = [47, 54, 57, 61], Gmaj9 = [47, 50, 54, 57], Aadd9 = [49, 52, 57, 59], Fsm7 = [49, 52, 54, 57], Bmadd9 = [47, 50, 54, 61], Gmaj7 = [47, 50, 54, 59], Em9 = [50, 54, 55, 59], Asus = [50, 52, 57, 59]
 const ROOT = new Map([[D, 38], [Dmaj9, 38], [Bm9, 35], [Gmaj9, 43], [Aadd9, 45], [Fsm7, 42], [Bmadd9, 35], [Gmaj7, 43], [Em9, 40], [Asus, 45]])
-const card = (id) => CARDS.find((c) => c.id === id)
-const ACTS = [
-	{ at: BODY_START, prog: [Bm9, Gmaj9, D, Aadd9], pulse: false },
-	{ at: card('wordpress-share').enter, prog: [Gmaj9, Aadd9, Dmaj9, Bm9], pulse: true },
-	{ at: card('suite-vs-workspace').enter, prog: [Dmaj9, Bm9, Gmaj7, Asus], pulse: false },
-	{ at: card('power-platform').enter, prog: [Em9, Gmaj9, Bm9, Aadd9], pulse: true },
-	{ at: card('sanne').enter, prog: [Dmaj9, Bm9, Gmaj7, Asus], pulse: false },
-	{ at: card('framework-basics').enter, prog: [Gmaj9, Aadd9, Fsm7, Bmadd9], pulse: true },
-	{ at: card('store-growth').enter, prog: [Dmaj9, Aadd9, Bm9, Gmaj9], pulse: true },
-	{ at: card('three-questions').enter, prog: [Gmaj9, Aadd9, Dmaj9, Dmaj9], pulse: false },
+const startOf = (id) => find(id).from
+const PHRASES = [
+	{ at: OPENING.duration, prog: [Bm9, Gmaj9, D, Aadd9], pulse: false },
+	{ at: startOf('wordpress-week'), prog: [Gmaj9, Aadd9, Dmaj9, Bm9], pulse: true },
+	{ at: startOf('chapter-01'), prog: [Dmaj9, Bm9, Gmaj7, Asus], pulse: false },
+	{ at: startOf('chapter-02'), prog: [Em9, Gmaj9, Bm9, Aadd9], pulse: true },
+	{ at: startOf('sanne'), prog: [Dmaj9, Bm9, Gmaj7, Asus], pulse: false },
+	{ at: startOf('chapter-03'), prog: [Gmaj9, Aadd9, Fsm7, Bmadd9], pulse: true },
+	{ at: startOf('chapter-04'), prog: [Dmaj9, Aadd9, Bm9, Gmaj9], pulse: true },
+	{ at: startOf('three-questions'), prog: [Gmaj9, Aadd9, Dmaj9, Dmaj9], pulse: false },
 ]
 const BAR = G0.bar
 const TOTAL_BARS = Math.round(DURATION / BAR)
-const BODY_BAR0 = Math.round(BODY_START / BAR), BODY_BAR1 = Math.round(BODY_END / BAR)
-const chords = [], bass = [], kick = []
+const BODY_BAR0 = Math.round(OPENING.duration / BAR), BODY_BAR1 = Math.round(BODY_END / BAR)
+const chords = [], kick = []
 for (let b = 0; b < TOTAL_BARS; b++) {
 	let ch
 	if (b < BODY_BAR0) ch = D
 	else if (b < BODY_BAR1) {
 		let a = 0
-		ACTS.forEach((A, i) => { if (b * BAR + 1e-3 >= A.at) a = i })
-		const a0 = Math.floor(ACTS[a].at / BAR)
-		ch = ACTS[a].prog[(b - a0) % 4]
-		if (ACTS[a].pulse) kick.push([b, b + 1])
+		PHRASES.forEach((P, i) => { if (b * BAR + 1e-3 >= P.at) a = i })
+		ch = PHRASES[a].prog[(b - Math.floor(PHRASES[a].at / BAR)) % 4]
+		if (PHRASES[a].pulse) kick.push([b, b + 1])
 	} else ch = [Dmaj9, Bm9, Aadd9, Gmaj9, Gmaj9, Aadd9, D][Math.min(6, b - BODY_BAR1)] || D
 	chords.push(ch)
-	bass.push(ROOT.get(ch))
 }
-film.music = {
-	bars: TOTAL_BARS,
-	chords,
-	bass,
-	parts: { pad: [[BODY_BAR0, TOTAL_BARS]], bass: [[BODY_BAR0 + 2, TOTAL_BARS - 1]], kick, hat: kick },
-	loop: false,
-	duckDb: 15,
-	voice: TL.voice.map(({ src, at, gain }) => ({ src, at: +at.toFixed(4), gain })),
-}
+// the chapter seams land on a low hit
+for (const id of ['chapter-01', 'chapter-02', 'chapter-03', 'chapter-04']) film.cue(find(id).seam.t1, 'impact', { gain: 0.14, from: 110, to: 45, decay: 0.5 })
+film.music = { bars: TOTAL_BARS, chords, bass: chords.map((c) => ROOT.get(c)), parts: { pad: [[BODY_BAR0, TOTAL_BARS]], bass: [[BODY_BAR0 + 2, TOTAL_BARS - 1]], kick, hat: kick }, loop: false, voice: [] }
 
-film.board = { film: SLUG, variant: 'talk', meta: { title: 'Business software is next', words: CARDS.map((c) => c.b.words).join(' ') } }
+/* ---------- what the tools read back ---------- */
+const TL = timeline({
+	bpm: 128, fps: 24, duration: DURATION,
+	scenes: [
+		{ id: 'opening', from: 0, to: OPENING.duration },
+		...SCENES.map((s) => ({ id: s.id, from: { s: s.seam.t0 }, to: { s: s.to } })),
+		{ id: 'builtOn', from: { s: BODY_END }, to: { s: BODY_END + BUILT_ON_DUR } },
+		{ id: 'install', from: { s: BODY_END + BUILT_ON_DUR }, to: { s: DURATION } },
+	],
+})
+film.board = { film: SLUG, variant: 'talk', meta: { title: 'Business software is next' } }
 window.__bsn = {
-	cards: CARDS.map((c) => ({ id: c.id, row: c.row, enter: c.enter, arrive: c.arrive, leave: c.leave, voice: c.voice, take: !!c.take, settled: c.settled })),
-	heads: HEADS.map((h) => ({ section: h.section, t0: h.t0, t1: h.t1, voiceAt: h.voiceAt })),
-	moves: MOVES.map(({ t0, t1, kind }) => ({ t0, t1, kind })),
 	duration: DURATION, bodyEnd: BODY_END,
+	scenes: SCENES.map((s) => ({ id: s.id, seam: s.seam.type, t0: +s.seam.t0.toFixed(3), clock: +s.clock.toFixed(3), to: +s.to.toFixed(3), rest: s.rest, restAt: +(s.clock + s.restAt).toFixed(3) })),
+	stops: STOPS.map((s) => ({ id: s.sc.id, t0: +s.t0.toFixed(2), t1: +s.t1.toFixed(2), rest: !!s.rest })),
 }
 TL.expose()
 film.start()

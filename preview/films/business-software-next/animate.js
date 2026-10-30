@@ -538,6 +538,9 @@ export function animateBoard(ctx, board, plan) {
 		end,
 		cues,
 		pieces: roots,
+		slotList: slots,
+		intro,
+		introEnd,
 		slots: slots.map((s) => ({ at: s.at, items: s.items.map((p) => p.kind + ':' + (p.text?.str || p.node.textContent || p.node.tagName).slice(0, 14)) })),
 		update(l) { for (const j of jobs) j.update(l) },
 	}

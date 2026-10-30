@@ -199,6 +199,8 @@ export function animateBoard(ctx, board, plan) {
 	const root = ctx.g
 	const cam = el('g', { 'data-part': 'camera' }, root)
 	board.draw(Object.assign(Object.create(ctx), { g: cam }))
+	// a film may adjust the drawn still before it is read (recolour, add a piece); the storyboard never sees this
+	if (plan.afterDraw) plan.afterDraw(cam)
 	const first = cam.firstElementChild
 	if (first?.tagName === 'rect' && +first.getAttribute('width') >= W && +first.getAttribute('height') >= H) root.insertBefore(first, cam)
 
@@ -366,12 +368,14 @@ export function animateBoard(ctx, board, plan) {
 	slots.forEach((s, i) => {
 		let at = c0 + i * gap
 		const word = spec.at?.[i]
-		if (word) { const w = plan.wordAt(word); if (w != null) at = w - F(3) }
-		s.at = Math.max(c0, snap8(at))
+		if (typeof word === 'number') at = word
+		else if (word) { const w = plan.wordAt(word); if (w != null) at = w - F(3) }
+		s.at = typeof word === 'number' ? word : Math.max(c0, snap8(at))
 	})
 	for (let i = 1; i < slots.length; i++) if (!spec.at?.[i] && slots[i].at < slots[i - 1].at) slots[i].at = slots[i - 1].at
 
 	const enter = (p, at) => {
+		if (spec.skip?.(p)) return at
 		// returns the end time of this piece's entrance (members included)
 		switch (p.kind) {
 		case 'headline': case 'copy': case 'eyebrow': {
@@ -533,6 +537,8 @@ export function animateBoard(ctx, board, plan) {
 	return {
 		end,
 		cues,
+		pieces: roots,
+		slots: slots.map((s) => ({ at: s.at, items: s.items.map((p) => p.kind + ':' + (p.text?.str || p.node.textContent || p.node.tagName).slice(0, 14)) })),
 		update(l) { for (const j of jobs) j.update(l) },
 	}
 }

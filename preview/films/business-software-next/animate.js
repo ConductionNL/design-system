@@ -100,7 +100,8 @@ function rise(p, t0, { perWord = false, wordGap = F(2), lineGap = F(3), dur = F(
 		const pad = size * 0.3
 		const clipId = nextId('rise')
 		const cp = el('clipPath', { id: clipId }, L.g.ownerSVGElement.querySelector('defs'))
-		el('rect', { x: b.x - pad, y: b.y - pad, width: b.width + 2 * pad, height: b.height + 2 * pad }, cp)
+		// wide to the sides: only the bottom edge masks the rise, so no word of the line is ever cut off
+		el('rect', { x: b.x - pad - size, y: b.y - pad, width: b.width + 2 * pad + 2 * size, height: b.height + 2 * pad }, cp)
 		const drop = b.height + 2 * pad
 		L.items.forEach((it) => {
 			const at = t0 + (perWord ? k * wordGap : li * lineGap)

@@ -95,6 +95,8 @@
 
   function drawPill() {
     if (!document.body || document.body.getAttribute('data-lang-pill') === 'off') return;
+    // A film capture (?capture) records the page frame by frame: no site chrome in the picture.
+    if (/[?&]capture(&|=|$)/.test(location.search)) return;
     if (document.querySelector('.kit-lang')) return;
     var style = document.createElement('style');
     style.id = 'kit-lang-style';

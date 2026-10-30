@@ -59,8 +59,8 @@ a{color:#3669a5}a:hover{color:#234a78}
               </dl>
             </section>
             <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px 8px; display: flex; flex-direction: column; gap: 4px">
-              <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px"><h2 style="margin: 0; font-size: 17px; font-weight: 700">Zaken</h2><a href="DqZaken.dc.html" style="font-size: 14px; font-weight: 600">Alle 2 zaken bekijken</a></div>
-              <sc-for list="{{ cases }}" as="c" hint-placeholder-count="2">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px"><h2 style="margin: 0; font-size: 17px; font-weight: 700">Zaken</h2><a href="DqZaken.dc.html" style="font-size: 14px; font-weight: 600">Alle 8 zaken bekijken</a></div>
+              <sc-for list="{{ cases }}" as="c" hint-placeholder-count="3">
                 <a href="{{ c.href }}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
                   <span style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">{{ c.title }}</strong><span style="font-size: 13px; color: #5e6168">{{ c.meta }}</span></span>
                   <span style="{{ c.statusStyle }}">{{ c.status }}</span>
@@ -131,15 +131,16 @@ class Component extends DCLogic {
     const withCounts = (arr) => arr.map((t) => { const m = /^(.*?)\s+(\d[\d.,]*)(\s+.*)?$/.exec(t.label || ''); return m ? Object.assign({}, t, { label: m[1] + (m[3] || ''), count: m[2], hasCount: true }) : Object.assign({}, t, { hasCount: false }); });
     const tabBase = "display: inline-flex; align-items: center; gap: 8px; box-sizing: border-box; min-height: 34px; padding: 8px 12px; margin-bottom: -1px; border: 1px solid #d6d9de; border-bottom: none; border-radius: 8px 8px 0 0; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; background: #eceef1; cursor: pointer; white-space: nowrap;";
     const tab = (on) => on ? tabBase + " background: #ffffff; border-bottom: 1px solid #ffffff; font-weight: 700;" : tabBase;
-    const tabs = [['Overzicht', true], ['Zaken 2', false], ['Contactmomenten 3', false], ['Bestanden 4', false], ['Historie 9', false]].map(([label, on]) => ({ label, sel: on ? 'true' : 'false', style: tab(on) }));
+    const tabs = [['Overzicht', true], ['Zaken 8', false], ['Contactmomenten 3', false], ['Bestanden 4', false], ['Historie 9', false]].map(([label, on]) => ({ label, sel: on ? 'true' : 'false', style: tab(on) }));
     const facts = [
       ['Naam', 'Sanne de Vries'], ['Voornamen', 'Sanne Johanna'], ['Geslachtsnaam', 'de Vries'],
       ['Geboortedatum', '14 maart 1988'], ['Woonadres', 'Lindelaan 14, 2999 AA Zuiddrecht'], ['Omschrijving', 'Verzoeker Woo, verlichting fietspad Lindelaan']
     ].map(([label, value]) => ({ label, value }));
     const pill = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
     const cases = [
-      ['Verlichting fietspad Lindelaan', '2026-0110 · Woo-verzoek · behandelaar Pieter Jansen', 'In behandeling', pill('#e8e6f6', '#4a3f8f'), 'Termijn 1 nov', 'DqZaak.dc.html'],
-      ['Kapotte lantaarnpaal Lindelaan', '2026-4843 · Melding · behandelaar Anouk Bakker', 'Afgehandeld', pill('#e7f3ea', '#1e6b2a'), 'Klaar 18 nov 2025', '#']
+      ['Kapotte lantaarnpaal Lindelaan', '2026-4843 · Melding openbare ruimte · behandelaar Anouk Bakker', 'Afgehandeld', pill('#e7f3ea', '#1e6b2a'), 'Klaar 11 apr', '#'],
+      ['Subsidie buurtfeest Lindelaan', '2026-0114 · Subsidieaanvraag', 'Afgehandeld', pill('#e7f3ea', '#1e6b2a'), 'Klaar 3 aug', '#'],
+      ['Kapotte lantaarnpaal Kerkplein', '2026-0113 · Melding openbare ruimte', 'Afgehandeld', pill('#e7f3ea', '#1e6b2a'), 'Klaar 27 sep', '#']
     ].map(([title, meta, status, statusStyle, due, href]) => ({ title, meta, status, statusStyle, due, href }));
     const moments = [
       ['M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z', '4 okt, 10:52 · Mijn Zuiddrecht · inkomend · zaak 2026-0110', 'Wil graag alle stukken over de verlichting zien.'],

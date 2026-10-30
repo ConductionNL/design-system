@@ -294,3 +294,16 @@ test('a tag in a list row does not stand for a chip outside the rows (an active-
 	const rows = pairElements(rowTags(380).map((t) => ({ ...t, label: `${t.label} x` })), rowTags(374), 1400)
 	assert.equal(rows.pairs.filter((p) => p.by.startsWith('group')).length, 1)
 })
+
+test('a table inside a paired card whose counterpart draws its rows without a table is that card\'s content', () => {
+	const box = (t, x, y, w, h) => ({ role: 'card', title: t, rect: { x, y, w, h }, props: {} })
+	const table = (x, y, w, h) => ({ role: 'table', title: 'table', rect: { x, y, w, h } })
+	const board = [box('Werkvoorraad per zaaktype', 1112, 746, 300, 196)]
+	const live = [box('Werkvoorraad per zaaktype', 1112, 743, 300, 188), table(1135, 792, 254, 72)]
+	const { pairs, extra } = pairComponents(board, live, 1400)
+	assert.equal(pairs.length, 1)
+	assert.deepEqual(extra, [])
+	// Control: the same table outside the card is still extra on live.
+	const { extra: outside } = pairComponents(board, [live[0], table(300, 400, 254, 72)], 1400)
+	assert.equal(outside.length, 1)
+})

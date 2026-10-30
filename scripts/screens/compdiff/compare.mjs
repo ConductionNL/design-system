@@ -117,10 +117,18 @@ export function pairComponents (board, live, H) {
 	// A pager right under a paired table belongs to it: whether a list has page links follows how many rows it holds.
 	const tablePager = (c, side) => c.role === 'pager' && pairs.some((p) => p[side].role === 'table'
 		&& Math.abs(c.rect.y - (p[side].rect.y + p[side].rect.h)) <= 24 && Math.abs(c.rect.x - p[side].rect.x) <= 8)
+	// A table inside a paired card whose counterpart draws the same rows without a table (a board's grid of divs for
+	// "Werkvoorraad per zaaktype") is that card's content, compared with the card: neither missing nor extra.
+	const cardTable = (c, side) => {
+		if (c.role !== 'table') return false
+		const other = side === 'board' ? 'live' : 'board'
+		return pairs.some((p) => p[side].role === 'card' && hugs(p[side].rect, c.rect)
+			&& !(other === 'board' ? board : live).some((x) => x.role === 'table' && hugs(p[other].rect, x.rect)))
+	}
 	return {
 		pairs,
-		missing: board.filter((c) => !usedB.has(c) && counted(c) && !frameOnly(c, 'board') && !tablePager(c, 'board')),
-		extra: live.filter((c) => !usedL.has(c) && counted(c) && !frameOnly(c, 'live') && !tablePager(c, 'live')),
+		missing: board.filter((c) => !usedB.has(c) && counted(c) && !frameOnly(c, 'board') && !tablePager(c, 'board') && !cardTable(c, 'board')),
+		extra: live.filter((c) => !usedL.has(c) && counted(c) && !frameOnly(c, 'live') && !tablePager(c, 'live') && !cardTable(c, 'live')),
 	}
 }
 

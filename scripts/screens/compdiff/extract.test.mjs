@@ -1628,3 +1628,46 @@ test('a selected row beside an unselected one is not the unselected row\'s optio
 	// Control: the selected row's own tint is its toggle's ground.
 	assert.equal(grounds[0], 'rgb(244, 247, 251)')
 })
+
+test('a note row whose hours field sits in a label that wraps its caption and the field is a form row, not a toolbar', { skip }, async () => {
+	const hours = (wrapped) => wrapped
+		? '<label style="display:flex;flex-direction:column;gap:8px"><span>Uren</span><input type="text" style="height:40px;width:104px;box-sizing:border-box"></label>'
+		: '<div style="display:flex;flex-direction:column;gap:8px"><span>Uren</span><input type="text" style="height:40px;width:104px;box-sizing:border-box"></div>'
+	const row = (wrapped) => `<div style="position:absolute;left:315px;top:317px;width:754px;display:flex;gap:12px;align-items:flex-end"><div style="flex:1;display:flex;flex-direction:column;gap:8px"><label for="n">Wat er gebeurde</label><input id="n" type="text" style="height:40px;box-sizing:border-box"></div>${hours(wrapped)}<button style="height:40px">Vastleggen</button></div>`
+	assert.deepEqual((await measure(row(true))).components.filter((c) => c.role === 'toolbar'), [])
+	// Control: the same caption beside a field it does not label leaves one labelled field of three: a toolbar.
+	assert.equal((await measure(row(false))).components.filter((c) => c.role === 'toolbar').length, 1)
+})
+
+test('a list card titled by its first row\'s text measures its content from the next row, not from the rest of the first', { skip }, async () => {
+	const row = (d) => `<div style="display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid #eef0f3"><span aria-label="Selecteren" style="flex:none;width:18px;height:18px;box-sizing:border-box;border:2px solid #3669a5;border-radius:4px"></span><span style="flex:none;width:60px;font-weight:700">${d} dagen</span><a href="#" style="flex:1;display:flex;flex-direction:column"><strong style="font-size:15px">Afvalinzameling</strong><span style="font-size:13px">2026-4864 · Marja Verbeek</span></a></div>`
+	const card = (n) => `<section style="position:absolute;left:292px;top:438px;width:800px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;display:flex;flex-direction:column">${[6, 5, 4].slice(0, n).map(row).join('')}</section>`
+	const list = (await measure(card(3))).components.find((c) => c.role === 'card')
+	assert.equal(list.title, '6 dagen')
+	// The next row starts at its checkbox, drawn as a bordered empty box (18px padding + the card's 1px border).
+	assert.equal(list.content.firstRowInsetLeft, 19)
+	assert.equal(list.content.firstRowFont.fontSize, 14)
+	// Control: with two rows the first is no list row of its kind yet; the rest of it (its 15px name) stays the card's
+	// first content.
+	const one = (await measure(card(2))).components.find((c) => c.role === 'card')
+	assert.equal(one.content.firstRowFont.fontSize, 15)
+})
+
+test('a list item\'s name set as a text button is the card\'s title, as the same name set as a link is', { skip }, async () => {
+	const item = (n, name, tag) => `<li style="display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid #eef0f3"><span style="flex:none;width:26px;height:26px;border-radius:13px;background:#3669a5;color:#fff;font-weight:700;display:inline-flex;align-items:center;justify-content:center">${n}</span><div style="display:flex;flex-direction:column;gap:4px"><${tag} ${tag === 'a' ? 'href="#"' : 'type="button"'} style="border:0;background:transparent;padding:0;text-align:left;color:#1b1c1d;text-decoration:none;font:600 15px sans-serif">${name}</${tag}><span style="font-size:13px">Marktstraat · 2026-4837</span></div></li>`
+	const card = (tag) => `<ol style="position:absolute;left:984px;top:327px;width:409px;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border:1px solid #e4e6ea;border-radius:10px;background:#fff">${['Parkeervergunningen binnenstad', 'Verlichting fietspad Lindelaan'].map((t, i) => item(i + 1, t, tag)).join('')}</ol>`
+	const board = (await measure(card('a'))).components.find((c) => c.role === 'card')
+	const live = (await measure(card('button'))).components.find((c) => c.role === 'card')
+	assert.equal(board.title, 'Parkeervergunningen binnenstad')
+	assert.equal(live.title, board.title)
+	assert.equal(live.content.firstRowInsetLeft, board.content.firstRowInsetLeft)
+})
+
+test('a text button with an empty, hidden icon wrapper is a plain link, as one without the wrapper is', { skip }, async () => {
+	const page = (icon) => `<div style="position:absolute;left:984px;top:520px;width:409px;padding:14px;border:1px solid #e4e6ea;border-radius:10px"><strong>9 zaken zonder adres</strong><p>Afvalinzameling Oosthaven 2025 en 6 andere hebben geen locatie.</p><button style="border:0;background:transparent;color:#3669a5;font-weight:600;padding:0">${icon}<span>Toon ze in de tabel</span></button></div>`
+	const hidden = await measure(page('<span class="button-vue__icon" style="display:none"></span>'))
+	assert.equal(hidden.elements.filter((e) => e.label === 'Toon ze in de tabel').length, 0)
+	// Control: a button that shows its icon stays an element.
+	const shown = await measure(page('<span class="button-vue__icon"><svg width="16" height="16"><rect width="16" height="16"/></svg></span>'))
+	assert.equal(shown.elements.filter((e) => e.label === 'Toon ze in de tabel').length, 1)
+})

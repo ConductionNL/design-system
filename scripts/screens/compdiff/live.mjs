@@ -336,6 +336,66 @@ export function leaveClosedSelect(page) {
 }
 
 /**
+ * Runs in the page: takes the keyboard focus rings off the focused control and its wrappers, so a field typed into is
+ * measured and pictured as drawn, without the theme's rings round it. A ring is what a `:focus`, `:focus-visible` or
+ * `:focus-within` rule draws on an element it matches now: its outline, and the zero-offset, unblurred spread rings in
+ * its box shadow. A drop shadow, and a ring the element draws without such a rule, stay.
+ *
+ * @return {number} How many elements lost a ring.
+ */
+export function focusRingsOff() {
+	const FOCUS = /:focus(?:-visible|-within)?(?![-\w])/
+	const topLevel = (s) => {
+		const parts = []
+		let depth = 0, from = 0
+		for (let i = 0; i < s.length; i++) {
+			if (s[i] === '(') depth++
+			else if (s[i] === ')') depth--
+			else if (s[i] === ',' && depth === 0) { parts.push(s.slice(from, i).trim()); from = i + 1 }
+		}
+		parts.push(s.slice(from).trim())
+		return parts.filter(Boolean)
+	}
+	const ringed = new Map()
+	const walk = (rules) => {
+		for (const r of rules) {
+			if (r.cssRules && r.cssRules.length) walk(r.cssRules)
+			if (!r.selectorText || !r.style || !FOCUS.test(r.selectorText)) continue
+			const outline = !!(r.style.getPropertyValue('outline-style') || r.style.getPropertyValue('outline-width') || r.style.getPropertyValue('outline'))
+			const shadow = !!r.style.getPropertyValue('box-shadow')
+			if (!outline && !shadow) continue
+			for (const sel of topLevel(r.selectorText).filter((x) => FOCUS.test(x))) {
+				let els = []
+				try { els = document.querySelectorAll(sel) } catch { continue }
+				for (const el of els) {
+					const was = ringed.get(el) || { outline: false, shadow: false }
+					ringed.set(el, { outline: was.outline || outline, shadow: was.shadow || shadow })
+				}
+			}
+		}
+	}
+	for (const sheet of document.styleSheets) {
+		try { walk(sheet.cssRules) } catch { /* a stylesheet from another origin cannot be read */ }
+	}
+	let n = 0
+	for (const [el, what] of ringed) {
+		const cs = getComputedStyle(el)
+		let changed = false
+		if (what.outline && cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0) { el.style.setProperty('outline', 'none', 'important'); changed = true }
+		if (what.shadow && cs.boxShadow !== 'none') {
+			const keep = topLevel(cs.boxShadow).filter((s) => {
+				if (/\binset\b/.test(s)) return true
+				const len = s.replace(/[a-z-]+\([^)]*\)/gi, ' ').match(/-?[\d.]+px/g) || []
+				return !(len.length === 4 && parseFloat(len[0]) === 0 && parseFloat(len[1]) === 0 && parseFloat(len[2]) === 0 && parseFloat(len[3]) > 0)
+			})
+			if (keep.length < topLevel(cs.boxShadow).length) { el.style.setProperty('box-shadow', keep.length ? keep.join(', ') : 'none', 'important'); changed = true }
+		}
+		if (changed) { el.style.setProperty('transition', 'none', 'important'); n++ }
+	}
+	return n
+}
+
+/**
  * Waits, at most `max` ms, until the page's finite transitions and animations have ended, so a colour is read at its
  * end value and not halfway (a button's ground fading in). A spinner that turns for ever is not waited for.
  *

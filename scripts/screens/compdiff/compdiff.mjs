@@ -35,7 +35,7 @@ import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
-import { accountFor, browserEnv, chunks, leaveClosedSelect, loadingIndicators, markIgnored, parkPointer, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
+import { accountFor, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, markIgnored, parkPointer, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -243,6 +243,9 @@ try {
 	if (args['keep-scroll'] !== 'true' && (await resetScroll(lpage)) > 0) await lpage.waitForTimeout(500)
 	await waitForTransitions(lpage).catch(() => {})
 	await markIgnored(lpage, args.ignore)
+	// The keyboard focus rings round a field typed into are the theme's, kept in the apps (Ruben, 30 Oct); a board draws
+	// the field without them.
+	await lpage.evaluate(focusRingsOff).catch(() => 0)
 	const livePng = path.join(out, `${board}-live.png`)
 	await lpage.screenshot({ path: livePng, clip: { x: 0, y: 0, width, height: boardHeight } })
 	lap('screenshot')

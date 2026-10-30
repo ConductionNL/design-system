@@ -35,7 +35,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
       </section>
         <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
-          <sc-for list="{{ views }}" as="v" hint-placeholder-count="5">
+          <sc-for list="{{ views }}" as="v" hint-placeholder-count="6">
             <button type="button" aria-pressed="{{ v.pressed }}" style="{{ v.style }}">{{ v.label }}<span style="{{ v.countStyle }}">{{ v.count }}</span></button>
           </sc-for>
           <span style="flex: 1"></span>
@@ -59,7 +59,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <table style="border-collapse: collapse; width: 100%; min-width: 980px; font-size: 14px">
               <thead><tr style="background: #fafbfc; text-align: left; color: #5e6168">
                 <th style="padding: 10px 6px 10px 18px; width: 28px"><input type="checkbox" aria-label="Alles selecteren" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5"></th>
-                <sc-for list="{{ cols }}" as="h" hint-placeholder-count="6"><th style="padding: 10px 12px; font-weight: 600; white-space: nowrap">{{ h }}</th></sc-for>
+                <sc-for list="{{ cols }}" as="h" hint-placeholder-count="7"><th style="padding: 10px 12px; font-weight: 600; white-space: nowrap">{{ h }}</th></sc-for>
               </tr></thead>
               <tbody>
                 <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
@@ -71,6 +71,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                   <td style="padding: 12px; vertical-align: middle; white-space: nowrap">{{ r.owner }}</td>
                   <td style="padding: 12px; vertical-align: middle"><span style="display: inline-flex; flex-wrap: wrap; gap: 4px"><sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="2"><span style="padding: 2px 8px; border-radius: 10px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 600; white-space: nowrap">{{ t }}</span></sc-for></span></td>
                   <td style="padding: 12px; vertical-align: middle; white-space: nowrap; color: #5e6168">{{ r.last }}</td>
+                <td style="padding: 12px; vertical-align: middle"><span style="display: flex; flex-direction: column; gap: 2px"><span style="{{ r.riskStyle }}"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 5px; flex: none; background: {{ r.riskDot }}"></span>{{ r.risk }}</span><span style="font-size: 12px; color: #5e6168">{{ r.reason }}</span></span></td>
                 </tr>
                 </sc-for>
               </tbody>
@@ -133,21 +134,23 @@ class Component extends DCLogic {
     ];
     const view = (on) => 'display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px \'Fira Sans\', sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
     const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
-    const views = [['Alle', 412, true], ['Inwoners', 318, false], ['Bedrijven', 94, false], ['Van mij', 36, false], ['Zonder eigenaar', 12, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
-    const cols = ['Naam', 'Soort', 'Plaats', 'Eigenaar', 'Tags', 'Laatste contact'];
+    const views = [['Alle', 412, true], ['Inwoners', 318, false], ['Bedrijven', 94, false], ['Risico', 23, false], ['Van mij', 36, false], ['Zonder eigenaar', 12, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
+    const cols = ['Naam', 'Soort', 'Plaats', 'Eigenaar', 'Tags', 'Laatste contact', 'Risico'];
     const pill = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
     const K = { Inwoner: pill('#e3f1f3', '#1d5e66'), Bedrijf: pill('#eaf0f7', '#234a78'), Vereniging: pill('#e8e6f6', '#4a3f8f') };
+    const dot = (c) => 'display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; white-space: nowrap; color: ' + c;
+    const R = { Laag: ['#1e6b2a', '#1e6b2a'], Midden: ['#7a4f00', '#d9a400'], Hoog: ['#a30000', '#cc0000'] };
     const tr = (sel) => 'border-top: 1px solid #eef0f3;' + (sel ? ' background: #eaf0f7;' : '');
-    const row = (name, number, kind, place, owner, tags, last, sel, href) => ({ name, number, kind, kindStyle: K[kind], place, owner, tags, last, sel: !!sel, unsel: !sel, style: tr(sel), href: href || '#' });
+    const row = (name, number, kind, risk, reason, place, owner, tags, last, sel, href) => ({ name, number, kind, kindStyle: K[kind], risk, riskStyle: dot(R[risk][0]), riskDot: R[risk][1], reason, place, owner, tags, last, sel: !!sel, unsel: !sel, style: tr(sel), href: href || '#' });
     const rows = [
-      row('Sanne de Vries', 'K-2019-01184', 'Inwoner', 'Zuiddrecht', 'Pieter Jansen', ['straatfeest'], '4 okt', true, 'PqKlant.dc.html'),
-      row('Buurtvereniging Oost', 'K-2020-00231', 'Vereniging', 'Zuiddrecht', 'Pieter Jansen', ['subsidie', 'wijk oost'], '3 okt', true, 'PqOrganisatie.dc.html'),
-      row('Café De Kroon', 'K-2018-00077', 'Bedrijf', 'Zuiddrecht', 'Fatma Yildiz', ['horeca', 'terras'], '2 okt', true, 'PqOrganisatie.dc.html'),
-      row('M. de Graaf', 'K-2024-01902', 'Inwoner', 'Zuiddrecht', 'Fatma Yildiz', [], 'vandaag', false),
-      row('Bakkerij Van Dam', 'K-2017-00412', 'Bedrijf', 'Zuiddrecht', 'Anouk Bakker', ['winkelstraat'], '29 sep', false),
-      row('J. Peters', 'K-2023-01577', 'Inwoner', 'Zuiddrecht', 'Pieter Jansen', [], '1 okt', false),
-      row('Fam. Kuiper', 'K-2021-00866', 'Inwoner', 'Zuiddrecht', 'Anouk Bakker', ['parkeren'], 'gisteren', false),
-      row('Sportvereniging ZVV', 'K-2016-00190', 'Vereniging', 'Zuiddrecht', 'Niemand', ['sport', 'subsidie'], '12 sep', false)
+      row('Sanne de Vries', 'K-2019-01184', 'Inwoner', 'Laag', 'contact in de laatste 30 dagen', 'Zuiddrecht', 'Pieter Jansen', ['straatfeest'], '4 okt', true, 'PqKlant.dc.html'),
+      row('Buurtvereniging Oost', 'K-2020-00231', 'Vereniging', 'Midden', 'contract loopt af', 'Zuiddrecht', 'Pieter Jansen', ['subsidie', 'wijk oost'], '3 okt', true, 'PqOrganisatie.dc.html'),
+      row('Café De Kroon', 'K-2018-00077', 'Bedrijf', 'Hoog', 'contract opgezegd, 1 klacht open', 'Zuiddrecht', 'Fatma Yildiz', ['horeca', 'terras'], '2 okt', true, 'PqOrganisatie.dc.html'),
+      row('M. de Graaf', 'K-2024-01902', 'Inwoner', 'Laag', 'geen signalen', 'Zuiddrecht', 'Fatma Yildiz', [], 'vandaag', false),
+      row('Bakkerij Van Dam', 'K-2017-00412', 'Bedrijf', 'Midden', 'termijn overschreden', 'Zuiddrecht', 'Anouk Bakker', ['winkelstraat'], '29 sep', false),
+      row('J. Peters', 'K-2023-01577', 'Inwoner', 'Laag', 'geen signalen', 'Zuiddrecht', 'Pieter Jansen', [], '1 okt', false),
+      row('Fam. Kuiper', 'K-2021-00866', 'Inwoner', 'Laag', 'geen signalen', 'Zuiddrecht', 'Anouk Bakker', ['parkeren'], 'gisteren', false),
+      row('Sportvereniging ZVV', 'K-2016-00190', 'Vereniging', 'Hoog', 'ontevreden antwoord, 97 dagen geen contact', 'Zuiddrecht', 'Niemand', ['sport', 'subsidie'], '12 sep', false)
     ];
     const preview = [
       { count: 2, color: '#234a78', text: 'klanten krijgen Fatma Yildiz als eigenaar: Sanne de Vries en Buurtvereniging Oost.' },

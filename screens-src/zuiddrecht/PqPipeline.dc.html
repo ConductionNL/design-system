@@ -58,10 +58,11 @@ a{color:#3669a5}a:hover{color:#234a78}
         <div style="overflow-x: auto">
           <div style="display: grid; grid-template-columns: repeat(6, minmax(240px, 1fr)); gap: 16px; min-width: 1520px; align-items: start">
             <sc-for list="{{ cols }}" as="c" hint-placeholder-count="6">
-              <section aria-label="{{ c.title }}" style="background: #eceef1; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 12px">
+              <section aria-label="{{ c.title }}" style="{{ c.colStyle }}">
                 <div style="display: flex; flex-direction: column; gap: 2px">
-                  <h2 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700"><span style="{{ c.dot }}"></span>{{ c.title }}<span style="margin-left: auto; padding: 1px 8px; border-radius: 10px; background: #ffffff; font-size: 12px; color: #3d4047">{{ c.count }}</span></h2>
+                  <h2 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700"><span style="{{ c.dot }}"></span>{{ c.title }}<span style="{{ c.countStyle }}">{{ c.countLabel }}</span></h2>
                   <span style="font-size: 13px; color: #5e6168; padding-left: 18px"><strong style="color: #1b1c1d; font-weight: 700">{{ c.total }}</strong> · {{ c.prob }}</span>
+                  <sc-if value="{{ c.over }}" hint-placeholder-val="{{ false }}"><span role="status" style="display: flex; align-items: center; gap: 6px; margin-top: 4px; padding: 6px 8px; border-radius: 8px; background: #fcedec; color: #a30000; font-size: 12px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path></svg>{{ c.overText }}</span></sc-if>
                 </div>
                 <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="3">
                   <a href="#" style="{{ k.box }}">
@@ -103,7 +104,9 @@ class Component extends DCLogic {
       { title: 'Marketing', items: [['Campagnes', 'bullhorn'], ['Nieuwsbrieven', 'mail']] },
     ];
     const eur = (n) => '€ ' + n.toLocaleString('nl-NL');
-    const stages = [['Nieuw', 10, '#3669a5'], ['Benaderd', 30, '#4a3f8f'], ['Gekwalificeerd', 50, '#1d5e66'], ['Voorstel', 70, '#b07800'], ['Gewonnen', 100, '#1e6b2a'], ['Verloren', 0, '#cc0000']];
+    const stages = [['Nieuw', 10, '#3669a5', 6], ['Benaderd', 30, '#4a3f8f', 5], ['Gekwalificeerd', 50, '#1d5e66', 4], ['Voorstel', 70, '#b07800', 3], ['Gewonnen', 100, '#1e6b2a', 0], ['Verloren', 0, '#cc0000', 0]];
+    const colS = (over) => 'background: #eceef1; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 12px;' + (over ? ' box-shadow: inset 0 0 0 2px #cc0000; background: #f6e9e8;' : '');
+    const cntS = (over) => 'margin-left: auto; padding: 1px 8px; border-radius: 10px; font-size: 12px; white-space: nowrap; ' + (over ? 'background: #a30000; color: #ffffff; font-weight: 700;' : 'background: #ffffff; color: #3d4047;');
     const PP = { 10: pill('#eaf0f7', '#234a78'), 30: pill('#e8e6f6', '#4a3f8f'), 50: pill('#e3f1f3', '#1d5e66'), 70: pill('#fff4de', '#7a4f00'), 100: pill('#e7f3ea', '#1e6b2a'), 0: pill('#f0f1f3', '#3d4047') };
     const leads = {
       'Nieuw': [['Energiecoöperatie Zuid', 18000, 'Pieter Jansen', 2], ['Sportvereniging Zuiddrecht', 6500, 'Fatma Yildiz', 4], ['Drukkerij Hofman', 4200, 'Joris Bakker', 9], ['Garage Bakker', 9800, 'Pieter Jansen', 1]],
@@ -113,13 +116,14 @@ class Component extends DCLogic {
       'Gewonnen': [['Buurtvereniging Oost', 12500, 'Pieter Jansen', 3]],
       'Verloren': [['Fietsenmaker Peters', 5400, 'Joris Bakker', 30]]
     };
-    const cols = stages.map(([title, prob, colour]) => {
+    const cols = stages.map(([title, prob, colour, limit]) => {
       const cards = leads[title].map(([org, value, owner, days]) => {
         const stale = days > 14 && prob > 0 && prob < 100;
         return { title: org, sub: value ? eur(value) : '', pill: prob + '% kans', pillStyle: PP[prob], due: days + (days === 1 ? ' dag' : ' dagen') + ' in fase', dueStyle: dueS(stale ? 'late' : 'ok'), owner: owner.split(' ').map((p) => p[0]).join(''), ownerName: owner, box: box(stale) };
       });
       const total = leads[title].reduce((sum, l) => sum + l[1], 0);
-      return { title, dot: dot(colour), count: cards.length, total: eur(total), prob: prob + '%', cards };
+      const over = limit > 0 && cards.length > limit;
+      return { title, dot: dot(colour), count: cards.length, countLabel: limit ? cards.length + ' van ' + limit : String(cards.length), countStyle: cntS(over), colStyle: colS(over), over, overText: 'Boven de limiet van ' + limit + ': sluit of verplaats een lead voor je er een toevoegt', total: eur(total), prob: prob + '%', cards };
     });
     return { nav, views, modes, cols };
   }

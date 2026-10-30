@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Zuiddrecht: peilingen van school</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; min-height: 1980px">
+  <dc-import name="Kop" user="Fatima El-Amrani" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" extra='[{"title":"School","items":[["Berichten van school","OuderBerichten.dc.html",2],["Peilingen","OuderPeiling.dc.html",1],["Mijn kind","MijnKind.dc.html"]]}]' active="Peilingen" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Peilingen</h1>
+        <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a; max-width: 760px">Vragen van school aan de ouders van de groepen van Noor en Sami. U antwoordt één keer en kunt uw antwoord veranderen zolang de peiling open is. School ziet de antwoorden; u ziet alleen uw eigen antwoord.</p>
+      </div>
+      <section aria-labelledby="open" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 id="open" style="margin: 0; font-size: 28px; font-weight: 700">Open peilingen</h2>
+        <sc-for list="{{ polls }}" as="p" hint-placeholder-count="2">
+          <form aria-labelledby="{{ p.id }}" style="{{ p.box }}">
+            <div style="display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center">
+              <sc-if value="{{ p.isNew }}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 10px; border-radius: 12px; background: #cc0000; color: #ffffff; font-size: 14px; font-weight: 700">Nieuw</span></sc-if>
+              <span style="font-size: 15px; color: #4a4a4a">{{ p.from }}</span>
+            </div>
+            <h3 id="{{ p.id }}" style="margin: 0; font-size: 24px; font-weight: 700; line-height: 1.3">{{ p.question }}</h3>
+            <sc-if value="{{ p.hasText }}" hint-placeholder-val="{{ true }}"><p style="margin: 0; font-size: 17px; line-height: 1.55">{{ p.text }}</p></sc-if>
+            <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px">
+              <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{ p.question }}</legend>
+              <sc-for list="{{ p.options }}" as="o" hint-placeholder-count="3">
+                <label style="{{ o.style }}"><input type="radio" name="{{ p.id }}" checked="{{ o.checked }}" style="flex: none; width: 22px; height: 22px; margin: 0; accent-color: #3669a5"><span style="flex: 1 1 auto; font-size: 17px">{{ o.label }}</span><sc-if value="{{ o.mine }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 14px; font-weight: 600; color: #1e6b2a">Uw antwoord</span></sc-if></label>
+              </sc-for>
+            </fieldset>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between">
+              <span style="display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 15px; color: #4a4a4a"><span style="{{ p.chip }}">{{ p.state }}</span>{{ p.until }}</span>
+              <button type="button" style="{{ p.button }}">{{ p.action }}</button>
+            </div>
+          </form>
+        </sc-for>
+      </section>
+      <section aria-labelledby="gesloten" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 id="gesloten" style="margin: 0; font-size: 28px; font-weight: 700">Gesloten peilingen</h2>
+        <p style="margin: 0; font-size: 16px; color: #4a4a4a">Een gesloten peiling kunt u niet meer beantwoorden of veranderen. Uw antwoord blijft staan.</p>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+          <sc-for list="{{ closed }}" as="c" hint-placeholder-count="2">
+            <li style="display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; justify-content: space-between; padding: 18px 24px; border: 1px solid #d3d8df; border-radius: 6px; background: #f4f6f9">
+              <span style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 18px; font-weight: 600">{{ c.question }}</span><span style="font-size: 15px; color: #4a4a4a">{{ c.from }} · gesloten op {{ c.closedOn }}</span></span>
+              <span style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start"><span style="display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; background: #e4e6ea; color: #3d4047; font-size: 14px; font-weight: 700">Gesloten</span><span style="font-size: 16px">Uw antwoord: {{ c.answer }}</span></span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+      <p style="margin: 0; font-size: 16px; color: #4a4a4a">U krijgt een bericht als school een nieuwe peiling plaatst. <a href="OuderBerichten.dc.html#push">Meldingen instellen</a></p>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const box = (answered) => 'display: flex; flex-direction: column; gap: 14px; padding: 24px; border-radius: 6px; border: 1px solid #d3d8df;' + (answered ? '' : ' box-shadow: inset 4px 0 0 #cc0000;');
+    const opt = (mine) => 'display: flex; gap: 12px; align-items: center; padding: 12px 16px; border-radius: 4px; border: 1px solid ' + (mine ? '#3669a5; background: #eaf0f7' : '#d3d8df; background: #ffffff');
+    const primary = 'height: 48px; padding: 0 22px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px \'Fira Sans\', sans-serif';
+    const secondary = 'height: 48px; padding: 0 22px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 17px \'Fira Sans\', sans-serif';
+    const polls = [
+      { id: 'peiling-5a', isNew: false, from: 'Groep 5a · meester Daan · voor Noor', question: 'Wanneer past het oudergesprek u het best?', text: 'De gesprekken duren tien minuten. We plannen ze na deze peiling in.', options: [['Dinsdag 10 november, 15:00 tot 17:00 uur', false], ['Dinsdag 10 november, 18:00 tot 20:00 uur', true], ['Donderdag 12 november, 18:00 tot 20:00 uur', false]], answered: true, state: 'Beantwoord op 7 oktober', until: 'U kunt uw antwoord veranderen tot 14 oktober 2026, 17:00 uur.', action: 'Antwoord veranderen', buttonStyle: secondary },
+      { id: 'peiling-2b', isNew: true, from: 'Groep 2b · juf Esra · voor Sami', question: 'Mag Sami op de foto in de nieuwsbrief van school?', text: '', options: [['Ja, dat mag', false], ['Alleen zonder zijn naam erbij', false], ['Nee, liever niet', false]], answered: false, state: 'Nog niet beantwoord', until: 'Open tot 20 oktober 2026, 17:00 uur.', action: 'Antwoord versturen', buttonStyle: primary }
+    ].map((p) => ({
+      ...p, hasText: !!p.text, box: box(p.answered), button: p.buttonStyle,
+      chip: 'display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; font-size: 14px; font-weight: 700; ' + (p.answered ? 'background: #e7f3ea; color: #1e6b2a' : 'background: #fff4de; color: #7a4f00'),
+      options: p.options.map(([label, mine]) => ({ label, mine, checked: mine, style: opt(mine) }))
+    }));
+    const closed = [
+      { question: 'Helpt u mee bij het sinterklaasfeest op 4 december?', from: 'Groep 5a · ouderraad', closedOn: '1 oktober 2026', answer: 'Ja, in de ochtend' },
+      { question: 'Welke dag past voor de schoolfotograaf?', from: 'Hele school · directie', closedOn: '18 september 2026', answer: 'Woensdag 7 oktober' }
+    ];
+    return { polls, closed, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Peilingen' }] };
+  }
+}
+</script>
+</body>
+</html>

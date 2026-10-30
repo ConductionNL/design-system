@@ -294,3 +294,25 @@ test('a tag in a list row does not stand for a chip outside the rows (an active-
 	const rows = pairElements(rowTags(380).map((t) => ({ ...t, label: `${t.label} x` })), rowTags(374), 1400)
 	assert.equal(rows.pairs.filter((p) => p.by.startsWith('group')).length, 1)
 })
+
+test('a table inside a paired card whose counterpart draws its rows without a table is that card\'s content', () => {
+	const box = (t, x, y, w, h) => ({ role: 'card', title: t, rect: { x, y, w, h }, props: {} })
+	const table = (x, y, w, h) => ({ role: 'table', title: 'table', rect: { x, y, w, h } })
+	const board = [box('Werkvoorraad per zaaktype', 1112, 746, 300, 196)]
+	const live = [box('Werkvoorraad per zaaktype', 1112, 743, 300, 188), table(1135, 792, 254, 72)]
+	const { pairs, extra } = pairComponents(board, live, 1400)
+	assert.equal(pairs.length, 1)
+	assert.deepEqual(extra, [])
+	// Control: the same table outside the card is still extra on live.
+	const { extra: outside } = pairComponents(board, [live[0], table(300, 400, 254, 72)], 1400)
+	assert.equal(outside.length, 1)
+})
+
+test('a list row pairs only with a row of the same card, never by group across cards', () => {
+	const row = (label, card, y) => ({ kind: 'row', label, inControl: 'record card', interactive: false, container: 1, inCard: card, rect: { x: 315, y, w: 754, h: 56 }, props: { h: 56, fontSize: 15, fontWeight: 600, background: 'rgb(255, 255, 255)' } })
+	const board = [row('Toelichting stukken aan de verzoeker 14 okt, 10:00', 'Afspraken', 1520), row('Hoorzitting 21 okt, 14:00', 'Afspraken', 1576)]
+	const live = (card) => [row('Besluit opstellen Eigenaar Pieter Jansen', card, 1175), row('Besluit verzenden Eigenaar Pieter Jansen', card, 1236)]
+	assert.equal(pairElements(board, live('Wat hierna komt'), 2000).pairs.length, 0)
+	// Control: the same rows in cards of the same title pair by group, as before.
+	assert.equal(pairElements(board, live('Afspraken'), 2000).pairs.length, 1)
+})

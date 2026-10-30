@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, browserEnv, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, leaveClosedSelect, loadingIndicators, retryOnce, chunks, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
+import { accountFor, browserEnv, focusRingsOff, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, leaveClosedSelect, loadingIndicators, retryOnce, chunks, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -254,3 +254,21 @@ test('a colour is read once its transition has ended; a spinner turning for ever
 	})
 })
 
+
+test('takes the keyboard focus rings off a focused field and its wrapper, and keeps every other shadow', { skip }, async () => {
+	const css = '<style>.wrap:focus-within{outline:2px solid #1b1c1d} input:focus-visible{outline:2px solid #3669a5;box-shadow:0 0 0 2px #3669a5, 0 0 0 4px #fff, 0 4px 8px rgba(0,0,0,0.3)} .card{box-shadow:0 0 0 1px #ccc, 0 12px 40px rgba(0,0,0,0.28)} .edge{box-shadow:0 0 0 1px #3669a5}</style>'
+	const body = `${css}<div class="card" style="padding:20px"><div class="wrap"><input class="edge" type="text"></div></div>`
+	await withPage(body, async (page) => {
+		await page.focus('input')
+		assert.equal(await page.evaluate(focusRingsOff), 2)
+		const look = await page.evaluate(() => Object.fromEntries(['.wrap', 'input', '.card'].map((s) => { const cs = getComputedStyle(document.querySelector(s)); return [s, [cs.outlineStyle, cs.boxShadow]] })))
+		assert.deepEqual(look['.wrap'][0], 'none')
+		assert.deepEqual(look.input, ['none', 'rgba(0, 0, 0, 0.3) 0px 4px 8px 0px'])
+		assert.deepEqual(look['.card'], ['none', 'rgb(204, 204, 204) 0px 0px 0px 1px, rgba(0, 0, 0, 0.28) 0px 12px 40px 0px'])
+	})
+	// Control: nothing focused, nothing is taken off, and a ring a field draws without focus stays.
+	await withPage(`${css}<div class="wrap"><input class="edge" type="text"></div>`, async (page) => {
+		assert.equal(await page.evaluate(focusRingsOff), 0)
+		assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('input')).boxShadow), 'rgb(54, 105, 165) 0px 0px 0px 1px')
+	})
+})

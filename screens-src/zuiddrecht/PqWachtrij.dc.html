@@ -60,11 +60,11 @@ a{color:#3669a5}a:hover{color:#234a78}
             <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
               <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 18px; border-bottom: 1px solid #eef0f3">
                 <span style="{{ r.waitStyle }}">{{ r.wait }}</span>
-                <a href="PqTicket.dc.html" style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px; color: #1b1c1d; text-decoration: none"><strong style="font-size: 15px">{{ r.subject }}</strong><span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span></a>
+                <a href="PqTicket.dc.html" style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px; color: #1b1c1d; text-decoration: none"><strong style="font-size: 15px">{{ r.subject }}</strong><span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span><sc-if value="{{ r.hasRoute }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #234a78"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11,10H5L3,8L5,6H11V3L12,2L13,3V4H19L21,6L19,8H13V10H19L21,12L19,14H13V20A2,2 0 0,1 15,22H9A2,2 0 0,1 11,20V10Z"></path></svg>{{ r.route }}</span></sc-if></a>
                 <span style="{{ r.pill }}">{{ r.kind }}</span>
                 <span style="{{ r.prioStyle }}">{{ r.prio }}</span>
-                <button type="button" style="height: 34px; padding: 0 14px; border: 0; border-radius: 17px; background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif">In behandeling nemen</button>
-                <a href="PqTicket.dc.html" aria-label="Ticket bekijken" style="width: 34px; height: 34px; border-radius: 17px; display: inline-flex; align-items: center; justify-content: center; color: #3669a5"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z"></path></svg></a>
+                <span style="display: inline-flex; align-items: center; gap: 8px"><button type="button" style="height: 34px; padding: 0 14px; border: 0; border-radius: 17px; background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif">In behandeling nemen</button>
+                <a href="PqTicket.dc.html" aria-label="Ticket bekijken" style="width: 34px; height: 34px; border-radius: 17px; display: inline-flex; align-items: center; justify-content: center; color: #3669a5"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z"></path></svg></a></span>
               </div>
             </sc-for>
             <div style="padding: 12px 18px; font-size: 14px; color: #5e6168">Oudste eerst. Een ticket verlaat de wachtrij zodra iemand het in behandeling neemt.</div>
@@ -80,6 +80,19 @@ a{color:#3669a5}a:hover{color:#234a78}
                   <span style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="{{ t.bar }}"></span></span>
                 </div>
               </sc-for>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Routering van nieuwe tickets</h2><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e6b2a"><span style="width: 8px; height: 8px; border-radius: 4px; background: #1e6b2a"></span>Aan</span></div>
+              <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #5e6168">Mail in de ticketmailboxen service@ en belastingen@, WhatsApp, sms en berichten aan de Facebook-pagina en het Instagram-account worden hier een ticket. Een vervolg op dezelfde mailthread of chat komt bij het open ticket. De regels hieronder geven elk nieuw ticket zijn categorie en prioriteit, in deze volgorde.</p>
+              <ol style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px">
+                <li>Afzenderdomein <strong>kadaster.nl</strong>: Registratie, hoog</li>
+                <li>Mailbox <strong>belastingen@</strong>: Belastingen</li>
+                <li>Onderwerp bevat <strong>straatfeest</strong>: Vergunningen</li>
+                <li>Kanaal <strong>whatsapp</strong>: Vergunningen</li>
+                <li>Mailbox <strong>service@</strong>: Burgerzaken</li>
+              </ol>
+              <span style="font-size: 13px; color: #5e6168">Past geen regel, dan komt het ticket zonder categorie in de wachtrij. Elk ticket onthoudt welke regel paste.</span>
+              <a href="PqBeheer.dc.html" style="font-size: 14px; font-weight: 600">Regels en ticketmailboxen beheren</a>
             </section>
             <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
               <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Afspraken</h2>
@@ -104,29 +117,32 @@ class Component extends DCLogic {
       { title: 'Marketing', items: [['Campagnes', 'bullhorn'], ['Nieuwsbrieven', 'mail']] },
     ];
     const kpis = [
-      { label: 'Niet toegewezen', value: '12', note: '3 vanochtend binnengekomen', noteStyle: 'font-size: 13px; color: #5e6168' },
+      { label: 'Niet toegewezen', value: '14', note: '5 vanochtend binnengekomen, 2 via WhatsApp en Facebook', noteStyle: 'font-size: 13px; color: #5e6168' },
       { label: 'Langst wachtend', value: '3 dagen', note: 'over de afspraak van 2 werkdagen', noteStyle: 'font-size: 13px; color: #a30000; font-weight: 600' },
-      { label: 'Binnen de termijn', value: '9 van 12', note: 'pak de rode eerst', noteStyle: 'font-size: 13px; color: #5e6168' }
+      { label: 'Binnen de termijn', value: '11 van 14', note: 'pak de rode eerst', noteStyle: 'font-size: 13px; color: #5e6168' }
     ];
     const chip = (on) => 'display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 17px; font: 600 14px \'Fira Sans\', sans-serif; cursor: pointer; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
     const vwS = (on) => 'display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px \'Fira Sans\', sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
     const vwC = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
-    const types = [['Alle', 12, true], ['Verzoeken', 6, false], ['Klachten', 1, false], ['Contactmomenten', 5, false]]
+    const types = [['Alle', 14, true], ['Verzoeken', 8, false], ['Klachten', 1, false], ['Contactmomenten', 5, false]]
       .map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: vwS(on), countStyle: vwC(on) }));
-    const channels = [['Alle', 12, true], ['Telefoon', 4, false], ['Mijn Zuiddrecht', 5, false], ['E-mail', 2, false], ['Balie', 1, false]]
+    const channels = [['Alle', 14, true], ['Telefoon', 4, false], ['Mijn Zuiddrecht', 5, false], ['E-mail', 2, false], ['WhatsApp', 1, false], ['Facebook', 1, false], ['Balie', 1, false]]
       .map(([label, count, on]) => ({ label, count, sel: on ? 'true' : 'false', style: chip(on), countStyle: 'font-weight: 400; ' + (on ? 'color: #d6d9de;' : 'color: #5e6168;') }));
     const st = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
     const T = { 'Verzoek': st('#eaf0f7', '#234a78'), 'Melding': st('#fff4de', '#7a4f00'), 'Klacht': st('#fcedec', '#a30000') };
     const waitStyle = (late) => 'flex: none; width: 72px; font-size: 14px; font-weight: 700; ' + (late ? 'color: #a30000;' : 'color: #1b1c1d;');
     const rows = [
+      ['5 dagen', 'Subsidie voor een straatfeest: welke documenten?', 'Buurtvereniging Oost · e-mail aan service@zuiddrecht.nl', 'Verzoek', false, 'Vergunningen · regel: onderwerp bevat straatfeest'],
       ['3 dagen', 'Afvalpas werkt niet bij de container', 'M. de Graaf · Mijn Zuiddrecht', 'Verzoek', true],
       ['2 dagen', 'Tak over de stoep, Beukenlaan', 'H. Visser · Mijn Zuiddrecht', 'Melding', true],
-      ['2 dagen', 'Verhuizen naar Zuiddrecht: wat regel ik?', 'L. Hoekstra · e-mail', 'Verzoek', true],
+      ['2 dagen', 'Verhuizen naar Zuiddrecht: wat regel ik?', 'L. Hoekstra · e-mail aan service@zuiddrecht.nl', 'Verzoek', true, 'Burgerzaken · regel: mailbox service@'],
       ['1 dag', 'Losse stoeptegels op het Kerkplein', 'R. Yilmaz · telefoon', 'Melding', false],
-      ['5 dagen', 'Subsidie voor een straatfeest: welke documenten?', 'Buurtvereniging Oost · e-mail', 'Verzoek', false],
       ['5 uur', 'Afval niet opgehaald in de Dorpsstraat', 'P. van Dijk · telefoon', 'Melding', false],
-      ['40 min', 'Onbeleefd behandeld aan de balie vanochtend', 'anoniem · balie', 'Klacht', false]
-    ].map(([w, subject, meta, kind, late]) => ({ wait: w, subject, meta, kind, pill: T[kind], waitStyle: waitStyle(late), prio: (late || kind === 'Klacht') ? 'Hoog' : 'Normaal', prioStyle: 'width: 56px; font-size: 13px; ' + ((late || kind === 'Klacht') ? 'color: #a30000; font-weight: 700;' : 'color: #5e6168;') }));
+      ['1 uur', 'Perceelgrens Beukenlaan 12 klopt niet in de kaart', 'someone@kadaster.nl · e-mail aan service@zuiddrecht.nl', 'Verzoek', false, 'Registratie, hoog · regel: afzenderdomein kadaster.nl'],
+      ['40 min', 'Onbeleefd behandeld aan de balie vanochtend', 'anoniem · balie', 'Klacht', false],
+      ['25 min', 'Zijn jullie zaterdag open?', 'Bezoeker van de Facebook-pagina · Facebook', 'Verzoek', false, 'Nog geen categorie · geen regel paste'],
+      ['10 min', 'Is mijn vergunning al klaar?', 'Fatima El-Amrani · WhatsApp, vervolg op PQ-2026-0398', 'Verzoek', false, 'Vergunningen · regel: kanaal whatsapp'],
+    ].map(([w, subject, meta, kind, late, route]) => ({ wait: w, subject, meta, kind, route: route || '', hasRoute: !!route, pill: T[kind], waitStyle: waitStyle(late), prio: (late || kind === 'Klacht' || /hoog/.test(route || '')) ? 'Hoog' : 'Normaal', prioStyle: 'width: 56px; font-size: 13px; ' + ((late || kind === 'Klacht' || /hoog/.test(route || '')) ? 'color: #a30000; font-weight: 700;' : 'color: #5e6168;') }));
     const bar = (pct, hot) => 'display: block; height: 6px; width: ' + pct + '%; background: ' + (hot ? '#cc0000' : '#3669a5');
     const team = [
       { initials: 'PJ', name: 'Pieter Jansen (jij)', state: 'Beschikbaar', load: '5 open', bar: bar(50, false) },

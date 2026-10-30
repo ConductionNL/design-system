@@ -44,6 +44,26 @@ a{color:#3669a5}a:hover{color:#234a78}
           </sc-for>
         </ul>
       </section>
+      <section aria-labelledby="zaken" style="display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px">
+          <h2 id="zaken" style="margin: 0; font-size: 28px; font-weight: 700">Mijn zaken over parkeren</h2>
+          <a href="MijnZaken.dc.html" style="font-size: 17px; font-weight: 600">Alle zaken</a>
+        </div>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+          <sc-for list="{{ cases }}" as="c" hint-placeholder-count="1">
+            <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 20px 24px; border: 1px solid #d3d8df; border-radius: 6px">
+              <span style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px"><a href="Zaak.dc.html" style="font-size: 20px; font-weight: 600">{{ c.title }}</a><span style="padding: 2px 12px; border-radius: 14px; background: #fff4de; color: #7a4f00; font-size: 15px; font-weight: 600">{{ c.status }}</span></span>
+                <span style="font-size: 16px; color: #4a4a4a">{{ c.meta }}</span>
+              </span>
+              <span style="flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right">
+                <span style="font-size: 15px; color: #4a4a4a">Uiterlijk klaar op</span>
+                <span style="font-size: 18px; font-weight: 600">{{ c.deadline }}</span>
+              </span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
       <section aria-labelledby="vergunningen" style="display: flex; flex-direction: column; gap: 14px">
         <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px">
           <h2 id="vergunningen" style="margin: 0; font-size: 28px; font-weight: 700">Mijn parkeervergunningen</h2>
@@ -88,7 +108,8 @@ class Component extends DCLogic {
       { title: 'Bewonersvergunning binnenstad', meta: 'Kenteken GZ-482-K · Lindelaan 14 · ingegaan op 1 januari 2026', until: '31 december 2026' },
       { title: 'Bezoekersvergunning binnenstad', meta: 'Nog 26 bezoekersuren over · ingegaan op 1 januari 2026', until: '31 december 2026' }
     ];
-    return { tasks, actions, permits, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Parkeren' }] };
+    const cases = [{ title: 'Parkeervergunning binnenstad', status: 'Wacht op u', meta: 'Zaaknummer 2026-0061 · stap 2 van 4 · wij wachten op een document', deadline: '14 november 2026' }];
+    return { tasks, actions, permits, cases, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Parkeren' }] };
   }
 }
 </script>

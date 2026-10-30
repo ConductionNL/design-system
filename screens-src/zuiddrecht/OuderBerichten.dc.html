@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Zuiddrecht: berichten van school</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; position: relative; min-height: 2560px">
+  <dc-import name="Kop" user="Fatima El-Amrani" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" extra='[{"title":"School","items":[["Berichten van school","OuderBerichten.dc.html",2],["Peilingen","OuderPeiling.dc.html",1],["Mijn kind","MijnKind.dc.html"]]}]' active="Berichten van school" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center"><h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15; flex: 1 1 320px; min-width: 0">Berichten van school</h1><div style="display: flex; flex-wrap: wrap; gap: 12px; flex: none"><a href="#nieuw" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border-radius: 4px; font: 600 17px 'Fira Sans', sans-serif; text-decoration: none; box-sizing: border-box; white-space: nowrap; border: 2px solid #3669a5; background: #ffffff; color: #3669a5"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Nieuw gesprek</a></div></div>
+        <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a; max-width: 760px">Gesprekken met de leerkrachten van Noor en Sami en de groepsgesprekken van hun groepen. Berichten van de gemeente over uw zaken vindt u bij <a href="Berichten.dc.html">Berichten</a>.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; padding: 16px 20px; border: 1px solid #d3d8df; border-radius: 6px; background: #f4f6f9">
+        <label for="taal" style="font-size: 17px; font-weight: 600">Berichten lezen in</label>
+        <select id="taal" style="height: 44px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; background: #ffffff"><option>Nederlands (niet vertalen)</option><option selected>Arabisch</option><option>Turks</option><option>Engels</option><option>Pools</option></select>
+        <span style="flex: 1 1 320px; font-size: 16px; color: #4a4a4a">Berichten van school worden door AI vertaald. De oorspronkelijke tekst staat altijd één klik verderop. Wat u zelf schrijft, wordt niet vertaald.</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; border: 1px solid #d3d8df; border-radius: 6px; overflow: hidden; align-items: stretch">
+        <nav aria-label="Gesprekken" style="flex: 1 1 280px; max-width: 320px; border-right: 1px solid #d3d8df; background: #ffffff">
+          <div style="padding: 14px; border-bottom: 1px solid #d3d8df"><label for="zoek" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Zoek in gesprekken</label><input id="zoek" type="search" placeholder="Zoek in gesprekken" style="box-sizing: border-box; width: 100%; height: 44px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 16px 'Fira Sans', sans-serif"></div>
+          <ul style="margin: 0; padding: 0; list-style: none">
+            <sc-for list="{{ threads }}" as="t" hint-placeholder-count="3">
+              <li><a href="OuderBerichten.dc.html" aria-current="{{ t.current }}" style="{{ t.style }}"><span aria-hidden="true" style="{{ t.avatar }}">{{ t.initials }}</span><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="display: flex; gap: 8px; align-items: baseline"><span style="{{ t.nameStyle }}">{{ t.name }}</span><span style="font-size: 14px; color: #4a4a4a; white-space: nowrap">{{ t.when }}</span></span><span style="font-size: 14px; color: #4a4a4a">{{ t.sub }}</span><span style="display: flex; gap: 8px; align-items: center"><span style="flex: 1 1 auto; min-width: 0; font-size: 15px; color: #4a4a4a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ t.preview }}</span><sc-if value="{{ t.hasUnread }}" hint-placeholder-val="{{ false }}"><span aria-label="{{ t.unreadLabel }}" style="flex: none; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; background: #cc0000; color: #ffffff; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{ t.unread }}</span></sc-if></span></span></a></li>
+            </sc-for>
+          </ul>
+        </nav>
+        <section aria-labelledby="gesprek-t" style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; border-bottom: 1px solid #d3d8df">
+            <div style="display: flex; gap: 12px; align-items: center"><span aria-hidden="true" style="width: 44px; height: 44px; border-radius: 50%; flex: none; display: inline-flex; align-items: center; justify-content: center; background: #eaf0f7; color: #234a78; font-weight: 700; font-size: 17px">5a</span><span style="flex: 1 1 auto; display: flex; flex-direction: column"><h2 id="gesprek-t" style="margin: 0; font-size: 22px; font-weight: 700">Groep 5a</h2><span style="font-size: 15px; color: #4a4a4a">Groepsgesprek · Basisschool De Lindehof · meester Daan en 24 ouders</span></span></div>
+            <details open style="font-size: 16px"><summary style="color: #3669a5; font-weight: 600; cursor: pointer; padding: 2px 0">Wie zit in dit gesprek</summary>
+              <ul style="margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px">
+                <sc-for list="{{ members }}" as="p" hint-placeholder-count="8"><li style="{{ p.style }}">{{ p.name }}</li></sc-for>
+                <li style="display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 14px; background: #f0f1f3; font-size: 15px; color: #4a4a4a">en 17 andere ouders</li>
+              </ul>
+              <p style="margin: 8px 0 0; font-size: 15px; color: #4a4a4a">Alleen ouders van groep 5a en de leerkracht zien dit gesprek.</p>
+            </details>
+          </div>
+          <ol aria-label="Berichten" style="margin: 0; padding: 20px 18px; list-style: none; display: flex; flex-direction: column; gap: 16px; flex: 1 1 auto">
+            <sc-for list="{{ messages }}" as="m" hint-placeholder-count="4">
+              <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><li style="text-align: center; font-size: 14px; color: #4a4a4a; font-weight: 600">{{ m.day }}</li></sc-if>
+              <sc-if value="{{ m.isNewMark }}" hint-placeholder-val="{{ false }}"><li role="separator" aria-label="Nieuwe berichten" style="display: flex; align-items: center; gap: 12px; color: #cc0000; font-size: 14px; font-weight: 700"><span style="flex: 1 1 auto; height: 2px; background: #cc0000"></span>{{ m.day }}<span style="flex: 1 1 auto; height: 2px; background: #cc0000"></span></li></sc-if>
+              <sc-if value="{{ m.isMessage }}" hint-placeholder-val="{{ true }}">
+                <li style="{{ m.rowStyle }}">
+                  <sc-if value="{{ m.theirs }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ m.avatar }}">{{ m.initials }}</span></sc-if>
+                  <div style="{{ m.colStyle }}">
+                    <div style="{{ m.bubble }}">
+                      <sc-if value="{{ m.translated }}" hint-placeholder-val="{{ true }}">
+                        <p lang="ar" dir="rtl" style="margin: 0; font-size: 19px; line-height: 1.7">{{ m.translation }}</p>
+                        <aside aria-label="AI-vertaling" style="display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #b4bac3; font-size: 14px; color: #4a4a4a"><span style="display: inline-flex; align-items: center; gap: 6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07M18.5,10H16.5L12,22H14L15.12,19H19.87L21,22H23L18.5,10M15.88,17L17.5,12.67L19.12,17H15.88Z"></path></svg>Vertaald door AI uit het Nederlands</span><button type="button" aria-expanded="{{ m.expanded }}" style="height: 32px; padding: 0 8px; border: 0; background: transparent; color: #3669a5; font: 600 14px 'Fira Sans', sans-serif; text-decoration: underline; cursor: pointer">{{ m.toggle }}</button></aside>
+                        <sc-if value="{{ m.showOriginal }}" hint-placeholder-val="{{ false }}"><p lang="nl" style="margin: 8px 0 0; padding: 10px 12px; border-radius: 4px; background: #ffffff; border: 1px solid #d3d8df; font-size: 16px; line-height: 1.5; color: #1a1a1a">{{ m.text }}</p></sc-if>
+                      </sc-if>
+                      <sc-if value="{{ m.plain }}" hint-placeholder-val="{{ false }}">{{ m.text }}</sc-if>
+                    </div>
+                    <span style="{{ m.metaStyle }}">{{ m.meta }}<sc-if value="{{ m.hasRead }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; gap: 4px; align-items: center; color: #1e6b2a"><svg width="18" height="18" viewBox="0 0 24 24" fill="#1e6b2a" aria-hidden="true" style="flex: none"><path d="M0.41,13.41L6,19L7.41,17.58L1.83,12M22.24,5.58L11.66,16.17L7.5,12L6.07,13.41L11.66,19L23.66,7M18,7L16.59,5.58L10.24,11.93L11.66,13.34L18,7Z"></path></svg>{{ m.read }}</span></sc-if></span>
+                  </div>
+                </li>
+              </sc-if>
+            </sc-for>
+          </ol>
+          <form id="nieuw" style="display: flex; flex-direction: column; gap: 12px; padding: 18px; border-top: 1px solid #d3d8df; background: #ffffff">
+            <label for="bericht" style="font-size: 18px; font-weight: 600">Uw bericht in Groep 5a</label>
+            <textarea id="bericht" rows="3" style="box-sizing: border-box; padding: 12px 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; line-height: 1.5">Dank u wel. Noor kan niet mee op de fiets, ze rijdt mee in de auto van Lotte.</textarea>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between"><span style="font-size: 15px; color: #4a4a4a">Meester Daan en alle ouders van groep 5a kunnen dit lezen. Uw bericht wordt in uw eigen taal verstuurd en voor de anderen vertaald.</span><button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border-radius: 4px; font: 600 17px 'Fira Sans', sans-serif; box-sizing: border-box; white-space: nowrap; cursor: pointer; border: 0; background: #3669a5; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path></svg>Versturen</button></div>
+          </form>
+        </section>
+      </div>
+      <section aria-labelledby="nieuw-gesprek" style="display: flex; flex-direction: column; gap: 12px; padding: 24px; background: #f4f6f9; border-radius: 6px">
+        <h2 id="nieuw-gesprek" style="margin: 0; font-size: 22px; font-weight: 700">Een gesprek beginnen met een leerkracht</h2>
+        <p style="margin: 0; font-size: 16px; color: #4a4a4a">U kunt alleen de leerkrachten van de groepen van uw eigen kinderen berichten.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="met" style="font-size: 17px; font-weight: 600">Met wie</label><select id="met" style="height: 48px; min-width: 320px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; background: #ffffff"><option>Meester Daan, leerkracht groep 5a (Noor)</option><option>Juf Esra, leerkracht groep 2b (Sami)</option><option>Juf Marloes, duo van groep 5a (Noor)</option></select></div>
+          <button type="button" style="height: 48px; padding: 0 22px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif">Gesprek beginnen</button>
+        </div>
+      </section>
+      <section aria-labelledby="push" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 id="push" style="margin: 0; font-size: 28px; font-weight: 700">Meldingen op uw telefoon</h2>
+        <div style="display: flex; flex-direction: column; gap: 0; border: 1px solid #d3d8df; border-radius: 6px; overflow: hidden">
+          <label style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #d3d8df; font-size: 17px"><span style="flex: 1 1 320px"><span style="font-weight: 600">Pushmeldingen van school</span><br><span style="font-size: 15px; color: #4a4a4a">Een melding op deze telefoon bij elk nieuw bericht van school.</span></span><input type="checkbox" checked role="switch" aria-label="Pushmeldingen van school" style="width: 22px; height: 22px; margin: 0; accent-color: #3669a5"></label>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; padding: 16px 20px; border-bottom: 1px solid #d3d8df">
+            <span style="flex: 1 1 320px; font-size: 17px"><span style="font-weight: 600">Stille uren</span><br><span style="font-size: 15px; color: #4a4a4a">Meldingen in de stille uren wachten tot de stille uren voorbij zijn. U mist er geen.</span></span>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="van" style="font-size: 15px; font-weight: 600">Van</label><input id="van" type="text" inputmode="numeric" value="22:00" style="height: 44px; width: 120px; box-sizing: border-box; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="tot" style="font-size: 15px; font-weight: 600">Tot</label><input id="tot" type="text" inputmode="numeric" value="07:00" style="height: 44px; width: 120px; box-sizing: border-box; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif"></div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 16px 20px; background: #fdf3dc"><svg width="22" height="22" viewBox="0 0 24 24" fill="#8a5a00" style="flex: none; margin-top: 2px" aria-hidden="true"><path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path></svg><span style="font-size: 16px; line-height: 1.5"><span style="font-weight: 600">Een noodmelding van school komt altijd meteen door</span>, ook in de stille uren. School gebruikt die alleen als het echt niet kan wachten, zoals een ontruiming of een kind dat niet is aangekomen.</span></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 16px 20px"><span style="font-size: 15px; color: #4a4a4a">Gisteren om 23:14 kwam er een bericht van meester Daan. De melding wachtte tot 07:00.</span><button type="button" style="height: 44px; padding: 0 18px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px 'Fira Sans', sans-serif">Opslaan</button></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2560}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const avatar = (size, bg, fg) => 'width: ' + size + 'px; height: ' + size + 'px; border-radius: 50%; flex: none; display: inline-flex; align-items: center; justify-content: center; background: ' + bg + '; color: ' + fg + '; font-weight: 700; font-size: ' + Math.round(size * 0.4) + 'px';
+    const row = (on) => 'display: flex; gap: 12px; align-items: flex-start; padding: 14px 14px; text-decoration: none; color: #1a1a1a; border-bottom: 1px solid #d3d8df; ' + (on ? 'background: #eaf0f7; box-shadow: inset 4px 0 0 #3669a5;' : '');
+    const threads = [
+      { on: true, initials: '5a', bg: '#eaf0f7', fg: '#234a78', name: 'Groep 5a', when: '08:40', sub: 'Groepsgesprek · meester Daan en 24 ouders', preview: 'Dank u wel. Noor kan niet mee op de fiets...', unread: 0 },
+      { on: false, initials: 'MD', bg: '#e3f1f3', fg: '#1d5e66', name: 'Meester Daan', when: 'gisteren', sub: 'Leerkracht groep 5a · over Noor', preview: 'Noor heeft vandaag goed meegedaan met de rekentoets.', unread: 2 },
+      { on: false, initials: 'JE', bg: '#fff4de', fg: '#7a4f00', name: 'Juf Esra', when: '2 okt', sub: 'Leerkracht groep 2b · over Sami', preview: 'Sami mag morgen zijn knuffel meenemen.', unread: 0 }
+    ].map((t) => ({
+      ...t, current: t.on ? 'page' : 'false', style: row(t.on), avatar: avatar(40, t.bg, t.fg),
+      nameStyle: 'flex: 1 1 auto; font-size: 17px; font-weight: ' + (t.on || t.unread ? '700' : '600'),
+      hasUnread: t.unread > 0, unreadLabel: t.unread + ' ongelezen'
+    }));
+    const chip = (staff) => 'display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 14px; font-size: 15px; ' + (staff ? 'background: #e3f1f3; color: #1d5e66; font-weight: 600' : 'background: #f0f1f3; color: #1a1a1a');
+    const members = [['Meester Daan (leerkracht)', true], ['Fatima El-Amrani (u)', false], ['Lotte Jansen', false], ['Pieter de Boer', false], ['Aisha Yilmaz', false], ['Mark Visser', false], ['Sanne de Vries', false], ['Joost van Dijk', false]].map(([name, staff]) => ({ name, style: chip(staff) }));
+    const theirsBubble = 'padding: 12px 16px; font-size: 17px; line-height: 1.5; background: #f4f6f9; color: #1a1a1a; border: 1px solid #d3d8df; border-radius: 12px 12px 12px 2px';
+    const mineBubble = 'padding: 12px 16px; font-size: 17px; line-height: 1.5; background: #3669a5; color: #ffffff; border-radius: 12px 12px 2px 12px';
+    const raw = [
+      { day: 'Maandag 6 oktober' },
+      { from: 'MD', bg: '#e3f1f3', fg: '#1d5e66', text: 'Beste ouders, woensdag gaan we met groep 5a naar de kinderboerderij. We fietsen er samen heen. Geef uw kind laarzen en een regenjas mee.', translation: 'أولياء الأمور الأعزاء، يوم الأربعاء سنذهب مع المجموعة 5أ إلى مزرعة الأطفال. سنركب الدراجات معاً إلى هناك. أعطوا طفلكم حذاءً مطرياً ومعطفاً للمطر.', translated: true, showOriginal: true, meta: 'Meester Daan, 10:31', read: 'Gelezen door 19 van de 24 ouders' },
+      { from: 'LJ', bg: '#fff4de', fg: '#7a4f00', text: 'Ik kan drie kinderen meenemen in de auto voor wie niet kan fietsen.', translation: 'يمكنني أخذ ثلاثة أطفال في السيارة لمن لا يستطيع ركوب الدراجة.', translated: true, showOriginal: false, meta: 'Lotte Jansen (moeder van Bram), 12:05', read: '' },
+      { newMark: '1 nieuw bericht' },
+      { from: 'MD', bg: '#e3f1f3', fg: '#1d5e66', text: 'Wie met Lotte meerijdt, laat het hier even weten. Vertrek om 9:00 vanaf het schoolplein.', translation: 'من يركب مع لوته، يرجى إخبارنا هنا. ننطلق في الساعة 9:00 من ساحة المدرسة.', translated: true, showOriginal: false, meta: 'Meester Daan, vandaag 08:40', read: 'Gelezen door 7 van de 24 ouders' },
+      { mine: true, text: 'Dank u wel. Noor kan niet mee op de fiets, ze rijdt mee in de auto van Lotte.', meta: 'U, zojuist', read: 'Gelezen door meester Daan en 2 ouders' }
+    ];
+    const messages = raw.map((m) => {
+      if (m.day) { return { isDay: true, isNewMark: false, isMessage: false, day: m.day }; }
+      if (m.newMark) { return { isDay: false, isNewMark: true, isMessage: false, day: m.newMark }; }
+      const mine = !!m.mine;
+      return {
+        isDay: false, isNewMark: false, isMessage: true, theirs: !mine,
+        rowStyle: 'display: flex; gap: 10px; align-items: flex-end; ' + (mine ? 'justify-content: flex-end' : ''),
+        colStyle: 'max-width: 78%; display: flex; flex-direction: column; gap: 4px; ' + (mine ? 'align-items: flex-end' : ''),
+        avatar: mine ? '' : avatar(32, m.bg, m.fg), initials: m.from || '',
+        bubble: mine ? mineBubble : theirsBubble,
+        translated: !!m.translated, plain: !m.translated, showOriginal: !!m.showOriginal,
+        expanded: m.showOriginal ? 'true' : 'false',
+        toggle: m.showOriginal ? 'Verberg de oorspronkelijke tekst' : 'Toon de oorspronkelijke tekst',
+        text: m.text, translation: m.translation || '',
+        metaStyle: 'display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 14px; color: #4a4a4a',
+        meta: m.meta, hasRead: !!m.read, read: m.read
+      };
+    });
+    return { threads, members, messages, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Berichten van school' }] };
+  }
+}
+</script>
+</body>
+</html>

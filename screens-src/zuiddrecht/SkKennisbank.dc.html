@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Kennisbank</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="position: relative; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1388px">
+  <dc-import name="DqKop" app="Stackiq" placeholder="Zoek applicaties, organisaties of standaarden" role="Informatiemanager" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="stackiq" primary="Applicatie toevoegen" active="Kennisbank" groups="{{ nav }}" hint-size="264px,1172px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Kennisbank</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; box-sizing: border-box; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; text-decoration: none; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"></path></svg>Openen in Collectives</a><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; box-sizing: border-box; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Nieuw artikel</button></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 15px; color: #5e6168"><span>Onder Applicaties</span><span aria-hidden="true">·</span><span>kennisartikelen over applicaties, geschreven in Collectives</span></div>
+        </section>
+
+        <section aria-label="Zoeken in de kennisbank" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+          <label for="sk-kb-zoek" style="font-size: 14px; font-weight: 600">Zoek een artikel</label>
+          <div style="position: relative; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="#5e6168" aria-hidden="true" style="position: absolute; left: 14px"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg><input id="sk-kb-zoek" type="search" value="herstel" style="box-sizing: border-box; width: 100%; height: 44px; padding: 0 12px 0 44px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 16px 'Fira Sans', sans-serif; color: #1b1c1d"></div>
+          <span style="font-size: 13px; color: #5e6168">Zoekt op titel, in de collectives waar u lid van bent: Applicatiekennis, Beheer zaaksysteem, ICT-servicedesk.</span>
+        </section>
+
+        <section aria-labelledby="sk-kb-res" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px"><h2 id="sk-kb-res" style="margin: 0; font-size: 17px; font-weight: 700">3 artikelen met "herstel" in de titel</h2><span style="font-size: 13px; color: #5e6168">nieuwste wijziging eerst</span></div>
+          <sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
+            <a href="#" style="display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+              <span style="flex: none; width: 40px; height: 40px; border-radius: 10px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"></path></svg></span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px"><span style="font-size: 16px; font-weight: 600">{{ r.title }}</span><span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span><span style="font-size: 14px; color: #3d4047; line-height: 1.5">{{ r.summary }}</span></span>
+              <span style="flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 6px"><span style="display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: #f0f1f3; color: #3d4047">{{ r.app }}</span><span style="font-size: 13px; font-weight: 600; color: #3669a5; white-space: nowrap">Openen in Collectives</span></span>
+            </a>
+          </sc-for>
+        </section>
+
+        <section aria-labelledby="sk-kb-zonder" style="display: flex; flex-direction: column; gap: 10px; padding-top: 8px">
+          <div style="display: flex; flex-direction: column; gap: 4px"><h2 id="sk-kb-zonder" style="margin: 0; font-size: 17px; font-weight: 700">Zonder de app Collectives</h2><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 1.5">Dan staat Kennisbank niet in het menu en zegt /knowledge wat er nodig is.</p></div>
+          <section role="dialog" aria-label="Collectives is nodig" style="max-width: 640px; background: #ffffff; border: 1px solid #d6d9de; border-radius: 12px; box-shadow: 0 6px 18px rgba(27,28,29,0.08); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 36px 32px"><span style="width: 56px; height: 56px; border-radius: 28px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.5 6.5,20.5C8.45,20.5 10.55,20.9 12,22C13.35,21.15 15.8,20.5 17.5,20.5C19.15,20.5 20.85,20.81 22.25,21.56C22.35,21.61 22.4,21.59 22.5,21.59C22.75,21.59 23,21.34 23,21.09V6.5C22.4,6.05 21.75,5.75 21,5.5V7.5L21,13V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,19.15 12,20V6.5C10.55,5.4 8.45,5 6.5,5Z"></path></svg></span><h3 style="margin: 0; font-size: 18px; font-weight: 700">Collectives is nodig</h3><p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5; max-width: 440px">Kennisartikelen leven in de Nextcloud-app Collectives. Vraag uw beheerder die te installeren. Daarna verschijnt Kennisbank onder Applicaties.</p><a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; box-sizing: border-box; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; text-decoration: none; white-space: nowrap">Collectives in de app store</a></section>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1388}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'dashboard']] },
+      { title: 'Landschap', items: [['Applicaties', 'products'], ['Kennisbank', 'book'], ['In gebruik', 'people'], ['Koppelingen', 'pipeline'], ['Suites', 'queue'], ['Versies', 'inbox']] },
+      { title: 'Markt en contracten', items: [['Organisaties', 'org'], ['Contracten', 'doc'], ['Licenties', 'key']] },
+      { title: 'Architectuur en compliance', items: [['GEMMA-platen', 'book'], ['Modelleren', 'trend'], ['Standaarden', 'cert'], ['Compliancematrix', 'check'], ['Kwetsbaarheden', 'shield']] },
+      { title: 'Inzicht', items: [['Portfolioroadmap', 'cal'], ['Rapportages', 'chart'], ['Datakwaliteit', 'heart'], ['CMDB', 'lock']] }
+    ];
+    const results = [
+      ['Herstelprocedure zaaksysteem na storing', 'Collective Beheer zaaksysteem · gewijzigd 3 oktober 2026 door Anouk Bakker', 'Stap voor stap: koppelingen controleren, wachtrij leeglopen, inwoners informeren.', 'Zaaksysteem Pro'],
+      ['Herstel van back-ups in het DMS', 'Collective Applicatiekennis · gewijzigd 28 september 2026 door Lars de Koning', 'Welke back-up u terugzet, wie dat mag en hoe lang het duurt.', 'DMS Corsa'],
+      ['Checklist herstart na een update', 'Collective ICT-servicedesk · gewijzigd 12 september 2026 door Fatima Ouali', 'Wat u controleert voordat u een applicatie weer vrijgeeft.', 'Alle applicaties']
+    ].map(([title, meta, summary, app]) => ({ title, meta, summary, app }));
+    return { nav, results };
+  }
+}
+</script>
+</body>
+</html>

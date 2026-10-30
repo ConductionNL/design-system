@@ -33,10 +33,12 @@ a{color:#3669a5}a:hover{color:#234a78}
               <h2 style="margin: 0; font-size: 20px; font-weight: 700">{{ m.title }}</h2>
               <span style="font-size: 15px; color: #4a4a4a">{{ m.date }}</span>
             </div>
+            <span style="font-size: 15px; color: #4a4a4a">{{ m.source }}</span>
             <p style="margin: 0; font-size: 17px; line-height: 1.55">{{ m.text }} <sc-if value="{{ m.hasLink }}" hint-placeholder-val="{{ true }}"><a href="Publicatie.dc.html">{{ m.link }}</a></sc-if></p>
             <div style="display: flex; flex-wrap: wrap; gap: 12px">
               <a href="{{ m.open }}" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border: 2px solid #3669a5; border-radius: 4px; font-weight: 600; text-decoration: none">Openen</a>
               <sc-if value="{{ m.unread }}" hint-placeholder-val="{{ true }}"><button type="button" style="height: 44px; padding: 0 12px; border: 0; background: transparent; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif; text-decoration: underline">Markeren als gelezen</button></sc-if>
+              <sc-if value="{{ m.receipt }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 15px; color: #1f6b3a"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg>Leesbevestiging gevraagd: gelezen door de gemeente op 5 oktober 2026, 10:12</span></sc-if>
             </div>
           </li>
         </sc-for>
@@ -54,8 +56,10 @@ class Component extends DCLogic {
       { unread: true, title: 'Het besluit op uw Woo-verzoek is gepubliceerd', date: '4 oktober 2026, 13:59', text: 'Wij hebben het besluit op uw Woo-verzoek "Verlichting fietspad Lindelaan" gepubliceerd.', hasLink: true, link: 'Bekijk de publicatie', open: 'Zaak.dc.html' },
       { unread: true, title: 'Uw vraag is beantwoord', date: '4 oktober 2026, 10:51', text: 'Er is een antwoord op uw vraag "Planning fietspad Lindelaan".', hasLink: false, link: '', open: 'MijnOverzicht.dc.html' },
       { unread: true, title: 'Nieuwe publicatie voor uw zoekopdracht "Fietspad Lindelaan"', date: '4 oktober 2026, 09:50', text: 'Er is een nieuwe publicatie die past bij uw zoekopdracht.', hasLink: true, link: 'Verlichting fietspad Lindelaan', open: 'Dossiers.dc.html' },
-      { unread: false, title: 'Wij hebben uw aanvraag ontvangen', date: '3 oktober 2026, 11:56', text: 'Uw aanvraag heeft zaaknummer 2026-0082. U hoort uiterlijk 1 november van ons.', hasLink: false, link: '', open: 'Zaak.dc.html' }
-    ].map((m) => ({ ...m, box: box(m.unread) }));
+      { unread: false, title: 'Wij hebben uw aanvraag ontvangen', date: '3 oktober 2026, 11:56', text: 'Uw aanvraag heeft zaaknummer 2026-0082. U hoort uiterlijk 1 november van ons.', hasLink: false, link: '', open: 'Zaak.dc.html' },
+      { unread: false, sent: true, title: 'Door u gestuurd: foto van de donkere plek', date: '3 oktober 2026, 19:05', text: 'U stuurde een extra foto van het stuk fietspad bij de brug, met bijlage foto-brug.jpg (2,1 MB).', hasLink: false, link: '', open: 'Zaak.dc.html' }
+    ].map((m) => ({ ...m, box: box(m.unread), receipt: !!m.sent,
+      source: m.sent ? 'Van u, bij zaak 2026-0082 (berichtenbox)' : /2026-0082|Woo-verzoek|vraag/.test(m.title + m.text) ? 'Van de gemeente, bij zaak 2026-0082 (berichtenbox van dossiq)' : 'Van Mijn Zuiddrecht' }));
     return { items, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Berichten' }] };
   }
 }

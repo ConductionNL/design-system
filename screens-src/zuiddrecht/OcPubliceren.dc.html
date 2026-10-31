@@ -118,6 +118,19 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
       <div style="padding: 20px 24px; display: flex; flex-direction: column; gap: 18px">
         <p style="margin: 0; font-size: 15px; line-height: 1.6">Publiceren <strong>2 publicaties</strong>: Besluit op het Woo-verzoek over windpark Oostpolder, en Raadsstukken voor de vergadering van 15 oktober.</p>
+        <section aria-labelledby="oc-case" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid #e4e6ea; border-radius: 10px; background: #f7f9fc">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px">
+            <h3 id="oc-case" style="margin: 0; font-size: 15px; font-weight: 600">1 van de 2 komt uit een zaak in dossiq</h3>
+            <a href="DqZaak.dc.html" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600">Open zaak ZD-2026-01423<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"></path></svg></a>
+          </div>
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #3d4047">Besluit op het Woo-verzoek over windpark Oostpolder: de behandelaar publiceerde het besluit van 1 oktober vanuit de zaak. Woo-categorie Woo-verzoeken en -besluiten, overgenomen uit het besluit.</p>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 14px">
+            <sc-for list="{{ caseDocs }}" as="d" hint-placeholder-count="3">
+              <li style="display: flex; align-items: center; gap: 10px"><span style="{{ d.badgeStyle }}">{{ d.badge }}</span><span style="color: #1b1c1d">{{ d.text }}</span></li>
+            </sc-for>
+          </ul>
+          <span style="font-size: 13px; color: #5e6168">De zaak legt de publicatie vast op het besluit. Intrekken kan hier of in de zaak.</span>
+        </section>
         <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px"><legend style="font-size: 14px; font-weight: 600; color: #1b1c1d; margin-bottom: 8px">Publicatiemodus</legend>
           <label style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid #828a95; border-radius: 8px; "><input type="radio" name="oc-pmode"  style="margin: 3px 0 0; accent-color: #3669a5"><span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Nu publiceren</strong><span style="font-size: 13px; color: #5e6168">Direct openbaar, met vandaag als publicatiedatum.</span></span></label>
           <label style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid #3669a5; border-radius: 8px; background: #eaf0f7;"><input type="radio" name="oc-pmode" checked style="margin: 3px 0 0; accent-color: #3669a5"><span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Later publiceren</strong><span style="font-size: 13px; color: #5e6168">Openbaar op de datum die u kiest. Tot dan blijft het een concept.</span></span></label>
@@ -151,7 +164,7 @@ class Component extends DCLogic {
     const K = { 'Woo-verzoek en besluit': st('#eaf0f7', '#234a78'), 'Convenant': st('#e3f1f3', '#1d5e66'), 'Vergaderstukken': st('#e8e6f6', '#4a3f8f'), 'Onderzoeksrapport': st('#f0f1f3', '#3d4047'), 'Besluitenlijsten van het college': st('#fff4de', '#7a4f00') };
     const S = { 'Gepubliceerd': st('#e7f3ea', '#1e6b2a'), 'Ingepland': st('#eaf0f7', '#234a78'), 'Gearchiveerd': st('#f0f1f3', '#3d4047') };
     const rows = [
-      ['Besluit op het Woo-verzoek over windpark Oostpolder', '6 bijlagen · gemaakt 1 okt', 'Woo-verzoeken', 'Woo-verzoek en besluit', 'Ingepland', '20 okt 2026', 'Gemeente Zuiddrecht'],
+      ['Besluit op het Woo-verzoek over windpark Oostpolder', '6 bijlagen · uit zaak ZD-2026-01423 in dossiq', 'Woo-verzoeken', 'Woo-verzoek en besluit', 'Ingepland', '20 okt 2026', 'Gemeente Zuiddrecht'],
       ['Raadsstukken voor de vergadering van 15 oktober', '11 bijlagen · gemaakt 2 okt', 'Woo-verzoeken', 'Vergaderstukken', 'Ingepland', '9 okt 2026', 'Griffie Zuiddrecht'],
       ['Besluitenlijst van het college van B en W, 6 oktober', '1 bijlage', 'Woo-verzoeken', 'Besluitenlijsten van het college', 'Gepubliceerd', '6 okt 2026', 'Gemeente Zuiddrecht'],
       ['Woo-besluit over e-mails over de herinrichting van het Kerkplein', '4 bijlagen', 'Woo-verzoeken', 'Woo-verzoek en besluit', 'Gepubliceerd', '5 okt 2026', 'Gemeente Zuiddrecht'],
@@ -166,7 +179,13 @@ class Component extends DCLogic {
     const dqView = (on) => 'display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px \'Fira Sans\', sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
     const dqCount = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
     views.forEach((v) => { const on = v.sel === 'true' || v.pressed === 'true'; v.pressed = on ? 'true' : 'false'; v.style = dqView(on); v.countStyle = dqCount(on); });
-    return { nav, views, modes, rows, menu, mass };
+    const badge = (bg, fg) => 'display: inline-block; min-width: 112px; box-sizing: border-box; text-align: center; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const caseDocs = [
+      ['Openbaar', badge('#e7f3ea', '#1e6b2a'), '4 documenten gaan mee zoals ze zijn'],
+      ['Deels openbaar', badge('#fff4de', '#7a4f00'), '2 documenten gaan mee als gelakte versie, zonder het origineel'],
+      ['Niet openbaar', badge('#f0f1f3', '#3d4047'), '1 document blijft buiten de publicatie']
+    ].map(([label, badgeStyle, text]) => ({ badge: label, badgeStyle, text }));
+    return { nav, views, modes, rows, menu, mass, caseDocs };
     })();
     const dlg = (() => {
     const nav = [
@@ -182,7 +201,7 @@ class Component extends DCLogic {
     const K = { 'Woo-verzoek en besluit': st('#eaf0f7', '#234a78'), 'Convenant': st('#e3f1f3', '#1d5e66'), 'Vergaderstukken': st('#e8e6f6', '#4a3f8f'), 'Onderzoeksrapport': st('#f0f1f3', '#3d4047'), 'Besluitenlijsten van het college': st('#fff4de', '#7a4f00') };
     const S = { 'Gepubliceerd': st('#e7f3ea', '#1e6b2a'), 'Ingepland': st('#eaf0f7', '#234a78'), 'Gearchiveerd': st('#f0f1f3', '#3d4047') };
     const rows = [
-      ['Besluit op het Woo-verzoek over windpark Oostpolder', '6 bijlagen · gemaakt 1 okt', 'Woo-verzoeken', 'Woo-verzoek en besluit', 'Ingepland', '20 okt 2026', 'Gemeente Zuiddrecht'],
+      ['Besluit op het Woo-verzoek over windpark Oostpolder', '6 bijlagen · uit zaak ZD-2026-01423 in dossiq', 'Woo-verzoeken', 'Woo-verzoek en besluit', 'Ingepland', '20 okt 2026', 'Gemeente Zuiddrecht'],
       ['Raadsstukken voor de vergadering van 15 oktober', '11 bijlagen · gemaakt 2 okt', 'Woo-verzoeken', 'Vergaderstukken', 'Ingepland', '9 okt 2026', 'Griffie Zuiddrecht'],
       ['Besluitenlijst van het college van B en W, 6 oktober', '1 bijlage', 'Woo-verzoeken', 'Besluitenlijsten van het college', 'Gepubliceerd', '6 okt 2026', 'Gemeente Zuiddrecht'],
       ['Woo-besluit over e-mails over de herinrichting van het Kerkplein', '4 bijlagen', 'Woo-verzoeken', 'Woo-verzoek en besluit', 'Gepubliceerd', '5 okt 2026', 'Gemeente Zuiddrecht'],

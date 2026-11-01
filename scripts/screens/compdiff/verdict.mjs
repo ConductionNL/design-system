@@ -13,7 +13,7 @@
 // The status and page mismatch % are carried over from the board's last valid row there.
 import fs from 'node:fs'
 import path from 'node:path'
-import { compareProps, normalizeLegacy, addPage, elementRows, isRepeated, markListElements, positionReasons } from './compare.mjs'
+import { compareProps, normalizeLegacy, addPage, elementRows, isRepeated, markListElements, positionReasons, pairAcrossKinds } from './compare.mjs'
 
 const POS = 4, WIDTH = 8
 const argv = process.argv.slice(2)
@@ -31,7 +31,7 @@ const label = (c) => `${c.role}${c.title && !['tabs', 'table', 'toolbar', 'pager
 
 const verdicts = []
 for (const f of files) {
-	const r = markListElements(addPage(normalizeLegacy(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')))))
+	const r = pairAcrossKinds(markListElements(addPage(normalizeLegacy(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))))))
 	// A board that draws only the app's top bar or navigation has no component in scope: no verdict.
 	if (!r.components || (r.components.filter((c) => c.role !== 'page').length === 0 && r.missingOnLive.length === 0)) continue
 	const ob = origin(r, 'board'), ol = origin(r, 'live')
@@ -49,6 +49,12 @@ for (const f of files) {
 		if (reasons.length) failing.push({ comp: label(c.board), reasons, positionOnly: reasons.every((s) => /^[xy] /.test(s)) })
 	}
 	for (const m of r.missingOnLive) failing.push({ comp: label(m), reasons: ['missing on live'] })
+	// A card on one side and a link-like element on the other: placed and sized as any pair; the kind does not count.
+	for (const p of r.crossKind || []) {
+		const reasons = positionReasons({ role: 'card', board: p.board, live: p.live }, ob, ol, dialog, POS)
+		if (Math.abs(p.live.rect.w - p.board.rect.w) > WIDTH) reasons.push(`width ${p.board.rect.w}>${p.live.rect.w}`)
+		if (reasons.length) failing.push({ comp: `${p.board.kind}/${p.live.kind} "${p.board.label.slice(0, 30)}"`, reasons, positionOnly: reasons.every((s) => /^[xy] /.test(s)) })
+	}
 	const elabel = (e) => `${e.kind} "${(e.label || '').slice(0, 30)}"${e.inControl ? ` in "${e.inControl.slice(0, 20)}"` : ''}`
 	for (const e of r.elements || []) {
 		const reasons = elementRows(e).filter((x) => x.flag).map((x) => x.prop === 'pixels' ? `visually differs ${x.live}%, property not identified` : `${x.prop} ${fmt(x.board)}>${fmt(x.live)}`)
@@ -59,7 +65,7 @@ for (const f of files) {
 	const dataUnpaired = [...(r.missingElements || []), ...(r.extraElements || [])].filter((x) => isRepeated(x)).length
 	for (const e of r.extraOnLive) failing.push({ comp: label(e), reasons: ['extra on live'] })
 	const notMeasured = r.notMeasured ? r.notMeasured.length : null
-	verdicts.push({ board: r.board, route: r.url, match: failing.length === 0 && notMeasured === 0, failing, notMeasured, dataUnpaired, components: r.components.length + r.missingOnLive.length + (r.elements || []).length + (r.missingElements || []).length })
+	verdicts.push({ board: r.board, route: r.url, match: failing.length === 0 && notMeasured === 0, failing, notMeasured, dataUnpaired, components: r.components.length + r.missingOnLive.length + (r.elements || []).length + (r.missingElements || []).length + (r.crossKind || []).length })
 }
 
 const matched = verdicts.filter((v) => v.match).length

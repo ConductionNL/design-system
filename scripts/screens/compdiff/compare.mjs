@@ -60,6 +60,15 @@ export function pairComponents (board, live, H) {
 		cand.sort((x, y) => x.cost - y.cost)
 		for (const { b, l } of cand) if (!usedB.has(b) && !usedL.has(l)) take(b, l, minSim === 1 ? 'title' : 'title~')
 	}
+	// 2b. An untitled card whose lead line (a KPI tile's label over its value) is a title on the other side, in the same
+	// column: one card, drawn with a heading on one side and a plain label on the other. compareProps reports the header.
+	const lead = (t, u) => t.title && !u.title && u.lead && CARDLIKE.has(t.role) && group(t) === group(u) && norm(u.lead) === norm(t.title)
+		&& Math.min(t.rect.x + t.rect.w, u.rect.x + u.rect.w) - Math.max(t.rect.x, u.rect.x) > 0.5 * Math.min(t.rect.w, u.rect.w)
+	for (const b of board) {
+		if (usedB.has(b)) continue
+		const l = live.filter((x) => !usedL.has(x) && (lead(b, x) || lead(x, b))).sort((x, y) => pos(b, x) - pos(b, y))[0]
+		if (l) take(b, l, 'lead')
+	}
 	// 3. Role and position for the rest. A titled component only pairs by position with an untitled one or a
 	// near neighbour, so two different widgets are not compared as one.
 	const cand = []
@@ -496,6 +505,39 @@ export function markListElements (r) {
 		for (const e of list) freq.set(k(e), (freq.get(k(e)) || 0) + 1)
 		for (const e of list) if (freq.get(k(e)) >= 5) e.repeated = true
 	}
+	return r
+}
+
+/**
+ * Pairs a card left unpaired on one side with an element left unpaired on the other when they are one thing drawn as
+ * two kinds: a link the board draws as a card and live renders as a button-like link or a list row, or the reverse
+ * (the footer's "Contact en openingstijden", a "Nieuw verzoek" tile). The card's title must be the element's label,
+ * and the two boxes must agree: tops within 24px, heights within 24px, and the boxes share at least half of the
+ * narrower one's width. Fields and toggles never pair with a card. The pairs move from the missing and extra lists to
+ * `crossKind`, where the verdict still places and sizes them as it does every pair. Idempotent.
+ *
+ * @param {object} r A stored report.
+ * @return {object} The same report.
+ */
+export function pairAcrossKinds (r) {
+	const kinds = new Set(['button', 'pill', 'badge', 'row'])
+	const agree = (a, b) => {
+		const overlap = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)
+		return Math.abs(a.y - b.y) <= 24 && Math.abs(a.h - b.h) <= 24 && overlap >= 0.5 * Math.min(a.w, b.w)
+	}
+	const cross = r.crossKind || []
+	for (const [cards, elements, cardSide] of [['missingOnLive', 'extraElements', 'board'], ['extraOnLive', 'missingElements', 'live']]) {
+		for (const c of [...(r[cards] || [])]) {
+			if (c.role !== 'card' || !norm(c.title)) continue
+			const e = (r[elements] || []).find((x) => kinds.has(x.kind) && norm(x.label) === norm(c.title) && agree(c.rect, x.rect))
+			if (!e) continue
+			r[cards] = r[cards].filter((x) => x !== c)
+			r[elements] = r[elements].filter((x) => x !== e)
+			const card = { kind: 'card', label: c.title, rect: c.rect }
+			cross.push(cardSide === 'board' ? { board: card, live: e } : { board: e, live: card })
+		}
+	}
+	if (cross.length) r.crossKind = cross
 	return r
 }
 

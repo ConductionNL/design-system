@@ -117,6 +117,33 @@ test('with a modal dialog open, only what is inside it is measured', { skip }, a
 	}
 })
 
+test('a native dialog opened with showModal() covers the page as an aria-modal dialog does', { skip }, async () => {
+	const page = `<div style="position:absolute;left:300px;top:100px;width:800px">
+		<h1>Zaak</h1>
+		<section style="border:1px solid #ccc;padding:20px;height:120px"><h2>Zaakgegevens</h2>${btn('Bewerken')}</section></div>`
+	const dialog = (open) => `<dialog id="d" ${open} style="width:600px;border:0;border-radius:12px;padding:20px">
+		<h2>Aanvraag intrekken?</h2><input aria-label="Reden" style="height:40px;width:400px">${btn('Intrekken')}</dialog>`
+	const modal = await measure(page + dialog('') + '<script>document.getElementById("d").showModal()</script>')
+	assert.deepEqual(modal.components.filter((c) => c.role !== 'dialog').map((c) => c.title), [])
+	assert.deepEqual(modal.components.filter((c) => c.role === 'dialog').map((c) => c.title), ['Aanvraag intrekken?'])
+	assert.deepEqual(modal.elements.map((e) => e.label).sort(), ['Intrekken', 'Reden'])
+	// A dialog shown without showModal() leaves the page in view: it is not modal.
+	const open = await measure(page + dialog('open'))
+	assert.ok(open.elements.some((e) => e.label === 'Bewerken'), JSON.stringify(open.elements.map((e) => e.label)))
+})
+
+test('an untitled KPI card keeps its plain label as its lead line', { skip }, async () => {
+	const tile = (head) => `<section style="width:357px;height:200px;border:1px solid #e4e6ea;border-radius:12px;padding:20px;box-sizing:border-box">${head}<p style="margin:8px 0 0">Open pijplijn tegenover het doel.</p></section>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;display:flex;gap:20px">
+		${tile('<p style="margin:0;font-size:14px;color:#5e6168">Dekking pijplijn</p><p style="margin:0;font-size:28px;font-weight:700">4,7 x</p>')}
+		${tile('<h3 style="margin:0;font-size:17px">Omzet per bron</h3>')}
+		${tile('<a href="#" style="display:block;color:inherit;text-decoration:none"><p style="margin:0;font-size:14px;color:#5e6168">Open pijplijn</p><p style="margin:0;font-size:28px;font-weight:700">12</p></a>').replace('<p style="margin:8px 0 0">Open pijplijn tegenover het doel.</p>', '')}
+		${tile('<p style="margin:0"><a href="#">Lees meer</a></p>')}</div>`)
+	const cards = r.components.filter((c) => c.role === 'card').sort((a, b) => a.rect.x - b.rect.x)
+	// A link that is the whole tile keeps its label as the lead; a link beside other content is a control, not a lead.
+	assert.deepEqual(cards.map((c) => [c.title || null, c.lead || null]), [[null, 'Dekking pijplijn'], ['Omzet per bron', null], [null, 'Open pijplijn'], [null, null]])
+})
+
 test('the tab underline is read where it is drawn, on a bar around the tablist', { skip }, async () => {
 	const tabs = '<div role="tablist" style="display:flex;gap:4px"><button role="tab" aria-selected="true" style="height:44px">Een</button><button role="tab" style="height:44px">Twee</button></div>'
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:900px">

@@ -29,7 +29,7 @@ import { createRequire } from 'node:module'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { pairComponents, compareProps, scoreComponent, pairElements, compareElement } from './compare.mjs'
+import { pairComponents, compareProps, scoreComponent, pairElements, compareElement, pairAcrossKinds } from './compare.mjs'
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { cropMismatch, pixelsFlag, wholePixels } from './crop.mjs'
@@ -335,6 +335,9 @@ try {
 		blockedWrites: blocked,
 		extraOnLive: extra.map((c) => ({ role: c.role, title: c.title || null, rect: c.rect })),
 	}
+	pairAcrossKinds(report)
+	report.counts.missingOnLive = report.missingOnLive.length
+	report.counts.extraOnLive = report.extraOnLive.length
 	fs.writeFileSync(path.join(out, `${board}.json`), JSON.stringify(report, null, 1))
 	fs.writeFileSync(path.join(out, `${board}.md`), renderTable(report))
 	lap('write')
@@ -360,6 +363,7 @@ function renderTable (r) {
 	}
 	if (r.missingOnLive.length) lines.push('## Missing on live', '', ...r.missingOnLive.map((c) => `- ${c.role}: ${c.title || '(untitled)'} at ${c.rect.x},${c.rect.y} ${c.rect.w}x${c.rect.h}`), '')
 	if (r.extraOnLive.length) lines.push('## Extra on live', '', ...r.extraOnLive.map((c) => `- ${c.role}: ${c.title || '(untitled)'} at ${c.rect.x},${c.rect.y} ${c.rect.w}x${c.rect.h}`), '')
+	if (r.crossKind) lines.push('## Paired across kinds', '', ...r.crossKind.map((p) => `- "${p.board.label}": ${p.board.kind} at ${p.board.rect.x},${p.board.rect.y} ${p.board.rect.w}x${p.board.rect.h} on the board, ${p.live.kind} at ${p.live.rect.x},${p.live.rect.y} ${p.live.rect.w}x${p.live.rect.h} on live`), '')
 	return lines.join('\n')
 }
 function fmt (v) { return v === null || v === undefined ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v) }

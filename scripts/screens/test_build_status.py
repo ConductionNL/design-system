@@ -116,6 +116,18 @@ class BuildStatusTest(unittest.TestCase):
         ])
         self.assertNotIn('history', d['boards']['DqTaken'], 'a board no run measured has no history')
 
+    def test_a_run_with_lane_sets_reads_each_board_from_its_set(self):
+        run = self.root / 'pt1'
+        (run / 'PT-L1').mkdir(parents=True)
+        (run / 'verdicts.tsv').write_text('set\t' + HEAD + 'PT-L1\tContact\tNO-MATCH\t2\t9\t0\t0\tcard: y +5\n', encoding='utf-8')
+        (run / 'PT-L1' / 'Contact.json').write_text(json.dumps(
+            {'board': 'Contact', 'url': '/apps/portaliq/contact', 'measuredAt': '2026-11-01T12:00:00.000Z'}), encoding='utf-8')
+        d, _ = self.run_script('--compdiff', run)
+        contact = d['boards']['Contact']
+        self.assertEqual((contact['verdict'], contact['failing'], contact['components']), ('NO-MATCH', 2, 9))
+        self.assertEqual((contact['route'], contact['runDate']), ('/apps/portaliq/contact', '2026-11-01T12:00:00.000Z'))
+        self.assertEqual(d['compdiff']['apps']['portaliq']['measured'], 1)
+
     def test_flagged_components_are_the_lanes_unit_next_to_failing_items(self):
         # DqZaken has no flagged component property, but a button is missing on live: still NO-MATCH.
         run = write_run(self.root, 'r3', [

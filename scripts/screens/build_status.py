@@ -122,48 +122,58 @@ def extra_count(detail):
 
 
 def read_compdiff(rundir):
-    """One COMPDIFF run: (run id, run date, {board: row}). Rows carry the board's verdict and counts."""
+    """One COMPDIFF run: (run id, run date, {board: row}). Rows carry the board's verdict and counts.
+
+    A verdicts.tsv whose first column is `set` holds several lane sets: each row's <Board>.json is then in
+    the subdirectory named by its set."""
     rundir = pathlib.Path(rundir)
     tsv = rundir / 'verdicts.tsv'
     rows, dates = {}, []
     with open(tsv, newline='', encoding='utf-8') as fh:
-        for row in csv.reader(fh, delimiter='\t', quoting=csv.QUOTE_NONE):
-            if not row or row[0].strip() in ('', 'board') or len(row) < 4:
+        lines = list(csv.reader(fh, delimiter='\t', quoting=csv.QUOTE_NONE))
+    sets = bool(lines) and lines[0] and lines[0][0].strip() == 'set'
+    for row in lines:
+        folder = rundir
+        if sets:
+            if not row or row[0].strip() == 'set':
                 continue
-            board, verdict, failing, components = (c.strip() for c in row[:4])
-            not_measured = row[4].strip() if len(row) > 4 else ''
-            detail = row[6].strip() if len(row) > 6 else ''
-            if verdict not in ('MATCH', 'NO-MATCH'):
-                continue
-            failing, components = int(failing or 0), int(components or 0)
-            compared = components + extra_count(detail)
-            meta = {}
-            try:
-                meta = json.loads((rundir / f'{board}.json').read_text(encoding='utf-8'))
-            except (OSError, ValueError):
-                pass
-            if meta.get('measuredAt'):
-                dates.append(meta['measuredAt'])
-            items = [i for i in detail.split(' | ') if i]
-            shown = '; '.join(items[:NOTE_ITEMS]) + (f'; and {len(items) - NOTE_ITEMS} more' if len(items) > NOTE_ITEMS else '')
-            counts = meta.get('counts') if isinstance(meta.get('counts'), dict) else {}
-            flagged = counts.get('flaggedComponents')
-            rows[board] = {
-                'route': meta.get('url') or None,
-                'verdict': verdict,
-                'layoutMatch': verdict == 'MATCH',
-                'failing': failing,
-                'flaggedComponents': flagged if isinstance(flagged, int) else None,
-                'unpairedComponents': (len(meta.get('missingOnLive') or []) + len(meta.get('extraOnLive') or []))
-                                      if 'missingOnLive' in meta else None,
-                'components': components,
-                'notMeasured': int(not_measured) if not_measured.isdigit() else None,
-                'mismatchPct': round(100 * failing / compared, 1) if compared else (0.0 if verdict == 'MATCH' else None),
-                'mismatchBasis': 'components',
-                'notes': (f'layout match: component-measured in run {rundir.name}, all {components} items pass'
-                          if verdict == 'MATCH' else
-                          f'no layout match: component-measured in run {rundir.name}, {failing} of {compared} items fail: {shown}'),
-            }
+            folder, row = rundir / row[0].strip(), row[1:]
+        if not row or row[0].strip() in ('', 'board') or len(row) < 4:
+            continue
+        board, verdict, failing, components = (c.strip() for c in row[:4])
+        not_measured = row[4].strip() if len(row) > 4 else ''
+        detail = row[6].strip() if len(row) > 6 else ''
+        if verdict not in ('MATCH', 'NO-MATCH'):
+            continue
+        failing, components = int(failing or 0), int(components or 0)
+        compared = components + extra_count(detail)
+        meta = {}
+        try:
+            meta = json.loads((folder / f'{board}.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            pass
+        if meta.get('measuredAt'):
+            dates.append(meta['measuredAt'])
+        items = [i for i in detail.split(' | ') if i]
+        shown = '; '.join(items[:NOTE_ITEMS]) + (f'; and {len(items) - NOTE_ITEMS} more' if len(items) > NOTE_ITEMS else '')
+        counts = meta.get('counts') if isinstance(meta.get('counts'), dict) else {}
+        flagged = counts.get('flaggedComponents')
+        rows[board] = {
+            'route': meta.get('url') or None,
+            'verdict': verdict,
+            'layoutMatch': verdict == 'MATCH',
+            'failing': failing,
+            'flaggedComponents': flagged if isinstance(flagged, int) else None,
+            'unpairedComponents': (len(meta.get('missingOnLive') or []) + len(meta.get('extraOnLive') or []))
+                                  if 'missingOnLive' in meta else None,
+            'components': components,
+            'notMeasured': int(not_measured) if not_measured.isdigit() else None,
+            'mismatchPct': round(100 * failing / compared, 1) if compared else (0.0 if verdict == 'MATCH' else None),
+            'mismatchBasis': 'components',
+            'notes': (f'layout match: component-measured in run {rundir.name}, all {components} items pass'
+                      if verdict == 'MATCH' else
+                      f'no layout match: component-measured in run {rundir.name}, {failing} of {compared} items fail: {shown}'),
+        }
     if dates:
         date = max(dates)
     else:

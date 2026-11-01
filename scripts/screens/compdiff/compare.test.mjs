@@ -356,3 +356,22 @@ test('a field never pairs with a card of its label', () => {
 	assert.equal(r.missingOnLive.length, 1)
 	assert.equal(r.crossKind, undefined)
 })
+
+test('a titled card pairs with an untitled card whose lead line is that title, in the same column', () => {
+	const kpi = (rect, extra) => ({ role: 'card', rect, depth: 0, ...extra })
+	const board = [kpi({ x: 1052, y: 1217, w: 360, h: 168 }, { title: 'Dekking pijplijn', header: { fontSize: 17 } })]
+	const live = [
+		kpi({ x: 292, y: 1406, w: 357.3, h: 216 }, { lead: 'Dekking pijplijn', record: { deck: 2, index: 0, count: 3 } }),
+		kpi({ x: 1054.7, y: 1406, w: 357.3, h: 216 }, { lead: 'Dekking pijplijn', record: { deck: 2, index: 2, count: 3 } }),
+	]
+	const { pairs, missing } = pairComponents(board, live, 1640)
+	assert.deepEqual(missing, [])
+	assert.equal(pairs.length, 1)
+	assert.equal(pairs[0].by, 'lead')
+	assert.equal(pairs[0].live.rect.x, 1054.7)
+	// The heading the board draws and live does not is still reported.
+	assert.equal(compareProps(pairs[0].board, pairs[0].live).find((r) => r.prop === 'header (title row)').flag, 'chrome')
+	// Another lead does not pair by its words (the deck card far below the board's is left to position pairing).
+	const other = pairComponents(board, [kpi({ x: 1054.7, y: 1406, w: 357.3, h: 216 }, { lead: 'Omzet per bron', record: { deck: 2, index: 2, count: 3 } })], 1640)
+	assert.deepEqual(other.pairs, [])
+})

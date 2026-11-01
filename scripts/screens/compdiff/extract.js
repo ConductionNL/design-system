@@ -447,6 +447,15 @@ window.__compdiffExtract = function () {
 		}
 		const leaves = leavesOf(card)
 		const title = headingIn(card, cr, role)
+		// An untitled card keeps the plain line at its top as its lead (a KPI tile's muted label over its value), so it
+		// can pair with a card the other side titles with the same words. A link that is the card's whole content (a
+		// tile that opens a list) does not make its label a control's.
+		if (!title) {
+			const t = textEl(card), ctl = t.closest(INTERACTIVE)
+			const words = (e) => e.textContent.replace(/\s+/g, ' ').trim()
+			const whole = !ctl || ctl.contains(card) || (card.contains(ctl) && words(ctl) === words(card))
+			if (t !== card && t.getBoundingClientRect().top - cr.top <= 64 && whole) comp.lead = words(t).slice(0, 80)
+		}
 		let headerRow = null, titleBox = null
 		if (title) {
 			comp.title = title.textContent.trim().replace(/\s+/g, ' ').slice(0, 80)

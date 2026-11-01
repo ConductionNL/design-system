@@ -132,6 +132,18 @@ test('a native dialog opened with showModal() covers the page as an aria-modal d
 	assert.ok(open.elements.some((e) => e.label === 'Bewerken'), JSON.stringify(open.elements.map((e) => e.label)))
 })
 
+test('an untitled KPI card keeps its plain label as its lead line', { skip }, async () => {
+	const tile = (head) => `<section style="width:357px;height:200px;border:1px solid #e4e6ea;border-radius:12px;padding:20px;box-sizing:border-box">${head}<p style="margin:8px 0 0">Open pijplijn tegenover het doel.</p></section>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;display:flex;gap:20px">
+		${tile('<p style="margin:0;font-size:14px;color:#5e6168">Dekking pijplijn</p><p style="margin:0;font-size:28px;font-weight:700">4,7 x</p>')}
+		${tile('<h3 style="margin:0;font-size:17px">Omzet per bron</h3>')}
+		${tile('<a href="#" style="display:block;color:inherit;text-decoration:none"><p style="margin:0;font-size:14px;color:#5e6168">Open pijplijn</p><p style="margin:0;font-size:28px;font-weight:700">12</p></a>').replace('<p style="margin:8px 0 0">Open pijplijn tegenover het doel.</p>', '')}
+		${tile('<p style="margin:0"><a href="#">Lees meer</a></p>')}</div>`)
+	const cards = r.components.filter((c) => c.role === 'card').sort((a, b) => a.rect.x - b.rect.x)
+	// A link that is the whole tile keeps its label as the lead; a link beside other content is a control, not a lead.
+	assert.deepEqual(cards.map((c) => [c.title || null, c.lead || null]), [[null, 'Dekking pijplijn'], ['Omzet per bron', null], [null, 'Open pijplijn'], [null, null]])
+})
+
 test('the tab underline is read where it is drawn, on a bar around the tablist', { skip }, async () => {
 	const tabs = '<div role="tablist" style="display:flex;gap:4px"><button role="tab" aria-selected="true" style="height:44px">Een</button><button role="tab" style="height:44px">Twee</button></div>'
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:900px">

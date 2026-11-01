@@ -60,6 +60,15 @@ export function pairComponents (board, live, H) {
 		cand.sort((x, y) => x.cost - y.cost)
 		for (const { b, l } of cand) if (!usedB.has(b) && !usedL.has(l)) take(b, l, minSim === 1 ? 'title' : 'title~')
 	}
+	// 2b. An untitled card whose lead line (a KPI tile's label over its value) is a title on the other side, in the same
+	// column: one card, drawn with a heading on one side and a plain label on the other. compareProps reports the header.
+	const lead = (t, u) => t.title && !u.title && u.lead && CARDLIKE.has(t.role) && group(t) === group(u) && norm(u.lead) === norm(t.title)
+		&& Math.min(t.rect.x + t.rect.w, u.rect.x + u.rect.w) - Math.max(t.rect.x, u.rect.x) > 0.5 * Math.min(t.rect.w, u.rect.w)
+	for (const b of board) {
+		if (usedB.has(b)) continue
+		const l = live.filter((x) => !usedL.has(x) && (lead(b, x) || lead(x, b))).sort((x, y) => pos(b, x) - pos(b, y))[0]
+		if (l) take(b, l, 'lead')
+	}
 	// 3. Role and position for the rest. A titled component only pairs by position with an untitled one or a
 	// near neighbour, so two different widgets are not compared as one.
 	const cand = []

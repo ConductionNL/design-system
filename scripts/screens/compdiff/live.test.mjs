@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, browserEnv, focusRingsOff, markIgnored, parkPointer, readPosts, resetScroll, routeId, sessionEntries, tableShape, leaveClosedSelect, loadingIndicators, retryOnce, chunks, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
+import { accountFor, applyInjection, browserEnv, focusRingsOff, markIgnored, parkPointer, readInjection, readPosts, resetScroll, routeId, sessionEntries, tableShape, leaveClosedSelect, loadingIndicators, retryOnce, chunks, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -270,5 +270,24 @@ test('takes the keyboard focus rings off a focused field and its wrapper, and ke
 	await withPage(`${css}<div class="wrap"><input class="edge" type="text"></div>`, async (page) => {
 		assert.equal(await page.evaluate(focusRingsOff), 0)
 		assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('input')).boxShadow), 'rgb(54, 105, 165) 0px 0px 0px 1px')
+	})
+})
+
+test('an injection is off unless a file is named, and a flag without a file is refused', () => {
+	const read = (f) => `contents of ${f}`
+	assert.equal(readInjection({}, read), null)
+	assert.equal(readInjection({ board: 'PtUitnodigen', url: '/apps/portaliq' }, read), null)
+	assert.deepEqual(readInjection({ 'inject-css': 'fix.css' }, read), { css: 'contents of fix.css', js: null, files: { css: 'fix.css' } })
+	assert.deepEqual(readInjection({ 'inject-css': 'fix.css', 'inject-js': 'fix.js' }, read).files, { css: 'fix.css', js: 'fix.js' })
+	assert.throws(() => readInjection({ 'inject-css': 'true' }, read), /--inject-css needs a file/)
+})
+
+test('lays the injected script and style sheet over the page, and leaves it alone without one', { skip }, async () => {
+	const body = '<button class="b" style="padding: 0 14px">Annuleren</button>'
+	await withPage(body, async (page) => {
+		await applyInjection(page, null)
+		assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('.b')).paddingLeft), '14px')
+		await applyInjection(page, { js: "document.querySelector('.b').classList.add('x')", css: '.b.x { padding: 0 16px !important }' })
+		assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('.b')).paddingLeft), '16px')
 	})
 })

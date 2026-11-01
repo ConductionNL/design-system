@@ -3,7 +3,7 @@
 // compared where both sides draw that border.
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { compareElement, compareProps, pairComponents, pairElements, positionReasons } from './compare.mjs'
+import { compareElement, compareProps, pairAcrossKinds, pairComponents, pairElements, positionReasons } from './compare.mjs'
 
 const card = (title, y, record) => ({ role: 'card', title, rect: { x: 292, y, w: 800, h: 100 }, depth: 0, header: { fontSize: 18 }, ...(record ? { record } : {}) })
 
@@ -315,4 +315,44 @@ test('a list row pairs only with a row of the same card, never by group across c
 	assert.equal(pairElements(board, live('Wat hierna komt'), 2000).pairs.length, 0)
 	// Control: the same rows in cards of the same title pair by group, as before.
 	assert.equal(pairElements(board, live('Afspraken'), 2000).pairs.length, 1)
+})
+
+test('a link drawn as a card on one side and as a button or row on the other pairs when label and box agree', () => {
+	const rect = (x, y, w, h) => ({ x, y, w, h })
+	const el = (kind, label, r) => ({ kind, label, inControl: null, count: 1, rect: r })
+	const r = pairAcrossKinds({
+		missingOnLive: [
+			{ role: 'card', title: 'Contact en openingstijden', rect: rect(80, 2826.4, 231.4, 50) },
+			{ role: 'card', title: 'Terug naar mijn zaken', rect: rect(1164.3, 223, 195.7, 48) },
+			// Same label, another place: a real difference, still missing.
+			{ role: 'card', title: 'Document toevoegen', rect: rect(16, 919, 358, 56) },
+		],
+		extraOnLive: [{ role: 'card', title: 'Nieuw verzoek', rect: rect(292, 191, 176.7, 97) }],
+		missingElements: [el('row', 'Nieuw verzoek', rect(292, 194, 173.7, 104.5)), el('field', 'Zoeken', rect(0, 0, 200, 40))],
+		extraElements: [
+			el('button', 'Contact en openingstijden', rect(80, 2829.5, 243.4, 47.5)),
+			el('button', 'Terug naar Mijn zaken', rect(1151.5, 223, 208.5, 44)),
+			el('badge', 'Document toevoegen', rect(169.8, 1535.5, 204.2, 44)),
+			// Another label in the same box does not pair.
+			el('button', 'Bezwaar maken', rect(80, 2829.5, 243.4, 47.5)),
+		],
+	})
+	assert.deepEqual(r.missingOnLive.map((c) => c.title), ['Document toevoegen'])
+	assert.deepEqual(r.extraOnLive, [])
+	assert.deepEqual(r.extraElements.map((e) => e.label), ['Document toevoegen', 'Bezwaar maken'])
+	assert.deepEqual(r.missingElements.map((e) => e.label), ['Zoeken'])
+	assert.deepEqual(r.crossKind.map((p) => `${p.board.kind}/${p.live.kind} ${p.board.label}`), ['card/button Contact en openingstijden', 'card/button Terug naar mijn zaken', 'row/card Nieuw verzoek'])
+	// Running it again on a report it already paired changes nothing.
+	assert.equal(pairAcrossKinds(r).crossKind.length, 3)
+})
+
+test('a field never pairs with a card of its label', () => {
+	const r = pairAcrossKinds({
+		missingOnLive: [{ role: 'card', title: 'Reden', rect: { x: 0, y: 0, w: 400, h: 40 } }],
+		extraOnLive: [],
+		missingElements: [],
+		extraElements: [{ kind: 'field', label: 'Reden', rect: { x: 0, y: 0, w: 400, h: 40 } }],
+	})
+	assert.equal(r.missingOnLive.length, 1)
+	assert.equal(r.crossKind, undefined)
 })

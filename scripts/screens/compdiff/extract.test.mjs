@@ -117,6 +117,21 @@ test('with a modal dialog open, only what is inside it is measured', { skip }, a
 	}
 })
 
+test('a native dialog opened with showModal() covers the page as an aria-modal dialog does', { skip }, async () => {
+	const page = `<div style="position:absolute;left:300px;top:100px;width:800px">
+		<h1>Zaak</h1>
+		<section style="border:1px solid #ccc;padding:20px;height:120px"><h2>Zaakgegevens</h2>${btn('Bewerken')}</section></div>`
+	const dialog = (open) => `<dialog id="d" ${open} style="width:600px;border:0;border-radius:12px;padding:20px">
+		<h2>Aanvraag intrekken?</h2><input aria-label="Reden" style="height:40px;width:400px">${btn('Intrekken')}</dialog>`
+	const modal = await measure(page + dialog('') + '<script>document.getElementById("d").showModal()</script>')
+	assert.deepEqual(modal.components.filter((c) => c.role !== 'dialog').map((c) => c.title), [])
+	assert.deepEqual(modal.components.filter((c) => c.role === 'dialog').map((c) => c.title), ['Aanvraag intrekken?'])
+	assert.deepEqual(modal.elements.map((e) => e.label).sort(), ['Intrekken', 'Reden'])
+	// A dialog shown without showModal() leaves the page in view: it is not modal.
+	const open = await measure(page + dialog('open'))
+	assert.ok(open.elements.some((e) => e.label === 'Bewerken'), JSON.stringify(open.elements.map((e) => e.label)))
+})
+
 test('the tab underline is read where it is drawn, on a bar around the tablist', { skip }, async () => {
 	const tabs = '<div role="tablist" style="display:flex;gap:4px"><button role="tab" aria-selected="true" style="height:44px">Een</button><button role="tab" style="height:44px">Twee</button></div>'
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:900px">

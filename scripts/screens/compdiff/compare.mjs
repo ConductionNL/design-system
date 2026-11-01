@@ -500,6 +500,39 @@ export function markListElements (r) {
 }
 
 /**
+ * Pairs a card left unpaired on one side with an element left unpaired on the other when they are one thing drawn as
+ * two kinds: a link the board draws as a card and live renders as a button-like link or a list row, or the reverse
+ * (the footer's "Contact en openingstijden", a "Nieuw verzoek" tile). The card's title must be the element's label,
+ * and the two boxes must agree: tops within 24px, heights within 24px, and the boxes share at least half of the
+ * narrower one's width. Fields and toggles never pair with a card. The pairs move from the missing and extra lists to
+ * `crossKind`, where the verdict still places and sizes them as it does every pair. Idempotent.
+ *
+ * @param {object} r A stored report.
+ * @return {object} The same report.
+ */
+export function pairAcrossKinds (r) {
+	const kinds = new Set(['button', 'pill', 'badge', 'row'])
+	const agree = (a, b) => {
+		const overlap = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)
+		return Math.abs(a.y - b.y) <= 24 && Math.abs(a.h - b.h) <= 24 && overlap >= 0.5 * Math.min(a.w, b.w)
+	}
+	const cross = r.crossKind || []
+	for (const [cards, elements, cardSide] of [['missingOnLive', 'extraElements', 'board'], ['extraOnLive', 'missingElements', 'live']]) {
+		for (const c of [...(r[cards] || [])]) {
+			if (c.role !== 'card' || !norm(c.title)) continue
+			const e = (r[elements] || []).find((x) => kinds.has(x.kind) && norm(x.label) === norm(c.title) && agree(c.rect, x.rect))
+			if (!e) continue
+			r[cards] = r[cards].filter((x) => x !== c)
+			r[elements] = r[elements].filter((x) => x !== e)
+			const card = { kind: 'card', label: c.title, rect: c.rect }
+			cross.push(cardSide === 'board' ? { board: card, live: e } : { board: e, live: card })
+		}
+	}
+	if (cross.length) r.crossKind = cross
+	return r
+}
+
+/**
  * Where a pair sits against its board position, as verdict reasons ("x +6", "y -10"), past `limit` px.
  *
  * A page component is placed from the content origin of its side. A dialog is placed in the viewport, by its x only:

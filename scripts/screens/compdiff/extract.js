@@ -141,8 +141,9 @@ window.__compdiffExtract = function () {
 	// pill centred beside a due date that wrapped to two lines). A box centred between two separate lines (beside a
 	// title and its meta line) is on neither, however tight the two lines are set.
 	const sameLine = (line, b) => { const mid = (b.y + (b.b ?? b.y)) / 2; return mid >= line.y + 3 && mid <= (line.lb ?? line.b ?? line.y) - 3 }
-	// An open modal dialog covers the page with its scrim: only what is inside the dialog is in view.
-	const modals = [...document.querySelectorAll('[aria-modal=true]')].filter(visible)
+	// An open modal dialog covers the page with its scrim: only what is inside the dialog is in view. A native <dialog>
+	// opened with showModal() is modal without aria-modal (:modal); one opened with show() or `open` is not.
+	const modals = [...document.querySelectorAll('[aria-modal=true], dialog:modal')].filter(visible)
 	// The app top bar and the left navigation are chrome around every page; they are not page components. A spec can
 	// mark more chrome to leave out (compdiff --ignore), such as an editor's own button on a public site.
 	const outOfScope = (el) => {
@@ -157,7 +158,7 @@ window.__compdiffExtract = function () {
 		const r = el.getBoundingClientRect()
 		// A floating launcher pinned to the window's lower right corner (the AI assistant button) is app chrome: it
 		// sits over the content and follows the window, not the page.
-		if (r.width <= 72 && r.height <= 72 && r.right >= window.innerWidth - 120 && r.bottom >= window.innerHeight - 140 && !el.closest('[role=dialog]')) {
+		if (r.width <= 72 && r.height <= 72 && r.right >= window.innerWidth - 120 && r.bottom >= window.innerHeight - 140 && !el.closest('[role=dialog], dialog:modal')) {
 			for (let e = el, i = 0; e && i < 4; e = e.parentElement, i++) if (/fixed|sticky/.test(getComputedStyle(e).position) || (getComputedStyle(e).position === 'absolute' && e.getBoundingClientRect().bottom >= window.innerHeight - 140)) return true
 		}
 		return (r.x < 250 && r.right < 300) || r.bottom <= 70
@@ -219,7 +220,7 @@ window.__compdiffExtract = function () {
 		const a = el.getBoundingClientRect(), b = m.getBoundingClientRect()
 		return Math.abs(a.left - b.left) <= 4 && Math.abs(a.top - b.top) <= 4 && Math.abs(a.right - b.right) <= 4 && Math.abs(a.bottom - b.bottom) <= 4
 	})
-	const pageTitle = [...document.querySelectorAll('h1')].find((h) => visible(h) && !outOfScope(h) && !h.closest('[role=dialog]')) || null
+	const pageTitle = [...document.querySelectorAll('h1')].find((h) => visible(h) && !outOfScope(h) && !h.closest('[role=dialog], dialog:modal')) || null
 	let cards = []
 	for (const el of all) {
 		// Links can be cards (a KPI tile is often one big <a>), and so can a framed label (a choice card, a checkbox
@@ -621,7 +622,7 @@ window.__compdiffExtract = function () {
 	}
 
 	const components = []
-	for (const c of cards) components.push(describeCard(c.el, c.el.closest('[role=dialog]') ? 'dialog-card' : 'card'))
+	for (const c of cards) components.push(describeCard(c.el, c.el.closest('[role=dialog], dialog:modal') ? 'dialog-card' : 'card'))
 
 	// Record cards: a card with two or more siblings of about its width (a deck, a card grid or a column of widgets).
 	// Each is compared, with the order and placement of its parts as its structure; the count follows the data.
@@ -736,7 +737,7 @@ window.__compdiffExtract = function () {
 	}
 
 	// 2. Dialogs: the visible dialog box (a full-screen role=dialog mask is narrowed to its framed child).
-	for (const d of document.querySelectorAll('[role=dialog], [role=alertdialog]')) {
+	for (const d of document.querySelectorAll('[role=dialog], [role=alertdialog], dialog:modal')) {
 		if (!visible(d)) continue
 		// With a modal open, a non-modal dialog outside it (an incoming-call card) is behind it, as the page is.
 		if (modals.length && !modals.some((m) => m.contains(d) || d.contains(m))) continue
@@ -764,7 +765,7 @@ window.__compdiffExtract = function () {
 		return { label: b.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), h: round(b.getBoundingClientRect().height), borderRadius: radius(b, bcs), paddingLeft: px(bcs.paddingLeft), paddingRight: px(bcs.paddingRight), fontSize: px(bcs.fontSize), fontWeight: Number(bcs.fontWeight), background: bgBehind(b), border: borders(bcs).top, color: bcs.color }
 	}
 	// 3. Page header: the first visible h1 and the buttons on its line.
-	const h1 = [...document.querySelectorAll('h1')].find((h) => visible(h) && !outOfScope(h) && !h.closest('[role=dialog]'))
+	const h1 = [...document.querySelectorAll('h1')].find((h) => visible(h) && !outOfScope(h) && !h.closest('[role=dialog], dialog:modal'))
 	if (h1) {
 		let container = h1, scope = null
 		for (let p = h1.parentElement; p && p !== document.body; p = p.parentElement) {
@@ -942,7 +943,7 @@ window.__compdiffExtract = function () {
 	}
 	const actionFooter = (el, cs) => {
 		if (!cs.every((c) => c.matches('button, [role=button], a'))) return false
-		const owner = el.closest('[role=dialog]') || (() => { for (let e = el.parentElement; e; e = e.parentElement) if (cardEls.has(e)) return e; return null })()
+		const owner = el.closest('[role=dialog], dialog:modal') || (() => { for (let e = el.parentElement; e; e = e.parentElement) if (cardEls.has(e)) return e; return null })()
 		if (!owner) return false
 		const bottom = el.getBoundingClientRect().bottom
 		return ![...owner.querySelectorAll('*')].some((d) => !el.contains(d) && !d.contains(el) && ![...listboxEls].some((lb) => lb.contains(d)) && visible(d) && d.getBoundingClientRect().top >= bottom - 1 && (d.textContent.trim() || d.matches(CONTROL_BOX)) && !d.children.length)

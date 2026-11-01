@@ -55,6 +55,11 @@ while IFS=$'\t' read -r b u rest; do
 	extra=(); [ -n "$rest" ] && IFS=$'\t' read -r -a extra <<< "$rest"
 	skip=(); [ -n "${COMPDIFF_SKIP_FIRST_RUN:-}" ] && skip=(--skip-first-run "$COMPDIFF_SKIP_FIRST_RUN")
 	case "$u" in /settings/*) skip=();; esac
+	# An injected fix is not the live page: a batch never measures one.
+	if [[ " ${extra[*]:-} " == *" --inject-"* ]]; then
+		echo "$(date +%T) $b refused: --inject-css/--inject-js are for one board run by hand" >> "$out/run.log"
+		echo "{\"board\":\"$b\",\"error\":1}" >> "$out/results.jsonl"; echo "$b refused (inject)"; continue
+	fi
 	res=""
 	for _ in 1 2 3; do
 		healthy || break

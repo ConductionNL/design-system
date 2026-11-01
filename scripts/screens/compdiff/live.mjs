@@ -1,4 +1,5 @@
 // Helpers for the live side of a measurement: who logs in, what to leave out, and when the tables are ready.
+import fs from 'node:fs'
 
 /**
  * The account a board is measured as. `--login none` measures the page without logging in (a public site, as a
@@ -410,3 +411,39 @@ export function waitForTransitions(page, max = 3000) {
 	]).then(() => undefined), max)
 }
 
+
+/**
+ * The files `--inject-css` and `--inject-js` name, read once before the run. A measurement taken with either shows a
+ * proposed fix laid over the live page, not the live page, so the report records the files and `runall.sh` refuses
+ * them: an injection is for proving one fix, never for a measurement round.
+ *
+ * @param {object} args The parsed command line.
+ * @param {Function} [read] Reads a file as text.
+ * @return {{css: string|null, js: string|null, files: {css?: string, js?: string}}|null} The injection, or null.
+ */
+export function readInjection(args, read = (f) => fs.readFileSync(f, 'utf8')) {
+	const files = {}
+	for (const kind of ['css', 'js']) {
+		const file = args[`inject-${kind}`]
+		if (file === undefined) continue
+		if (file === 'true' || file === '') throw new Error(`--inject-${kind} needs a file`)
+		files[kind] = file
+	}
+	if (!Object.keys(files).length) return null
+	return { css: files.css ? read(files.css) : null, js: files.js ? read(files.js) : null, files }
+}
+
+/**
+ * Lays an injection over the live page: the script runs first, then the style sheet is added last in the document,
+ * and the page gets half a second to lay out again.
+ *
+ * @param {object} page A Playwright page.
+ * @param {{css: string|null, js: string|null}|null} injection From readInjection.
+ * @return {Promise<void>}
+ */
+export async function applyInjection(page, injection) {
+	if (!injection) return
+	if (injection.js) await page.evaluate(injection.js)
+	if (injection.css) await page.addStyleTag({ content: injection.css })
+	await page.waitForTimeout(500)
+}

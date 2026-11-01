@@ -16,6 +16,8 @@
 //   [--board-frame "<css>"]   measure only that element of the board, as the whole board (one of several frames)
 //   [--allow-stale-board]   measure a flattened board that no longer matches its source (refused by default)
 //   [--load-wait 30000]   the longest wait for loading indicators to clear after the settle (ms)
+//   [--inject-css <file>] [--inject-js <file>]   lay a proposed fix over the live page after the steps, to prove it
+//   before it is built; the report records the files and runall.sh refuses them (off by default)
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
 // PLAYWRIGHT_MODULE (path to a playwright package when it is not resolvable from here).
 //
@@ -35,7 +37,7 @@ import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
-import { accountFor, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, markIgnored, parkPointer, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
+import { accountFor, applyInjection, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, markIgnored, parkPointer, readInjection, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -75,6 +77,14 @@ try {
 	console.error(e.message)
 	process.exit(2)
 }
+let injection
+try {
+	injection = readInjection(args)
+} catch (e) {
+	console.error(e.message)
+	process.exit(2)
+}
+if (injection) console.error(`injected: ${Object.values(injection.files).join(', ')}; this report shows a proposed fix, not the live page`)
 let steps = []
 try {
 	steps = args.steps ? parseSteps(args.steps) : []
@@ -228,6 +238,7 @@ try {
 	lap('load')
 	await playSteps(lpage, steps)
 	if (steps.length) { await parkPointer(lpage); await leaveClosedSelect(lpage) }
+	await applyInjection(lpage, injection)
 	lap('steps')
 	if (settleMode === 'fixed') await lpage.waitForTimeout(settle)
 	else await waitForQuiet(lpage, requests, { min: 1500, max: settle, quiet: 1500 })
@@ -311,6 +322,7 @@ try {
 	const report = {
 		board, url: liveRoute, ...(liveRoute !== args.url ? { urlSpec: args.url } : {}), height: boardHeight, measuredAt: new Date().toISOString(),
 		...(fresh.state === 'stale' ? { staleBoard: true } : {}),
+		...(injection ? { injected: injection.files } : {}),
 		counts: { boardComponents: B.components.length, liveComponents: L.components.length, paired: pairs.length, missingOnLive: missing.length, extraOnLive: extra.length, flaggedComponents: results.filter((r) => r.flagged).length },
 		page: pageBg,
 		components: results,
@@ -338,7 +350,7 @@ try {
 }
 
 function renderTable (r) {
-	const lines = [`# ${r.board}  (${r.url})`, '', `components: board ${r.counts.boardComponents}, live ${r.counts.liveComponents}, paired ${r.counts.paired}, flagged ${r.counts.flaggedComponents}`, '']
+	const lines = [`# ${r.board}  (${r.url})`, '', ...(r.injected ? [`injected: ${Object.values(r.injected).join(', ')} (a proposed fix, not the live page)`, ''] : []), `components: board ${r.counts.boardComponents}, live ${r.counts.liveComponents}, paired ${r.counts.paired}, flagged ${r.counts.flaggedComponents}`, '']
 	const sorted = [...r.components].sort((a, b) => b.score - a.score)
 	for (const c of sorted) {
 		lines.push(`## ${c.role}: ${c.name}  [${c.matchedBy}]  flags ${c.flagged}, crop mismatch ${c.cropMismatchPct ?? 'n/a'}%`, '')

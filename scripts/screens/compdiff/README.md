@@ -109,6 +109,8 @@ An untitled card that only frames a paired table (with its pager or toolbar, or 
 
 A link drawn as a card on one side and as a button-like link, tag or list row on the other (the footer's "Contact en openingstijden", a "Nieuw verzoek" tile) is one thing: when the card's title is the element's label, their tops and heights are within 24px and the boxes share at least half of the narrower one's width, the two pair (`crossKind` in the report, "Paired across kinds" in the table). The verdict places and sizes such a pair as any other (4px, width 8px); only the kind does not count. A field or toggle never pairs with a card, and the same label in another place stays missing and extra.
 
+An untitled card keeps the plain line at its top as its lead (a KPI tile's muted label over its value, also when the whole tile is one link). It pairs with a card in the same column that the other side titles with those words (matched by `lead`); the heading one side draws and the other does not is still flagged as `header (title row)`.
+
 A framed item whose framed siblings of the same kind are too short to be cards (under 48px) is a row of that list, not a card: whether one tile reaches 48px depends on how its text wraps.
 
 A deck is three or more sibling cards of the same width (a card wrapped alone in a grid cell or list item counts by its cell): a row of record cards, or a column of widgets. Every card of a deck pairs and is compared, including its structure: the order and rows of its parts (pill, number, title, meta, divider, deadline). A card past a deck's first that finds no counterpart is not reported as missing or extra, because how many cards a deck holds follows the data.

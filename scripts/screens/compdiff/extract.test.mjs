@@ -1759,3 +1759,8 @@ test('a pill\'s screen-reader prefix is not part of its label, as the board draw
 	const r = await measure(`<ul style="position:absolute;left:300px;top:140px;margin:0;padding:0;list-style:none;display:flex"><li style="display:inline-flex;align-items:center;height:21px;padding:0 10px;border-radius:10.5px;background:#edeff2;color:#5e6168;font-size:13px;font-weight:600"><span style="${hidden}">slug: </span><span>waterland</span></li></ul>`)
 	assert.deepEqual(r.elements.filter((e) => e.kind === 'pill').map((e) => e.label), ['waterland'])
 })
+
+test('text in a display: contents wrapper is drawn: it stays in the label, unlike a 1px screen-reader span', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:140px"><span style="display:inline-flex;align-items:center;height:21px;padding:0 10px;border-radius:10.5px;background:#edeff2;color:#5e6168;font-size:13px;font-weight:600"><span style="display:contents">In behandeling</span></span></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'pill').map((e) => e.label), ['In behandeling'])
+})

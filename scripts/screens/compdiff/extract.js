@@ -1269,7 +1269,7 @@ window.__compdiffExtract = function () {
 			for (let e = n.parentElement; e && e !== el; e = e.parentElement) { if (PILLISH(e)) { nested = true; break } if (tagShaped(e)) tag = true }
 			// Text only a screen reader gets (a chip's "slug: " before its value, in a 1px clipped span) is not drawn.
 			const host = n.parentElement
-			if (host && host !== el) { const q = host.getBoundingClientRect(); if (q.width <= 1 && q.height <= 1) continue }
+			if (host && host !== el && getComputedStyle(host).display !== 'contents') { const q = host.getBoundingClientRect(); if (q.width <= 1 && q.height <= 1) continue }
 			if (!nested && n.textContent.trim()) (tag ? tags : parts).push(n.textContent.trim())
 		}
 		// Text that is all in such a tag is the element's own (a chip drawn as a rounded span inside its button).

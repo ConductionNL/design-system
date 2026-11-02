@@ -532,7 +532,8 @@ window.__compdiffExtract = function () {
 			const ecs = getComputedStyle(e)
 			const lh = px(ecs.lineHeight) || px(ecs.fontSize) * 1.25
 			if (e.getBoundingClientRect().height > lh * 2 + 2) return false
-			if ([...e.querySelectorAll('*')].some((d) => { const dcs = getComputedStyle(d); return opaque(dcs.backgroundColor) || Object.values(borders(dcs)).some((v) => v > 0) })) return false
+			// The line itself counts: a pill set straight under the title, with no wrapper, is boxed too.
+			if ([e, ...e.querySelectorAll('*')].some((d) => { const dcs = getComputedStyle(d); return opaque(dcs.backgroundColor) || Object.values(borders(dcs)).some((v) => v > 0) })) return false
 			const top = e.getBoundingClientRect().top - (titleBox.y + titleBox.h)
 			// A description reads as one: smaller than the title and either 14px or less, or muted. A 15px line in the
 			// title's own ink ("Deze zaak hangt niet onder een programma.") is the card's content.

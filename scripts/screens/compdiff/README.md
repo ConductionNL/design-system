@@ -52,7 +52,7 @@ It writes `<Board>.json` with every measurement and `<Board>.md` with a table pe
 
 ## Measure a set of boards
 
-`runall.sh <outdir> <specs.tsv>` measures one board per row. A row is `board<TAB>route`, optionally followed by `<TAB>--flag<TAB>value` pairs. Given a REVIEW `boards.json` in place of the specs file, it first writes `<outdir>/specs.tsv` from it with `specs-from-boards.mjs`: one row per board, its route without the origin and `/index.php`, its steps as `--steps`, its `login` and `ignore` as `--login` and `--ignore`, and its `width` as `--width`; a board with no `liveUrl` (a sheet with no live page) gets no row. `node specs-from-boards.mjs <boards.json> --keep <specs.tsv>` also keeps the rows of boards the list does not hold. Then summarise:
+`runall.sh <outdir> <specs.tsv>` measures one board per row. A row is `board<TAB>route`, optionally followed by `<TAB>--flag<TAB>value` pairs. A row that names a flag this compdiff does not read (`node compdiff.mjs --list-flags` prints the ones it does) is refused with the flag named in `run.log`, never measured without it; `compdiff.mjs` itself exits 2 on one. Run its tests with `node --test scripts/screens/compdiff/flags.test.mjs`. Given a REVIEW `boards.json` in place of the specs file, it first writes `<outdir>/specs.tsv` from it with `specs-from-boards.mjs`: one row per board, its route without the origin and `/index.php`, its steps as `--steps`, its `login` and `ignore` as `--login` and `--ignore`, and its `width` as `--width`; a board with no `liveUrl` (a sheet with no live page) gets no row. `node specs-from-boards.mjs <boards.json> --keep <specs.tsv>` also keeps the rows of boards the list does not hold. Then summarise:
 
 ```sh
 scripts/screens/compdiff/runall.sh /tmp/compdiff specs.tsv

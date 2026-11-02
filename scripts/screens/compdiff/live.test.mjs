@@ -215,6 +215,10 @@ test('a map widget whose Leaflet has not loaded into its mount point yet keeps t
 	await withPage('<div class="leaflet-container" style="width:300px;height:200px"><div class="leaflet-pane leaflet-map-pane" style="width:10px;height:10px"></div></div>', async (page) => {
 		assert.deepEqual(await page.evaluate(loadingIndicators), [])
 	})
+	// A mount point Leaflet drew its map into (a child container with the attribution) is loaded.
+	await withPage('<div class="cn-map-widget"><div class="cn-map-widget__leaflet" style="width:344px;height:200px"><div class="leaflet-container" style="width:344px;height:200px"><div class="leaflet-control-attribution" style="width:200px;height:16px">Leaflet | © OpenStreetMap contributors</div></div></div></div>', async (page) => {
+		assert.deepEqual(await page.evaluate(loadingIndicators), [])
+	})
 })
 
 test('a step that fails once is tried once more, and a second failure is thrown', async () => {

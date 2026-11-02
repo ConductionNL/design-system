@@ -18,6 +18,8 @@
 //   [--load-wait 30000]   the longest wait for loading indicators to clear after the settle (ms)
 //   [--inject-css <file>] [--inject-js <file>]   lay a proposed fix over the live page after the steps, to prove it
 //   before it is built; the report records the files and runall.sh refuses them (off by default)
+//   [--list-flags]   print the flags this compdiff reads and exit; any other flag is refused (exit 2), and runall.sh
+//   refuses a spec row that names one, so a row is never measured with part of its state dropped
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
 // PLAYWRIGHT_MODULE (path to a playwright package when it is not resolvable from here).
 //
@@ -35,14 +37,25 @@ import { parseColour } from './colour.mjs'
 import { cropMismatch, pixelsFlag, wholePixels } from './crop.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
+import { KNOWN_FLAGS, unknownFlags } from './flags.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
 import { accountFor, applyInjection, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, markIgnored, parkPointer, readInjection, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
-const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 
+const unknown = unknownFlags(process.argv.slice(2))
+if (unknown.length) {
+	console.error(`unknown flag ${unknown.join(', ')}: compdiff reads ${KNOWN_FLAGS.map((f) => `--${f}`).join(' ')}`)
+	process.exit(2)
+}
+if (process.argv.includes('--list-flags')) {
+	console.log(KNOWN_FLAGS.map((f) => `--${f}`).join('\n'))
+	process.exit(0)
+}
+// Loaded after the flag check, so --list-flags and a refused flag need no browser package.
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const args = Object.fromEntries(process.argv.slice(2).reduce((acc, a, i, all) => {
 	if (a.startsWith('--')) acc.push([a.slice(2), all[i + 1]?.startsWith('--') || all[i + 1] === undefined ? 'true' : all[i + 1]])
 	return acc

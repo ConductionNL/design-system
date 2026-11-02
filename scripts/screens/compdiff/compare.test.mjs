@@ -375,3 +375,23 @@ test('a titled card pairs with an untitled card whose lead line is that title, i
 	const other = pairComponents(board, [kpi({ x: 1054.7, y: 1406, w: 357.3, h: 216 }, { lead: 'Omzet per bron', record: { deck: 2, index: 2, count: 3 } })], 1640)
 	assert.deepEqual(other.pairs, [])
 })
+
+test('a filter chip pairs by its field label, whatever value it holds', () => {
+	const chip = (label, x, w, h) => ({ ...pill(label, x, 253, h, { interactive: h > 22 }), rect: { x, y: 253, w, h } })
+	const r = pairElements(
+		[chip('Deadline: 1 tot en met 31 oktober', 713.5, 256.1, 30), chip('Filter verwijderen: Deadline: 1 tot en met 31 okto', 941.6, 22, 22)],
+		[chip('Deadline: 21 oktober tot en met 10 november', 713.5, 330, 30), chip('Filter verwijderen: Deadline: 21 oktober tot en me', 1011.5, 22, 22)],
+		1200,
+	)
+	assert.deepEqual(r.pairs.map((p) => [p.board.rect.w, p.live.rect.w, p.by]), [[256.1, 330, 'field'], [22, 22, 'field']])
+	assert.equal(r.missing.length + r.extra.length, 0)
+	// The pair is one chip: its colours are compared as a chip's, not left out as a status tag's.
+	const rows = compareElement(r.pairs[0].board, { ...r.pairs[0].live, props: { ...r.pairs[0].live.props, background: 'rgb(255, 255, 255)' } }, r.pairs[0].by)
+	assert.ok(rows.some((x) => x.prop === 'background' && x.flag), JSON.stringify(rows))
+	// Control: two chips on different fields stay two chips.
+	const other = pairElements([chip('Deadline: 1 tot en met 31 oktober', 713.5, 256.1, 30)], [chip('Status: Open', 713.5, 120, 30)], 1200)
+	assert.ok(!other.pairs.some((p) => p.by === 'field'))
+	// Control: a status tag "Te laat: 2 dagen" is no filter chip of a field a pill "Te laat" names.
+	const bare = pairElements([chip('Te laat', 713.5, 80, 30)], [chip('Te laat: 2 dagen', 713.5, 120, 30)], 1200)
+	assert.ok(!bare.pairs.some((p) => p.by === 'field'))
+})

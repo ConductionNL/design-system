@@ -87,17 +87,29 @@ export function parseWidth(arg) {
 	return width
 }
 
+const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+
 /**
  * Read a --clock argument: the moment the live page believes it is, for a board drawn on a fixed date (a calendar
- * opened on December 2026, a "today" row). Unset, the real time.
+ * opened on December 2026, a "today" row). Unset, the real time. `@<weekday> HH:MM` is that day of the measuring
+ * week (Monday first) and `@today HH:MM` today, at that local time: for a board drawn on a weekday whose data moves
+ * with the day it is measured (a week strip with today marked).
  *
- * @param {string|undefined} arg An ISO date or date-time.
+ * @param {string|undefined} arg An ISO date or date-time, or `@<weekday>|@today HH:MM`.
+ * @param {Date} now The measuring moment a relative clock counts from.
  * @return {Date|null} The moment, or null for the real time.
  */
-export function parseClock(arg) {
+export function parseClock(arg, now = new Date()) {
 	if (arg === undefined) return null
+	const rel = /^@([a-z]+) (\d{2}):(\d{2})$/.exec(arg)
+	if (rel) {
+		const day = rel[1] === 'today' ? (now.getDay() + 6) % 7 : WEEKDAYS.indexOf(rel[1])
+		const h = Number(rel[2]), m = Number(rel[3])
+		if (day < 0 || h > 23 || m > 59) throw new Error('--clock must be an ISO date such as 2026-12-01T09:00:00, or @monday 13:00')
+		return new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7) + day, h, m)
+	}
 	const at = new Date(arg)
-	if (!/^\d{4}-\d{2}-\d{2}/.test(arg) || Number.isNaN(at.getTime())) throw new Error('--clock must be an ISO date such as 2026-12-01T09:00:00')
+	if (!/^\d{4}-\d{2}-\d{2}/.test(arg) || Number.isNaN(at.getTime())) throw new Error('--clock must be an ISO date such as 2026-12-01T09:00:00, or @monday 13:00')
 	return at
 }
 

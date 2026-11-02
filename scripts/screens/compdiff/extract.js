@@ -1145,6 +1145,9 @@ window.__compdiffExtract = function () {
 		// A count or tag inside a button ("1 actief" on Filter) is that button's badge, not an element of its own.
 		if (boxed && el.parentElement && el.parentElement.closest('button, [role=button]')) return null
 		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
+		// A boxed matrix cell that a two-line row heading stretches (a heat map's "13 d" beside a long case type) is the
+		// same badge as its one-line neighbours.
+		if (boxed && el.matches('[role=cell], [role=gridcell]') && r.height > 44 && r.height <= 96 && r.width <= 320 && el.textContent.trim()) return 'badge'
 		return null
 	}
 	// A focused field whose ring is drawn on a wrapper around it (NcTextField's .input-field__main-wrapper: 2px around a
@@ -1264,6 +1267,9 @@ window.__compdiffExtract = function () {
 		for (let n = w.nextNode(); n; n = w.nextNode()) {
 			let nested = false, tag = false
 			for (let e = n.parentElement; e && e !== el; e = e.parentElement) { if (PILLISH(e)) { nested = true; break } if (tagShaped(e)) tag = true }
+			// Text only a screen reader gets (a chip's "slug: " before its value, in a 1px clipped span) is not drawn.
+			const host = n.parentElement
+			if (host && host !== el && getComputedStyle(host).display !== 'contents') { const q = host.getBoundingClientRect(); if (q.width <= 1 && q.height <= 1) continue }
 			if (!nested && n.textContent.trim()) (tag ? tags : parts).push(n.textContent.trim())
 		}
 		// Text that is all in such a tag is the element's own (a chip drawn as a rounded span inside its button).

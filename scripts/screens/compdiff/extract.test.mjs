@@ -1744,3 +1744,23 @@ test('a marked description right under a card\'s title stays its description', {
 	const r = await measure(`<div style="position:absolute;left:316px;top:200px;width:700px">${card('Knelpunten')}</div>`)
 	assert.ok(r.components.find((c) => c.title === 'Knelpunten').content.gapBelowTitle > 30)
 })
+
+test('a heat cell stretched by a two-line row is a badge, as its one-line neighbours are', { skip }, async () => {
+	const cell = (text) => `<span role="cell" style="padding:10px;border-radius:6px;background:#eaf0f7;color:#234a78;font-weight:600;text-align:center">${text}</span>`
+	const r = await measure(`<section style="position:absolute;left:292px;top:200px;width:1076px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px"><h2 style="margin:0;font-size:17px">Dagen per fase</h2><div role="table" style="display:grid;grid-template-columns:240px repeat(6,minmax(0,1fr));gap:4px;font-size:14px"><span role="rowheader" style="padding:10px 6px">Woo-verzoek</span>${cell('10 d')}${cell('11 d')}${'<span></span>'.repeat(4)}<span role="rowheader" style="padding:10px 6px;width:120px">Kenteken wijzigen parkeervergunning</span>${cell('3 d')}${cell('4 d')}${'<span></span>'.repeat(4)}</div></section>`)
+	const badges = r.elements.filter((e) => e.kind === 'badge')
+	assert.deepEqual(badges.map((e) => e.label).sort(), ['10 d', '11 d', '3 d', '4 d'])
+	assert.ok(badges.some((e) => e.rect.h > 44), 'the two-line row stretches its cells past 44px')
+	assert.equal(r.unmeasured.length, 0)
+})
+
+test('a pill\'s screen-reader prefix is not part of its label, as the board draws only the value', { skip }, async () => {
+	const hidden = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap'
+	const r = await measure(`<ul style="position:absolute;left:300px;top:140px;margin:0;padding:0;list-style:none;display:flex"><li style="display:inline-flex;align-items:center;height:21px;padding:0 10px;border-radius:10.5px;background:#edeff2;color:#5e6168;font-size:13px;font-weight:600"><span style="${hidden}">slug: </span><span>waterland</span></li></ul>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'pill').map((e) => e.label), ['waterland'])
+})
+
+test('text in a display: contents wrapper is drawn: it stays in the label, unlike a 1px screen-reader span', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:140px"><span style="display:inline-flex;align-items:center;height:21px;padding:0 10px;border-radius:10.5px;background:#edeff2;color:#5e6168;font-size:13px;font-weight:600"><span style="display:contents">In behandeling</span></span></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'pill').map((e) => e.label), ['In behandeling'])
+})

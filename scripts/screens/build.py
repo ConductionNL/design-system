@@ -33,7 +33,7 @@ THUMB_W = 480
 THUMB_MAX = 60_000
 SCHOOLS = [
     ('wilgenboom', 'Basisschool De Wilgenboom'),
-    ('vaartveld', 'Vaartveld College'),
+    ('vaartveld', 'Zuiddrecht College'),
     ('esdoornveen', 'Esdoornveen, mbo college'),
     ('warmtepompacademie', 'Warmtepompacademie'),
 ]

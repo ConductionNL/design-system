@@ -19,6 +19,34 @@ export function accountFor(login, env) {
 }
 
 /**
+ * Whether a page is Nextcloud's login page.
+ *
+ * @param {object} page A playwright page.
+ * @return {boolean} True on /login.
+ */
+export function onLoginPage(page) {
+	const u = new URL(page.url())
+	return /\/login(\?|$)/.test(u.pathname + u.search)
+}
+
+/**
+ * Logs a page in through Nextcloud's login form. A session that is still valid is sent on from /login, and then
+ * there is nothing to fill. Under load the login page can take minutes to answer: each action gets 90 s.
+ *
+ * @param {object} page A playwright page.
+ * @param {string} base The instance, e.g. http://localhost:8080.
+ * @param {{user: string, password: string}} account The account.
+ * @return {Promise<void>} Once the browser has left /login; the app it lands on need not finish loading.
+ */
+export async function logIn(page, base, account) {
+	await page.goto(base + '/login', { waitUntil: 'domcontentloaded', timeout: 180000 })
+	if (!onLoginPage(page)) return
+	await page.fill('#user', account.user, { timeout: 90000 })
+	await page.fill('#password', account.password, { timeout: 90000 })
+	await Promise.all([page.waitForURL((u) => !/\/login(\?|$)/.test(u.pathname + u.search), { waitUntil: 'commit', timeout: 180000 }), page.press('#password', 'Enter', { timeout: 90000 })])
+}
+
+/**
  * The session storage a spec seeds on the live page before it loads (--session, a JSON object of key to value), for
  * state a browser session keeps: a detail page that asks once per session why the reader opens a record
  * (CnDetailPage's access purpose) cannot be answered by a step, because compdiff refuses the write that records it.

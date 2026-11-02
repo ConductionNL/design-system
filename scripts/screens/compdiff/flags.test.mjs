@@ -16,6 +16,19 @@ test('every flag compdiff reads is known; any other is named', () => {
 	assert.deepEqual(unknownFlags(['--clock', '2026-11-02T09:00:00']), [])
 })
 
+test('--present-as is a flag compdiff reads', () => {
+	assert.deepEqual(unknownFlags(['--board', 'DqZaak', '--url', '/apps/dossiq/cases/1', '--present-as', 'anouk']), [])
+})
+
+test('compdiff exits 2 when --present-as names a role without an account, before it starts a browser', () => {
+	const env = { ...process.env, COMPDIFF_USER: 'x', COMPDIFF_PASSWORD: 'x' }
+	delete env.COMPDIFF_ANOUK_USER
+	delete env.COMPDIFF_ANOUK_PASSWORD
+	const r = spawnSync(process.execPath, [path.join(HERE, 'compdiff.mjs'), '--board', 'DqZaak', '--url', '/apps/dossiq/cases/1', '--present-as', 'anouk'], { encoding: 'utf8', env })
+	assert.equal(r.status, 2)
+	assert.match(r.stderr, /--present-as anouk: no account: set COMPDIFF_ANOUK_USER and COMPDIFF_ANOUK_PASSWORD/)
+})
+
 test('compdiff exits 2 on a flag it does not read, before it starts a browser', () => {
 	const r = spawnSync(process.execPath, [path.join(HERE, 'compdiff.mjs'), '--board', 'DqTaken', '--url', '/apps/dossiq/tasks', '--tab', 'Historie'], { encoding: 'utf8', env: { ...process.env, COMPDIFF_USER: 'x', COMPDIFF_PASSWORD: 'x' } })
 	assert.equal(r.status, 2)

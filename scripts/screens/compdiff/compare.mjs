@@ -349,6 +349,16 @@ export function pairElements (B = [], L = [], H = 2000) {
 		const l = L.find((x) => !usedL.has(x) && EGROUP[x.kind] === EGROUP[b.kind] && norm(x.inControl || '') === norm(b.inControl || '') && (named(x.label, b.label) || named(b.label, x.label)))
 		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
 	}
+	// A filter chip reads "<field>: <value>" ("Deadline: 1 tot en met 31 oktober", its remove button "Filter
+	// verwijderen: Deadline: ..."). The value follows the data or the day, so two chips on the same field are one chip.
+	const field = (e) => { const s = (e.label || '').trim().toLowerCase(), i = s.lastIndexOf(': '); return e.kind === 'pill' && i >= 2 && s.length > i + 2 ? `${norm(e.inControl || '')}|${norm(s.slice(0, i))}` : null }
+	for (const b of B) {
+		const k = usedB.has(b) ? null : field(b)
+		if (!k) continue
+		const near = (x) => Math.abs(x.rect.x - b.rect.x) + Math.abs(x.rect.y - b.rect.y)
+		const l = L.filter((x) => !usedL.has(x) && field(x) === k).sort((x, y) => near(x) - near(y))[0]
+		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'field' }) }
+	}
 	// A nav entry or a list action drawn as a button on one side and as a list row (a link in an li) on the other is one
 	// element: the same label in a control or a row pairs across the two.
 	const navKind = (e) => EGROUP[e.kind] === 'ctl' || e.kind === 'row'
@@ -410,9 +420,9 @@ export function pairElements (B = [], L = [], H = 2000) {
 }
 
 export function compareElement (b, l, by = 'label') {
-	// A status tag paired by group, not by label, takes its colour from its value (Aanwezig green, Afwezig amber):
+	// A status tag paired by group, not by label or field, takes its colour from its value (Aanwezig green, Afwezig amber):
 	// compare its shape, size and type, not its colours.
-	const semantic = by !== 'label' && (b.kind === 'pill' || b.kind === 'badge') && (l.kind === 'pill' || l.kind === 'badge')
+	const semantic = by !== 'label' && by !== 'field' && (b.kind === 'pill' || b.kind === 'badge') && (l.kind === 'pill' || l.kind === 'badge')
 	const rows = []
 	const add = (prop, vb, vl, flag) => rows.push({ prop, board: vb, live: vl, delta: typeof vb === 'number' && typeof vl === 'number' ? Math.round((vl - vb) * 10) / 10 : null, flag })
 	const pb = b.props, pl = l.props

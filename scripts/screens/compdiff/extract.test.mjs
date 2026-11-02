@@ -1764,3 +1764,14 @@ test('text in a display: contents wrapper is drawn: it stays in the label, unlik
 	const r = await measure(`<div style="position:absolute;left:300px;top:140px"><span style="display:inline-flex;align-items:center;height:21px;padding:0 10px;border-radius:10.5px;background:#edeff2;color:#5e6168;font-size:13px;font-weight:600"><span style="display:contents">In behandeling</span></span></div>`)
 	assert.deepEqual(r.elements.filter((e) => e.kind === 'pill').map((e) => e.label), ['In behandeling'])
 })
+
+test('a filter chip longer than 320px with its remove button is a pill; a long round box without one is not', { skip }, async () => {
+	const chip = (w, inner) => `<span style="display:inline-flex;align-items:center;gap:6px;height:30px;width:${w}px;border-radius:15px;background:rgb(234,240,247);color:rgb(35,74,120);padding:0 6px 0 12px;font-weight:600">${inner}</span>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:250px;display:flex;gap:24px">
+		${chip(330, 'Deadline: 21 oktober tot en met 10 november<button aria-label="Filter verwijderen" style="width:22px;height:22px;border:0;border-radius:11px;background:rgb(234,240,247)">x</button>')}
+		${chip(400, 'Een lange afgeronde melding zonder knop')}
+	</div>`)
+	const labels = r.elements.filter((e) => e.kind === 'pill').map((e) => e.label)
+	assert.ok(labels.some((l) => l.startsWith('Deadline: 21 oktober')), JSON.stringify(labels))
+	assert.ok(!labels.some((l) => l.startsWith('Een lange')), JSON.stringify(labels))
+})

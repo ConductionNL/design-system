@@ -1148,6 +1148,9 @@ window.__compdiffExtract = function () {
 		// A boxed matrix cell that a two-line row heading stretches (a heat map's "13 d" beside a long case type) is the
 		// same badge as its one-line neighbours.
 		if (boxed && el.matches('[role=cell], [role=gridcell]') && r.height > 44 && r.height <= 96 && r.width <= 320 && el.textContent.trim()) return 'badge'
+		// A round filter chip with its own remove button ("Deadline: 21 oktober tot en met 10 november" x) is a pill however
+		// long its value runs.
+		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 640 && radius(el, cs) >= r.height / 2 - 1 && el.textContent.trim() && el.querySelector('button, [role=button]')) return 'pill'
 		return null
 	}
 	// A focused field whose ring is drawn on a wrapper around it (NcTextField's .input-field__main-wrapper: 2px around a

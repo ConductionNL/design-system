@@ -169,7 +169,7 @@ export async function waitForTables(page, { timeout = 20000, still = 1000, inter
  * Runs in the page: the loading indicators on screen (a spinner, a skeleton, a busy region). A widget that fills from
  * another app (the Kaarten card asking Deck) shows one until its data is in. A status line that
  * names what is still loading (CnRelatedObjectsWidget's "Nog aan het laden: Objecten") is one: the card around it is
- * not filled yet.
+ * not filled yet. So is an avatar that has not loaded its picture (a share dialog's people list).
  *
  * @return {Array<string>} A short description of each indicator: its first class or tag, and its text.
  */
@@ -179,10 +179,12 @@ export function loadingIndicators() {
 	// A map widget's Leaflet mount point that Leaflet has not loaded into yet (it is imported lazily). Leaflet may draw
 	// its container on the mount point itself or on a child of it; either way the map is loaded.
 	const unmounted = (e) => !e.classList.contains('leaflet-container') && !e.querySelector('.leaflet-container') && [...e.classList].some((c) => /(^|__)leaflet$/.test(c))
-	return [...document.querySelectorAll(`${sel}, [class*="leaflet"]`)].filter((e) => {
+	// An avatar (NcAvatar) whose picture is still loading is an empty span: no image, no initials, no icon yet.
+	const blankAvatar = (e) => e.classList.contains('avatardiv') && !e.textContent.trim() && !e.querySelector('img, svg, [class*="initials"], [class*="icon"]')
+	return [...document.querySelectorAll(`${sel}, [class*="leaflet"], .avatardiv`)].filter((e) => {
 		const r = e.getBoundingClientRect(), cs = getComputedStyle(e)
 		if (!(r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05)) return false
-		if (!e.matches(sel)) return unmounted(e)
+		if (!e.matches(sel)) return unmounted(e) || blankAvatar(e)
 		return !e.matches('[role="status"]') || e.matches(sel.replace(', [role="status"]', '')) || pending.test(e.textContent.trim())
 	}).map((e) => `${e.classList[0] || e.tagName.toLowerCase()}${e.textContent.trim() ? ` "${e.textContent.trim().replace(/\s+/g, ' ').slice(0, 60)}"` : ''}`)
 }

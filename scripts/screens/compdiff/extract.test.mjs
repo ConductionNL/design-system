@@ -318,6 +318,14 @@ test('a map is measured as a map, for place and size only, and its attribution i
 	assert.equal(live.elements.length, 0, JSON.stringify(live.elements.map((e) => e.label)))
 })
 
+test('the frame that hugs a drawn map is the map\'s edge, not a box left unmeasured', { skip }, async () => {
+	const r = await measure(`<section style="position:absolute;left:292px;top:300px;width:1120px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:18px">
+		<div style="position:relative;display:flex;flex-direction:column;width:655px;border:1px solid #e4e6ea;border-radius:10px;overflow:hidden">
+			<svg viewBox="0 0 640 520" width="100%" height="100%" role="img" aria-label="Kaart van Zuiddrecht met 5 genummerde zaken" style="display:block;min-height:520px;background:#f1efe9"><text x="555" y="440">Stadspark</text></svg>
+			<button type="button" aria-label="Kaartlagen" style="position:absolute;top:12px;left:12px;width:36px;height:36px;border:1px solid #828a95;border-radius:8px;background:#fff"></button></div></section>`)
+	assert.deepEqual(r.unmeasured, [])
+})
+
 test('a card is named by its own library class, not by an icon in its corner', { skip }, async () => {
 	const r = await measure(`<aside class="app-sidebar" style="position:absolute;left:1050px;top:68px;width:388px;height:600px;background:#f5f6f8">
 		<div class="cn-index-sidebar__header-icon" style="position:absolute;left:0;top:0;width:40px;height:40px"></div>

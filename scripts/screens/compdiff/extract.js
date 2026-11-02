@@ -1421,7 +1421,7 @@ window.__compdiffExtract = function () {
 		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
 		if (!ownBg && nBorders(el) < 3) continue
 		// A map is measured for its place and size: its tint and what is drawn on it (a parcel, a road) are the map.
-		if (inMap(el)) continue
+		if (inMap(el) || framesMap(el)) continue
 		if (inTabStrip(el) || el.closest('table, [role=dialog] > *:first-child:empty') || [...elementEls].some((e) => e.contains(el)) || [...cardEls].some((c) => c === el)) continue
 		if (el.matches('svg, svg *, img, canvas, [role=progressbar], progress, hr') || (!el.textContent.trim() && r.height <= 16)) continue
 		// A box around controls that are each measured (a view switch's track around its icon buttons) is accounted for

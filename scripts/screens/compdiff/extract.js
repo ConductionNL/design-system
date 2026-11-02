@@ -121,14 +121,18 @@ window.__compdiffExtract = function () {
 		return { fontSize: px(cs.fontSize), fontWeight: Number(cs.fontWeight), lineHeight: lineHeight(cs), color: cs.color, letterSpacing: cs.letterSpacing === 'normal' ? 0 : px(cs.letterSpacing), textTransform: cs.textTransform, fontFamily: cs.fontFamily.split(',')[0].replace(/["']/g, '').trim() }
 	}
 	// The element that holds an element's first rendered text (title text often sits in a nested span).
-	const textEl = (el) => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); for (let n = w.nextNode(); n; n = w.nextNode()) if (n.textContent.trim() && n.parentElement && visible(n.parentElement)) return n.parentElement; return el }
+	// Text drawn inside an svg (an avatar's initials) is part of that picture: an element's text is its other text, and
+	// the svg's only when it has no other.
+	const ownText = (el) => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); for (let n = w.nextNode(); n; n = w.nextNode()) if (n.textContent.trim() && n.parentElement && visible(n.parentElement) && !n.parentElement.closest('svg')) return true; return false }
+	const textEl = (el) => { const skipSvg = ownText(el); const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); for (let n = w.nextNode(); n; n = w.nextNode()) if (n.textContent.trim() && n.parentElement && visible(n.parentElement) && !(skipSvg && n.parentElement.closest('svg'))) return n.parentElement; return el }
 	const textRect = (el) => {
 		// Box of the rendered glyphs of an element's text, not of its (possibly stretched) element box.
 		const range = document.createRange()
 		let r = null
+		const skipSvg = ownText(el)
 		const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
 		for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-			if (!n.textContent.trim() || !n.parentElement || !visible(n.parentElement)) continue
+			if (!n.textContent.trim() || !n.parentElement || !visible(n.parentElement) || (skipSvg && n.parentElement.closest('svg'))) continue
 			range.selectNodeContents(n)
 			for (const q of range.getClientRects()) {
 				if (q.width < 1) continue
@@ -1392,7 +1396,8 @@ window.__compdiffExtract = function () {
 				// A count drawn as a ::before or ::after (the Filter menu's active-filter count) is a badge as well.
 				badge: !!(kind === 'button' || kind === 'pill' || kind === 'row') && ([...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height)
 					|| [el, ...el.querySelectorAll('*')].some((c) => visible(c) && pseudoBadge(c, bgBehind(el), r.height))),
-				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,
+				// In a row that spreads its items (space-between and the like) the gap is the room the texts leave, not a spacing.
+				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right && !/^space-/.test(getComputedStyle(el.parentElement).justifyContent) ? round(next.left - r.right) : null,
 				...(kind === 'toggle' ? withGround(el0) : {}),
 			},
 		})

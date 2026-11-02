@@ -326,6 +326,25 @@ test('the frame that hugs a drawn map is the map\'s edge, not a box left unmeasu
 	assert.deepEqual(r.unmeasured, [])
 })
 
+test('a pill set apart by a space-between row has no gap of its own: the room is the texts\' (DqAanMijToegewezen)', { skip }, async () => {
+	const card = (due) => `<div style="width:222px;display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:10px">
+		<span style="display:inline-block;padding:3px 10px;border-radius:12px;background:#e8e6f6;font-size:13px;font-weight:600">In behandeling</span><span style="font-size:14px;font-weight:600">${due}</span></div>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px">${card('Termijn 25 okt')}</div><div style="position:absolute;left:600px;top:200px;display:flex;gap:8px"><span style="display:inline-block;padding:3px 10px;border-radius:12px;background:#e8e6f6;font-size:13px">Open</span><span>3</span></div>`)
+	const pills = r.elements.filter((e) => e.kind === 'pill')
+	assert.equal(pills.find((p) => p.label === 'In behandeling').props.gapNext, null)
+	assert.equal(pills.find((p) => p.label === 'Open').props.gapNext, 8)
+})
+
+test('a drawn avatar\'s initials in an svg are its picture, not the row\'s text (DqFilterDelen "HD Hanneke de Boer")', { skip }, async () => {
+	const r = await measure(`<ul role="listbox" style="position:absolute;left:431px;top:300px;width:578px;margin:0;padding:0;list-style:none">
+		<li role="option" style="display:flex;align-items:center;gap:12px;height:48px;padding:0 14px"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="flex:none"><circle cx="16" cy="16" r="16" fill="#f7f8ef"></circle><text x="16" y="21" text-anchor="middle" font-size="14" font-weight="400">HD</text></svg><span style="font-size:14px;font-weight:600">Hanneke de Boer</span></li>
+		<li role="option" style="display:flex;align-items:center;gap:12px;height:48px;padding:0 14px"><span style="font-size:14px;font-weight:600">Hanna Bos</span></li></ul>`)
+	const row = r.elements.find((e) => e.kind === 'row' && /Hanneke/.test(e.label))
+	assert.ok(row, JSON.stringify(r.elements.map((e) => [e.kind, e.label])))
+	assert.equal(row.props.fontWeight, 600)
+	assert.equal(row.props.textInsetLeft, 58)
+})
+
 test('a card is named by its own library class, not by an icon in its corner', { skip }, async () => {
 	const r = await measure(`<aside class="app-sidebar" style="position:absolute;left:1050px;top:68px;width:388px;height:600px;background:#f5f6f8">
 		<div class="cn-index-sidebar__header-icon" style="position:absolute;left:0;top:0;width:40px;height:40px"></div>

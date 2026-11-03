@@ -44,6 +44,12 @@ class Component extends DCLogic {
         { area: 'Sentiment-triggerwoorden (één per regel)', value: 'klacht\nadvocaat\nwethouder\nmedia', rows: 5, hint: 'Nederlandse woorden die negatief sentiment markeren en een escalatie-aanbeveling triggeren. Eén woord of zin per regel.' },
         { buttons: [['KCC-instellingen opslaan', 'primary']] }
       ] },
+      { name: 'Zoekindex', desc: 'De stand van de zoekindex van OpenRegister, gelezen bij het openen. Dossiq bewaart hier zelf niets van.', rows: [
+        { pair: [{ label: 'Rijen in de tabellen', value: '48.212' }, { label: 'Rijen in de index', value: '48.212' }] },
+        { pair: [{ label: 'Laatste run', value: 'vandaag, 03:10 · 4 min 12 s' }, { label: 'Opnieuw opbouwen met', value: 'occ openregister:tables:search-index rebuild', hint: 'Met snapshot, restore en report als andere werkwoorden van hetzelfde commando.' }] },
+        { note: 'Als OpenRegister niet antwoordt, staat hier wat er misging en geen tabel met nullen. Zo ziet dat eruit:', tone: 'plain' },
+        { note: 'OpenRegister antwoordt niet: GET /apps/openregister/api/settings/search-index gaf 503 Service Unavailable. Probeer het straks opnieuw; zoeken in de app werkt zolang de index zelf draait.', tone: 'warn' }
+      ] },
       { name: 'Beslistabellen (DMN)', rows: [
         { para: 'Beslistabellen staan in het register decision-tables van OpenRegister. Dossiq bewaart zijn eigen tabellen daar onder sleutels die met dossiq. beginnen en evalueert ze vanuit workflowstappen en het handhavingsadvies. Open OpenRegister om een tabel te lezen of te wijzigen.' }
       ] },

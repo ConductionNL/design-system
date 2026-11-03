@@ -69,6 +69,23 @@ a{color:#2f6b4a}a:hover{color:#1f4a33}
           <a href="#" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; border-radius: 10px; border: 1px solid #d3d8df; font-weight: 600">Vorig schooljaar bekijken</a>
         </nav>
       </section>
+
+      <section aria-labelledby="gesprekken" style="display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h2 id="gesprekken" style="margin: 0; font-size: 26px; font-weight: 700">Uw oudergesprekken</h2>
+          <p style="margin: 0; font-size: 16px; color: #4a4a4a">Een gesprek dat nog komt kunt u afzeggen tot de dag ervoor. Een gesprek dat is geweest of afgezegd niet meer.</p>
+        </div>
+        <div style="overflow-x: auto; border: 1px solid #d3d8df; border-radius: 14px">
+          <table style="border-collapse: collapse; width: 100%; font-size: 17px; min-width: 560px">
+            <thead><tr style="background: #f4f6f9; text-align: left"><th style="padding: 14px 18px">Kind</th><th style="padding: 14px 18px">Wanneer</th><th style="padding: 14px 18px">Met wie</th><th style="padding: 14px 18px">Status</th><th style="padding: 14px 18px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actie</span></th></tr></thead>
+            <tbody>
+              <sc-for list="{{ talks }}" as="t" hint-placeholder-count="5">
+                <tr style="border-top: 1px solid #d3d8df"><th scope="row" style="padding: 14px 18px; text-align: left; font-weight: 600">{{ t.child }}</th><td style="padding: 14px 18px">{{ t.when }}</td><td style="padding: 14px 18px">{{ t.who }}</td><td style="padding: 14px 18px"><span style="{{ t.pill }}">{{ t.status }}</span></td><td style="padding: 8px 18px; text-align: right"><sc-if value="{{ t.canCancel }}" hint-placeholder-val="{{ true }}"><button type="button" style="height: 40px; padding: 0 14px; border: 2px solid #2f6b4a; border-radius: 10px; background: #ffffff; color: #1f4a33; font: 600 16px 'Lexend', sans-serif; white-space: nowrap">Deze tijd afzeggen</button></sc-if></td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </main>
   </div>
   <dc-import name="Voet" hint-size="100%,400px"></dc-import>
@@ -86,7 +103,16 @@ class Component extends DCLogic {
       { day: '24', month: 'sep', child: 'Vera', reason: 'Tandarts', when: 'Donderdag 24 september, 10:30 tot 11:30 uur', hasNote: false, note: '', status: 'Goedgekeurd', pill: ok, by: 'Meester Daan, 23 september 15:45 uur' },
       { day: '11', month: 'sep', child: 'Sami', reason: 'Ziek', when: 'Vrijdag 11 september, de hele dag', hasNote: false, note: '', status: 'Goedgekeurd', pill: ok, by: 'Juf Esra, 11 september 8:25 uur' }
     ];
-    return { reports, crumbs: [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Mijn Wilgenboom', href: 'MijnOverzicht.dc.html' }, { label: 'Afwezigheid' }] };
+    const grey = pill('#eef0f3', '#3d4047');
+    const warn = pill('#fff4de', '#7a4f00');
+    const talks = [
+      { child: 'Vera', when: 'Donderdag 29 oktober, 18:00 uur', who: 'Meester Daan', status: 'Geboekt', pill: seen, canCancel: true },
+      { child: 'Sami', when: 'Dinsdag 3 november, 16:30 uur', who: 'Juf Esra', status: 'Bevestigd door de leerkracht', pill: ok, canCancel: true },
+      { child: 'Vera', when: 'Woensdag 11 maart, 17:00 uur', who: 'Meester Daan', status: 'Geweest', pill: grey, canCancel: false },
+      { child: 'Sami', when: 'Maandag 9 maart, 15:45 uur', who: 'Juf Esra', status: 'Door u afgezegd', pill: grey, canCancel: false },
+      { child: 'Vera', when: 'Vrijdag 6 maart, 18:30 uur', who: 'Meester Daan', status: 'Afgewezen door school', pill: warn, canCancel: false }
+    ];
+    return { reports, talks, crumbs: [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Mijn Wilgenboom', href: 'MijnOverzicht.dc.html' }, { label: 'Afwezigheid' }] };
   }
 }
 </script>

@@ -60,11 +60,16 @@ a{color:#2f6b4a}a:hover{color:#1f4a33}
           <select id="aan" style="height: 48px; max-width: 420px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 10px; font: 400 17px 'Lexend', sans-serif; background: #ffffff"><option>Meester Daan, over Vera (groep 7)</option><option>Juf Esra, over Sami (groep 4)</option></select>
         </div>
         <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="onderwerp" style="font-size: 17px; font-weight: 600">Onderwerp <span style="font-weight: 400; color: #4a4a4a">(niet verplicht)</span></label>
+          <input id="onderwerp" type="text" style="height: 48px; max-width: 420px; box-sizing: border-box; padding: 0 12px; border: 2px solid #5c6470; border-radius: 10px; font: 400 17px 'Lexend', sans-serif; background: #ffffff">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
           <label for="tekst" style="font-size: 17px; font-weight: 600">Uw bericht</label>
           <span id="tekst-hint" style="font-size: 15px; color: #4a4a4a">De leerkracht antwoordt meestal binnen twee schooldagen. Is het dringend? Bel de school.</span>
           <textarea id="tekst" rows="3" aria-describedby="tekst-hint" style="box-sizing: border-box; padding: 12px 14px; border: 2px solid #5c6470; border-radius: 10px; font: 400 17px 'Lexend', sans-serif; resize: vertical"></textarea>
         </div>
         <button type="button" style="align-self: flex-start; height: 48px; padding: 0 22px; border: 0; border-radius: 10px; background: #2f6b4a; color: #ffffff; font: 600 17px 'Lexend', sans-serif">Bericht sturen</button>
+        <p role="status" style="margin: 0; display: flex; gap: 10px; align-items: center; font-size: 17px; color: #1e6b2a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>Uw bericht "Dank u wel!" is verstuurd aan Juf Esra. Het formulier is weer leeg.</p>
       </section>
     </main>
   </div>
@@ -79,8 +84,8 @@ class Component extends DCLogic {
     const box = (unread) => 'padding: 22px 24px; border-radius: 14px; border: 1px solid ' + (unread ? '#ecd391; background: #fdf3d7' : '#d3d8df; background: #ffffff');
     const avatar = (school) => 'flex: none; width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; ' + (school ? 'background: #1f4a33; color: #ffffff' : 'background: #e8f1eb; color: #1f4a33');
     const items = [
-      { unread: true, from: 'Meester Daan', initials: 'MD', avatar: avatar(false), date: 'vandaag 8:40 uur', child: 'Vera', title: 'De gesprekstijd is bevestigd', text: 'Het oudergesprek over Vera is op donderdag 29 oktober om 18:00 uur, in het lokaal van groep 7. Tot dan!', open: 'Detail.dc.html', action: 'Bekijk de afspraak', canReply: true, box: box(true) },
-      { unread: true, from: 'Juf Esra', initials: 'JE', avatar: avatar(false), date: 'vandaag 8:12 uur', child: 'Sami', title: 'Beterschap voor Sami', text: 'Ik heb uw melding gezien. Sami mist vandaag de rekentoets. Die haalt hij in als hij weer beter is, daar hoeft u niets voor te doen.', open: 'MijnLijst.dc.html', action: 'Bekijk de melding', canReply: true, box: box(true) },
+      { unread: true, from: 'Juf Esra', initials: 'JE', avatar: avatar(false), date: 'vandaag 8:52 uur', child: 'Sami', title: 'Beterschap voor Sami', text: 'Ik heb uw melding gezien. Sami mist vandaag de rekentoets. Die haalt hij in als hij weer beter is, daar hoeft u niets voor te doen.', open: 'MijnLijst.dc.html', action: 'Open het gesprek', canReply: true, box: box(true) },
+      { unread: true, from: 'Meester Daan', initials: 'MD', avatar: avatar(false), date: 'vandaag 8:40 uur', child: 'Vera', title: 'De gesprekstijd is bevestigd', text: 'Het oudergesprek over Vera is op donderdag 29 oktober om 18:00 uur, in het lokaal van groep 7. Tot dan!', open: 'Detail.dc.html', action: 'Open het gesprek', canReply: true, box: box(true) },
       { unread: false, from: 'De Wilgenboom', initials: 'W', avatar: avatar(true), date: '1 oktober', child: 'Vera', title: 'Uw afwezigheidsmelding is goedgekeurd', text: 'Meester Daan heeft de melding voor donderdag 1 oktober goedgekeurd. Reden: ziek.', open: 'MijnLijst.dc.html', action: 'Bekijk de melding', canReply: false, box: box(false) },
       { unread: false, from: 'Meester Daan', initials: 'MD', avatar: avatar(false), date: '28 september', child: 'Vera', title: 'Antwoord op uw vraag over het huiswerk', text: 'Vera hoeft de topografie niet uit het hoofd te kennen voor donderdag. Oefenen met de kaart is genoeg.', open: 'Detail.dc.html', action: 'Lees het hele gesprek', canReply: true, box: box(false) }
     ];

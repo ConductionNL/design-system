@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: ranglijst</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1160px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Docent" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor docenten" primary="Aanwezigheid invullen" active="Groepen" groups="{{ nav }}" hint-size="264px,1138px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Ranglijst 3HV-B</h1>
+            <div style="flex: none; display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-radius: 10px; background: #ffffff; border: 1px solid #e4e6ea">
+              <span id="rl-aan" style="font-size: 14px; font-weight: 600">Ranglijst aan voor deze groep</span>
+              <button type="button" role="switch" aria-checked="true" aria-labelledby="rl-aan" style="position: relative; width: 40px; height: 24px; border: 0; padding: 0; border-radius: 12px; background: #3669a5; flex: none"><span aria-hidden="true" style="position: absolute; top: 3px; left: 19px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff"></span></button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+            <nav aria-label="Kruimelpad" style="font-size: 14px; color: #5e6168; display: flex; flex-wrap: wrap; gap: 8px"><a href="LqGroepen.dc.html">Groepen</a><span aria-hidden="true">/</span><a href="LqGroep.dc.html">3HV-B</a><span aria-hidden="true">/</span><span aria-current="page">Ranglijst</span></nav>
+            <span aria-hidden="true" style="color: #5e6168">·</span>
+            <span style="font-size: 14px; color: #5e6168">Standaard uit. Aangezet door Pieter Jansen op 7 september voor deze groep; andere groepen hebben geen ranglijst.</span>
+          </div>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <section aria-labelledby="rl-lijst" style="flex: 999 1 480px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px">
+              <h2 id="rl-lijst" style="margin: 0; font-size: 18px; font-weight: 700">A. Zoals de docent de lijst ziet</h2>
+              <span style="font-size: 13px; color: #5e6168">Punten uit lessen, opdrachten en badges, deze periode</span>
+            </div>
+            <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+              <sc-for list="{{ ranks }}" as="r" hint-placeholder-count="6">
+                <li style="display: flex; align-items: center; gap: 14px; padding: 11px 0; border-top: 1px solid #eef0f3">
+                  <span style="{{ r.posStyle }}">{{ r.pos }}</span>
+                  <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ r.name }}</span><span style="font-size: 13px; color: #5e6168">{{ r.sub }}</span></span>
+                  <span style="font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums">{{ r.points }}<span style="font-size: 13px; font-weight: 400; color: #5e6168"> punten</span></span>
+                </li>
+              </sc-for>
+            </ol>
+            <p style="margin: 0; display: flex; gap: 10px; padding: 10px 14px; border-radius: 10px; background: #f5f6f8; color: #3d4047; font-size: 14px; line-height: 1.5">2 leerlingen van 3HV-B staan niet in de lijst: zij hebben zich afgemeld. Hun punten tellen wel voor henzelf, niet in deze ranglijst. Wie dat zijn, ziet alleen de leerling zelf.</p>
+          </section>
+
+          <section aria-labelledby="rl-leerling" style="flex: 1 1 320px; max-width: 420px; min-width: 0; border: 1px dashed #828a95; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; background: #fafbfc">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <h2 id="rl-leerling" style="margin: 0; font-size: 16px; font-weight: 700">B. Zoals Noor Bakker de lijst ziet</h2>
+              <span style="font-size: 13px; color: #5e6168">In Mijn leren, onder haar eigen punten</span>
+            </div>
+            <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px">
+                <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; color: #5e6168">Jouw punten</span><strong style="font-size: 22px">1.240</strong></span>
+                <span style="padding: 3px 10px; border-radius: 12px; background: #e7f3ea; color: #1e6b2a; font-size: 13px; font-weight: 600">Niveau 6</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding-top: 10px; border-top: 1px solid #eef0f3">
+                <span id="rl-verberg" style="flex: 1; font-size: 14px; font-weight: 600">Verberg mij in deze ranglijst</span>
+                <button type="button" role="switch" aria-checked="false" aria-labelledby="rl-verberg" style="position: relative; width: 40px; height: 24px; border: 0; padding: 0; border-radius: 12px; background: #c4c7cb; flex: none"><span aria-hidden="true" style="position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff"></span></button>
+              </div>
+              <span style="font-size: 13px; color: #5e6168; line-height: 1.45">Zet je dit aan, dan ziet niemand jouw plek. Je eigen punten blijven voor jou zichtbaar.</span>
+            </div>
+            <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; padding: 4px 16px">
+              <sc-for list="{{ own }}" as="o" hint-placeholder-count="4">
+                <li style="{{ o.style }}"><span style="width: 24px; font-weight: 700; color: #5e6168">{{ o.pos }}</span><span style="flex: 1">{{ o.name }}</span><span style="font-variant-numeric: tabular-nums; font-weight: 600">{{ o.points }}</span></li>
+              </sc-for>
+            </ol>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1160}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const pos = (i) => 'flex: none; width: 32px; height: 32px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; ' + (i < 3 ? 'background: #fff4de; color: #7a4f00;' : 'background: #f0f1f3; color: #3d4047;');
+    const ranks = [
+      ['Julia Peters', '14 lessen afgerond, 3 badges', 1480],
+      ['Noor Bakker', '12 lessen afgerond, 4 badges', 1240],
+      ['Fenna de Jong', '12 lessen afgerond, 2 badges', 1210],
+      ['Eva Smit', '11 lessen afgerond, 2 badges', 1090],
+      ['Milan de Groot', '10 lessen afgerond, 1 badge', 960],
+      ['Sem de Boer', '9 lessen afgerond, 1 badge', 870]
+    ].map(([name, sub, points], i) => ({ pos: String(i + 1), name, sub, points: String(points).replace(/(\d)(?=(\d{3})$)/, '$1.'), posStyle: pos(i) }));
+    const own = [
+      ['1', 'Julia Peters', '1.480', false],
+      ['2', 'Jij', '1.240', true],
+      ['3', 'Fenna de Jong', '1.210', false],
+      ['4', 'Eva Smit', '1.090', false]
+    ].map(([p, name, points, me]) => ({ pos: p, name, points, style: 'display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid #eef0f3; font-size: 14px;' + (me ? ' background: #eaf0f7; margin: 0 -16px; padding-left: 16px; padding-right: 16px; border-radius: 6px;' : '') }));
+    return { nav, ranks, own };
+  }
+}
+</script>
+</body>
+</html>

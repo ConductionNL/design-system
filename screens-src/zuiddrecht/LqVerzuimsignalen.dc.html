@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: verzuimsignalen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="position: relative; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 960px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Coördinator" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor coördinatoren" primary="Aanwezigheid invullen" active="Aanwezigheid" groups="{{ nav }}" hint-size="264px,936px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Verzuimsignalen</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="{{ btn.plain }}">Downloaden</button><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #c64e0b; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button><a href="LqVerzuimgrens.dc.html" style="{{ btn.plain }}">Verzuimgrenzen</a></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; font-size: 15px; color: #5e6168"><span>9 signalen dit schooljaar, 2 open</span><span aria-hidden="true">·</span><nav aria-label="Kruimelpad" style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px"><a href="#">Aanwezigheid</a><span aria-hidden="true">/</span><span aria-current="page">Verzuimsignalen</span></nav></div>
+        </section>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center" role="group" aria-label="Filteren op status">
+            <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+              <button type="button" aria-pressed="{{ f.pressed }}" style="{{ f.style }}">{{ f.label }}<span style="{{ f.count }}">{{ f.n }}</span></button>
+            </sc-for>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px"><form role="search" style="flex: 1 1 260px; max-width: 360px; position: relative"><label for="lijst-zoek" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Zoeken in deze lijst</label><input id="lijst-zoek" type="search" value="" placeholder="Zoek een leerling of groep" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"></form><span style="color: #5e6168">Gesorteerd op status, dan op datum</span></div>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+          <div style="overflow-x: auto">
+            <table style="border-collapse: collapse; width: 100%; min-width: 900px; font-size: 14px">
+              <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                <sc-for list="{{ cols }}" as="c" hint-placeholder-count="6"><th scope="col" style="padding: 12px 16px; font-weight: 600">{{ c }}</th></sc-for>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+                  <tr style="border-top: 1px solid #eef0f3">
+                    <td style="padding: 13px 16px; vertical-align: top"><span style="display: flex; flex-direction: column; gap: 2px"><a href="LqVerzuimsignaal.dc.html" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ r.who }}</a><span style="color: #5e6168">{{ r.group }}</span></span></td>
+                    <td style="padding: 13px 16px; vertical-align: top"><span style="display: flex; flex-direction: column; gap: 2px"><span>{{ r.rule }}</span><span style="color: #5e6168">{{ r.hours }}</span></span></td>
+                    <td style="padding: 13px 16px; vertical-align: top; white-space: nowrap">{{ r.since }}</td>
+                    <td style="padding: 13px 16px; vertical-align: top"><span style="{{ r.pill }}">{{ r.state }}</span></td>
+                    <td style="padding: 13px 16px; vertical-align: top">{{ r.next }}</td>
+                    <td style="padding: 13px 16px; vertical-align: top; text-align: right"><a href="LqVerzuimsignaal.dc.html" style="font-weight: 600; white-space: nowrap">Openen</a></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid #eef0f3; font-size: 14px; color: #5e6168"><span>7 van 9 signalen</span><span>Open: de grens is bereikt en nog niemand heeft het signaal opgepakt. In behandeling: de school werkt eraan of de melding is onderweg. Gemeld: het Verzuimloket heeft het. Afgerond: de gemeente heeft geantwoord.</span></div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Roosters', 'cal'], ['Lessen en opdrachten', 'book']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const base = "display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none; box-sizing: border-box; ";
+    const btn = { plain: base + 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d' };
+    const chip = (on) => "display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px 'Fira Sans', sans-serif; " + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
+    const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
+    const filters = [['Alle', 9, true], ['Open', 2, false], ['In behandeling', 3, false], ['Gemeld', 2, false], ['Afgerond', 2, false]].map(([label, n, on]) => ({ label, n, pressed: on ? 'true' : 'false', style: chip(on), count: cnt(on) }));
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const P = { 'Open': pill('#fcedec', '#a30000'), 'In behandeling': pill('#fff4de', '#7a4f00'), 'Gemeld': pill('#eaf0f7', '#234a78'), 'Afgerond': pill('#e7f3ea', '#1e6b2a') };
+    const cols = ['Leerling', 'Regel en uren', 'Sinds', 'Status', 'Volgende stap', ''];
+    const rows = [
+      ['Daan Kok', '4HV-A', 'Leerplicht 16 uur', '18 lesuren in 4 weken', '5 okt', 'Open', 'Mentor neemt contact op met thuis'],
+      ['Sem Bakker', '2M-B', 'Leerplicht 16 uur', '16 lesuren in 4 weken', '2 okt', 'Open', 'Nog niemand heeft dit signaal opgepakt'],
+      ['Fenna de Jong', '3HV-B', 'Leerplicht 16 uur', '17 lesuren in 4 weken', '28 sep', 'In behandeling', 'Melding aan het Verzuimloket is onderweg'],
+      ['Lotte Vermeer', '5V', 'Eigen grens 10 uur', '11 lesuren in 4 weken', '29 sep', 'In behandeling', 'Gesprek met ouders op 7 okt'],
+      ['Milan Smit', '3HV-A', 'Leerplicht 16 uur', '19 lesuren in 4 weken', '21 sep', 'Gemeld', 'Wacht op de route van de gemeente'],
+      ['Yara El Amrani', '1HV-C', 'Leerplicht 16 uur', '16 lesuren in 4 weken', '14 sep', 'Gemeld', 'Leerplichtambtenaar belt de school'],
+      ['Noa Visser', '4M-A', 'Leerplicht 16 uur', '17 lesuren in 4 weken', '31 aug', 'Afgerond', 'Gemeente koos de zorgroute, 18 sep']
+    ].map(([who, group, rule, hours, since, state, next]) => ({ who, group, rule, hours, since, state, next, pill: P[state] }));
+    return { nav, btn, filters, cols, rows };
+  }
+}
+</script>
+</body>
+</html>

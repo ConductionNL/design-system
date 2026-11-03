@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>dossiq: instellingen, verdeling van zaken</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1960px">
+  <dc-import name="DqKop" app="Dossiq" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="DqZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" active="Geavanceerd" hint-size="264px,2230px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Verdeling</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"></path></svg>Documentatie</button><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 14px; color: #5e6168; min-width: 0"><nav aria-label="Kruimelpad" style="display: flex; gap: 8px"><a href="DqInstellingen.dc.html">Instellingen</a><span aria-hidden="true">/</span><span aria-current="page">Verdeling</span></nav><span aria-hidden="true">·</span><span>wie een nieuwe zaak krijgt: verdeelgroepen, regels en wijken</span></div>
+        </section>
+
+        <div style="position: relative; display: flex; align-items: flex-end; gap: 8px; margin-bottom: -20px">
+          <div role="tablist" aria-label="Instellingen" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto; min-width: 0">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+              <button type="button" role="tab" aria-selected="{{ t.sel }}" style="{{ t.style }}">{{ t.label }}<sc-if value="{{ t.hasCount }}" hint-placeholder-val="{{ false }}"><span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">{{ t.count }}</span></sc-if></button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 0 12px 12px 12px; padding: 22px; display: flex; flex-direction: column; gap: 28px">
+
+          <section aria-labelledby="rt-pool" style="display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px">
+              <div style="display: flex; flex-direction: column; gap: 2px"><h2 id="rt-pool" style="margin: 0; font-size: 17px; font-weight: 700">Verdeelgroep Vergunningen</h2><span style="font-size: 14px; color: #5e6168">Een gewicht onder 1 betekent een kleiner deel. Staan alle gewichten op 1, dan verdeelt dossiq zoals altijd.</span></div>
+              <div style="display: flex; gap: 8px; align-items: center"><label for="rt-groep" style="font-size: 14px; font-weight: 600">Groep</label><select id="rt-groep" style="height: 36px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><option selected>Vergunningen (5 leden)</option><option>Woo en informatie (4 leden)</option></select></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px 20px">
+              <div style="display: flex; flex-direction: column; gap: 6px"><label for="rt-strat" style="font-size: 14px; font-weight: 600">Manier van verdelen</label><select id="rt-strat" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif"><option selected>Om de beurt, naar gewicht</option><option>Wie het minst heeft, naar gewicht</option></select></div>
+              <div style="display: flex; flex-direction: column; gap: 6px"><label for="rt-terug" style="font-size: 14px; font-weight: 600">Terug naar de groep als niemand de zaak oppakt binnen</label><select id="rt-terug" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif"><option>Niet terugnemen</option><option>4 uur</option><option>1 werkdag</option><option selected>2 werkdagen</option><option>5 werkdagen</option></select><span style="font-size: 13px; color: #5e6168">Oppakken is de eerste statuswijziging of bewerking door wie de zaak kreeg. Gebeurt dat niet op tijd, dan gaat de zaak naar het volgende lid, en de zaak noteert van wie, waarom en naar wie.</span></div>
+            </div>
+            <div style="border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+              <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+                <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th scope="col" style="padding: 10px 14px; font-weight: 600">Lid</th><th scope="col" style="padding: 10px 14px; font-weight: 600">Positie in het team</th><th scope="col" style="padding: 10px 14px; font-weight: 600">Gewicht</th><th scope="col" style="padding: 10px 14px; font-weight: 600">Open zaken</th><th scope="col" style="padding: 10px 14px; font-weight: 600">Deel van de laatste 14</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ members }}" as="m" hint-placeholder-count="5">
+                    <tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 14px"><span style="display: flex; gap: 10px; align-items: center"><span style="width: 30px; height: 30px; border-radius: 15px; background: #eaf0f7; color: #234a78; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{ m.ini }}</span><span style="display: flex; flex-direction: column"><strong style="font-weight: 600">{{ m.name }}</strong><span style="font-size: 13px; color: #5e6168">{{ m.team }}</span></span></span></td><td style="padding: 10px 14px">{{ m.pos }}</td><td style="padding: 8px 14px"><label for="{{ m.id }}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{ m.aria }}</label><input id="{{ m.id }}" type="text" inputmode="decimal" value="{{ m.w }}" style="box-sizing: border-box; width: 72px; height: 34px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; font: 400 14px 'Fira Sans', sans-serif"></td><td style="padding: 10px 14px">{{ m.open }}</td><td style="padding: 10px 14px"><span style="display: flex; gap: 10px; align-items: center"><span style="width: 120px; height: 8px; border-radius: 4px; background: #eef0f3; overflow: hidden"><span style="{{ m.bar }}"></span></span>{{ m.share }}</span></td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+            <div style="display: flex; justify-content: flex-end"><button type="button" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Opslaan</button></div>
+          </section>
+
+          <section aria-labelledby="rt-regels" style="display: flex; flex-direction: column; gap: 12px; padding-top: 24px; border-top: 1px solid #eef0f3">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px">
+              <div style="display: flex; flex-direction: column; gap: 2px"><h2 id="rt-regels" style="margin: 0; font-size: 17px; font-weight: 700">Regels, in volgorde</h2><span style="font-size: 14px; color: #5e6168">De eerste regel die past, beslist. Past er geen, dan gaat de zaak naar de terugval van het zaaktype.</span></div>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Regel toevoegen</button>
+            </div>
+            <ol style="margin: 0; padding: 0; list-style: none; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+              <li style="padding: 14px; border-top: 1px solid #eef0f3; background: #fafcff; box-shadow: inset 3px 0 0 #3669a5; display: flex; flex-direction: column; gap: 14px">
+                <div style="display: grid; grid-template-columns: 32px minmax(0, 1fr) 40px; gap: 10px; align-items: center"><span style="width: 26px; height: 26px; border-radius: 13px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">1</span><span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Kap in wijk Zuid naar de senior van team Zuid</strong><span style="font-size: 13px; color: #5e6168">Geopend om te bewerken · besliste 23 zaken dit jaar</span></span><button type="button" aria-label="Regel inklappen" style="width: 34px; height: 34px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"></path></svg></button></div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 24px; padding-left: 42px">
+                  <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px"><legend style="padding: 0 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #234a78">Als</legend>
+                    <div style="display: grid; grid-template-columns: 110px 1fr; gap: 8px; align-items: center; font-size: 14px"><label for="rt-c1">Zaaktype</label><select id="rt-c1" style="height: 36px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><option selected>Kapvergunning</option></select><label for="rt-c2">Wijk</label><select id="rt-c2" style="height: 36px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><option selected>Zuid</option><option>Noord</option></select><label for="rt-c3">Buurt</label><select id="rt-c3" style="height: 36px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><option selected>Alle buurten in Zuid</option></select></div>
+                  </fieldset>
+                  <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px"><legend style="padding: 0 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #234a78">Dan naar</legend>
+                    <div style="display: grid; grid-template-columns: 110px 1fr; gap: 8px; align-items: center; font-size: 14px"><label for="rt-t1">Soort</label><select id="rt-t1" style="height: 36px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><option selected>Positie in een team</option><option>Verdeelgroep</option><option>Team van de wijk</option></select><label for="rt-t2">Team</label><select id="rt-t2" style="height: 36px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><option selected>Vergunningen Zuid</option></select><label for="rt-t3">Positie</label><select id="rt-t3" style="height: 36px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><option selected>Senior behandelaar</option></select></div>
+                    <span style="display: flex; gap: 8px; align-items: center; font-size: 13px; color: #3d4047"><svg width="16" height="16" viewBox="0 0 24 24" fill="#1e6b2a" aria-hidden="true"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg>Nu: Lars de Koning. De senior van team Noord telt niet mee.</span>
+                  </fieldset>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; padding-left: 42px"><button type="button" style="height: 36px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Annuleren</button><button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Regel opslaan</button></div>
+              </li>
+              <sc-for list="{{ rules }}" as="r" hint-placeholder-count="3">
+                <li style="display: grid; grid-template-columns: 28px 32px minmax(0, 1.4fr) minmax(0, 1fr) 40px; gap: 10px; align-items: center; padding: 12px 14px; border-top: 1px solid #eef0f3">
+                  <button type="button" aria-label="{{ r.moveLabel }}" style="width: 28px; height: 28px; padding: 0; border: 0; background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9,3H11V5H9V3M13,3H15V5H13V3M9,7H11V9H9V7M13,7H15V9H13V7M9,11H11V13H9V11M13,11H15V13H13V11M9,15H11V17H9V15M13,15H15V17H13V15M9,19H11V21H9V19M13,19H15V21H13V19Z"></path></svg></button>
+                  <span style="width: 26px; height: 26px; border-radius: 13px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{ r.n }}</span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 15px; font-weight: 600">{{ r.name }}</span><span style="font-size: 13px; color: #5e6168">Als {{ r.when }}</span></span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 14px">{{ r.to }}</span><span style="font-size: 13px; color: #5e6168">{{ r.count }}</span></span>
+                  <button type="button" aria-haspopup="menu" aria-label="{{ r.menuLabel }}" style="width: 34px; height: 34px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button>
+                </li>
+              </sc-for>
+              <li style="display: grid; grid-template-columns: 28px 32px minmax(0, 1.4fr) minmax(0, 1fr) 40px; gap: 10px; align-items: center; padding: 12px 14px; border-top: 1px solid #eef0f3; background: #fafbfc"><span></span><span style="width: 26px; height: 26px; border-radius: 13px; border: 1px dashed #c4c7cb; box-sizing: border-box"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Geen regel past, of het adres ligt in geen wijk</span><span style="font-size: 13px; color: #5e6168">De zaak zegt dan dat de terugval is gebruikt</span></span><span style="font-size: 14px">Terugval van het zaaktype, meestal de teamwachtrij</span><span></span></li>
+            </ol>
+          </section>
+
+          <section aria-labelledby="rt-wijken" style="display: flex; flex-direction: column; gap: 12px; padding-top: 24px; border-top: 1px solid #eef0f3">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px">
+              <div style="display: flex; flex-direction: column; gap: 2px"><h2 id="rt-wijken" style="margin: 0; font-size: 17px; font-weight: 700">Wijken en hun team</h2><span style="font-size: 14px; color: #5e6168">dossiq zoekt de wijk, buurt en het gebied van een zaak op zodra het adres wordt gezet of verbeterd, en bewaart ze bij de zaak.</span></div>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z"></path></svg>Nieuwe grenzen inladen</button>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 12px 14px; border-radius: 10px; background: #f5f6f8; font-size: 14px"><span><strong>Grenzen:</strong> Wijk- en buurtkaart 2026, CBS via PDOK</span><span><strong>Vastgesteld:</strong> 1 maart 2026 door Anouk Bakker</span><span><strong>Inhoud:</strong> 4 wijken, 23 buurten, 2 gebieden</span></div>
+            <div style="border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+              <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+                <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th scope="col" style="padding: 10px 14px; font-weight: 600">Wijk</th><th scope="col" style="padding: 10px 14px; font-weight: 600">Buurten</th><th scope="col" style="padding: 10px 14px; font-weight: 600">Team van de wijk</th><th scope="col" style="padding: 10px 14px; font-weight: 600">Open zaken</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ wijken }}" as="w" hint-placeholder-count="4">
+                    <tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 14px; font-weight: 600">{{ w.name }}</td><td style="padding: 10px 14px; color: #3d4047">{{ w.buurten }}</td><td style="padding: 8px 14px"><label for="{{ w.id }}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{ w.aria }}</label><select id="{{ w.id }}" style="box-sizing: border-box; width: 240px; height: 34px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><option selected>{{ w.team }}</option></select></td><td style="padding: 10px 14px">{{ w.open }}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+            <div style="display: flex; justify-content: flex-end"><button type="button" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Opslaan</button></div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const tabBase = "display: inline-flex; align-items: center; gap: 8px; box-sizing: border-box; min-height: 34px; padding: 8px 12px; margin-bottom: -1px; border: 1px solid #d6d9de; border-bottom: none; border-radius: 8px 8px 0 0; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; background: #eceef1; cursor: pointer; white-space: nowrap;";
+    const tabs = [['Algemeen', false, ''], ['Integraties', false, '9'], ['Mail', false, ''], ['Verdeling', true, ''], ['Kaartlagen', false, '4'], ['Vervanging', false, '']].map(([label, on, count]) => ({ label, count, hasCount: !!count, sel: on ? 'true' : 'false', style: on ? tabBase + ' background: #ffffff; border-bottom: 1px solid #ffffff; font-weight: 700; position: relative; z-index: 1;' : tabBase }));
+    const m = [
+      ['LK', 'Lars de Koning', 'Vergunningen Zuid', 'Senior behandelaar', '1', '12', 3],
+      ['JV', 'Jeroen Visser', 'Vergunningen Zuid', 'Behandelaar', '1', '11', 3],
+      ['AB', 'Anouk Bakker', 'Vergunningen Noord', 'Behandelaar, 2 dagen per week', '0,4', '5', 1],
+      ['MH', 'Mila Hendriks', 'Vergunningen Noord', 'Senior behandelaar', '1', '13', 4],
+      ['TO', 'Tim Oosterhout', 'Vergunningen Noord', 'Behandelaar', '1', '10', 3]
+    ];
+    const members = m.map(([ini, name, team, pos, w, open, n], i) => ({ id: 'rt-w' + i, ini, name, team, pos, w, open, aria: 'Gewicht van ' + name, share: Math.round(n) + ' van 14', bar: 'display: block; height: 8px; background: #3669a5; width: ' + Math.round(n / 14 * 100 * 2.5) + '%' }));
+    const rules = [
+      ['Meldingen naar het team van de wijk', 'zaaktype is Melding openbare ruimte', 'Team van de wijk van het adres', '41 zaken dit jaar'],
+      ['Woo-verzoeken verdelen', 'zaaktype is Woo-verzoek', 'Verdeelgroep Woo en informatie, wie het minst heeft', '18 zaken dit jaar'],
+      ['Overige vergunningen', 'zaaktype is een vergunning', 'Verdeelgroep Vergunningen, om de beurt', '64 zaken dit jaar']
+    ].map(([name, when, to, count], i) => ({ n: String(i + 2), name, when, to, count, moveLabel: 'Verplaats regel ' + name, menuLabel: 'Acties voor regel ' + name + ': bewerken, uitzetten, verwijderen' }));
+    const wijken = [
+      ['Noord', 'Molenwijk, Vaartkwartier en 5 andere', 'Team Noord', '27'],
+      ['Zuid', 'Lindelaan, Parkweg en 4 andere', 'Team Zuid', '31'],
+      ['Oosthaven', 'Havenpark, Kade en 3 andere', 'Team Oost', '19'],
+      ['Centrum', 'Markt, Kerkplein en 4 andere', 'Team Centrum', '22']
+    ].map(([name, buurten, team, open], i) => ({ id: 'rt-wk' + i, name, buurten, team, open, aria: 'Team van wijk ' + name }));
+    return { tabs, members, rules, wijken };
+  }
+}
+</script>
+</body>
+</html>

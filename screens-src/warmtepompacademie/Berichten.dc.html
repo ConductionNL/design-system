@@ -28,6 +28,10 @@ a{color:#0b6e7a}a:hover{color:#084f58}
           <a href="#" style="display: inline-flex; align-items: center; height: 44px; font-size: 17px; font-weight: 600">Meldingen instellen</a>
         </div>
       </div>
+      <div role="group" aria-label="Toon berichten" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid #d3d8df">
+        <button type="button" aria-pressed="false" style="height: 46px; padding: 0 18px; border: 0; background: transparent; font: 500 17px 'Barlow', sans-serif; color: #1a1a1a">Alles</button>
+        <button type="button" aria-pressed="true" style="height: 46px; padding: 0 18px; border: 0; background: transparent; font: 700 17px 'Barlow', sans-serif; color: #1a1a1a; box-shadow: inset 0 -4px 0 #0b6e7a">Ongelezen (2)</button>
+      </div>
       <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
         <sc-for list="{{ items }}" as="m" hint-placeholder-count="4">
           <li style="display: flex; flex-direction: column; gap: 8px; padding: 18px 24px; border-radius: 6px; border: 1px solid #d3d8df">
@@ -38,6 +42,7 @@ a{color:#0b6e7a}a:hover{color:#084f58}
             </div>
             <p style="margin: 0; font-size: 17px; line-height: 1.5">{{ m.text }}</p>
             <span style="font-size: 15px; color: #4a4a4a">{{ m.from }} · bij <a href="{{ m.open }}">{{ m.about }}</a></span>
+            <sc-if value="{{ m.hasAction }}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; margin-top: 4px"><span style="font-size: 16px; font-weight: 600">Over: {{ m.subject }}</span><a href="{{ m.open }}" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 3px; background: #0b6e7a; color: #ffffff; font-weight: 600; font-size: 16px; text-decoration: none">{{ m.action }}</a></div></sc-if>
           </li>
         </sc-for>
       </ul>
@@ -52,11 +57,12 @@ class Component extends DCLogic {
   renderVals() {
     const t = (unread) => 'color: #0b6e7a; font-weight: ' + (unread ? '700' : '600');
     const items = [
+      { unread: true, title: 'De uren van week 40 kloppen niet met het rooster', date: 'vandaag, 09:05 uur', text: 'Youssef El Amrani schreef 42 uur, het rooster zegt 38. Pas de uren aan of laat weten waarom het meer was.', from: 'Jan Bakker, praktijkopleider, Bakker Techniek BV', about: 'urenstaat week 40', open: 'Detail.dc.html', subject: 'Uren week 40', action: 'Uren aanpassen' },
       { unread: true, title: 'Nog één gegeven nodig voor het examen van donderdag', date: 'vandaag, 08:12 uur', text: 'Wij missen de geboortedatum van Youssef El Amrani. Vul hem in voor woensdag 7 oktober, 12:00 uur. Daarna sluit de aanmelding voor het examen.', from: 'Rob Maas, administratie', about: 'inschrijving I-2026-0412', open: 'Detail.dc.html' },
       { unread: true, title: 'Wij hebben uw inschrijving ontvangen', date: 'vrijdag 2 oktober, 15:40 uur', text: 'Tom Verbeek en Sanne Kok staan genoteerd voor Lucht-water warmtepomp op 3, 4 en 10 november. U krijgt uiterlijk dinsdag 6 oktober een bevestiging.', from: 'Sophie van Dam, planning', about: 'inschrijving I-2026-0431', open: 'MijnLijst.dc.html' },
       { unread: false, title: 'Het bewijs van deelname van Sanne Kok staat klaar', date: 'donderdag 1 oktober, 16:52 uur', text: 'Sanne Kok heeft de cursus Waterzijdig inregelen afgerond. U vindt het bewijs van deelname bij de certificaten.', from: 'Rob Maas, administratie', about: 'inschrijving I-2026-0377', open: 'Documenten.dc.html' },
       { unread: false, title: 'Uw inschrijving is bevestigd: drie plekken op 8 oktober', date: 'woensdag 16 september, 10:05 uur', text: 'Tom Verbeek, Youssef El Amrani en Sanne Kok doen op donderdag 8 oktober de herhaling F-gassen met examen. Zij hebben zelf de praktische informatie gekregen.', from: 'Sophie van Dam, planning', about: 'inschrijving I-2026-0412', open: 'Detail.dc.html' }
-    ].map((m) => ({ ...m, titleStyle: t(m.unread) }));
+    ].map((m) => ({ subject: '', action: '', ...m, hasAction: !!m.action, titleStyle: t(m.unread) }));
     return { items, crumbs: [{ label: 'Home' }, { label: 'Mijn academie', href: 'MijnOverzicht.dc.html' }, { label: 'Berichten' }] };
   }
 }

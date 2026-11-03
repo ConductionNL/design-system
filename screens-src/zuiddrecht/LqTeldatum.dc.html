@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: teldatum bevestigen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="position: relative; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1000px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Coördinator" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor coördinatoren" primary="Aanwezigheid invullen" active="Geavanceerd" groups="{{ nav }}" hint-size="264px,976px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Teldatum 1 oktober 2026</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="{{ btn.plain }}">Telling downloaden</button><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #c64e0b; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button><button type="button" style="{{ btn.primary }}">Teldatum bevestigen</button></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; font-size: 15px; color: #5e6168"><span style="{{ pills.wait }}">Nog niet bevestigd</span><nav aria-label="Kruimelpad" style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px"><a href="#">Geavanceerd</a><span aria-hidden="true">/</span><a href="LqKoppelingen.dc.html">Uitwisselingen</a><span aria-hidden="true">/</span><span aria-current="page">Teldatum</span></nav><span aria-hidden="true">·</span><span style="font-size: 14px">controle vooraf voor de levering aan DUO (BRON)</span></div>
+        </section>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+              <h2 style="margin: 0; font-size: 17px; font-weight: 700">Wat naar DUO gaat op de teldatum</h2>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
+                <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+                  <div style="border: 1px solid #eef0f3; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; background: #fafbfc"><span style="font-size: 14px; color: #5e6168">{{ k.label }}</span><strong style="font-size: 28px; line-height: 1">{{ k.value }}</strong><span style="font-size: 13px; color: #5e6168">{{ k.note }}</span></div>
+                </sc-for>
+              </div>
+              <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+                <thead><tr style="text-align: left; color: #5e6168"><th scope="col" style="padding: 8px 0; font-weight: 600">Controle</th><th scope="col" style="padding: 8px 0; font-weight: 600">Uitkomst</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ checks }}" as="c" hint-placeholder-count="4">
+                    <tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 0; vertical-align: top">{{ c.label }}</td><td style="padding: 10px 0; vertical-align: top"><span style="{{ c.pill }}">{{ c.state }}</span> <span style="color: #5e6168">{{ c.note }}</span></td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+              <p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 1.5">Bevestigen legt vast dat de coördinator de telling op 1 oktober heeft gezien. Na de bevestiging mag de levering lopen; de uitkomst van DUO komt terug op de uitwisseling.</p>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 17px; font-weight: 700">Uitwisselingen die op de teldatum wachten</h2>
+              <ul style="list-style: none; margin: 0; padding: 0">
+                <sc-for list="{{ jobs }}" as="j" hint-placeholder-count="2">
+                  <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 11px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">{{ j.title }}</strong><span style="font-size: 13px; color: #5e6168">{{ j.meta }}</span></span><span style="{{ j.pill }}">{{ j.state }}</span></li>
+                </sc-for>
+              </ul>
+              <p style="margin: 0; font-size: 14px; color: #5e6168">Een uitwisseling die de teldatum vereist, wordt geweigerd zolang de bevestiging ontbreekt: ze blijft staan op "Wacht op bevestiging van de teldatum" en start vanzelf na uw bevestiging.</p>
+            </section>
+          </div>
+          <aside style="flex: 0 0 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-left: 4px solid #3669a5; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px"><h2 style="margin: 0; font-size: 15px; font-weight: 700">Wat nu?</h2><span style="font-size: 14px; line-height: 1.45">Los de 3 inschrijvingen zonder BSN of ECK iD op, of bevestig met een toelichting. Alleen een coördinator of beheerder kan bevestigen.</span><button type="button" style="{{ btn.primary }}">Teldatum bevestigen</button></section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px"><h2 style="margin: 0; font-size: 15px; font-weight: 700">Eerdere teldata</h2><ul style="list-style: none; margin: 0; padding: 0"><li style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-top: 1px solid #eef0f3; font-size: 13px"><strong style="font-size: 14px; font-weight: 600">1 oktober 2025: 1.812 inschrijvingen</strong><span style="color: #5e6168">Bevestigd door Ellen Vos, 1 okt 2025, 16:40</span></li><li style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-top: 1px solid #eef0f3; font-size: 13px"><strong style="font-size: 14px; font-weight: 600">1 oktober 2024: 1.776 inschrijvingen</strong><span style="color: #5e6168">Bevestigd door Ellen Vos, 2 okt 2024, 09:15</span></li></ul></section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Roosters', 'cal'], ['Lessen en opdrachten', 'book']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const base = "display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none; box-sizing: border-box; ";
+    const btn = { plain: base + 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d', primary: base + 'border: 0; background: #3669a5; color: #ffffff' };
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const pills = { wait: pill('#fff4de', '#7a4f00'), ok: pill('#e7f3ea', '#1e6b2a'), warn: pill('#fcedec', '#a30000') };
+    const kpis = [
+      { label: 'Inschrijvingen op 1 oktober', value: '1.842', note: 'gaan naar DUO' },
+      { label: 'Nieuw sinds vorig jaar', value: '+30', note: '1.812 op 1 oktober 2025' },
+      { label: 'Zonder BSN of ECK iD', value: '3', note: 'DUO weigert deze regels' },
+      { label: 'Uitgeschreven voor de teldatum', value: '12', note: 'tellen niet mee' }
+    ];
+    const checks = [
+      { label: 'Iedere inschrijving heeft een opleiding en leerjaar', state: 'In orde', pill: pills.ok, note: '' },
+      { label: 'BSN of ECK iD aanwezig', state: '3 ontbreken', pill: pills.warn, note: 'Daan Kok (4HV-A), Lina Öztürk (1HV-B), Sem Bakker (2M-B)' },
+      { label: 'Geen dubbele inschrijving op de teldatum', state: 'In orde', pill: pills.ok, note: '' },
+      { label: 'Uitschrijvingen verwerkt tot en met 30 september', state: 'In orde', pill: pills.ok, note: 'laatste op 29 september' }
+    ];
+    const jobs = [
+      { title: 'Levering inschrijvingen aan DUO (BRON)', meta: 'via integriq · gepland 1 okt 2026, 18:00 uur', state: 'Wacht op bevestiging van de teldatum', pill: pills.wait },
+      { title: 'Bekostigingsoverzicht naar het bestuur', meta: 'via integriq · na de levering aan DUO', state: 'Wacht op bevestiging van de teldatum', pill: pills.wait }
+    ];
+    return { nav, btn, pills, kpis, checks, jobs };
+  }
+}
+</script>
+</body>
+</html>

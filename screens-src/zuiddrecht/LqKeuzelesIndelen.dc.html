@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: keuzelessen indelen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="position: relative; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1040px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Coördinator" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor coördinatoren" primary="Aanwezigheid invullen" active="Lessen en opdrachten" groups="{{ nav }}" hint-size="264px,1016px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Keuzelessen indelen: periode 2</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="{{ btn.plain }}">Indeling downloaden</button><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #c64e0b; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button><button type="button" style="{{ btn.primary }}">Indeling vaststellen</button></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; font-size: 15px; color: #5e6168"><span style="{{ pills.closed }}">Aanmeldvenster gesloten op 2 oktober</span><nav aria-label="Kruimelpad" style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px"><a href="#">Lessen en opdrachten</a><span aria-hidden="true">/</span><a href="#">Keuzelessen</a><span aria-hidden="true">/</span><span aria-current="page">Indelen</span></nav><span aria-hidden="true">·</span><span style="font-size: 14px">11 leerlingen hebben zich niet aangemeld; u deelt ze in</span></div>
+        </section>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <sc-for list="{{ lessons }}" as="l" hint-placeholder-count="2">
+              <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px"><h2 style="margin: 0; font-size: 17px; font-weight: 700">{{ l.title }}</h2><span style="font-size: 14px; color: #5e6168">{{ l.meta }}</span></div>
+                <sc-if value="{{ l.full }}" hint-placeholder-val="{{ false }}"><div style="display: flex; gap: 10px; padding: 10px 14px; border-radius: 8px; background: #fcedec; color: #a30000; font-size: 14px">Deze les is vol. Indelen is hier geweigerd; kies een andere keuzeles voor de overgebleven leerlingen.</div></sc-if>
+                <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+                  <thead><tr style="text-align: left; color: #5e6168"><th scope="col" style="padding: 8px 0; font-weight: 600">Leerling (niet aangemeld)</th><th scope="col" style="padding: 8px 0; font-weight: 600">Groep</th><th scope="col" style="padding: 8px 0; font-weight: 600">Stand</th><th scope="col" style="padding: 8px 0; font-weight: 600; text-align: right">Indelen</th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ l.rows }}" as="r" hint-placeholder-count="3">
+                      <tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 0; vertical-align: top"><strong>{{ r.who }}</strong></td><td style="padding: 10px 0; vertical-align: top">{{ r.group }}</td><td style="padding: 10px 0; vertical-align: top"><span style="{{ r.pill }}">{{ r.state }}</span></td><td style="padding: 10px 0; vertical-align: top; text-align: right"><sc-if value="{{ r.can }}" hint-placeholder-val="{{ true }}"><button type="button" style="{{ r.btn }}">Indelen</button></sc-if><sc-if value="{{ r.placed }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #5e6168">{{ r.note }}</span></sc-if></td></tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </section>
+            </sc-for>
+          </div>
+          <aside style="flex: 0 0 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-left: 4px solid #3669a5; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px"><h2 style="margin: 0; font-size: 15px; font-weight: 700">Hoe dit werkt</h2><span style="font-size: 14px; line-height: 1.45">Na het venster ziet u per keuzeles wie in aanmerking kwam en zich niet aanmeldde. Indelen zet de leerling in de les met de aantekening "ingedeeld door de coördinator"; de leerling en de ouders krijgen een bericht.</span></section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px"><h2 style="margin: 0; font-size: 15px; font-weight: 700">Stand van periode 2</h2><dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; font-size: 14px"><dt style="color: #5e6168">Keuzelessen</dt><dd style="margin: 0">8, waarvan 2 vol</dd><dt style="color: #5e6168">Aangemeld</dt><dd style="margin: 0">213 leerlingen</dd><dt style="color: #5e6168">Nog in te delen</dt><dd style="margin: 0">9 leerlingen</dd><dt style="color: #5e6168">Ingedeeld door u</dt><dd style="margin: 0">2 leerlingen</dd></dl></section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Roosters', 'cal'], ['Lessen en opdrachten', 'book']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const base = "display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none; box-sizing: border-box; ";
+    const btn = { plain: base + 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d', primary: base + 'border: 0; background: #3669a5; color: #ffffff' };
+    const small = "height: 34px; padding: 0 12px; border-radius: 8px; font: 600 13px 'Fira Sans', sans-serif; ";
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const pills = { closed: pill('#f0f1f3', '#3d4047'), open: pill('#fff4de', '#7a4f00'), placed: pill('#e7f3ea', '#1e6b2a') };
+    const row = ([who, group, state, note]) => ({ who, group, state, note, can: state === 'Niet aangemeld', placed: state !== 'Niet aangemeld', pill: state === 'Niet aangemeld' ? pills.open : pills.placed, btn: small + 'border: 0; background: #3669a5; color: #ffffff' });
+    const lessons = [
+      { title: 'Drama (dinsdag 7e uur)', meta: '14 van 18 plaatsen bezet · in aanmerking: leerjaar 2 en 3', full: false, rows: [['Sem Bakker', '2M-B', 'Niet aangemeld', ''], ['Yara El Amrani', '3HV-A', 'Ingedeeld door de coördinator', 'ingedeeld door de coördinator, 6 okt 10:14'], ['Lina Öztürk', '2HV-C', 'Niet aangemeld', '']].map(row) },
+      { title: 'Muziek: bandcoaching (dinsdag 7e uur)', meta: '20 van 20 plaatsen bezet · in aanmerking: leerjaar 2 en 3', full: true, rows: [['Daan Kok', '3HV-B', 'Niet aangemeld', ''], ['Mees Dekker', '2M-A', 'Niet aangemeld', '']].map((r) => Object.assign(row(r), { can: false, placed: true, note: 'Deze les is vol' })) }
+    ];
+    return { nav, btn, pills, lessons };
+  }
+}
+</script>
+</body>
+</html>

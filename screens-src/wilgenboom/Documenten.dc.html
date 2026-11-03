@@ -28,9 +28,15 @@ a{color:#2f6b4a}a:hover{color:#1f4a33}
 
       <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
         <section style="display: flex; flex-direction: column; gap: 14px">
-          <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px">
-            <h2 style="margin: 0; font-size: 26px; font-weight: 700">{{ g.title }}</h2>
-            <span style="font-size: 16px; color: #4a4a4a">{{ g.sub }}</span>
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px">
+            <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px">
+              <h2 style="margin: 0; font-size: 26px; font-weight: 700">{{ g.title }}</h2>
+              <span style="font-size: 16px; color: #4a4a4a">{{ g.sub }}</span>
+            </div>
+            <sc-if value="{{ g.hasBulk }}" hint-placeholder-val="{{ true }}"><a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 10px; background: #2f6b4a; color: #ffffff; font-weight: 600; font-size: 16px; text-decoration: none">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>{{ g.bulk }}</a></sc-if>
+            <sc-if value="{{ g.hasUpload }}" hint-placeholder-val="{{ false }}"><a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 2px solid #2f6b4a; border-radius: 10px; color: #1f4a33; font-weight: 600; font-size: 16px; text-decoration: none">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 15V4M7 9l5-5 5 5M5 20h14"></path></svg>{{ g.upload }}</a></sc-if>
           </div>
           <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
             <sc-for list="{{ g.docs }}" as="d" hint-placeholder-count="2">
@@ -48,6 +54,7 @@ a{color:#2f6b4a}a:hover{color:#1f4a33}
               </li>
             </sc-for>
           </ul>
+          <sc-if value="{{ g.hasNote }}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4a4a4a">{{ g.note }}</p></sc-if>
         </section>
       </sc-for>
 
@@ -63,21 +70,25 @@ a{color:#2f6b4a}a:hover{color:#1f4a33}
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1721}}'>
 class Component extends DCLogic {
   renderVals() {
+    const group = (g) => Object.assign({ hasBulk: !!g.bulk, hasUpload: !!g.upload, hasNote: !!g.note, bulk: '', upload: '', note: '' }, g);
     const groups = [
-      { title: 'Vera', sub: 'Groep 7', docs: [
+      { title: 'Vera', sub: 'Groep 7', bulk: 'Alle rapporten van Vera downloaden', note: 'De rapporten van groep 1 tot en met 5 staan in het archief. Vraag ze op bij de administratie.', docs: [
         { name: 'Rapport 2, juni 2026', meta: 'Groep 6 · PDF, 2 pagina\'s', fresh: false },
         { name: 'Rapport 1, februari 2026', meta: 'Groep 6 · PDF, 2 pagina\'s', fresh: false }
       ] },
-      { title: 'Sami', sub: 'Groep 4', docs: [
+      { title: 'Sami', sub: 'Groep 4', bulk: 'Alle rapporten van Sami downloaden', docs: [
         { name: 'Rapport 2, juni 2026', meta: 'Groep 3 · PDF, 2 pagina\'s', fresh: false },
         { name: 'Rapport 1, februari 2026', meta: 'Groep 3 · PDF, 2 pagina\'s', fresh: false }
       ] },
       { title: 'Van school', sub: 'Voor alle ouders', docs: [
         { name: 'Jaarkalender 2026-2027', meta: 'Bijgewerkt op 28 september · PDF, 1 pagina', fresh: true },
-        { name: 'Schoolgids 2026-2027', meta: 'PDF, 36 pagina\'s', fresh: false },
-        { name: 'Uw toestemming voor foto\'s en video', meta: 'Door u ingevuld op 28 augustus 2026 · PDF', fresh: false }
+        { name: 'Schoolgids 2026-2027', meta: 'PDF, 36 pagina\'s', fresh: false }
+      ] },
+      { title: 'Door u aangeleverd', sub: 'Formulieren en verklaringen die u aan school gaf', upload: 'Document toevoegen', note: 'Een doktersverklaring of een ingevuld formulier zet u hier. De administratie ziet het meteen.', docs: [
+        { name: 'Uw toestemming voor foto\'s en video', meta: 'Door u ingevuld op 28 augustus 2026 · PDF', fresh: false },
+        { name: 'Verklaring fysiotherapeut, Sami', meta: 'Door u toegevoegd op 2 oktober 2026 · PDF, 1 pagina', fresh: false }
       ] }
-    ];
+    ].map(group);
     return { groups, crumbs: [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Mijn Wilgenboom', href: 'MijnOverzicht.dc.html' }, { label: 'Rapporten en documenten' }] };
   }
 }

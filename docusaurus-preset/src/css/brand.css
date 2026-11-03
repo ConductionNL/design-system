@@ -127,13 +127,17 @@
 /* Brand citation, "Next" in Nextcloud-blue */
 .next-blue { color: var(--conduction-color-brand-nextcloud); }
 
-/* Brand citation, "Common Ground" in CG-yellow.
-   The citation token, not the fill token. The brand yellow is 1.93:1 as text
-   on white, and the kit only ever sanctions it as a FILL with cobalt-900 ink
-   on it (see the Common Ground+ hex rule). The citation keeps the hue at a
-   lightness that can carry a word: 5.11:1 on white in light mode, and the
-   real brand yellow in dark, where it is 9.26:1 on the cobalt-900 ground. */
-.cg-yellow { color: var(--conduction-color-brand-commonground-text); }
+/* Brand citation, "Common Ground". It carries NO colour of its own.
+   Ruled 2026-09-24: text is never Common Ground yellow. Not the brand
+   #F6AD00, which is 1.93:1 as a word on white, and not a darkened stand-in
+   either. A derived citation colour was tried and is gone with this rule.
+   The yellow stays what the kit always sanctioned: a FILL, with cobalt-900
+   ink on it (see the Common Ground+ hex rule).
+   Inherit rather than a fixed ink, for the same reason .cg-plus-common
+   does: this word lands on a white page and on a cobalt panel, and the
+   surrounding surface has already chosen a readable colour. The class stays
+   so the markup and the wordmark keep a hook to style. */
+.cg-yellow { color: inherit; }
 
 /* KNVB-orange highlight, for the rare emphasised word per "one orange
    per screen" rule. Reserved for highlights, never primary fills.
@@ -145,11 +149,15 @@
    in light and KNVB in dark, where the bright orange is the readable one. */
 .knvb-orange { color: var(--conduction-color-text-accent); }
 
-/* Common Ground+ wordmark — tri-colour brand mark for the productized
-   Common Ground offering. "Common" in Conduction cobalt, "Ground" in
-   Common Ground yellow (reuses .cg-yellow), "+" in Nextcloud blue.
-   Use through the <CommonGroundPlus/> primitive; the rules below back
-   it (and any plain-HTML preview that wires up the same span shape). */
+/* Common Ground+ wordmark — the brand mark for the productized Common
+   Ground offering. "Common Ground" in the surrounding ink, "+" in
+   Nextcloud blue. Use through the <CommonGroundPlus/> primitive; the
+   rules below back it (and any plain-HTML preview that wires up the same
+   span shape).
+   It was tri-colour until 2026-09-24, with "Ground" in the brand yellow
+   via .cg-yellow. The ruling that text is never Common Ground yellow
+   applies to a wordmark as much as to prose, so the mark is two-tone now
+   and the yellow lives on the hex beside it, where it is a fill. */
 /* "Common" inherits rather than pinning itself to text-default. The token
    follows the THEME, and this wordmark is often placed on a section that
    paints its own dark surface regardless of theme. Measured on

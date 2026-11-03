@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: prognose</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1320px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Planner" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor planners" primary="Aanwezigheid invullen" active="Voortgang" groups="{{ nav }}" hint-size="264px,1298px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Prognose 2027-2028: scenario basis</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Scenario kopiëren</button>
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Opnieuw berekenen</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+            <span style="padding: 3px 10px; border-radius: 12px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 600">Concept</span>
+            <nav aria-label="Kruimelpad" style="font-size: 14px; color: #5e6168; display: flex; flex-wrap: wrap; gap: 8px"><a href="LqVoortgang.dc.html">Voortgang</a><span aria-hidden="true">/</span><a href="#">Prognoses</a><span aria-hidden="true">/</span><span aria-current="page">2027-2028, scenario basis</span></nav>
+            <span aria-hidden="true" style="color: #5e6168">·</span>
+            <span style="font-size: 14px; color: #5e6168">berekend op 3 november uit de leerlingen van nu en de doorstroompercentages van de laatste 3 jaar</span>
+          </div>
+        </section>
+
+        <div role="alert" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 14px; border-radius: 10px; background: #fcedec; color: #a30000; font-size: 14px; line-height: 1.5">
+          <span style="flex: 1 1 360px"><strong>Niet berekend voor vwo 5:</strong> de percentages voor vwo 5 tellen niet op tot 100 (over 78, blijft zitten 12, stroomt af 5: samen 95). Pas de percentages aan en bereken opnieuw.</span>
+          <a href="#" style="display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border: 1px solid #a30000; border-radius: 8px; background: #ffffff; color: #a30000; font-size: 14px; font-weight: 600; text-decoration: none">Percentages vwo 5 aanpassen</a>
+        </div>
+
+        <section aria-labelledby="pg-jaren" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px">
+            <h2 id="pg-jaren" style="margin: 0; font-size: 18px; font-weight: 700">Verwachte leerlingen per leerjaar</h2>
+            <span style="font-size: 13px; color: #5e6168">Doorstroom uit het leerjaar eronder plus zittenblijvers, min afstroom; brugklas uit de aanmeldingen</span>
+          </div>
+          <div style="overflow-x: auto">
+            <table style="border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px">
+              <caption style="position: absolute; left: -9999px">Verwachte leerlingen per leerjaar</caption>
+              <thead>
+                <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Leerjaar</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Nu</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Over, procent</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Blijft zitten, procent</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Verwacht 2027-2028</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Opbouw</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ years }}" as="y" hint-placeholder-count="5">
+                  <tr style="{{ y.rowStyle }}">
+                    <th scope="row" style="padding: 12px 16px; text-align: left; font-weight: 600">{{ y.name }}</th>
+                    <td style="padding: 12px 16px; text-align: right; font-variant-numeric: tabular-nums">{{ y.now }}</td>
+                    <td style="padding: 12px 16px; text-align: right"><input type="text" aria-label="{{ y.passLabel }}" value="{{ y.pass }}" style="width: 56px; height: 32px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 6px; font: 400 14px 'Fira Sans', sans-serif; text-align: right"></td>
+                    <td style="padding: 12px 16px; text-align: right"><input type="text" aria-label="{{ y.stayLabel }}" value="{{ y.stay }}" style="width: 56px; height: 32px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 6px; font: 400 14px 'Fira Sans', sans-serif; text-align: right"></td>
+                    <td style="padding: 12px 16px; text-align: right; font-variant-numeric: tabular-nums"><strong>{{ y.expected }}</strong></td>
+                    <td style="padding: 12px 16px; color: #3d4047">{{ y.how }}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section aria-labelledby="pg-groepen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px">
+            <h2 id="pg-groepen" style="margin: 0; font-size: 18px; font-weight: 700">Groepen nodig per vak</h2>
+            <span style="font-size: 13px; color: #5e6168">Verwachte leerlingen gedeeld door de maximale groepsgrootte, naar boven afgerond · havo 4 getoond</span>
+          </div>
+          <div style="overflow-x: auto">
+            <table style="border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px">
+              <caption style="position: absolute; left: -9999px">Groepen nodig per vak in havo 4</caption>
+              <thead>
+                <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Vak</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Verwachte leerlingen</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Maximaal per groep</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Groepen nodig</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Nu</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ subjects }}" as="s" hint-placeholder-count="5">
+                  <tr style="border-top: 1px solid #eef0f3">
+                    <th scope="row" style="padding: 12px 16px; text-align: left; font-weight: 600">{{ s.name }}</th>
+                    <td style="padding: 12px 16px; text-align: right; font-variant-numeric: tabular-nums">{{ s.learners }}</td>
+                    <td style="padding: 12px 16px; text-align: right; font-variant-numeric: tabular-nums; color: #5e6168">{{ s.max }}</td>
+                    <td style="padding: 12px 16px; text-align: right"><strong>{{ s.groups }} groepen</strong></td>
+                    <td style="padding: 12px 16px; text-align: right"><span style="{{ s.deltaStyle }}">{{ s.delta }}</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin: 0; font-size: 13px; color: #5e6168; line-height: 1.5">Economie, havo 4: 104 leerlingen bij maximaal 32 per groep is 3 groepen plus 8 leerlingen over, dus 4 groepen of een hogere grens. Een prognose rekent, de planner beslist.</p>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1320}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Roosters', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const years = [
+      ['Havo 3', 118, 88, 9, '104 uit havo 3 (88 procent van 118) plus 8 zittenblijvers uit havo 4', 112, false],
+      ['Havo 4', 96, 84, 11, '81 uit havo 4 plus 7 zittenblijvers uit havo 5', 88, false],
+      ['Vwo 4', 62, 90, 6, '56 uit vwo 4 plus 4 zittenblijvers uit vwo 5', 60, false],
+      ['Vwo 5', 58, 78, 12, 'niet berekend: percentages tellen op tot 95', '', true],
+      ['Brugklas', 0, 0, 0, '142 aanmeldingen op 3 november, 150 verwacht na de open dag', 150, false]
+    ].map(([name, now, pass, stay, how, expected, bad]) => ({ name, now: now ? String(now) : 'nieuw', pass: String(pass), stay: String(stay), how, expected: expected === '' ? 'niet berekend' : String(expected), passLabel: 'Percentage over voor ' + name, stayLabel: 'Percentage blijft zitten voor ' + name, rowStyle: 'border-top: 1px solid #eef0f3;' + (bad ? ' background: #fcedec;' : '') }));
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const subjects = [
+      ['Economie', 104, 32, 4, 3],
+      ['Wiskunde A', 78, 30, 3, 3],
+      ['Wiskunde B', 41, 30, 2, 2],
+      ['Natuurkunde', 44, 28, 2, 1],
+      ['Duits', 26, 30, 1, 1]
+    ].map(([name, learners, max, groups, now]) => {
+      const d = groups - now;
+      return { name, learners: String(learners), max: String(max), groups: String(groups), delta: d === 0 ? now + ', gelijk' : now + ', ' + (d > 0 ? d + ' erbij' : (-d) + ' eraf'), deltaStyle: d === 0 ? pill('#f0f1f3', '#3d4047') : pill('#fff4de', '#7a4f00') };
+    });
+    return { nav, years, subjects };
+  }
+}
+</script>
+</body>
+</html>

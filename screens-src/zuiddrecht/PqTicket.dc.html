@@ -105,6 +105,15 @@ a{color:#3669a5}a:hover{color:#234a78}
                 </div>
                 <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Omzetten naar een zaak</button>
               </section>
+
+              <section style="display: flex; flex-direction: column; gap: 10px; padding-top: 22px; border-top: 1px solid #eef0f3">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px"><h2 style="margin: 0; font-size: 17px; font-weight: 700">Geschiedenis</h2><span style="font-size: 14px; color: #5e6168">het tabblad Geschiedenis, in woorden, nieuwste eerst</span></div>
+                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; font-size: 14px">
+                  <sc-for list="{{ history }}" as="h" hint-placeholder-count="6">
+                  <li style="display: flex; gap: 12px; padding: 8px 0; border-top: 1px solid #eef0f3"><span style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ h.who }}</span><span style="display: flex; flex-direction: column; gap: 2px"><span>{{ h.text }}</span><span style="font-size: 13px; color: #5e6168">{{ h.when }}</span></span></li>
+                  </sc-for>
+                </ul>
+              </section>
             </div>
 
             <section style="margin-top: 20px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 6px">
@@ -127,16 +136,26 @@ a{color:#3669a5}a:hover{color:#234a78}
               <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; font-size: 14px">
                 <dt style="color: #5e6168">Kanaal</dt><dd style="margin: 0">Telefoon</dd>
                 <dt style="color: #5e6168">Contact</dt><dd style="margin: 0">Account op Mijn Zuiddrecht</dd>
+                <dt style="color: #5e6168">Contactpersoon</dt><dd style="margin: 0; display: flex; flex-direction: column; gap: 2px"><strong>Sanne de Vries</strong><a href="#">s.devries@example.nl</a><span>06 12 34 56 78</span></dd>
               </dl>
+              <button type="button" style="align-self: flex-start; height: 34px; padding: 0 12px; border: 0; border-radius: 17px; background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif">Andere contactpersoon</button>
+              <span style="font-size: 13px; color: #5e6168">De keuzelijst toont alleen contactpersonen van deze klant.</span>
               <a href="#" style="font-size: 14px; font-weight: 600">Contactgegevens en eerdere tickets</a>
             </section>
             <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
               <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Termijn</h2>
-              <strong style="font-size: 26px; font-weight: 700">11 oktober 2026, 17:00</strong>
-              <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; font-size: 14px">
+              <strong style="font-size: 26px; font-weight: 700">maandag 12 oktober 2026, 12:00</strong>
+              <span style="font-size: 13px; color: #5e6168">Berekend in werkuren vanaf 4 oktober 10:24: het weekend is overgeslagen, en feestdagen uit de kalender van de gemeente ook.</span>
+              <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; font-size: 14px; align-items: center">
                 <dt style="color: #5e6168">Prioriteit</dt><dd style="margin: 0">Normaal</dd>
                 <dt style="color: #5e6168">Behandelaar</dt><dd style="margin: 0; font-weight: 600">Pieter Jansen</dd>
+                <dt style="color: #5e6168">Reactietijd</dt><dd style="margin: 0; display: flex; gap: 6px; align-items: center"><span>0u 38m</span><span style="padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #e7f3ea; color: #1e6b2a">binnen SLA</span></dd>
+                <dt style="color: #5e6168">Oplostijd</dt><dd style="margin: 0; display: flex; gap: 6px; align-items: center"><span>3u 30m van 40u</span><span style="padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #fff4de; color: #7a4f00">80%, geëscaleerd</span></dd>
+                <dt style="color: #5e6168">Escalatie</dt><dd style="margin: 0">Geëscaleerd naar teamleider bij 80%: Anouk Bakker is om 11:30 op de hoogte gebracht. Bij 100% volgt de afdelingsmanager.</dd>
               </dl>
+              <span style="font-size: 13px; color: #a30000; font-weight: 600">Na de termijn leest dit: SLA overschreden, in rood, en het ticket telt mee in de rapportage.</span>
+              <span style="font-size: 13px; color: #5e6168">Zodra het ticket op Wacht op klant staat: SLA gepauzeerd sinds 4 okt 11:02. De klok loopt door zodra de inwoner antwoordt.</span>
+              <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid #eef0f3"><span id="pq-st-l" style="font-size: 14px; font-weight: 600">Status</span><div role="combobox" aria-expanded="true" aria-labelledby="pq-st-l" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 36px; box-sizing: border-box; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><span>In behandeling</span><svg width="18" height="18" viewBox="0 0 24 24" fill="#3d4047" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></div><ul role="listbox" aria-label="Volgende status" style="list-style: none; margin: 0; padding: 4px; border: 1px solid #e4e6ea; border-radius: 8px; background: #ffffff; font-size: 14px"><li role="option" style="padding: 6px 10px">Wacht op klant</li><li role="option" style="padding: 6px 10px">Afgerond</li><li role="option" style="padding: 6px 10px">Afgewezen</li></ul><span style="font-size: 13px; color: #5e6168">Alleen de statussen die vanuit In behandeling mogen. Afgerond en Afgewezen zijn eindstatussen. Een andere overgang weigert pipelinq met: Vanuit In behandeling kan alleen naar Wacht op klant, Afgerond of Afgewezen.</span></div>
               <button type="button" style="align-self: flex-start; height: 34px; padding: 0 12px; border: 0; border-radius: 17px; background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif">Termijn instellen</button>
             </section>
             <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
@@ -147,6 +166,11 @@ a{color:#3669a5}a:hover{color:#234a78}
             <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
               <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Gerelateerd</h2>
               <a href="#" style="display: flex; gap: 10px; align-items: center; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12H17V17H12V12M19 3H18V1H16V3H8V1H6V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M19 5V7H5V5H19M5 19V9H19V19H5Z"></path></svg>Afspraak: locatiebezoek Parkstraat, 15 oktober</a>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Volgers (3)</h2><button type="button" aria-pressed="true" style="height: 34px; padding: 0 12px; border: 0; border-radius: 17px; background: #1b1c1d; color: #ffffff; font: 600 13px 'Fira Sans', sans-serif">Je volgt dit ticket</button></div>
+              <span style="font-size: 14px">Pieter Jansen, Fatma Yildiz, Anouk Bakker</span>
+              <span style="font-size: 13px; color: #5e6168">Volgers krijgen een melding bij elke wijziging van dit ticket. Volgen en Niet meer volgen staan ook op een lead.</span>
             </section>
             <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
               <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Wat de inwoner ziet</h2>
@@ -193,14 +217,22 @@ class Component extends DCLogic {
     const fields = [
       ['Behandelaar', 'Pieter Jansen'], ['Categorie', 'Vergunningen'],
       ['Kanaal', 'Telefoon'], ['Klant', 'Sanne de Vries'],
-      ['Ontvangen', '4 oktober 2026, 10:24'], ['Prioriteit', 'Normaal']
+      ['Ontvangen', '4 oktober 2026, 10:24'], ['Prioriteit', 'Normaal'], ['Gemeente', 'Zuiddrecht, overgenomen van de klant; per ticket te wijzigen']
     ].map(([label, value]) => ({ label, value }));
     const st = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
     const agents = [
-      { initials: 'FY', name: 'Fatma Yildiz', meta: 'Schuldhulp, identiteitscontrole · 4 open tickets', state: 'Beschikbaar', style: st('#e7f3ea', '#1e6b2a') },
-      { initials: 'JB', name: 'Joris Bakker', meta: 'Burgerzaken, biometrie · 1 open ticket', state: 'Niet beschikbaar', style: st('#fff4de', '#7a4f00') }
+      { initials: 'FY', name: 'Fatma Yildiz', meta: 'Schuldhulp, identiteitscontrole · werkdruk 4/10 items (open verzoeken en leads)', state: 'Beschikbaar', style: st('#e7f3ea', '#1e6b2a') },
+      { initials: 'JB', name: 'Joris Bakker', meta: 'Burgerzaken, biometrie · werkdruk 1/10 items', state: 'Niet beschikbaar', style: st('#fff4de', '#7a4f00') }
     ];
-    return { nav, tabs: withCounts(tabs), fields, agents };
+    const history = [
+      ['FY', 'Notitie van Fatma Yildiz: "Straatplan staat bij Documenten."', '5 minuten geleden'],
+      ['AB', 'Geëscaleerd naar teamleider Anouk Bakker bij 80% van de oplostijd', 'vandaag 11:30'],
+      ['JB', 'Wacht op de inwoner door Joris Bakker; SLA gepauzeerd', 'gisteren 16:10'],
+      ['PJ', 'Doorgegeven aan Joris Bakker door Pieter Jansen, met de notitie "Jij kent het evenementenbeleid beter."', 'gisteren 15:48'],
+      ['PJ', 'Weer in behandeling door Pieter Jansen; SLA loopt door', '4 okt 11:40'],
+      ['PJ', 'Aangemaakt door Pieter Jansen na het telefoongesprek, gemeente overgenomen van de klant', '4 okt 10:24']
+    ].map(([who, text, when]) => ({ who, text, when }));
+    return { nav, tabs: withCounts(tabs), fields, agents, history };
   }
 }
 </script>

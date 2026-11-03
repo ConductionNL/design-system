@@ -37,7 +37,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
               <div style="display: flex; flex-direction: column; gap: 4px">
                 <h2 style="margin: 0; font-size: 18px; font-weight: 700">Blokken van de les</h2>
-                <p style="margin: 0; font-size: 14px; color: #5e6168">In deze volgorde ziet de leerling de les. Sleep een blok of gebruik de pijlknoppen.</p>
+                <p style="margin: 0; font-size: 14px; color: #5e6168">In deze volgorde ziet de leerling de les. Sleep een blok of gebruik de knoppen Omhoog en Omlaag; met het toetsenbord: Tab naar de knop, Enter verplaatst. Na een verplaatsing hoort u: "Blok verplaatst naar positie 3 van 5".</p>
               </div>
               <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
                 <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="7">
@@ -47,8 +47,8 @@ a{color:#3669a5}a:hover{color:#234a78}
                       <span aria-hidden="true" style="{{ b.iconStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="{{ b.icon }}"></path></svg></span>
                       <strong style="flex: 1 1 auto; min-width: 0; font-size: 14px">{{ b.typeLabel }}</strong>
                       <sc-if value="{{ b.hasMove }}" hint-placeholder-val="{{ true }}">
-                        <button type="button" aria-label="{{ b.upLabel }}" aria-disabled="{{ b.upOff }}" style="{{ b.upStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"></path></svg></button>
-                        <button type="button" aria-label="{{ b.downLabel }}" aria-disabled="{{ b.downOff }}" style="{{ b.downStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></button>
+                        <button type="button" aria-label="{{ b.upLabel }}" aria-disabled="{{ b.upOff }}" style="{{ b.upStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"></path></svg>Omhoog</button>
+                        <button type="button" aria-label="{{ b.downLabel }}" aria-disabled="{{ b.downOff }}" style="{{ b.downStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg>Omlaag</button>
                       </sc-if>
                       <sc-if value="{{ b.canSimplify }}" hint-placeholder-val="{{ false }}">
                         <button type="button" title="Herschrijven in eenvoudiger woorden" aria-label="{{ b.simplifyLabel }}" style="flex: none; width: 32px; height: 32px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #4a3f8f; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5,5.6L5,7L6.4,4.5L5,2L7.5,3.4L10,2L8.6,4.5L10,7L7.5,5.6M19.5,15.4L22,14L20.6,16.5L22,19L19.5,17.6L17,19L18.4,16.5L17,14L19.5,15.4M22,2L20.6,4.5L22,7L19.5,5.6L17,7L18.4,4.5L17,2L19.5,3.4L22,2M13.34,12.78L15.78,10.34L13.66,8.22L11.22,10.66L13.34,12.78M14.37,7.29L16.71,9.63C17.1,10 17.1,10.65 16.71,11.04L5.04,22.71C4.65,23.1 4,23.1 3.63,22.71L1.29,20.37C0.9,20 0.9,19.35 1.29,18.96L12.96,7.29C13.35,6.9 14,6.9 14.37,7.29Z"></path></svg></button>
@@ -136,6 +136,11 @@ a{color:#3669a5}a:hover{color:#234a78}
                 <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg>Doelen voorstellen</button>
               </div>
               <p style="margin: 0; font-size: 13px; color: #5e6168; line-height: 1.45">Een tekstblok in eenvoudiger woorden? Gebruik de toverstaf op dat blok.</p>
+              <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #eef0f3">
+                <h3 style="margin: 0; font-size: 13px; font-weight: 700; color: #5e6168">Als hermiq niet kan antwoorden</h3>
+                <div role="status" style="padding: 10px 12px; border-radius: 8px; background: #f0f1f3; color: #3d4047; font-size: 13px; line-height: 1.45"><strong>AI-hulp staat uit.</strong> De beheerder heeft deze functie in hermiq uitgezet. De les maakt u gewoon zelf.</div>
+                <div role="alert" style="padding: 10px 12px; border-radius: 8px; background: #fff4de; color: #7a4f00; font-size: 13px; line-height: 1.45"><strong>Het AI-model gaf geen bruikbaar antwoord, probeer het opnieuw.</strong> De knoppen Opzet schrijven, Vragen voorstellen en Doelen voorstellen blijven beschikbaar.</div>
+              </div>
               <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 12px; border-top: 1px solid #eef0f3">
                 <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 700">Voorgestelde doelen</h3>
                 <ul style="margin: 0; padding: 0; list-style: none">
@@ -148,6 +153,13 @@ a{color:#3669a5}a:hover{color:#234a78}
                   </sc-for>
                 </ul>
                 <span style="font-size: 13px; color: #5e6168">Een toegevoegd doel wordt bewaard bij Les opslaan.</span>
+                <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 12px; margin-top: 8px; border-top: 1px solid #eef0f3">
+                  <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 700">Diepte per gekoppeld doel</h3>
+                  <span style="font-size: 13px; color: #5e6168">Hetzelfde veld staat op de cursus, de opdracht en de toets.</span>
+                  <sc-for list="{{ depths }}" as="d" hint-placeholder-count="2">
+                    <label style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; padding: 8px 0; border-top: 1px solid #eef0f3; font-size: 14px">{{ d.goal }}<select aria-label="{{ d.aria }}" style="height: 32px; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 13px 'Fira Sans', sans-serif"><sc-for list="{{ d.options }}" as="o" hint-placeholder-count="4"><option selected="{{ o.on }}">{{ o.label }}</option></sc-for></select></label>
+                  </sc-for>
+                </div>
               </div>
             </section>
           </aside>
@@ -185,7 +197,7 @@ class Component extends DCLogic {
       { k: 'quiz', pickLabel: 'Toets', pickValue: 'Oefentoets signaalwoorden', pickMeta: '10 vragen, voldoende vanaf 55 punten' },
       { k: 'assignment', pickLabel: 'Opdracht', pickValue: 'Markeer de signaalwoorden in het opiniestuk', pickMeta: 'Inleveren vrijdag 9 oktober, maximaal 10 punten' }
     ];
-    const arrow = (off) => 'flex: none; width: 32px; height: 32px; border: 1px solid ' + (off ? '#e4e6ea' : '#828a95') + '; border-radius: 8px; background: #ffffff; color: ' + (off ? '#b5b8bd' : '#1b1c1d') + '; display: flex; align-items: center; justify-content: center';
+    const arrow = (off) => 'flex: none; height: 32px; padding: 0 10px 0 8px; gap: 4px; border: 1px solid ' + (off ? '#e4e6ea' : '#828a95') + '; border-radius: 8px; background: #ffffff; color: ' + (off ? '#b5b8bd' : '#1b1c1d') + '; font: 600 13px \'Fira Sans\', sans-serif; display: inline-flex; align-items: center; justify-content: center';
     let n = 0;
     const lessonBlocks = raw.filter((b) => b.k !== 'note').length;
     const blocks = raw.map((b) => {
@@ -229,7 +241,9 @@ class Component extends DCLogic {
       ['Tekstverbanden benoemen', true],
       ['Het standpunt in een betoog vinden', false]
     ].map(([title, linked]) => ({ title, linked, open: !linked, addLabel: 'Doel ' + title + ' toevoegen' }));
-    return { nav, blocks, rules, goals };
+    const DEPTHS = ['introduceren', 'oefenen', 'beheersen', 'open'];
+    const depths = [['Signaalwoorden herkennen', 'oefenen'], ['Tekstverbanden benoemen', 'beheersen']].map(([goal, pick]) => ({ goal, aria: 'Diepte voor ' + goal, options: DEPTHS.map((label) => ({ label, on: label === pick })) }));
+    return { nav, blocks, rules, goals, depths };
   }
 }
 </script>

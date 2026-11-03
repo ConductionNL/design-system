@@ -221,6 +221,19 @@ test('a map widget whose Leaflet has not loaded into its mount point yet keeps t
 	})
 })
 
+test('an avatar that has not loaded its picture yet (NcAvatar\'s empty span) keeps the wait going', { skip }, async () => {
+	const avatar = (inner) => `<span class="avatardiv popovermenu-wrapper" style="--avatar-size:32px;display:inline-block;width:32px;height:32px;border-radius:50%">${inner}</span>`
+	await withPage(`<ul><li>${avatar('<!---->')} Hanneke de Boer</li></ul>`, async (page) => {
+		assert.deepEqual(await page.evaluate(loadingIndicators), ['avatardiv'])
+		await page.evaluate(() => setTimeout(() => { document.querySelector('.avatardiv').innerHTML = '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="32" height="32" alt="">' }, 1000))
+		assert.equal(await waitForLoaded(page, { timeout: 6000, still: 300 }), true)
+	})
+	// An avatar with its picture, its initials or an icon is loaded.
+	await withPage(avatar('<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="32" height="32" alt="">') + avatar('<span class="avatardiv__initials-wrapper"><span class="avatardiv__initials">Z</span></span>') + avatar('<span class="avatar-class-icon icon-group" style="display:block;width:32px;height:32px"></span>'), async (page) => {
+		assert.deepEqual(await page.evaluate(loadingIndicators), [])
+	})
+})
+
 test('a step that fails once is tried once more, and a second failure is thrown', async () => {
 	let n = 0
 	const seen = []

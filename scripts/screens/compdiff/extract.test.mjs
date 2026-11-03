@@ -609,6 +609,8 @@ test('facts, a pill row or a list of rows right under a card title is content, n
 		facts: '<dl style="margin:0;display:grid;grid-template-columns:130px 1fr;gap:8px 16px;font-size:14px"><dt>Prioriteit</dt><dd style="margin:0">Hoog</dd><dt>Reden</dt><dd style="margin:0">Raadsvraag</dd></dl>',
 		pills: '<div style="font-size:13px"><span style="padding:2px 8px;border-radius:10px;background:#eaf0f7">Programma Fietsroutes</span> <span style="padding:2px 8px;border-radius:10px;background:#eaf0f7">3 zaken</span></div>',
 		rows: '<div style="font-size:14px"><div style="display:flex;justify-content:space-between;padding:8px 0">Woo-verzoek<span>12</span></div><div style="display:flex;justify-content:space-between;padding:8px 0">Bezwaar<span>4</span></div><div style="display:flex;justify-content:space-between;padding:8px 0">Melding<span>9</span></div></div>',
+		// A pill set straight under the title, with no wrapper (DqFlow's inspector "Beslistabel van OpenRegister").
+		lonePill: '<span style="align-self:flex-start;padding:3px 10px;border-radius:12px;background:#e8e6f6;color:#4a3f8f;font-size:13px">Beslistabel van OpenRegister</span>',
 	}
 	for (const [name, body] of Object.entries(bodies)) {
 		const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:400px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:10px">

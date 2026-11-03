@@ -395,3 +395,34 @@ test('a filter chip pairs by its field label, whatever value it holds', () => {
 	const bare = pairElements([chip('Te laat', 713.5, 80, 30)], [chip('Te laat: 2 dagen', 713.5, 120, 30)], 1200)
 	assert.ok(!bare.pairs.some((p) => p.by === 'field'))
 })
+
+test('a pill pairs by label inside its paired card first, never with the same label in another card', () => {
+	const pill = (label, x, y, bg) => ({ kind: 'pill', label, interactive: false, rect: { x, y, w: 59.7, h: 21 }, props: { h: 21, borderRadius: 11, background: bg, border: 0, fontSize: 12 } })
+	const red = 'rgb(250, 220, 220)', amber = 'rgb(250, 240, 200)'
+	const woo = (y, h) => ({ board: { role: 'card', title: 'Wettelijke Woo-termijnen', rect: { x: 292, y, w: 1120, h } }, live: { role: 'card', title: 'Wettelijke Woo-termijnen', rect: { x: 292, y: y + 3, w: 1120, h } } })
+	const perf = { board: { role: 'card', title: 'Prestaties per zaaktype', rect: { x: 292, y: 2000, w: 1120, h: 260 } }, live: { role: 'card', title: 'Prestaties per zaaktype', rect: { x: 292, y: 2003, w: 1120, h: 260 } } }
+	// The board's Woo table draws three Kritiek rows and one Risico; live draws two Kritiek and two Risico.
+	const board = [pill('Kritiek', 1259, 1721, red), pill('Kritiek', 1259, 1765, red), pill('Kritiek', 1259, 1809, red), pill('Risico', 1259, 1853, amber), pill('Kritiek', 1356, 2063, red)]
+	const live = [pill('Kritiek', 1317, 1724, red), pill('Kritiek', 1317, 1768, red), pill('Risico', 1317, 1812, amber), pill('Risico', 1317, 1856, amber), pill('Kritiek', 1356, 2066, red)]
+	const r = pairElements(board, live, 2400, [woo(1650, 300), perf])
+	const across = r.pairs.filter((p) => (p.board.rect.y < 2000) !== (p.live.rect.y < 2000))
+	assert.deepEqual(across, [])
+	const perfPair = r.pairs.find((p) => p.board.rect.y === 2063)
+	assert.equal(perfPair.live.rect.y, 2066)
+	assert.equal(r.missing.length, 1)
+	assert.equal(r.missing[0].label, 'Kritiek')
+	assert.equal(r.extra.length, 1)
+	assert.equal(r.extra[0].label, 'Risico')
+	// Control: without the card pairs the label still pairs page-wide with the nearest, as before.
+	const page = pairElements(board, live, 2400)
+	assert.equal(page.pairs.find((p) => p.board.rect.y === 1809).live.rect.y, 2066)
+})
+
+test('an avatar of a list row that live does not draw does not take the same initials from another paired card', () => {
+	const tile = (y, size) => ({ kind: 'pill', label: 'SV', interactive: false, rect: { x: 1120, y, w: size, h: size }, props: { h: size, borderRadius: size / 2, background: 'rgb(240, 241, 243)', border: 0, fontSize: size === 32 ? 12 : 16 } })
+	const pair = (title, y, h) => ({ board: { role: 'card', title, rect: { x: 292, y, w: 700, h } }, live: { role: 'card', title, rect: { x: 292, y, w: 700, h } } })
+	const mail = pair('E-mail', 600, 400), side = { board: { role: 'card', title: 'Aanvrager', rect: { x: 1100, y: 900, w: 312, h: 140 } }, live: { role: 'card', title: 'Aanvrager', rect: { x: 1100, y: 900, w: 312, h: 140 } } }
+	const r = pairElements([{ ...tile(700, 32), x: 0, rect: { x: 315, y: 700, w: 32, h: 32 } }, tile(950, 40)], [tile(950, 40)], 1400, [mail, side])
+	assert.equal(r.pairs.length, 1)
+	assert.equal(r.pairs[0].board.props.h, 40)
+})

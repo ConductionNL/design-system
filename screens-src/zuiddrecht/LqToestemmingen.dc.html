@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: toestemmingen van ouders</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="position: relative; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1000px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Docent" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor docenten" primary="Aanwezigheid invullen" active="Groepen" groups="{{ nav }}" hint-size="264px,976px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Toestemming: excursie naar de kinderboerderij</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="{{ btn.plain }}">Herinnering sturen</button><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #c64e0b; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button><button type="button" style="{{ btn.primary }}">Nieuwe toestemming vragen</button></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; font-size: 15px; color: #5e6168"><span style="{{ pills.open }}">Antwoorden tot dinsdag 13 oktober</span><nav aria-label="Kruimelpad" style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px"><a href="LqGroep.dc.html">Groep 1HV-C</a><span aria-hidden="true">/</span><a href="#">Toestemmingen</a><span aria-hidden="true">/</span><span aria-current="page">Excursie kinderboerderij</span></nav><span aria-hidden="true">·</span><span style="font-size: 14px">gevraagd op 6 oktober aan de ouders van 26 leerlingen</span></div>
+        </section>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="3">
+            <div style="{{ k.box }}"><span style="font-size: 14px; color: #5e6168">{{ k.label }}</span><strong style="font-size: 28px; line-height: 1">{{ k.value }}</strong><span style="font-size: 13px; color: #5e6168">{{ k.note }}</span></div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center" role="group" aria-label="Filteren op antwoord">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4"><button type="button" aria-pressed="{{ f.pressed }}" style="{{ f.style }}">{{ f.label }}<span style="{{ f.count }}">{{ f.n }}</span></button></sc-for>
+          <span style="font-size: 14px; color: #5e6168">Een kind zonder antwoord gaat niet mee. Ouders antwoorden in hun takenlijst, op het ouderportaal of via de link in de mail.</span>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+          <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+            <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><sc-for list="{{ cols }}" as="c" hint-placeholder-count="4"><th scope="col" style="padding: 12px 16px; font-weight: 600">{{ c }}</th></sc-for></tr></thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="9">
+                <tr style="border-top: 1px solid #eef0f3">
+                  <td style="padding: 12px 16px; vertical-align: top"><strong style="font-size: 15px">{{ r.child }}</strong></td>
+                  <td style="padding: 12px 16px; vertical-align: top">{{ r.guardian }}</td>
+                  <td style="padding: 12px 16px; vertical-align: top"><span style="{{ r.pill }}">{{ r.answer }}</span></td>
+                  <td style="padding: 12px 16px; vertical-align: top; color: #5e6168">{{ r.when }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="padding: 12px 16px; border-top: 1px solid #eef0f3; font-size: 14px; color: #5e6168">9 van 26 leerlingen getoond. Het antwoord van een ouder staat vast op naam en tijd; een ouder die van gedachten verandert, antwoordt opnieuw en de laatste geldt.</div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const base = "display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none; box-sizing: border-box; ";
+    const btn = { plain: base + 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d', primary: base + 'border: 0; background: #3669a5; color: #ffffff' };
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const pills = { open: pill('#fff4de', '#7a4f00'), ja: pill('#e7f3ea', '#1e6b2a'), nee: pill('#fcedec', '#a30000'), none: pill('#f0f1f3', '#3d4047') };
+    const box = (bd) => 'border: 1px solid ' + bd + '; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; background: #ffffff';
+    const kpis = [
+      { label: 'Ja', value: '18', note: 'gaan mee', box: box('#1e6b2a') },
+      { label: 'Nee', value: '3', note: 'blijven op school, met opvang', box: box('#a30000') },
+      { label: 'Nog geen antwoord', value: '5', note: 'herinnering gaat vrijdag', box: box('#e4e6ea') }
+    ];
+    const chip = (on) => "display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px 'Fira Sans', sans-serif; " + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
+    const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
+    const filters = [['Alle', 26, true], ['Ja', 18, false], ['Nee', 3, false], ['Nog geen antwoord', 5, false]].map(([label, n, on]) => ({ label, n, pressed: on ? 'true' : 'false', style: chip(on), count: cnt(on) }));
+    const cols = ['Leerling', 'Ouder of verzorger', 'Antwoord', 'Wanneer'];
+    const rows = [
+      ['Amira Benali', 'Samira Benali (moeder)', 'Ja', '6 okt, 19:40 uur'],
+      ['Bram van Dijk', 'Peter van Dijk (vader)', 'Ja', '7 okt, 08:12 uur'],
+      ['Elif Demir', 'Ayse Demir (moeder)', 'Nee', '7 okt, 21:05 uur, "Elif is die dag bij de orthodontist"'],
+      ['Finn Weidewijk', 'Marieke Weidewijk (moeder)', 'Nog geen antwoord', 'gevraagd op 6 okt'],
+      ['Fleur Jansen', 'Erik en Lotte Jansen', 'Ja', '6 okt, 20:02 uur, door Lotte'],
+      ['Hamza El Idrissi', 'Karima El Idrissi (moeder)', 'Ja', '8 okt, 07:55 uur'],
+      ['Isa de Boer', 'Jeroen de Boer (vader)', 'Nog geen antwoord', 'gevraagd op 6 okt, mail niet geopend'],
+      ['Jesse Mulder', 'Anja Mulder (moeder)', 'Nee', '9 okt, 12:30 uur'],
+      ['Yusuf Kaya', 'Emine Kaya (moeder)', 'Nog geen antwoord', 'gevraagd op 6 okt']
+    ].map(([child, guardian, answer, when]) => ({ child, guardian, answer, when, pill: answer === 'Ja' ? pills.ja : answer === 'Nee' ? pills.nee : pills.none }));
+    return { nav, btn, pills, kpis, filters, cols, rows };
+  }
+}
+</script>
+</body>
+</html>

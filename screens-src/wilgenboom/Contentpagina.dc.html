@@ -35,6 +35,16 @@ a{color:#2f6b4a}a:hover{color:#1f4a33}
         </div>
       </div>
 
+      <h2 style="margin: 14px 0 0; font-size: 30px; font-weight: 700; letter-spacing: -0.01em">Zo werkt het</h2>
+      <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+          <li style="display: flex; gap: 14px; align-items: flex-start; font-size: 18px; line-height: 1.55">
+            <span aria-hidden="true" style="flex: none; width: 34px; height: 34px; border-radius: 17px; background: #2f6b4a; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px">{{ s.n }}</span>
+            <span style="padding-top: 3px"><strong style="font-weight: 700">{{ s.lead }}</strong> {{ s.rest }}</span>
+          </li>
+        </sc-for>
+      </ol>
+
       <h2 style="margin: 14px 0 0; font-size: 30px; font-weight: 700; letter-spacing: -0.01em">Wat meldt u hoe?</h2>
       <div style="overflow-x: auto; border: 1px solid #d3d8df; border-radius: 14px">
         <table style="border-collapse: collapse; width: 100%; font-size: 17px; min-width: 560px">
@@ -75,7 +85,12 @@ a{color:#2f6b4a}a:hover{color:#1f4a33}
 class Component extends DCLogic {
   renderVals() {
     const crumbs = [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Praktisch', href: 'Contentpagina.dc.html' }, { label: 'Uw kind afwezig melden' }];
-    return { crumbs };
+    const steps = [
+      { n: '1', lead: 'Ziek?', rest: 'Meld het voor 8:30 uur in Mijn Wilgenboom.' },
+      { n: '2', lead: 'Langer ziek:', rest: 'meld elke dag opnieuw, of in één keer voor meer dagen.' },
+      { n: '3', lead: 'Weer beter?', rest: 'Meld je beter in Mijn Wilgenboom.' }
+    ];
+    return { crumbs, steps };
   }
 }
 </script>

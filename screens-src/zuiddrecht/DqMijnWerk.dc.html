@@ -26,7 +26,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Mijn werk</h1>
             <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #c64e0b; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 0; background: #3669a5; color: #ffffff"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Nieuwe zaak</button></div>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-size: 15px; color: #5e6168">Goedemiddag, Pieter · maandag 5 oktober 2026</span></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-size: 15px; color: #5e6168">Goedemiddag, Pieter · woensdag 7 oktober 2026</span></div>
         </section>
         <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center"><div role="radiogroup" aria-label="Weergave" style="display: flex; gap: 4px; padding: 4px; border-radius: 10px; background: #eceef1">
             <button type="button" role="radio" aria-checked="true" tabindex="0" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; box-shadow: 0 1px 2px rgba(27,28,29,0.12)">Mijn werk</button>
@@ -139,17 +139,17 @@ class Component extends DCLogic {
     const note = (c, w) => 'font-size: 13px; color: ' + c + '; font-weight: ' + (w || 500);
     const kpis = [
       { label: 'Mijn open zaken', value: '14', note: '3 nieuw deze week', noteStyle: note('#5e6168') },
-      { label: 'Termijn deze week', value: '3', note: '1 loopt vandaag af', noteStyle: note('#a30000', 600) },
+      { label: 'Termijn deze week', value: '2', note: '2 lopen vandaag af', noteStyle: note('#a30000', 600) },
       { label: 'Wacht op inwoner', value: '1', note: 'langste: 9 dagen', noteStyle: note('#5e6168') },
       { label: 'Afgehandeld in oktober', value: '6', note: 'september: 22', noteStyle: note('#5e6168') }
     ];
     const item = (title, meta, late) => ({ title, meta, box: 'display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 8px; text-decoration: none; background: #ffffff; border: 1px solid ' + (late ? '#ebb3b0' : '#e4e6ea') + (late ? '; box-shadow: inset 3px 0 0 #cc0000' : '') });
     const rawDays = [
-      ['ma 5', true, [item('Parkeervergunningen binnenstad', '2026-4837 · Woo', false)]],
+      ['ma 5', false, []],
       ['di 6', false, []],
-      ['wo 7', false, [item('Bezwaar parkeerboete Havenstraat', '2026-4836 · Bezwaar', false)]],
+      ['wo 7', true, [item('Bezwaar parkeerboete Havenstraat', '2026-4836 · Bezwaar', false), item('Parkeervergunningen binnenstad', '2026-4837 · Woo', false)]],
       ['do 8', false, []],
-      ['vr 9', false, [item('Aanbesteding jeugdzorg 2026', '2026-0205 · Woo', false)]]
+      ['vr 9', false, []]
     ];
     const days = rawDays.map(([label, today, items]) => ({
       label, today, items, empty: items.length === 0,

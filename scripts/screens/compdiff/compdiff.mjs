@@ -297,7 +297,7 @@ try {
 	await bpage.close().catch(() => {})
 
 	const { pairs, missing, extra } = pairComponents(B.components, L.components, boardHeight)
-	const ep = pairElements(B.elements, L.elements, boardHeight)
+	const ep = pairElements(B.elements, L.elements, boardHeight, pairs.filter((p) => p.board.role === 'card' && p.live.role === 'card'))
 
 	// Per-pair pixel mismatch: the live crop is scaled to the board crop's size. Secondary to the properties.
 	const b64 = (f) => 'data:image/png;base64,' + fs.readFileSync(f).toString('base64')

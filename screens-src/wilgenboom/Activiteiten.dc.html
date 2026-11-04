@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Wilgenboom: activiteiten en aanmelden</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6b4a}a:hover{color:#1f4a33}
+</style>
+</helmet>
+<div style="font-family: 'Lexend', system-ui, sans-serif; color: #1a1a1a; background: #ffffff">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,200px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 44px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Kalender" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 8px; max-width: 680px">
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.015em">Activiteiten en aanmelden</h1>
+        <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #4a4a4a">Uitjes en avonden voor de hele school, de groep van uw kind of alleen uw kind. U meldt uw eigen kinderen aan en ziet meteen of er plek is.</p>
+      </div>
+
+      <section aria-labelledby="aanmelden" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 id="aanmelden" style="margin: 0; font-size: 26px; font-weight: 700">Aanmelden voor een activiteit</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px">
+          <sc-for list="{{ activities }}" as="a" hint-placeholder-count="2">
+            <li style="display: flex; flex-direction: column; gap: 14px; padding: 24px; border: 1px solid #d3d8df; border-radius: 14px">
+              <div style="display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center">
+                <span style="padding: 4px 12px; border-radius: 14px; background: #e8f1eb; color: #1f4a33; font-size: 15px; font-weight: 600">{{ a.target }}</span>
+                <span style="font-size: 16px; color: #4a4a4a">{{ a.when }}</span>
+              </div>
+              <h3 style="margin: 0; font-size: 22px; font-weight: 700">{{ a.title }}</h3>
+              <p style="margin: 0; font-size: 17px; line-height: 1.55">{{ a.text }}</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 16px; color: #4a4a4a">
+                <span><strong style="color: #1a1a1a">{{ a.places }}</strong> {{ a.placesLabel }}</span>
+                <span>Aanmelden tot en met {{ a.deadline }}</span>
+              </div>
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+                <sc-for list="{{ a.kids }}" as="k" hint-placeholder-count="2">
+                  <li style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 10px; background: #f4f6f9">
+                    <span style="font-size: 17px; font-weight: 600">{{ k.name }} <span style="font-weight: 400; color: #4a4a4a">· {{ k.group }}</span></span>
+                    <span style="display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center">
+                      <sc-if value="{{ k.hasStatus }}" hint-placeholder-val="{{ true }}"><span style="{{ k.pill }}">{{ k.status }}</span></sc-if>
+                      <sc-if value="{{ k.canSignUp }}" hint-placeholder-val="{{ false }}"><button type="button" style="height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: #2f6b4a; color: #ffffff; font: 600 16px 'Lexend', sans-serif">{{ k.name }} aanmelden</button></sc-if>
+                      <sc-if value="{{ k.canWithdraw }}" hint-placeholder-val="{{ false }}"><button type="button" style="height: 44px; padding: 0 14px; border: 2px solid #2f6b4a; border-radius: 10px; background: #ffffff; color: #1f4a33; font: 600 16px 'Lexend', sans-serif">Afmelden</button></sc-if>
+                    </span>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ a.hasNote }}" hint-placeholder-val="{{ false }}"><p role="status" style="margin: 0; font-size: 16px; line-height: 1.5; color: #4a4a4a">{{ a.note }}</p></sc-if>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="komt-u" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 id="komt-u" style="margin: 0; font-size: 26px; font-weight: 700">Komt u ook?</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px">
+          <sc-for list="{{ events }}" as="e" hint-placeholder-count="2">
+            <li style="display: flex; flex-direction: column; gap: 12px; padding: 24px; border: 1px solid #d3d8df; border-radius: 14px">
+              <div style="display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center">
+                <span style="padding: 4px 12px; border-radius: 14px; background: #e8f1eb; color: #1f4a33; font-size: 15px; font-weight: 600">{{ e.target }}</span>
+                <span style="font-size: 16px; color: #4a4a4a">{{ e.when }}</span>
+              </div>
+              <h3 style="margin: 0; font-size: 22px; font-weight: 700">{{ e.title }}</h3>
+              <p style="margin: 0; font-size: 17px; line-height: 1.55">{{ e.text }}</p>
+              <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center">
+                <legend style="font-size: 16px; font-weight: 600; margin-bottom: 8px">{{ e.question }}</legend>
+                <sc-for list="{{ e.options }}" as="o" hint-placeholder-count="3">
+                  <label style="{{ o.style }}"><sc-if value="{{ o.on }}" hint-placeholder-val="{{ false }}"><input type="radio" name="{{ e.id }}" checked style="width: 22px; height: 22px; accent-color: #2f6b4a"></sc-if><sc-if value="{{ o.off }}" hint-placeholder-val="{{ true }}"><input type="radio" name="{{ e.id }}" style="width: 22px; height: 22px; accent-color: #2f6b4a"></sc-if> {{ o.label }}</label>
+                </sc-for>
+              </fieldset>
+              <span style="font-size: 16px; color: #4a4a4a">{{ e.answers }}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'padding: 4px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const kid = (k) => Object.assign({ status: '', pill: '', canSignUp: false, canWithdraw: false }, k, { hasStatus: !!k.status });
+    const activities = [
+      { target: 'Groep 7', when: 'Vrijdag 13 november, 9:00 tot 15:00 uur', title: 'Schoolreis naar het Archeon', text: 'Groep 7 gaat met de bus naar het Archeon. De kinderen nemen zelf lunch mee. Er zijn 4 ouders nodig die meegaan.', places: '2', placesLabel: 'plekken over voor ouders die meegaan', deadline: 'vrijdag 30 oktober', kids: [
+        kid({ name: 'Vera', group: 'groep 7', status: 'Aangemeld, plek bevestigd', pill: pill('#e7f3ea', '#1e6b2a'), canWithdraw: true })
+      ], note: 'Sami zit niet in groep 7, dus u kunt hem hier niet aanmelden.' },
+      { target: 'Hele school', when: 'Woensdag 18 november, 13:00 tot 15:30 uur', title: 'Kerstknutselmiddag', text: 'Knutselen in de hal met ouders en opa\'s en oma\'s. Er is plek voor 40 kinderen. Is het vol, dan komt uw kind op de wachtlijst.', places: '0', placesLabel: 'plekken over, wachtlijst open', deadline: 'maandag 16 november', kids: [
+        kid({ name: 'Vera', group: 'groep 7', status: 'Aangemeld, plek bevestigd', pill: pill('#e7f3ea', '#1e6b2a'), canWithdraw: true }),
+        kid({ name: 'Sami', group: 'groep 4', status: 'Op de wachtlijst, plaats 1', pill: pill('#fff4de', '#7a4f00'), canWithdraw: true })
+      ], note: 'Komt er een plek vrij, dan is die voor Sami. U krijgt dan een bericht.' },
+      { target: 'Alleen Sami', when: 'Dinsdag 24 november, 15:15 tot 16:00 uur', title: 'Extra leesuur in de bibliotheek', text: 'Juf Esra nodigt Sami uit voor het leesuur na schooltijd. Er zijn 8 plekken.', places: '5', placesLabel: 'plekken over', deadline: 'vrijdag 20 november', kids: [
+        kid({ name: 'Sami', group: 'groep 4', canSignUp: true })
+      ], note: '' }
+    ].map((a) => Object.assign(a, { hasNote: !!a.note }));
+    const opt = (on) => 'display: inline-flex; gap: 10px; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 10px; font-size: 17px; border: 2px solid ' + (on ? '#2f6b4a; background: #e8f1eb' : '#d3d8df');
+    const options = (chosen) => ['Ja, ik kom', 'Nee', 'Misschien'].map((label) => ({ label, on: label === chosen, off: label !== chosen, style: opt(label === chosen) }));
+    const events = [
+      { id: 'e1', target: 'Groep 7', when: 'Donderdag 29 oktober, 19:30 uur', title: 'Informatieavond over groep 8 en de middelbare school', text: 'Meester Daan vertelt wat er in groep 8 gebeurt en hoe de keuze voor een middelbare school gaat.', question: 'Komt u? Voor Vera', options: options('Ja, ik kom'), answers: '18 van de 26 gezinnen hebben geantwoord: 15 keer ja, 2 keer nee, 1 keer misschien.' },
+      { id: 'e2', target: 'Hele school', when: 'Zaterdag 7 november, 10:00 tot 12:00 uur', title: 'Klusochtend op het plein', text: 'Samen het kleuterplein opknappen. Koffie en limonade staan klaar.', question: 'Komt u?', options: options(''), answers: '31 gezinnen hebben geantwoord. U nog niet.' }
+    ];
+    return { activities, events, crumbs: [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Mijn Wilgenboom', href: 'MijnOverzicht.dc.html' }, { label: 'Activiteiten en aanmelden' }] };
+  }
+}
+</script>
+</body>
+</html>

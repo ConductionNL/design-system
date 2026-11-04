@@ -18,7 +18,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: grid; height: 900px; overflow: hidden">
   <div class="nai-achter" aria-hidden="true" inert style="grid-area: 1 / 1; display: flex; flex-direction: column"><dc-import name="DqDashboard" hint-size="100%,1220px"></dc-import></div>
   <div style="grid-area: 1 / 1; position: relative; z-index: 20; background: rgba(27,28,29,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 88px 16px 24px; box-sizing: border-box">
-    <dc-import name="NcAppInstellingen" app="Dossiq" version="0.4.47" active="Weergaven in mijn menu" height="760" sections="{{ sections }}" nc-links="{{ ncLinks }}" hint-size="900px,760px"></dc-import>
+    <dc-import name="NcAppInstellingen" app="Dossiq" version="0.4.47" active="Meldingen" height="760" sections="{{ sections }}" nc-links="{{ ncLinks }}" hint-size="900px,760px"></dc-import>
   </div>
 </div>
 </x-dc>
@@ -41,15 +41,16 @@ class Component extends DCLogic {
         { select: 'Meldingsdomein', value: 'Al mijn werk' },
         { matrix: 'Gebeurtenis', cols: ['In Nextcloud', 'Per e-mail'], lines: [
           ['Zaak', null],
-          ['Een zaak wordt aan mij toegewezen', [true, false]],
-          ['Een zaak wordt opgeschaald naar calamiteit', [true, false]],
-          ['Een zaak komt via een overdracht bij ons binnen', [true, false]],
-          ['Een zaak die ik volg verandert van status', [true, false]],
+          ['Een zaak wordt aan mij toegewezen · besloten door: de organisatie, verplicht', [true, false]],
+          ['Een zaak wordt opgeschaald naar calamiteit · besloten door: jouw eigen waarde; teamstandaard eronder: uit', [true, false]],
+          ['Een zaak komt via een overdracht bij ons binnen · besloten door: de groepsstandaard van Woo en informatie', [false, false]],
+          ['Een zaak die ik volg verandert van status · besloten door: jouw eigen waarde', [true, false]],
           ['Vervanging', null],
-          ['Ik word als waarnemer voor iemand geregistreerd', [true, false]],
+          ['Ik word als waarnemer voor iemand geregistreerd · besloten door: de groepsstandaard van Woo en informatie', [true, false]],
           ['Werkoverzicht', null],
-          ['Mijn dagelijkse werkoverzicht', [true, false]]
+          ['Mijn dagelijkse werkoverzicht · besloten door: jouw eigen waarde', [true, false]]
         ] },
+        { note: 'Elke melding noemt de laag die haar besloot: jouw eigen waarde, een teamstandaard of de groepsstandaard, en op welk meldingsdomein die laag is vastgepind. Staat een melding uit door een groepsstandaard, dan zie je dat hier; zet je haar zelf weer aan, dan staat jouw waarde bovenaan en blijft de teamstandaard eronder zichtbaar. Het meldingsdomein biedt alleen domeinen die een geleverde regel kent.', tone: 'plain' },
         { disclosure: 'Bundeling en testbericht' }
       ] },
       { name: 'Dagoverzicht', desc: 'Elke werkdag een mail met je openstaande zaken en taken.', rows: [

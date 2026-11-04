@@ -25,6 +25,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Pijplijn</h1>
           <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
             <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13,5V11H14.17L12,13.17L9.83,11H11V5H13M15,3H9V9H5L12,16L19,9H15V3M19,18H5V20H19V18Z"></path></svg>Downloaden</button>
+            <button type="button" aria-expanded="true" aria-controls="pq-pipe-act" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"></path></svg>Activiteit</button>
             <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #c64e0b; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
             <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Nieuwe lead</button>
           </div>
@@ -102,15 +103,49 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="display: flex; justify-content: flex-end; gap: 10px"><button type="button" style="{{ s.btn }}; height: 40px">Annuleren</button><button type="button" style="{{ s.btnP }}; height: 40px">Markeer als verloren</button></div>
           </section>
         </div>
+        <section id="pq-pipe-act" aria-labelledby="pq-pipe-act-h" style="{{ s.card }}">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px"><h2 id="pq-pipe-act-h" style="{{ s.h2 }}">Activiteit op de pijplijn</h2><span style="{{ s.muted }}">zijpaneel, geopend met de knop Activiteit; nieuwste eerst</span></div>
+          <div role="group" aria-label="Soort" style="display: flex; flex-wrap: wrap; gap: 8px">
+            <sc-for list="{{ actFilters }}" as="f" hint-placeholder-count="3">
+              <button type="button" aria-pressed="{{ f.pressed }}" style="{{ f.style }}">{{ f.label }}<span style="{{ f.countStyle }}">{{ f.count }}</span></button>
+            </sc-for>
+          </div>
+          <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; font-size: 14px">
+            <sc-for list="{{ activity }}" as="e" hint-placeholder-count="6">
+              <li style="display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 9px 0; border-top: 1px solid #eef0f3"><span style="flex: none; width: 110px; font-size: 13px; color: #5e6168">{{ e.when }}</span><span title="{{ e.who }}" style="flex: none; width: 26px; height: 26px; border-radius: 13px; background: #eaf0f7; color: #234a78; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ e.initials }}</span><span style="{{ e.kindStyle }}">{{ e.kind }}</span><span style="flex: 1 1 320px">{{ e.text }}</span><sc-if value="{{ e.back }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; background: #fff4de; color: #7a4f00"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"></path></svg>een fase terug</span></sc-if></li>
+            </sc-for>
+          </ol>
+          <span style="{{ s.muted }}">Elke regel: wanneer, wie en wat. Aangemaakt, naar een andere fase, gewonnen of verloren, toegewezen. Een stap terug krijgt het gele label. Alles, Leads of Verzoeken filtert de lijst. Het faseverloop van één lead staat op de lead zelf.</span>
+        </section>
         <section aria-labelledby="pq-service-h" style="display: flex; flex-direction: column; gap: 12px">
-          <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center"><h2 id="pq-service-h" style="{{ s.h2 }}">Servicepijplijn: meldingen en verzoeken</h2><span style="{{ s.muted }}">dezelfde bordweergave met Pijplijn: Service gekozen; een verzoekkaart heeft geen waarderegel</span></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center"><h2 id="pq-service-h" style="{{ s.h2 }}">Servicepijplijn: meldingen en verzoeken</h2><span style="{{ s.muted }}">dezelfde bordweergave met Pijplijn: Service gekozen, een gemengde pijplijn; een verzoekkaart heeft geen waarderegel</span></div>
           <div style="display: grid; grid-template-columns: repeat(3, minmax(240px, 1fr)); gap: 16px; align-items: start">
             <sc-for list="{{ service }}" as="c" hint-placeholder-count="3">
               <section aria-label="{{ c.title }}" style="background: #eceef1; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 12px">
                 <h3 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700">{{ c.title }}<span style="margin-left: auto; padding: 1px 8px; border-radius: 10px; font-size: 12px; background: #ffffff; color: #3d4047">{{ c.count }}</span></h3>
                 <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="2">
-                  <a href="PqTicket.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 10px; background: #ffffff; border: 1px solid #e4e6ea; text-decoration: none; color: #1b1c1d"><span style="display: flex; gap: 6px; align-items: center"><span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 700; background: #e3f1f3; color: #1d5e66">Verzoek</span><span style="{{ k.prioStyle }}">{{ k.prio }}</span></span><strong style="font-size: 15px; line-height: 1.3">{{ k.title }}</strong><span style="{{ s.muted }}">{{ k.owner }}</span></a>
+                  <a href="PqTicket.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 10px; background: #ffffff; border: 1px solid #e4e6ea; text-decoration: none; color: #1b1c1d"><span style="display: flex; gap: 6px; align-items: center"><span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 700; background: #e3f1f3; color: #1d5e66">Verzoek</span><span style="{{ k.prioStyle }}">{{ k.prio }}</span><sc-if value="{{ k.menu }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="margin-left: auto; width: 28px; height: 28px; border-radius: 14px; background: #eceef1; color: #1b1c1d; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></span></sc-if></span><strong style="font-size: 15px; line-height: 1.3">{{ k.title }}</strong><span style="{{ s.muted }}">{{ k.owner }}</span></a>
+                  <sc-if value="{{ k.menu }}" hint-placeholder-val="{{ false }}">
+                    <div role="menu" aria-label="Acties op de kaart" style="margin-top: -4px; display: flex; flex-direction: column; padding: 6px; border-radius: 10px; background: #ffffff; border: 1px solid #e4e6ea; box-shadow: 0 8px 24px rgba(27,28,29,0.12); font-size: 14px">
+                      <span role="menuitem" style="padding: 8px 10px; border-radius: 6px">Details bekijken</span>
+                      <span role="menuitem" aria-expanded="true" style="padding: 8px 10px; border-radius: 6px; background: #eaf0f7; color: #234a78; font-weight: 600">Status wijzigen</span>
+                      <span style="padding: 2px 10px 8px 22px; font-size: 13px; color: #5e6168">Wacht op inwoner · Afgerond · Afgewezen</span>
+                      <span role="menuitem" style="padding: 8px 10px; border-radius: 6px">Toewijzen aan</span>
+                      <span role="menuitem" style="padding: 8px 10px; border-radius: 6px">Omzetten naar een zaak</span>
+                      <span style="padding: 2px 10px 6px; font-size: 13px; color: #5e6168">Menu bij het rondje op de kaart. Status wijzigen toont alleen de overgangen die mogen. Omzetten staat er alleen bij In behandeling.</span>
+                    </div>
+                  </sc-if>
                 </sc-for>
+                <sc-if value="{{ c.quick }}" hint-placeholder-val="{{ false }}">
+                  <form aria-label="Toevoegen in deze fase" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 10px; background: #ffffff; border: 1px solid #3669a5">
+                    <div role="radiogroup" aria-label="Soort" style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; background: #eceef1"><span role="radio" aria-checked="false" style="flex: 1; text-align: center; padding: 6px 0; border-radius: 6px; font-size: 13px; font-weight: 600; color: #3d4047">Lead</span><span role="radio" aria-checked="true" style="flex: 1; text-align: center; padding: 6px 0; border-radius: 6px; font-size: 13px; font-weight: 600; background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12)">Verzoek</span></div>
+                    <div style="display: flex; flex-direction: column; gap: 4px"><label for="pq-qc-title" style="font-size: 13px; font-weight: 600">Titel</label><input id="pq-qc-title" type="text" value="Boom over de stoep, Beukenlaan" style="{{ s.field }}; height: 36px; font-size: 14px"></div>
+                    <div style="display: flex; flex-direction: column; gap: 4px"><label for="pq-qc-prio" style="font-size: 13px; font-weight: 600">Prioriteit</label><select id="pq-qc-prio" style="{{ s.field }}; height: 36px; font-size: 14px"><option>Laag</option><option selected>Normaal</option><option>Hoog</option><option>Urgent</option></select></div>
+                    <div style="display: flex; justify-content: flex-end; gap: 8px"><button type="button" style="{{ s.btn }}; height: 34px; font-size: 13px">Annuleren</button><button type="button" style="{{ s.btnP }}; height: 34px; font-size: 13px">Toevoegen</button></div>
+                    <span style="{{ s.muted }}">Op een gemengde pijplijn kies je eerst Lead of Verzoek. Een verzoek vraagt titel en prioriteit en komt met de badge Verzoek in deze fase.</span>
+                  </form>
+                </sc-if>
+                <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 6px; height: 36px; border: 1px dashed #828a95; border-radius: 8px; background: transparent; font: 600 13px 'Fira Sans', sans-serif; color: #3d4047"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Toevoegen in deze fase</button>
               </section>
             </sc-for>
           </div>
@@ -120,7 +155,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1160}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1780}}'>
 class Component extends DCLogic {
   renderVals() {
     const pill = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
@@ -167,12 +202,22 @@ class Component extends DCLogic {
     });
     const totals = { grand: eur(Math.round(grand)), weighted: eur(Math.round(weighted)) };
     const service = [
-      { title: 'Nieuw', cards: [['Kapotte lantaarnpaal Lindelaan', 'Hoog', 'Fatma Yildiz'], ['Vraag over afvalpas', 'Normaal', 'Pieter Jansen']] },
-      { title: 'In behandeling', cards: [['Overlast bouwplaats Parkstraat', 'Urgent', 'Joris Bakker']] },
-      { title: 'Wacht op inwoner', cards: [['Aanvraag parkeervergunning', 'Normaal', 'Anouk Bakker']] }
-    ].map((c) => ({ title: c.title, count: c.cards.length, cards: c.cards.map(([title, prio, owner]) => ({ title, prio, owner, prioStyle: prio === 'Urgent' ? pill('#fcedec', '#a30000') : prio === 'Hoog' ? pill('#fff4de', '#7a4f00') : pill('#f0f1f3', '#3d4047') })) }));
+      { title: 'Nieuw', quick: true, cards: [['Kapotte lantaarnpaal Lindelaan', 'Hoog', 'Fatma Yildiz'], ['Vraag over afvalpas', 'Normaal', 'Pieter Jansen']] },
+      { title: 'In behandeling', quick: false, cards: [['Overlast bouwplaats Parkstraat', 'Urgent', 'Joris Bakker', true]] },
+      { title: 'Wacht op inwoner', quick: false, cards: [['Aanvraag parkeervergunning', 'Normaal', 'Anouk Bakker']] }
+    ].map((c) => ({ title: c.title, count: c.cards.length, quick: c.quick, cards: c.cards.map(([title, prio, owner, menu]) => ({ title, prio, owner, menu: !!menu, prioStyle: prio === 'Urgent' ? pill('#fcedec', '#a30000') : prio === 'Hoog' ? pill('#fff4de', '#7a4f00') : pill('#f0f1f3', '#3d4047') })) }));
+    const actFilters = [['Alles', 6, true], ['Leads', 4, false], ['Verzoeken', 2, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on) + ' height: 34px;', countStyle: cnt(on) }));
+    const kindS = (lead) => 'flex: none; display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 700; ' + (lead ? 'background: #eaf0f7; color: #234a78;' : 'background: #e3f1f3; color: #1d5e66;');
+    const activity = [
+      ['vandaag 11:02', 'Pieter Jansen', 'Lead', 'Energiecoöperatie Zuid aangemaakt in Nieuw, bron Aanbesteding', false],
+      ['vandaag 10:48', 'Fatma Yildiz', 'Lead', 'Bouwbedrijf Van Dijk van Voorstel naar Gekwalificeerd: Voorstel zat vol', true],
+      ['vandaag 10:30', 'Joris Bakker', 'Lead', 'Fietsenmaker Peters verloren, reden Prijs te hoog', false],
+      ['vandaag 09:55', 'Anouk Bakker', 'Verzoek', 'Overlast bouwplaats Parkstraat toegewezen aan Joris Bakker', false],
+      ['gisteren 16:40', 'Pieter Jansen', 'Verzoek', 'Kapotte lantaarnpaal Lindelaan aangemaakt in Nieuw, vanuit de wachtrij', false],
+      ['gisteren 15:12', 'Pieter Jansen', 'Lead', 'Buurtvereniging Oost gewonnen, € 12.500, van Voorstel naar Gewonnen', false]
+    ].map(([when, who, kind, text, back]) => ({ when, who, initials: who.split(' ').map((p) => p[0]).join(''), kind, kindStyle: kindS(kind === 'Lead'), text, back }));
     const s = { note: 'display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: flex-start; padding: 12px 14px; border: 1px dashed #c9ced6; border-radius: 10px; background: #f5f6f8; font-size: 14px; color: #3d4047', noteL: 'flex: none; font-size: 12px; font-weight: 600; color: #5e6168; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 2px', btn: "display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap; text-decoration: none", btnP: "display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; font: 600 14px 'Fira Sans', sans-serif; color: #ffffff; white-space: nowrap", card: 'background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px', h2: 'margin: 0; font-size: 17px; font-weight: 700; color: #1b1c1d', muted: 'font-size: 13px; color: #5e6168', field: "height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d" };
-    return { nav, views, modes, cols, totals, service, s };
+    return { nav, views, modes, cols, totals, service, actFilters, activity, s };
   }
 }
 </script>

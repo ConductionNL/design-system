@@ -77,16 +77,24 @@ a{color:#3669a5}a:hover{color:#234a78}
                 <dt style="color: #5e6168">Verslag</dt><dd style="margin: 0; font-weight: 500; color: #5e6168">Nog niet vastgelegd</dd>
               </dl>
               <div style="display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; border: 1px solid #828a95; background: #ffffff; color: #1b1c1d">Verslag vastleggen</button><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; border: 1px solid #828a95; background: #ffffff; color: #1b1c1d">Klager ziet af van horen</button></div>
+              <span style="font-size: 13px; color: #5e6168">Uitnodigingen gingen op 22 okt via de agenda naar alle aanwezigen. Ziet de klager af van horen, dan leg je datum, manier (e-mail, brief of telefoon) en de bevestiging vast; de klacht gaat dan meteen naar het oordeel.</span>
+            </section>
+            <section aria-label="Contact met de klager" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Contact met de klager</h2>
+              <ul style="margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 14px">
+                <sc-for list="{{ contacts }}" as="c" hint-placeholder-count="2"><li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 64px; color: #5e6168">{{ c.date }}</span><span style="flex: 1 1 auto"><strong style="display: block">{{ c.title }}</strong><span style="color: #5e6168">{{ c.detail }}</span></span></li></sc-for>
+              </ul>
             </section>
             <section aria-label="Oordeel" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
               <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Oordeel</h2>
-              <p style="margin: 0; font-size: 14px; color: #5e6168">Na het hoorgesprek kies je een oordeel. De antwoordbrief volgt het oordeel en gaat naar de klager.</p>
+              <p style="margin: 0; font-size: 14px; color: #5e6168">Na het hoorgesprek kies je een oordeel. Het gaat eerst ter goedkeuring naar de klachtencoördinator, de termijn loopt intussen door. Daarna maak je de antwoordbrief voor de klager.</p>
               <div role="radiogroup" aria-label="Oordeel" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
                 <sc-for list="{{ verdicts }}" as="v" hint-placeholder-count="4"><label style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border: 1px solid #e4e6ea; border-radius: 10px; font-size: 14px; cursor: pointer"><input type="radio" name="oordeel" style="margin: 3px 0 0; accent-color: #3669a5"><span><strong style="display: block">{{ v.label }}</strong><span style="color: #5e6168">{{ v.hint }}</span></span></label></sc-for>
               </div>
               <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; font-size: 14px">
-                <dt style="color: #5e6168">Antwoordbrief</dt><dd style="margin: 0; font-weight: 500; color: #5e6168">Wordt gemaakt uit de sjabloon Antwoord op klacht zodra het oordeel vaststaat</dd>
+                <dt style="color: #5e6168">Antwoordbrief</dt><dd style="margin: 0; font-weight: 500; color: #5e6168">Wordt gemaakt uit de sjabloon Antwoord op klacht (filinq) zodra het oordeel is goedgekeurd: klachtnummer, onderwerp, oordeel en toelichting</dd>
               </dl>
+              <button type="button" disabled style="align-self: flex-start; height: 34px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #f0f1f3; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif">Antwoordbrief maken</button>
             </section>
           </div>
           <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
@@ -95,7 +103,7 @@ a{color:#3669a5}a:hover{color:#234a78}
               <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; font-size: 14px">
                 <dt style="color: #5e6168">Wettelijk</dt><dd style="margin: 0; font-weight: 500">6 weken, tot 24 nov</dd>
                 <dt style="color: #5e6168">Verdaging</dt><dd style="margin: 0; font-weight: 500">Mogelijk met 4 weken, nog niet gebruikt</dd>
-                <dt style="color: #5e6168">Ontvangstbevestiging</dt><dd style="margin: 0; font-weight: 500">Binnen 3 dagen, verstuurd 14 okt</dd>
+                <dt style="color: #5e6168">Ontvangstbevestiging</dt><dd style="margin: 0; font-weight: 500">Binnen 3 dagen, verstuurd 14 okt per e-mail; de brief staat in Documenten</dd>
               </dl>
               <div aria-hidden="true" style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><div style="width: 45%; height: 100%; background: #3669a5"></div></div>
               <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #828a95; background: #ffffff; color: #1b1c1d; align-self: flex-start">Verdagen</button>
@@ -111,6 +119,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                 <li><span style="color: #5e6168">3 eerdere klachten dit jaar over dezelfde afdeling</span></li>
               </ul>
               <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #828a95; background: #ffffff; color: #1b1c1d; align-self: flex-start">Zaak starten uit deze klacht</button>
+              <span style="font-size: 13px; color: #5e6168">Een zaak uit deze klacht, bijvoorbeeld een intern onderzoek, verwijst terug naar KL-2026-0041 en verschijnt hier als gerelateerde zaak. De klacht loopt zelf door.</span>
             </section>
           </aside>
         </div>
@@ -135,7 +144,11 @@ class Component extends DCLogic {
     }));
     const verdicts = [['Gegrond', 'De klacht klopt. De afdeling krijgt een verbeterpunt.'], ['Deels gegrond', 'Een deel van de klacht klopt.'], ['Ongegrond', 'De klacht klopt niet. Leg uit waarom.'], ['Niet-ontvankelijk', 'De klacht valt niet onder hoofdstuk 9 van de Awb.']].map(([label, hint]) => ({ label, hint }));
     const people = [['RB', 'R. de Boer', 'Klager'], ['SM', 'Sanne Mulder', 'Behandelaar'], ['JV', 'Joris Vink', 'Klachtencoördinator']].map(([initials, name, role]) => ({ initials, name, role }));
-    return { steps, tabs, verdicts, people };
+    const contacts = [
+      ['14 okt', 'Ontvangstbevestiging per e-mail', 'Uit de sjabloon: klachtnummer, ontvangstdatum, behandelaar Sanne Mulder, antwoord uiterlijk 24 nov'],
+      ['20 okt', 'Telefoon, 12 minuten', 'Klager licht de melding toe. Vervolg: foto\'s van de stoeptegel opvragen bij de klager']
+    ].map(([date, title, detail]) => ({ date, title, detail }));
+    return { steps, tabs, verdicts, people, contacts };
   }
 }
 </script>

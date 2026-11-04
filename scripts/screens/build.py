@@ -33,7 +33,7 @@ THUMB_W = 480
 THUMB_MAX = 60_000
 SCHOOLS = [
     ('wilgenboom', 'Basisschool De Wilgenboom'),
-    ('vaartveld', 'Vaartveld College'),
+    ('vaartveld', 'Zuiddrecht College'),
     ('esdoornveen', 'Esdoornveen, mbo college'),
     ('warmtepompacademie', 'Warmtepompacademie'),
 ]
@@ -235,9 +235,13 @@ def flatten_one(fl, key, board):
     (OUT / board['file']).write_text(render_one(fl, board))
 
 
+# An element clipped by an overflow-hidden ancestor (the dimmed page behind a dialog, a dialog's cut-off
+# sections) counts up to that ancestor's bottom, not its own.
 MEASURE = ('<script>addEventListener("load",()=>setTimeout(()=>{const b=document.querySelector(".sc-board");'
-           'let m=0;for(const e of b.querySelectorAll("*")){const q=e.getBoundingClientRect();'
-           'if(q.height>0&&q.bottom>m)m=q.bottom}'
+           'const clip=(e)=>{let c=Infinity;for(let p=e.parentElement;p&&p!==b;p=p.parentElement){const o=getComputedStyle(p).overflow;'
+           'if(o.includes("hidden")||o.includes("clip"))c=Math.min(c,p.getBoundingClientRect().bottom)}return c};'
+           'let m=0;for(const e of b.querySelectorAll("*")){const q=e.getBoundingClientRect();const t=Math.min(q.bottom,clip(e));'
+           'if(q.height>0&&t>m)m=t}'
            'document.body.setAttribute("data-sc-height",Math.ceil(Math.max(b.scrollHeight,m)))},300))</script>')
 
 

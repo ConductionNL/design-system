@@ -203,6 +203,83 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="{{ S.row }}"><button type="button" style="{{ S.btnS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Medewerkerprofiel toevoegen</button></div>
           </section>
 
+          <section role="dialog" aria-labelledby="pq-s-del" style="{{ S.card }}; box-shadow: 0 8px 24px rgba(27,28,29,0.12)">
+            <div style="{{ S.grow }}"><h2 id="pq-s-del" style="{{ S.h2 }}">'Parkeren' verwijderen?</h2><p style="{{ S.desc }}">Deze categorie staat op 0 producten. Verwijderen kan niet ongedaan worden gemaakt. Alleen de rode knop verwijdert; Annuleren, Escape en klikken buiten het venster doen niets.</p></div>
+            <div style="{{ S.row }}; justify-content: flex-end"><button type="button" style="{{ S.btnS }}">Annuleren</button><button type="button" style="{{ S.btnP }}; background: #a30000">Verwijderen</button></div>
+            <p style="{{ S.help }}">Elke verwijderknop op deze pagina vraagt zo om bevestiging: leadbronnen, kanalen, categorieën, vaardigheden en profielen.</p>
+          </section>
+
+          <section aria-labelledby="pq-s-wizard" style="{{ S.card }}">
+            <div style="{{ S.grow }}"><h2 id="pq-s-wizard" style="{{ S.h2 }}">Installatiewizard</h2><p style="{{ S.desc }}">Loopt de stappen uit het manifest opnieuw: register, leadbronnen, kanalen, kassa en koppelingen. Wat al is ingesteld blijft staan.</p></div>
+            <div style="{{ S.row }}"><button type="button" style="{{ S.btnP }}">Installatiewizard starten</button><span style="{{ S.help }}">Laatst doorlopen op 12 sep 2026 door beheerder@zuiddrecht.nl, 5 van 5 stappen klaar.</span></div>
+          </section>
+
+          <section aria-labelledby="pq-s-mailbox" style="{{ S.card }}">
+            <div style="{{ S.headRow }}"><h2 id="pq-s-mailbox" style="{{ S.h2 }}">Ticketmailboxen</h2><button type="button" style="{{ S.btnHead }}">Adres toevoegen</button></div>
+            <p style="{{ S.desc }}">Mail aan deze adressen wordt een ticket in de wachtrij. Andere mail blijft in Mail.</p>
+            <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+              <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 0; border-bottom: 1px solid #eef0f3"><strong style="flex: 1 1 200px; font-size: 15px">meldingen@zuiddrecht.nl</strong><span style="{{ S.ok }}">Verbonden</span><span style="font-size: 13px; color: #5e6168">laatste ticket 11:04</span><button type="button" style="{{ S.btnT }}">Verwijderen</button></li>
+              <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 0; border-bottom: 1px solid #eef0f3"><strong style="flex: 1 1 200px; font-size: 15px">info@zuiddrecht.nl</strong><span style="{{ S.ok }}">Verbonden</span><span style="font-size: 13px; color: #5e6168">laatste ticket gisteren</span><button type="button" style="{{ S.btnT }}">Verwijderen</button></li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="pq-s-rel" style="{{ S.card }}">
+            <div style="{{ S.headRow }}"><h2 id="pq-s-rel" style="{{ S.h2 }}">Relatietypen</h2></div>
+            <p style="{{ S.desc }}">Hoe contacten en organisaties aan elkaar kunnen hangen. Elk type heeft een omgekeerde kant, die op het andere record verschijnt.</p>
+            <table style="border-collapse: collapse; width: 100%"><thead><tr><th style="{{ S.th }}">Type</th><th style="{{ S.th }}">Omgekeerd</th><th style="{{ S.th }}">Tussen</th><th style="{{ S.th }}"></th></tr></thead><tbody>
+              <sc-for list="{{ relTypes }}" as="r" hint-placeholder-count="4"><tr><td style="{{ S.td }}"><strong>{{ r.name }}</strong></td><td style="{{ S.td }}">{{ r.inverse }}</td><td style="{{ S.td }}">{{ r.between }}</td><td style="{{ S.tdEnd }}"><button type="button" style="{{ S.btnT }}">Bewerken</button></td></tr></sc-for>
+            </tbody></table>
+            <form aria-label="Relatietype toevoegen" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; padding: 14px; border: 1px solid #828a95; border-radius: 10px; background: #fbfbfc">
+              <div style="{{ S.field }}; flex: 1 1 160px"><label for="pq-rt-name" style="{{ S.label }}">Type</label><input id="pq-rt-name" type="text" value="voogd van" style="{{ S.input }}"></div>
+              <div style="{{ S.field }}; flex: 1 1 160px"><label for="pq-rt-inv" style="{{ S.label }}">Omgekeerd</label><input id="pq-rt-inv" type="text" value="onder voogdij van" style="{{ S.input }}"></div>
+              <div style="{{ S.field }}; flex: 1 1 160px"><label for="pq-rt-btw" style="{{ S.label }}">Tussen</label><select id="pq-rt-btw" style="{{ S.select }}"><option>Persoon en persoon</option><option>Persoon en organisatie</option><option>Organisatie en organisatie</option></select></div>
+              <button type="button" style="{{ S.btnP }}">Toevoegen</button>
+            </form>
+          </section>
+
+          <section aria-labelledby="pq-s-sla" style="{{ S.card }}">
+            <div style="{{ S.grow }}"><h2 id="pq-s-sla" style="{{ S.h2 }}">SLA-beleid</h2><p style="{{ S.desc }}">De doelen waar het dashboard en de rapportages op meten. Per beleid een reactietijd, een oplostijd en een escalatieketen.</p></div>
+            <table style="border-collapse: collapse; width: 100%"><thead><tr><th style="{{ S.th }}">Beleid</th><th style="{{ S.th }}">Reactie</th><th style="{{ S.th }}">Oplossing</th><th style="{{ S.th }}">Escalatie</th><th style="{{ S.th }}"></th></tr></thead><tbody>
+              <sc-for list="{{ slaRows }}" as="r" hint-placeholder-count="3"><tr><td style="{{ S.td }}"><strong>{{ r.name }}</strong></td><td style="{{ S.td }}">{{ r.ack }}</td><td style="{{ S.td }}">{{ r.res }}</td><td style="{{ S.td }}">{{ r.esc }}</td><td style="{{ S.tdEnd }}"><button type="button" style="{{ S.btnT }}">Bewerken</button></td></tr></sc-for>
+            </tbody></table>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end">
+              <div style="{{ S.field }}; flex: 0 1 220px"><label for="pq-sla-fcr" style="{{ S.label }}">Doel first-call resolution</label><input id="pq-sla-fcr" type="text" value="70%" style="{{ S.input }}"></div>
+              <div style="{{ S.field }}; flex: 0 1 220px"><label for="pq-sla-ans" style="{{ S.label }}">Doel gemiddelde antwoordtijd</label><input id="pq-sla-ans" type="text" value="4 uur" style="{{ S.input }}"></div>
+            </div>
+            <form aria-label="Wijziging van het SLA-beleid" style="display: flex; flex-direction: column; gap: 12px; padding: 14px; border: 1px solid #828a95; border-radius: 10px; background: #fbfbfc">
+              <p style="margin: 0; font-size: 14px">Je wijzigt <strong>Standaard</strong>: oplossing van 40 naar 32 werkuren.</p>
+              <div style="{{ S.field }}"><label for="pq-sla-why" style="{{ S.label }}">Reden van de wijziging</label><input id="pq-sla-why" type="text" aria-invalid="true" style="{{ S.input }}; border-color: #a30000"><p role="alert" style="margin: 0; font-size: 13px; color: #a30000">Een reden is verplicht om het SLA-beleid te wijzigen</p></div>
+              <div style="{{ S.row }}; justify-content: flex-end"><button type="button" style="{{ S.btnS }}">Annuleren</button><button type="button" aria-disabled="true" style="{{ S.btnDone }}">Opslaan</button></div>
+            </form>
+            <h3 style="{{ S.h3 }}">Geschiedenis van het beleid</h3>
+            <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; font-size: 14px">
+              <li style="padding: 8px 0; border-top: 1px solid #eef0f3">12 sep 2026 · Anouk Bakker · Urgent: escalatie bij 80% toegevoegd. Reden: "Afspraak met de directie na het rapport over Q2."</li>
+              <li style="padding: 8px 0; border-top: 1px solid #eef0f3">3 jun 2026 · Anouk Bakker · Standaard: reactie van 8 naar 4 werkuren. Reden: "Nieuwe servicenormen van de raad."</li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="pq-s-hol" style="{{ S.card }}">
+            <div style="{{ S.headRow }}"><h2 id="pq-s-hol" style="{{ S.h2 }}">Feestdagenkalender</h2><button type="button" style="{{ S.btnHead }}">Sluitingsdag toevoegen</button></div>
+            <p style="{{ S.desc }}">Termijnen slaan deze dagen over, net als het weekend.</p>
+            <div style="{{ S.field }}"><label for="pq-hol-src" style="{{ S.label }}">Nationale kalender</label><select id="pq-hol-src" style="{{ S.select }}; max-width: 320px"><option>Nederland, officiële feestdagen</option><option>Geen</option></select></div>
+            <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; font-size: 14px">
+              <li style="display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 8px 0; border-top: 1px solid #eef0f3"><strong style="flex: 1 1 200px">Koningsdag</strong><span>27 apr 2027</span><span style="{{ S.plain }}">nationaal</span></li>
+              <li style="display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 8px 0; border-top: 1px solid #eef0f3"><strong style="flex: 1 1 200px">Zuiddrechtse Dag</strong><span>14 mei 2027</span><span style="{{ S.blue }}">eigen sluitingsdag</span><button type="button" style="{{ S.btnT }}">Verwijderen</button></li>
+              <li style="display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 8px 0; border-top: 1px solid #eef0f3"><strong style="flex: 1 1 200px">Dag na Hemelvaart</strong><span>7 mei 2027</span><span style="{{ S.blue }}">eigen sluitingsdag</span><button type="button" style="{{ S.btnT }}">Verwijderen</button></li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="pq-s-quote" style="{{ S.card }}">
+            <div style="{{ S.grow }}"><h2 id="pq-s-quote" style="{{ S.h2 }}">Offertes</h2><p style="{{ S.desc }}">Hoe een offerte genummerd wordt, hoe lang hij geldig is en waar de PDF komt.</p></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 20px">
+              <div style="{{ S.field }}"><label for="pq-q-num" style="{{ S.label }}">Nummerformaat</label><input id="pq-q-num" type="text" value="OFF-{jaar}-{volgnummer:4}" style="{{ S.input }}"><p style="{{ S.help }}">Volgende: OFF-2026-0142</p></div>
+              <div style="{{ S.field }}"><label for="pq-q-days" style="{{ S.label }}">Geldig (dagen)</label><input id="pq-q-days" type="number" value="30" style="{{ S.input }}"></div>
+              <div style="{{ S.field }}"><label for="pq-q-vat" style="{{ S.label }}">Standaard btw-tarief</label><select id="pq-q-vat" style="{{ S.select }}"><option>21%</option><option>9%</option><option>0%, vrijgesteld</option></select></div>
+              <div style="{{ S.field }}"><label for="pq-q-path" style="{{ S.label }}">PDF-map</label><input id="pq-q-path" type="text" value="/Pipelinq/Offertes/{jaar}" style="{{ S.input }}"></div>
+            </div>
+            <div style="{{ S.row }}; justify-content: flex-end"><button type="button" style="{{ S.btnP }}">Offerte-instellingen opslaan</button></div>
+          </section>
+
           <section aria-labelledby="pq-s-support" style="{{ S.cardWide }}; gap: 10px">
             <h2 id="pq-s-support" style="{{ S.h2 }}">Ondersteuning</h2>
             <p style="margin: 0; font-size: 15px; line-height: 1.5">Voor ondersteuning, neem contact met ons op via <a href="mailto:support@conduction.nl">support@conduction.nl</a></p>
@@ -225,8 +302,8 @@ class Component extends DCLogic {
     const pill = (bg, fg) => 'display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
     const F = "font: 600 14px 'Fira Sans', sans-serif";
     const S = {
-      card: 'background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; box-sizing: border-box',
-      cardWide: 'grid-column: 1 / -1; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; box-sizing: border-box',
+      card: 'background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0; box-sizing: border-box',
+      cardWide: 'grid-column: 1 / -1; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0; box-sizing: border-box',
       h2: 'margin: 0; font-size: 17px; font-weight: 700; line-height: 1.3',
       h3: 'margin: 0; font-size: 15px; font-weight: 700',
       desc: 'margin: 0; font-size: 14px; line-height: 1.45; color: #5e6168',
@@ -270,13 +347,15 @@ class Component extends DCLogic {
     const sources = ['Website', 'Telefoon', 'Beurs', 'Doorverwijzing', 'E-mail', 'Inloop'];
     const channels = ['Telefoon', 'E-mail', 'Mijn Zuiddrecht', 'WhatsApp', 'Sociale media'];
     const cats = [
-      ['Afval', ''], ['Software', ''], ['Diensten', ''], ['Verhuur', ''], ['Baliverkoop', '']
+      ['Afval', ''], ['Software', ''], ['Diensten', ''], ['Verhuur', ''], ['Baliverkoop', ''], ['Parkeren', 'wordt verwijderd, zie het venster hieronder']
     ].map(([name, desc]) => ({ name, desc }));
     const modules = [['Verkoop', true], ['Marketing', false], ['Kassa', true], ['Producten', true], ['Contracten', false], ['Loyaliteit', false]].map(([label, on]) => ({ label, on }));
     const skills = [['Burgerzaken', 'Paspoorten, ID-kaarten, rijbewijzen en de BRP.', false], ['Identiteitscontrole', 'De identiteit van de aanvrager vaststellen.', false], ['Biometrie', 'Pasfoto en vingerafdrukken afnemen.', false], ['Bouwvergunningen', 'Advies over bouwplannen en vergunningen.', false], ['Schuldhulp', 'Intake en begeleiding bij schulden.', false], ['Trouwambtenaar', 'Een huwelijk of partnerschap voltrekken.', false]].map(([title, c, inactive]) => ({ title, cats: c, inactive }));
     const agents = [['pieter', 'Bouwvergunningen, Burgerzaken · max 8 items', false], ['fatma.yildiz', 'Schuldhulp, Identiteitscontrole · max 10 items', false], ['joris.bakker', 'Burgerzaken, Biometrie · max 6 items', true]].map(([user, meta, away]) => ({ user, meta, away }));
+    const relTypes = [['partner van', 'partner van', 'Persoon en persoon'], ['ouder van', 'kind van', 'Persoon en persoon'], ['werkt bij', 'heeft als medewerker', 'Persoon en organisatie'], ['onderdeel van', 'heeft als onderdeel', 'Organisatie en organisatie']].map(([name, inverse, between]) => ({ name, inverse, between }));
+    const slaRows = [['Standaard', '4 werkuren', '40 werkuren', 'teamleider bij 80%'], ['Urgent', '1 werkuur', '8 werkuren', 'teamleider bij 50%, manager bij 80%'], ['Woo-verzoek', '1 werkdag', '4 weken', 'coördinator bij 75%']].map(([name, ack, res, esc]) => ({ name, ack, res, esc }));
     const agentSkills = [['Burgerzaken', true], ['Identiteitscontrole', false], ['Biometrie', false], ['Bouwvergunningen', true], ['Schuldhulp', false], ['Trouwambtenaar', false]].map(([label, on]) => ({ label, on }));
-    return { snav, S, regRows, regGroups, sources, channels, cats, modules, skills, agents, agentSkills };
+    return { snav, S, regRows, regGroups, sources, channels, cats, modules, skills, agents, agentSkills , relTypes, slaRows };
   }
 }
 </script>

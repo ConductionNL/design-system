@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: kwaliteitsrapport van een cursus</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="position: relative; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1360px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek cursussen, docenten of groepen" role="Coördinator" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor coördinatoren" primary="Campagne starten" active="Lessen en opdrachten" groups="{{ nav }}" hint-size="264px,1336px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Kwaliteitsrapport: Wiskunde B, havo 4</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="{{ btn.plain }}">Downloaden</button><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #c64e0b; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button><a href="#" style="{{ btn.primary }}">Verbeteractie opstellen</a></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; font-size: 15px; color: #5e6168"><span style="{{ pills.warn }}">Dalende trend</span><nav aria-label="Kruimelpad" style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px"><a href="#">Onderwijs</a><span aria-hidden="true">/</span><a href="LqCursus.dc.html">Wiskunde B</a><span aria-hidden="true">/</span><span aria-current="page">Kwaliteitsrapport</span></nav><span aria-hidden="true">·</span><span style="font-size: 14px">docent Fatma Yildiz · voor de coördinator en de opleidingscommissie</span></div>
+        </section>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+              <h2 style="margin: 0; font-size: 17px; font-weight: 700">Score per periode</h2>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
+                <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="3">
+                  <div style="border: 1px solid #eef0f3; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; background: #fafbfc"><span style="font-size: 14px; color: #5e6168">{{ k.label }}</span><strong style="font-size: 28px; line-height: 1">{{ k.value }}</strong><span style="font-size: 13px; color: #5e6168">{{ k.note }}</span></div>
+                </sc-for>
+              </div>
+              <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+                <thead><tr style="text-align: left; color: #5e6168"><th scope="col" style="padding: 8px 0; font-weight: 600">Periode</th><th scope="col" style="padding: 8px 0; font-weight: 600">Score</th><th scope="col" style="padding: 8px 0; font-weight: 600; width: 40%">Trend</th><th scope="col" style="padding: 8px 0; font-weight: 600">Respons</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ periods }}" as="p" hint-placeholder-count="3">
+                    <tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 0; vertical-align: top">{{ p.label }}</td><td style="padding: 10px 0; vertical-align: top"><strong>{{ p.score }}</strong></td><td style="padding: 10px 0; vertical-align: middle"><div role="progressbar" aria-label="Score {{ p.label }}" aria-valuemin="1" aria-valuemax="10" aria-valuenow="{{ p.score }}" style="height: 10px; border-radius: 5px; background: #eceef1; overflow: hidden"><div style="height: 100%; width: {{ p.pct }}; background: {{ p.color }}"></div></div></td><td style="padding: 10px 0; vertical-align: top; color: #5e6168">{{ p.response }}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+              <p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 1.5">De score is het gemiddelde van alle antwoorden op de schaal 1 tot 10. Een gemiddelde verschijnt pas bij vijf of meer reacties, zodat een kleine groep niet herkenbaar is.</p>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px"><h2 style="margin: 0; font-size: 17px; font-weight: 700">Open antwoorden</h2><span style="font-size: 14px; color: #5e6168">12 reacties, periode 1 2026</span></div>
+              <ul style="list-style: none; margin: 0; padding: 0">
+                <sc-for list="{{ answers }}" as="a" hint-placeholder-count="4">
+                  <li style="display: flex; flex-direction: column; gap: 3px; padding: 11px 0; border-top: 1px solid #eef0f3"><span style="font-size: 15px; line-height: 1.45">"{{ a.text }}"</span><span style="font-size: 13px; color: #5e6168">{{ a.question }} · anoniem · {{ a.date }}</span></li>
+                </sc-for>
+              </ul>
+              <a href="#" style="font-size: 14px; font-weight: 600">Alle 12 antwoorden</a>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px"><h2 style="margin: 0; font-size: 17px; font-weight: 700">Verbeteracties</h2><button type="button" style="{{ btn.plain }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Verbeteractie toevoegen</button></div>
+              <p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 1.5">De vaksectie of de opleidingscommissie legt hier vast wat ze uit dit rapport haalt en wat ze gaat doen. Elke actie noemt de periode waarin het resultaat zichtbaar moet zijn.</p>
+              <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+                <thead><tr style="text-align: left; color: #5e6168"><th scope="col" style="padding: 8px 0; font-weight: 600">Bevinding</th><th scope="col" style="padding: 8px 0; font-weight: 600">Actie</th><th scope="col" style="padding: 8px 0; font-weight: 600">Doelperiode</th><th scope="col" style="padding: 8px 0; font-weight: 600">Status</th><th scope="col" style="padding: 8px 0; font-weight: 600">Door</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ actions }}" as="x" hint-placeholder-count="2">
+                    <tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 12px 10px 0; vertical-align: top">{{ x.finding }}</td><td style="padding: 10px 12px 10px 0; vertical-align: top">{{ x.action }}</td><td style="padding: 10px 12px 10px 0; vertical-align: top; white-space: nowrap">{{ x.period }}</td><td style="padding: 10px 12px 10px 0; vertical-align: top"><span style="{{ x.pill }}">{{ x.status }}</span></td><td style="padding: 10px 0; vertical-align: top; color: #5e6168; white-space: nowrap">{{ x.by }}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </section>
+          </div>
+          <aside style="flex: 0 0 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 700">Campagnes</h2>
+              <ul style="list-style: none; margin: 0; padding: 0">
+                <sc-for list="{{ campaigns }}" as="c" hint-placeholder-count="2">
+                  <li style="display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid #eef0f3"><div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px"><strong style="font-size: 14px">{{ c.title }}</strong><span style="{{ c.pill }}">{{ c.state }}</span></div><span style="font-size: 13px; color: #5e6168">{{ c.invites }} uitnodigingen · {{ c.responses }} reacties</span><span style="font-size: 14px; font-weight: 600; color: {{ c.meanColor }}">{{ c.mean }}</span></li>
+                </sc-for>
+              </ul>
+              <p style="margin: 0; font-size: 13px; color: #5e6168; line-height: 1.45">Bij minder dan vijf reacties blijft het gemiddelde verborgen. De open antwoorden van zo'n kleine groep ziet u ook niet.</p>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-left: 4px solid #3669a5; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px"><h2 style="margin: 0; font-size: 15px; font-weight: 700">Wat nu?</h2><span style="font-size: 14px; line-height: 1.45">De score daalt al twee periodes. Leg met de vaksectie vast wat u eruit haalt en welke actie daarbij hoort.</span><a href="#" style="{{ btn.primary }}">Verbeteractie opstellen</a></section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px"><h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Over dit rapport</h2><dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 14px"><dt style="color: #5e6168">Cursus</dt><dd style="margin: 0"><a href="LqCursus.dc.html">Wiskunde B, havo 4</a></dd><dt style="color: #5e6168">Docent</dt><dd style="margin: 0">Fatma Yildiz</dd><dt style="color: #5e6168">Bijgewerkt</dt><dd style="margin: 0">vandaag 06:00</dd><dt style="color: #5e6168">Zichtbaar voor</dt><dd style="margin: 0">coördinatoren, opleidingscommissie</dd></dl></section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1360}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Roosters', 'cal'], ['Lessen en opdrachten', 'book']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const base = "display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none; box-sizing: border-box; ";
+    const btn = { plain: base + 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d', primary: base + 'border: 0; background: #3669a5; color: #ffffff', danger: base + 'border: 1px solid #a30000; background: #ffffff; color: #a30000' };
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const pills = { wait: pill('#fff4de', '#7a4f00'), ok: pill('#e7f3ea', '#1e6b2a'), warn: pill('#fcedec', '#a30000'), neutral: pill('#eceef1', '#3d4047'), info: pill('#eaf0f7', '#234a78') };
+    const kpis = [
+      { label: 'Score periode 1, 2026', value: '6,9', note: 'was 7,4 in periode 2, 2025' },
+      { label: 'Respons', value: '25%', note: '12 van 48 uitgenodigde leerlingen' },
+      { label: 'Verbeteracties', value: '1', note: 'gepland voor periode 2, 2026' }
+    ];
+    const periods = [
+      { label: 'Periode 1, 2025', score: '7,8', pct: '78%', color: '#1e6b2a', response: '31 van 46, 67 procent' },
+      { label: 'Periode 2, 2025', score: '7,4', pct: '74%', color: '#7a4f00', response: '22 van 47, 47 procent' },
+      { label: 'Periode 1, 2026', score: '6,9', pct: '69%', color: '#a30000', response: '12 van 48, 25 procent' }
+    ];
+    const answers = [
+      { text: 'De uitleg gaat te snel, vooral bij de nieuwe hoofdstukken over logaritmen.', question: 'Wat kan beter?', date: '12 okt 2026' },
+      { text: 'Fijn dat de opgaven in de les worden nagekeken.', question: 'Wat ging goed?', date: '12 okt 2026' },
+      { text: 'Meer oefentoetsen voor de toetsweek zou helpen.', question: 'Wat kan beter?', date: '11 okt 2026' },
+      { text: 'De video\'s bij de lessen zijn duidelijk.', question: 'Wat ging goed?', date: '10 okt 2026' }
+    ];
+    const actions = [
+      { finding: 'Score daalt twee periodes op rij; leerlingen noemen het tempo bij logaritmen', action: 'Twee extra oefenlessen logaritmen en een oefentoets voor de toetsweek', period: 'Periode 2, 2026', status: 'Gepland', pill: pills.info, by: 'vaksectie wiskunde, 20 okt 2026' },
+      { finding: 'Lage respons: 25 procent', action: 'Evaluatie in de les invullen in plaats van thuis', period: 'Periode 2, 2026', status: 'Gepland', pill: pills.info, by: 'Ellen Vos, 20 okt 2026' }
+    ];
+    const campaigns = [
+      { title: 'Periode 1, 2026', state: 'Gesloten', pill: pills.neutral, invites: 48, responses: 12, mean: 'Gemiddelde 6,9', meanColor: '#1b1c1d' },
+      { title: 'Proefgroep havo 4B', state: 'Gesloten', pill: pills.neutral, invites: 8, responses: 3, mean: '3 reacties, te weinig om een gemiddelde te tonen', meanColor: '#7a4f00' }
+    ];
+    return { nav, btn, pills, kpis, periods, answers, actions, campaigns };
+  }
+}
+</script>
+</body>
+</html>

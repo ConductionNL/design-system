@@ -44,6 +44,12 @@ class Component extends DCLogic {
         { area: 'Sentiment-triggerwoorden (één per regel)', value: 'klacht\nadvocaat\nwethouder\nmedia', rows: 5, hint: 'Nederlandse woorden die negatief sentiment markeren en een escalatie-aanbeveling triggeren. Eén woord of zin per regel.' },
         { buttons: [['KCC-instellingen opslaan', 'primary']] }
       ] },
+      { name: 'Zoekindex', desc: 'De stand van de zoekindex van OpenRegister, gelezen bij het openen. Dossiq bewaart hier zelf niets van.', rows: [
+        { pair: [{ label: 'Rijen in de tabellen', value: '48.212' }, { label: 'Rijen in de index', value: '48.212' }] },
+        { pair: [{ label: 'Laatste run', value: 'vandaag, 03:10 · 4 min 12 s' }, { label: 'Opnieuw opbouwen met', value: 'occ openregister:tables:search-index rebuild', hint: 'Met snapshot, restore en report als andere werkwoorden van hetzelfde commando.' }] },
+        { note: 'Als OpenRegister niet antwoordt, staat hier wat er misging en geen tabel met nullen. Zo ziet dat eruit:', tone: 'plain' },
+        { note: 'OpenRegister antwoordt niet: GET /apps/openregister/api/settings/search-index gaf 503 Service Unavailable. Probeer het straks opnieuw; zoeken in de app werkt zolang de index zelf draait.', tone: 'warn' }
+      ] },
       { name: 'Beslistabellen (DMN)', rows: [
         { para: 'Beslistabellen staan in het register decision-tables van OpenRegister. Dossiq bewaart zijn eigen tabellen daar onder sleutels die met dossiq. beginnen en evalueert ze vanuit workflowstappen en het handhavingsadvies. Open OpenRegister om een tabel te lezen of te wijzigen.' }
       ] },
@@ -62,12 +68,12 @@ class Component extends DCLogic {
         { buttons: [['Opnieuw laden', ''], ['CSV exporteren', '']] },
         { table: ['Verzonden op', 'Richting', 'Bericht', 'Functie', 'Status', 'HTTP', 'Duur (ms)'], lines: [], empty: 'Geen StUF-berichten voldoen aan de filters.' }
       ] },
-      { name: 'Storeregister', desc: 'Verbind de OpenRegister-instantie die de Store-pagina doorzoekt. Zonder verbinding blijft dossiq offline en toont het alleen de eigen sjablonen.', rows: [
-        { note: 'Een storeregister is een andere OpenRegister-instantie die zaakconfiguratie publiceert. Laat het adres leeg om dossiq offline te houden: er wordt niets van het netwerk opgehaald zolang er geen adres staat.' },
+      { name: 'Marktplaatsregister', desc: 'Verbind de OpenRegister-instantie die de Marktplaatspagina doorzoekt. Zonder verbinding blijft dossiq offline en toont het alleen de eigen sjablonen.', rows: [
+        { note: 'Een marktplaatsregister is een andere OpenRegister-instantie die zaakconfiguratie publiceert. Laat het adres leeg om dossiq offline te houden: er wordt niets van het netwerk opgehaald zolang er geen adres staat.' },
         { text: 'Adres van het register', value: '', placeholder: 'https://registry.example.org' },
         { text: 'Register op die instantie', value: '', placeholder: 'dossiq' },
         { text: 'Token voor het register', value: '', hint: 'Het token wordt na opslaan nooit meer getoond. Laat het leeg om het opgeslagen token te behouden.' },
-        { buttons: [['Store-instellingen opslaan', 'primary']] }
+        { buttons: [['Marktplaatsinstellingen opslaan', 'primary']] }
       ] },
       { name: 'Eerste keer', desc: 'Wat deze omgeving nog nodig heeft voordat er een zaak in kan. We melden het, we eisen het niet. Herstel het register met de knop Configuratie opnieuw importeren.', rows: [
         { items: [['Een organisatie', 'Zaken, documenten en kalenders hangen aan een organisatie. OpenRegister bewaart die.', '', 'Klaar'], ['Een mailaccount', 'Kies de gedeelde mailbox waaruit de app verstuurt en zaakmail leest.', '', 'Nog open'], ['Een gepubliceerd zaaktype', 'Elke zaak volgt een zaaktype. Een concepttype neemt geen zaken aan.', '', 'Klaar'], ['Een rol met een houder', 'Een rol zonder iemand erin beslist niets. Geef minstens één rol een houder.', '', 'Klaar'], ['Een werkkalender', 'Termijnen tellen in werkdagen. Zonder kalender is elke termijn een gok.', '', 'Klaar']] }
@@ -164,6 +170,27 @@ class Component extends DCLogic {
         { buttons: [['Nieuw mandaat', ''], ['Importeren uit Decidiq', '']] },
         { table: ['#', 'Naam', 'Status', 'Inwerkingtreding', 'Vervaldatum', ''], lines: [
           ['1', 'Mandaatbesluit Zuiddrecht 2026', { pill: 'Vastgesteld' }, '—', '—', { buttons: [['Bewerken', '']] }]
+        ] }
+      ] },
+      { name: 'Adviesinstanties', desc: 'Afdelingen en externe instanties die een adviesaanvraag kunnen ontvangen. Elke instantie is een object in OpenRegister; bij het vragen van advies zoekt een behandelaar hier op naam of specialisatie.', rows: [
+        { buttons: [['Adviesinstantie toevoegen', 'primary']] },
+        { text: 'Zoeken op naam of specialisatie', value: 'brand', hint: 'Op "brand" staan de 3 instanties met specialisatie brandveiligheid bovenaan; alle 15 blijven te kiezen.' },
+        { table: ['Naam', 'Soort', 'Contactgroep', 'E-mailadres', 'Specialisaties', ''], lines: [
+          ['Brandweer Zuiddrecht', 'Interne afdeling', 'dossiq-brandweer', 'brandweer@zuiddrecht.example', 'brandveiligheid, evenementen', { buttons: [['Bewerken', '']] }],
+          ['Veiligheidsregio Midden', 'Externe organisatie', '—', 'advies@vrmidden.example', 'brandveiligheid, crisisbeheersing', { buttons: [['Bewerken', '']] }],
+          ['GGD Regio Utrecht', 'Externe organisatie', '—', 'advies@ggdru.example', 'brandveiligheid, gezondheid', { buttons: [['Bewerken', '']] }],
+          ['Welstandscommissie', 'Externe organisatie', '—', 'secretaris@welstand.example', 'welstand, monumenten', { buttons: [['Bewerken', '']] }],
+          ['Mobiliteit en verkeer', 'Interne afdeling', 'dossiq-mobiliteit', 'verkeer@zuiddrecht.example', 'verkeer, parkeren', { buttons: [['Bewerken', '']] }]
+        ] },
+        { note: '5 van 15. Een externe instantie zonder Nextcloud-account krijgt de aanvraag per e-mail: nummer, onderwerp, vraag, termijn en een beveiligde antwoordlink waarmee zij het advies uploadt en de uitkomst kiest.', tone: 'plain' }
+      ] },
+      { name: 'Privacy: datalekken', desc: 'Het register van datalekken (avgIncident). Alleen wie de rolpermissie privacy heeft ziet dit tabblad en leest het register; elke medewerker kan wel een datalek melden.', rows: [
+        { note: 'Je ziet dit tabblad omdat je in dossiq-privacy zit. Een medewerker in alleen dossiq-medewerkers ziet het tabblad Datalekken niet, en OpenRegister weigert zijn lezing van avgIncident.', tone: 'plain' },
+        { buttons: [['Datalek melden', 'primary'], ['Exporteren voor de Autoriteit Persoonsgegevens', '']] },
+        { table: ['Nummer', 'Gemeld op', 'Wat', 'Betrokkenen', 'Status', ''], lines: [
+          ['DL-2026-007', '28 okt 2026', 'Mail met bijlage naar verkeerd adres', '1', { pill: 'In beoordeling' }, { buttons: [['Openen', '']] }],
+          ['DL-2026-006', '14 okt 2026', 'Laptop vermist, versleuteld', '0', { pill: 'Gesloten, geen melding nodig' }, { buttons: [['Openen', '']] }],
+          ['DL-2026-005', '2 sep 2026', 'Woo-besluit met ongelakte naam gepubliceerd', '3', { pill: 'Gemeld bij de AP' }, { buttons: [['Openen', '']] }]
         ] }
       ] },
       { name: 'Archivering', desc: 'Hoe vaak een beoordelaar wordt herinnerd aan de archiefbeslissingen die bij hem liggen. De instelling staat in OpenRegister, dat het archiveringsproces uitvoert; dossiq bewaart er geen kopie van.', rows: [

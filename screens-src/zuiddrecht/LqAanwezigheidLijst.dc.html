@@ -76,6 +76,41 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
         </div>
 
+        <section aria-labelledby="oudermeldingen" style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px">
+            <h2 id="oudermeldingen" style="margin: 0; font-size: 18px; font-weight: 700">Meldingen van ouders</h2>
+            <span style="font-size: 14px; color: #5e6168">Wat ouders melden, los van de registraties per les. Wie ze ziet hangt af van de rol.</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+            <sc-for list="{{ reportViews }}" as="rv" hint-placeholder-count="2">
+              <section aria-labelledby="{{ rv.id }}" style="flex: 1 1 440px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid #eef0f3; background: #fafbfc">
+                  <h3 id="{{ rv.id }}" style="margin: 0; font-size: 15px; font-weight: 700">{{ rv.title }}</h3>
+                  <span style="font-size: 13px; color: #5e6168">{{ rv.scope }}</span>
+                </div>
+                <ul style="margin: 0; padding: 0; list-style: none">
+                  <sc-for list="{{ rv.items }}" as="it" hint-placeholder-count="3">
+                    <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 12px 16px; border-top: 1px solid #eef0f3">
+                      <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                        <span style="font-size: 15px; font-weight: 600">{{ it.learner }} <span style="font-weight: 400; color: #5e6168">{{ it.group }}</span></span>
+                        <span style="font-size: 13px; color: #5e6168">{{ it.what }}</span>
+                      </span>
+                      <span style="{{ it.style }}">{{ it.state }}</span>
+                      <sc-if value="{{ it.decide }}" hint-placeholder-val="{{ false }}">
+                        <span style="display: flex; gap: 6px">
+                          <button type="button" style="height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 13px 'Fira Sans', sans-serif">Goedkeuren</button>
+                          <button type="button" style="height: 32px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif">Afwijzen</button>
+                        </span>
+                      </sc-if>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p style="margin: 0; padding: 10px 16px 12px; border-top: 1px solid #eef0f3; font-size: 13px; color: #5e6168">{{ rv.foot }}</p>
+              </section>
+            </sc-for>
+          </div>
+        </section>
+
       </main>
     </div>
   </div>
@@ -107,7 +142,21 @@ class Component extends DCLogic {
       ['Julia Peters', 'Hele dag, 6 lessen', '3HV-B', 'ex', 'Afspraak in het ziekenhuis', 'di 29 sep 07:50'],
       ['Noor Bakker', 'Nederlands, 1e uur', '3HV-A', 'late', '5 minuten te laat', 'di 29 sep 08:36']
     ].map(([learner, lesson, group, s, note, date]) => ({ learner, lesson, group, note, date, state: st[s][0], style: st[s][1], selectLabel: 'Registratie van ' + learner + ' selecteren', actionsLabel: 'Acties voor de registratie van ' + learner }));
-    return { nav, views, modes, chips, filterCount, rows };
+    const rs = { open: ['Wacht op besluit', pill('#fff4de', '#7a4f00')], ok: ['Goedgekeurd', pill('#e7f3ea', '#1e6b2a')], no: ['Afgewezen', pill('#fcedec', '#a30000')] };
+    const report = (decide) => ([learner, group, what, s]) => ({ learner, group, what, state: rs[s][0], style: rs[s][1], decide: decide && s === 'open' });
+    const reportViews = [
+      { id: 'om-docent', title: 'A. Als groepsdocent van 3HV-B', scope: 'alleen uw eigen groepen, lezen', foot: 'U ziet de melding en wie erover beslist. Goedkeuren of afwijzen doet de coördinator.', items: [
+        ['Daan Visser', '3HV-B', 'Ziek, gemeld door Karin Visser (moeder) op vr 2 okt 07:55', 'ok'],
+        ['Julia Peters', '3HV-B', 'Afspraak in het ziekenhuis op di 6 okt, hele dag', 'open'],
+        ['Eva Smit', '3HV-B', 'Tandarts op do 1 okt, 6e uur', 'ok']
+      ].map(report(false)) },
+      { id: 'om-coordinator', title: 'B. Als verzuimcoördinator', scope: 'alle groepen van de school, beslissen', foot: 'Een besluit legt vast wie het nam en wanneer. De ouder ziet het in Mijn Zuiddrecht.', items: [
+        ['Julia Peters', '3HV-B', 'Afspraak in het ziekenhuis op di 6 okt, hele dag', 'open'],
+        ['Sem de Boer', '2HV-A', 'Bruiloft in de familie op vr 9 okt, hele dag', 'open'],
+        ['Lucas van Dijk', '3HV-B', 'Vakantie buiten de schoolvakantie, 12 tot 16 okt', 'no']
+      ].map(report(true)) }
+    ];
+    return { nav, views, modes, chips, filterCount, rows, reportViews };
   }
 }
 </script>

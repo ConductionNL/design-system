@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Balk: voor wie u zaken regelt</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div role="status" style="font-family: 'Fira Sans', system-ui, sans-serif; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding: 14px 20px; border-radius: 6px; background: #234a78; color: #ffffff; font-size: 17px">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path></svg>
+  <span style="flex: 1 1 320px; font-weight: 600">{{ sentence }}</span>
+  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-width: 0; max-width: 100%">
+    <label for="{{ uid }}" style="font-weight: 600">Wissel naar</label>
+    <select id="{{ uid }}" style="box-sizing: border-box; height: 44px; flex: 1 1 200px; min-width: 0; max-width: 100%; padding: 0 12px; border: 2px solid #ffffff; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; color: #1a1a1a; background: #ffffff">
+      <sc-for list="{{ options }}" as="o" hint-placeholder-count="4">
+        <option selected="{{ o.on }}">{{ o.label }}</option>
+      </sc-for>
+    </select>
+    <a href="Machtigingen.dc.html" style="color: #ffffff; font-weight: 600">Toegang tot zaken regelen</a>
+  </span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"party":{"editor":"text","default":"Bakkerij Lindelaan B.V. (KVK 87654321)"},"self":{"editor":"text","default":"Sanne de Vries"},"others":{"editor":null,"default":["Henk de Vries"]},"uid":{"editor":"text","default":"namens"},"mode":{"editor":"text","default":""},"$preview":{"width":900,"height":76}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const party = this.props.party || 'Bakkerij Lindelaan B.V. (KVK 87654321)';
+    const self = this.props.self || 'Sanne de Vries';
+    // others: a list of names (or its JSON text) you may also act for, besides the current party
+    let others = this.props.others;
+    if (typeof others === 'string') { try { others = JSON.parse(others); } catch (e) { others = []; } }
+    const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+    // mode: '' acts for party; 'self' after choosing Uzelf; 'all' after choosing Iedereen voor wie u zaken regelt (decision 323).
+    const mode = this.props.mode || '';
+    const sentence = mode === 'self' ? 'U regelt nu uw eigen zaken.' : mode === 'all' ? 'U ziet nu de zaken van iedereen voor wie u zaken regelt.' : 'U regelt nu zaken voor ' + party + '.';
+    const names = [party].concat((Array.isArray(others) ? others : []).filter((n) => n && n !== party));
+    const options = [{ label: 'Uzelf, ' + self, on: mode === 'self' }]
+      .concat(names.map((n) => ({ label: cap(n), on: mode === '' && n === party })))
+      .concat([{ label: 'Iedereen voor wie u zaken regelt', on: mode === 'all' }]);
+    return { party, sentence, options, uid: this.props.uid || 'namens' };
+  }
+}
+</script>
+</body>
+</html>

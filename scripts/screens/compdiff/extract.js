@@ -121,14 +121,18 @@ window.__compdiffExtract = function () {
 		return { fontSize: px(cs.fontSize), fontWeight: Number(cs.fontWeight), lineHeight: lineHeight(cs), color: cs.color, letterSpacing: cs.letterSpacing === 'normal' ? 0 : px(cs.letterSpacing), textTransform: cs.textTransform, fontFamily: cs.fontFamily.split(',')[0].replace(/["']/g, '').trim() }
 	}
 	// The element that holds an element's first rendered text (title text often sits in a nested span).
-	const textEl = (el) => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); for (let n = w.nextNode(); n; n = w.nextNode()) if (n.textContent.trim() && n.parentElement && visible(n.parentElement)) return n.parentElement; return el }
+	// Text drawn inside an svg (an avatar's initials) is part of that picture: an element's text is its other text, and
+	// the svg's only when it has no other.
+	const ownText = (el) => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); for (let n = w.nextNode(); n; n = w.nextNode()) if (n.textContent.trim() && n.parentElement && visible(n.parentElement) && !n.parentElement.closest('svg')) return true; return false }
+	const textEl = (el) => { const skipSvg = ownText(el); const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); for (let n = w.nextNode(); n; n = w.nextNode()) if (n.textContent.trim() && n.parentElement && visible(n.parentElement) && !(skipSvg && n.parentElement.closest('svg'))) return n.parentElement; return el }
 	const textRect = (el) => {
 		// Box of the rendered glyphs of an element's text, not of its (possibly stretched) element box.
 		const range = document.createRange()
 		let r = null
+		const skipSvg = ownText(el)
 		const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
 		for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-			if (!n.textContent.trim() || !n.parentElement || !visible(n.parentElement)) continue
+			if (!n.textContent.trim() || !n.parentElement || !visible(n.parentElement) || (skipSvg && n.parentElement.closest('svg'))) continue
 			range.selectNodeContents(n)
 			for (const q of range.getClientRects()) {
 				if (q.width < 1) continue
@@ -528,7 +532,8 @@ window.__compdiffExtract = function () {
 			const ecs = getComputedStyle(e)
 			const lh = px(ecs.lineHeight) || px(ecs.fontSize) * 1.25
 			if (e.getBoundingClientRect().height > lh * 2 + 2) return false
-			if ([...e.querySelectorAll('*')].some((d) => { const dcs = getComputedStyle(d); return opaque(dcs.backgroundColor) || Object.values(borders(dcs)).some((v) => v > 0) })) return false
+			// The line itself counts: a pill set straight under the title, with no wrapper, is boxed too.
+			if ([e, ...e.querySelectorAll('*')].some((d) => { const dcs = getComputedStyle(d); return opaque(dcs.backgroundColor) || Object.values(borders(dcs)).some((v) => v > 0) })) return false
 			const top = e.getBoundingClientRect().top - (titleBox.y + titleBox.h)
 			// A description reads as one: smaller than the title and either 14px or less, or muted. A 15px line in the
 			// title's own ink ("Deze zaak hangt niet onder een programma.") is the card's content.
@@ -1145,6 +1150,12 @@ window.__compdiffExtract = function () {
 		// A count or tag inside a button ("1 actief" on Filter) is that button's badge, not an element of its own.
 		if (boxed && el.parentElement && el.parentElement.closest('button, [role=button]')) return null
 		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
+		// A boxed matrix cell that a two-line row heading stretches (a heat map's "13 d" beside a long case type) is the
+		// same badge as its one-line neighbours.
+		if (boxed && el.matches('[role=cell], [role=gridcell]') && r.height > 44 && r.height <= 96 && r.width <= 320 && el.textContent.trim()) return 'badge'
+		// A round filter chip with its own remove button ("Deadline: 21 oktober tot en met 10 november" x) is a pill however
+		// long its value runs.
+		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 640 && radius(el, cs) >= r.height / 2 - 1 && el.textContent.trim() && el.querySelector('button, [role=button]')) return 'pill'
 		return null
 	}
 	// A focused field whose ring is drawn on a wrapper around it (NcTextField's .input-field__main-wrapper: 2px around a
@@ -1264,6 +1275,9 @@ window.__compdiffExtract = function () {
 		for (let n = w.nextNode(); n; n = w.nextNode()) {
 			let nested = false, tag = false
 			for (let e = n.parentElement; e && e !== el; e = e.parentElement) { if (PILLISH(e)) { nested = true; break } if (tagShaped(e)) tag = true }
+			// Text only a screen reader gets (a chip's "slug: " before its value, in a 1px clipped span) is not drawn.
+			const host = n.parentElement
+			if (host && host !== el && getComputedStyle(host).display !== 'contents') { const q = host.getBoundingClientRect(); if (q.width <= 1 && q.height <= 1) continue }
 			if (!nested && n.textContent.trim()) (tag ? tags : parts).push(n.textContent.trim())
 		}
 		// Text that is all in such a tag is the element's own (a chip drawn as a rounded span inside its button).
@@ -1392,7 +1406,8 @@ window.__compdiffExtract = function () {
 				// A count drawn as a ::before or ::after (the Filter menu's active-filter count) is a badge as well.
 				badge: !!(kind === 'button' || kind === 'pill' || kind === 'row') && ([...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height)
 					|| [el, ...el.querySelectorAll('*')].some((c) => visible(c) && pseudoBadge(c, bgBehind(el), r.height))),
-				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,
+				// In a row that spreads its items (space-between and the like) the gap is the room the texts leave, not a spacing.
+				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right && !/^space-/.test(getComputedStyle(el.parentElement).justifyContent) ? round(next.left - r.right) : null,
 				...(kind === 'toggle' ? withGround(el0) : {}),
 			},
 		})
@@ -1421,7 +1436,7 @@ window.__compdiffExtract = function () {
 		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
 		if (!ownBg && nBorders(el) < 3) continue
 		// A map is measured for its place and size: its tint and what is drawn on it (a parcel, a road) are the map.
-		if (inMap(el)) continue
+		if (inMap(el) || framesMap(el)) continue
 		if (inTabStrip(el) || el.closest('table, [role=dialog] > *:first-child:empty') || [...elementEls].some((e) => e.contains(el)) || [...cardEls].some((c) => c === el)) continue
 		if (el.matches('svg, svg *, img, canvas, [role=progressbar], progress, hr') || (!el.textContent.trim() && r.height <= 16)) continue
 		// A box around controls that are each measured (a view switch's track around its icon buttons) is accounted for

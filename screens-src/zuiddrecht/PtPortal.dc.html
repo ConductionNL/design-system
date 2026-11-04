@@ -20,7 +20,7 @@ a{color:#3669a5}a:hover{color:#234a78}
     <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="portaliq" primary="Nieuwe pagina" active="Portals" groups="{{ nav }}" hint-size="264px,1420px"></dc-import></div>
     <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
       <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
-        <section style="display: flex; flex-direction: column; gap: 22px; padding: 4px 0 8px">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
           <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
             <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700">Gemeente Zuiddrecht</h1>
             <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
@@ -123,6 +123,15 @@ a{color:#3669a5}a:hover{color:#234a78}
           </aside>
         </div>
 
+        <section aria-labelledby="pk-t" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px"><h2 id="pk-t" style="margin: 0; font-size: 17px; font-weight: 700">Pagina's van apps in deze portal</h2><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; box-sizing: border-box; white-space: nowrap; align-self: flex-start">Opslaan</button></div>
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #3d4047">Apps leveren pagina's aan Mijn Zuiddrecht. Per portal kiest u welke meedoen en in welke volgorde ze in het menu staan. Een andere portal kiest zelf.</p>
+          <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px">
+            <sc-for list="{{ appPages }}" as="p" hint-placeholder-count="4">
+              <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: 8px; background: #fafbfc"><span aria-hidden="true" style="color: #828a95; font-size: 18px; cursor: grab">⋮⋮</span><span style="width: 22px; font-size: 13px; color: #5e6168">{{ p.n }}</span><span style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 14px">{{ p.label }}</strong><span style="font-size: 13px; color: #5e6168">{{ p.app }}</span></span><label style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><sc-if value="{{ p.on }}" hint-placeholder-val="{{ true }}"><input type="checkbox" checked style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5"></sc-if><sc-if value="{{ p.off }}" hint-placeholder-val="{{ false }}"><input type="checkbox" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5"></sc-if>Tonen in deze portal</label><span style="display: inline-flex; gap: 4px"><button type="button" aria-label="{{ p.label }} omhoog" style="width: 32px; height: 32px; border: 1px solid #828a95; border-radius: 6px; background: #ffffff; font-size: 14px">↑</button><button type="button" aria-label="{{ p.label }} omlaag" style="width: 32px; height: 32px; border: 1px solid #828a95; border-radius: 6px; background: #ffffff; font-size: 14px">↓</button></span></li>
+            </sc-for>
+          </ol>
+        </section>
       </main>
     </div>
   </div>
@@ -164,7 +173,10 @@ class Component extends DCLogic {
     const modes = [['Tabel', 'M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z', true], ['Kaarten', 'M3 11H11V3H3M5 5H9V9H5M13 21H21V13H13M15 15H19V19H15M3 21H11V13H3M5 15H9V19H5M13 3V11H21V3M19 9H15V5H19Z', false], ['Bord', 'M4 5V18H21V5H4M14 7V16H11V7H14M6 7H9V16H6V7M19 16H16V7H19V16Z', false], ['Kaart', 'M12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5M12,2A7,7 0 0,1 19,9C19,14.25 12,22 12,22C12,22 5,14.25 5,9A7,7 0 0,1 12,2M12,4A5,5 0 0,0 7,9C7,10 7,12 12,18.71C17,12 17,10 17,9A5,5 0 0,0 12,4Z', false]].map(([label, icon, on]) => ({ label, icon, pressed: on ? 'true' : 'false', style: seg(on) }));
     const views = [['Alle', 33, true], ['Gepubliceerd', 28, false], ['Concept', 4, false], ['Gepland', 1, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
     const chips = [['Taal: Nederlands', 'Filter taal verwijderen']].map(([label, remove]) => ({ label, remove }));
-    return { nav, rows, views, modes, chips, tabs };
+    const appPages = [
+      ['Mijn zaken', 'dossiq', true], ['Facturen', 'humaniq', true], ['Mijn plannen', 'portaliq', true], ['Activiteiten', 'learniq', false]
+    ].map(([label, app, on], i) => ({ n: i + 1, label, app, on, off: !on }));
+    return { nav, rows, views, modes, chips, tabs, appPages };
   }
 }
 </script>

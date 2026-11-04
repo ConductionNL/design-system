@@ -19,6 +19,34 @@ export function accountFor(login, env) {
 }
 
 /**
+ * Whether a page is Nextcloud's login page.
+ *
+ * @param {object} page A playwright page.
+ * @return {boolean} True on /login.
+ */
+export function onLoginPage(page) {
+	const u = new URL(page.url())
+	return /\/login(\?|$)/.test(u.pathname + u.search)
+}
+
+/**
+ * Logs a page in through Nextcloud's login form. A session that is still valid is sent on from /login, and then
+ * there is nothing to fill. Under load the login page can take minutes to answer: each action gets 90 s.
+ *
+ * @param {object} page A playwright page.
+ * @param {string} base The instance, e.g. http://localhost:8080.
+ * @param {{user: string, password: string}} account The account.
+ * @return {Promise<void>} Once the browser has left /login; the app it lands on need not finish loading.
+ */
+export async function logIn(page, base, account) {
+	await page.goto(base + '/login', { waitUntil: 'domcontentloaded', timeout: 180000 })
+	if (!onLoginPage(page)) return
+	await page.fill('#user', account.user, { timeout: 90000 })
+	await page.fill('#password', account.password, { timeout: 90000 })
+	await Promise.all([page.waitForURL((u) => !/\/login(\?|$)/.test(u.pathname + u.search), { waitUntil: 'commit', timeout: 180000 }), page.press('#password', 'Enter', { timeout: 90000 })])
+}
+
+/**
  * The session storage a spec seeds on the live page before it loads (--session, a JSON object of key to value), for
  * state a browser session keeps: a detail page that asks once per session why the reader opens a record
  * (CnDetailPage's access purpose) cannot be answered by a step, because compdiff refuses the write that records it.
@@ -169,19 +197,22 @@ export async function waitForTables(page, { timeout = 20000, still = 1000, inter
  * Runs in the page: the loading indicators on screen (a spinner, a skeleton, a busy region). A widget that fills from
  * another app (the Kaarten card asking Deck) shows one until its data is in. A status line that
  * names what is still loading (CnRelatedObjectsWidget's "Nog aan het laden: Objecten") is one: the card around it is
- * not filled yet.
+ * not filled yet. So is an avatar that has not loaded its picture (a share dialog's people list).
  *
  * @return {Array<string>} A short description of each indicator: its first class or tag, and its text.
  */
 export function loadingIndicators() {
 	const sel = '[aria-busy="true"], .icon-loading, .icon-loading-small, .loading-icon, [class*="loading-icon"], [class*="skeleton"], [class*="--loading"], [class*="__loading"], [data-testid$="-pending"], [role="status"]'
 	const pending = /^(nog aan het laden|still loading|bezig met laden|laden\s*(…|\.\.\.)|loading\s*(…|\.\.\.))/i
-	// A map widget's Leaflet mount point that Leaflet has not loaded into yet (it is imported lazily).
-	const unmounted = (e) => !e.classList.contains('leaflet-container') && [...e.classList].some((c) => /(^|__)leaflet$/.test(c))
-	return [...document.querySelectorAll(`${sel}, [class*="leaflet"]`)].filter((e) => {
+	// A map widget's Leaflet mount point that Leaflet has not loaded into yet (it is imported lazily). Leaflet may draw
+	// its container on the mount point itself or on a child of it; either way the map is loaded.
+	const unmounted = (e) => !e.classList.contains('leaflet-container') && !e.querySelector('.leaflet-container') && [...e.classList].some((c) => /(^|__)leaflet$/.test(c))
+	// An avatar (NcAvatar) whose picture is still loading is an empty span: no image, no initials, no icon yet.
+	const blankAvatar = (e) => e.classList.contains('avatardiv') && !e.textContent.trim() && !e.querySelector('img, svg, [class*="initials"], [class*="icon"]')
+	return [...document.querySelectorAll(`${sel}, [class*="leaflet"], .avatardiv`)].filter((e) => {
 		const r = e.getBoundingClientRect(), cs = getComputedStyle(e)
 		if (!(r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05)) return false
-		if (!e.matches(sel)) return unmounted(e)
+		if (!e.matches(sel)) return unmounted(e) || blankAvatar(e)
 		return !e.matches('[role="status"]') || e.matches(sel.replace(', [role="status"]', '')) || pending.test(e.textContent.trim())
 	}).map((e) => `${e.classList[0] || e.tagName.toLowerCase()}${e.textContent.trim() ? ` "${e.textContent.trim().replace(/\s+/g, ' ').slice(0, 60)}"` : ''}`)
 }

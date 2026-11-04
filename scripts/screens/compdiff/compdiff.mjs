@@ -7,6 +7,9 @@
 //   [--steps '<JSON array>' | --steps @<file.json>]   ordered click/fill/type/press/wait steps (steps.mjs), played
 //   after --click, --clicks and --fills; REVIEW/boards.json keeps the same list per board
 //   [--login none|<role>]   measure without a login, or as COMPDIFF_<ROLE>_USER (live.mjs accountFor)
+//   [--present-as <role>]   a second user (COMPDIFF_<ROLE>_USER) has the record open in a browser context of its own
+//   while the page is measured, so "kijkt nu ook naar deze zaak" shows (presence.mjs); presence beats pass in both
+//   contexts, every other write stays refused
 //   [--ignore "<sel>|<sel>"]   elements on either side to leave out, like the app's own chrome
 //   [--storage <path>]   keep the login in <path>-<user>.json and reuse it, so a batch logs in once
 //   --url may name a record by a lookup, {task:title=...} or {object:<register>/<schema>:<field>=<value>}, resolved
@@ -18,6 +21,8 @@
 //   [--load-wait 30000]   the longest wait for loading indicators to clear after the settle (ms)
 //   [--inject-css <file>] [--inject-js <file>]   lay a proposed fix over the live page after the steps, to prove it
 //   before it is built; the report records the files and runall.sh refuses them (off by default)
+//   [--list-flags]   print the flags this compdiff reads and exit; any other flag is refused (exit 2), and runall.sh
+//   refuses a spec row that names one, so a row is never measured with part of its state dropped
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
 // PLAYWRIGHT_MODULE (path to a playwright package when it is not resolvable from here).
 //
@@ -35,14 +40,26 @@ import { parseColour } from './colour.mjs'
 import { cropMismatch, pixelsFlag, wholePixels } from './crop.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
+import { KNOWN_FLAGS, unknownFlags } from './flags.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
-import { accountFor, applyInjection, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, markIgnored, parkPointer, readInjection, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
+import { presenceWrite, presentAs } from './presence.mjs'
+import { accountFor, applyInjection, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, logIn, markIgnored, onLoginPage, parkPointer, readInjection, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
-const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 
+const unknown = unknownFlags(process.argv.slice(2))
+if (unknown.length) {
+	console.error(`unknown flag ${unknown.join(', ')}: compdiff reads ${KNOWN_FLAGS.map((f) => `--${f}`).join(' ')}`)
+	process.exit(2)
+}
+if (process.argv.includes('--list-flags')) {
+	console.log(KNOWN_FLAGS.map((f) => `--${f}`).join('\n'))
+	process.exit(0)
+}
+// Loaded after the flag check, so --list-flags and a refused flag need no browser package.
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const args = Object.fromEntries(process.argv.slice(2).reduce((acc, a, i, all) => {
 	if (a.startsWith('--')) acc.push([a.slice(2), all[i + 1]?.startsWith('--') || all[i + 1] === undefined ? 'true' : all[i + 1]])
 	return acc
@@ -76,6 +93,20 @@ try {
 } catch (e) {
 	console.error(e.message)
 	process.exit(2)
+}
+const presentRole = args['present-as']
+let presentAccount = null
+if (presentRole === 'true' || presentRole === 'none') {
+	console.error('--present-as needs a role with an account, e.g. --present-as anouk')
+	process.exit(2)
+}
+if (presentRole) {
+	try {
+		presentAccount = accountFor(presentRole, process.env)
+	} catch (e) {
+		console.error(`--present-as ${presentRole}: ${e.message}`)
+		process.exit(2)
+	}
 }
 let injection
 try {
@@ -164,7 +195,9 @@ try {
 		}, apps)
 		for (const a of apps) await lctx.route(new RegExp(`/apps/${a}/api/setup/status`), (route) => route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"skip-first-run"}' }))
 	}
-	const mayRead = readPosts(args['read-post'])
+	const readPost = readPosts(args['read-post'])
+	// With a second reader the measuring user beats too: the beat's answer is how its page learns who else is there.
+	const mayRead = (m, u) => readPost(m, u) || (presentAccount !== null && presenceWrite(m, u))
 	const blocked = []
 	// Read-only: refuse any write request to the live instance (login is the one allowed POST).
 	const origin = new URL(base).origin
@@ -175,16 +208,10 @@ try {
 		return route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"compdiff is read-only"}' })
 	})
 	let liveRoute = args.url
-	const onLogin = () => /\/login(\?|$)/.test(new URL(lpage.url()).pathname + new URL(lpage.url()).search)
-	// Under load the login page can take minutes to answer: each action gets 90 s, and a failed login is tried once more.
+	const onLogin = () => onLoginPage(lpage)
+	// A failed login is tried once more.
 	const login = () => retryOnce(async () => {
-		await lpage.goto(base + '/login', { waitUntil: 'domcontentloaded', timeout: 180000 })
-		// A session that is still valid is sent on from /login: there is nothing to fill.
-		if (!onLogin()) return
-		await lpage.fill('#user', account.user, { timeout: 90000 })
-		await lpage.fill('#password', account.password, { timeout: 90000 })
-		// Logged in once the browser leaves /login; the app it lands on need not finish loading.
-		await Promise.all([lpage.waitForURL((u) => !/\/login(\?|$)/.test(u.pathname + u.search), { waitUntil: 'commit', timeout: 180000 }), lpage.press('#password', 'Enter', { timeout: 90000 })])
+		await logIn(lpage, base, account)
 		// Written whole and renamed into place: parallel slots of a batch may read it at any moment.
 		if (storage) { const tmp = `${storage}.${process.pid}`; fs.writeFileSync(tmp, JSON.stringify(await lctx.storageState())); fs.renameSync(tmp, storage) }
 	}, (e) => console.error('login failed, trying once more:', e.message.split('\n')[0]))
@@ -216,6 +243,8 @@ try {
 			try { for (const [k, v] of entries) sessionStorage.setItem(k, v) } catch (e) {}
 		}, session)
 	}
+	// The second reader is on the record before the measured page opens, so its first beat already lists them.
+	const presence = presentAccount ? await presentAs(browser, { base, target, account: presentAccount }) : null
 	lap('login')
 	// The page has loaded at its load event; what renders after is waited for below. Nextcloud keeps polling, so the
 	// network is never idle for long and a networkidle wait runs into its timeout.
@@ -264,10 +293,11 @@ try {
 	lap('extract')
 	// Both pages are measured: free them before the crops, which decode two page-sized pictures.
 	await lctx.close().catch(() => {})
+	await presence?.close()
 	await bpage.close().catch(() => {})
 
 	const { pairs, missing, extra } = pairComponents(B.components, L.components, boardHeight)
-	const ep = pairElements(B.elements, L.elements, boardHeight)
+	const ep = pairElements(B.elements, L.elements, boardHeight, pairs.filter((p) => p.board.role === 'card' && p.live.role === 'card'))
 
 	// Per-pair pixel mismatch: the live crop is scaled to the board crop's size. Secondary to the properties.
 	const b64 = (f) => 'data:image/png;base64,' + fs.readFileSync(f).toString('base64')
@@ -323,6 +353,7 @@ try {
 		board, url: liveRoute, ...(liveRoute !== args.url ? { urlSpec: args.url } : {}), height: boardHeight, measuredAt: new Date().toISOString(),
 		...(fresh.state === 'stale' ? { staleBoard: true } : {}),
 		...(injection ? { injected: injection.files } : {}),
+		...(presence ? { presentAs: { role: presentRole, beats: presence.beats, blockedWrites: presence.blocked } } : {}),
 		counts: { boardComponents: B.components.length, liveComponents: L.components.length, paired: pairs.length, missingOnLive: missing.length, extraOnLive: extra.length, flaggedComponents: results.filter((r) => r.flagged).length },
 		page: pageBg,
 		components: results,

@@ -17,7 +17,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 2020px">
   <dc-import name="DqKop" app="Pipelinq" placeholder="Zoek tickets, contacten of afspraken" role="Klantcontactmedewerker" hint-size="100%,68px"></dc-import>
   <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
-    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="pipelinq" primary="Nieuw verzoek" active="" settings="Geavanceerd" help="Hulp en uitleg" fold="open" fold-groups='[{"title":"Rapportages en automatisering","items":[["Rapportages","reports",false,"PqReports.dc.html"],["Flows","flows",false,"PqFlows.dc.html"]]},{"title":"De app inrichten","items":[["Pipelines","columns",false,"PqPipelines.dc.html"],["Diensten","grid",false,"PqServices.dc.html"],["Resources","source",false,"PqServices.dc.html"],["Koppelingen","plug",false,"PqIntegrations.dc.html"],["BI-export","export",false,"PqBiExport.dc.html"]]},{"title":"Over de app","items":[["Modules en meer","grid",false,"PqModules.dc.html"],["Store","store",false,"PqStore.dc.html"],["Functies en roadmap","roadmap",false,"PqRoadmap.dc.html"]]},{"title":"Instellingen","items":[["Persoonlijke instellingen","cog"],["Beheerinstellingen","admin",true,"PqBeheer.dc.html"]]}]' fold-active="Rapportages" groups="{{ nav }}" hint-size="264px,1952px"></dc-import></div>
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="pipelinq" primary="Nieuw verzoek" active="" settings="Geavanceerd" help="Hulp en uitleg" fold="open" fold-groups='[{"title":"Rapportages en automatisering","items":[["Rapportages","reports",false,"PqReports.dc.html"],["Flows","flows",false,"PqFlows.dc.html"]]},{"title":"De app inrichten","items":[["Pipelines","columns",false,"PqPipelines.dc.html"],["Diensten","grid",false,"PqServices.dc.html"],["Resources","source",false,"PqServices.dc.html"],["Koppelingen","plug",false,"PqIntegrations.dc.html"],["BI-export","export",false,"PqBiExport.dc.html"]]},{"title":"Over de app","items":[["Modules en meer","grid",false,"PqModules.dc.html"],["Marktplaats","store",false,"PqStore.dc.html"],["Functies en roadmap","roadmap",false,"PqRoadmap.dc.html"]]},{"title":"Instellingen","items":[["Persoonlijke instellingen","cog"],["Beheerinstellingen","admin",true,"PqBeheer.dc.html"]]}]' fold-active="Rapportages" groups="{{ nav }}" hint-size="264px,1952px"></dc-import></div>
     <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
       <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
         <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
@@ -32,6 +32,52 @@ a{color:#3669a5}a:hover{color:#234a78}
           <span style="font-size: 15px; color: #5e6168">Elke rapportage van Pipelinq, 9 rapportages in 5 categorieën</span>
         </div>
       </section>
+        <section aria-labelledby="pq-kpi-h" style="{{ s.card }}">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px"><div style="display: flex; flex-direction: column; gap: 2px"><h2 id="pq-kpi-h" style="{{ s.h2 }}">Contactcentrum vandaag</h2><span style="{{ s.muted }}">Vergeleken met dezelfde dag vorige week. Zonder registraties leest deze strook: Nog geen contactmomenten geregistreerd vandaag.</span></div><div style="display: flex; flex-wrap: wrap; gap: 8px"><button type="button" style="{{ s.chip }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="{{ p.down }}"></path></svg>CSV exporteren</button><button type="button" style="{{ s.chip }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="{{ p.down }}"></path></svg>PDF exporteren</button></div></div>
+          <div role="list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5">
+              <div role="listitem" style="display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; background: #f5f6f8; border: 1px solid #e4e6ea; border-radius: 10px"><span style="{{ s.muted }}">{{ k.label }}</span><strong style="font-size: 22px">{{ k.value }}</strong><span style="{{ k.trendStyle }}">{{ k.trend }}</span></div>
+            </sc-for>
+          </div>
+        </section>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; align-items: start">
+          <section aria-labelledby="pq-trend-h" style="{{ s.card }}">
+            <h2 id="pq-trend-h" style="{{ s.h2 }}">Trend per maand</h2>
+            <span style="{{ s.muted }}">Contacten per maand, met dezelfde maand vorig jaar erachter. Telefoon, e-mail, Mijn Zuiddrecht en WhatsApp apart in de rapportage.</span>
+            <div style="display: flex; align-items: flex-end; gap: 10px; height: 120px; padding-top: 8px">
+              <sc-for list="{{ months }}" as="m" hint-placeholder-count="6">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end"><div style="display: flex; align-items: flex-end; gap: 3px; width: 100%; flex: 1"><span title="{{ m.prevTitle }}" style="flex: 1; height: {{ m.prevH }}; background: #d6d9de; border-radius: 3px 3px 0 0"></span><span title="{{ m.title }}" style="flex: 1; height: {{ m.h }}; background: #3669a5; border-radius: 3px 3px 0 0"></span></div><span style="font-size: 12px; color: #5e6168">{{ m.label }}</span></div>
+              </sc-for>
+            </div>
+            <table style="border-collapse: collapse; width: 100%; font-size: 13px"><thead><tr style="color: #5e6168; text-align: left"><th style="padding: 6px 8px 6px 0; font-weight: 600">Maand</th><th style="padding: 6px 8px; font-weight: 600">Contacten</th><th style="padding: 6px 8px; font-weight: 600">Afhandeltijd</th><th style="padding: 6px 8px; font-weight: 600">FCR</th><th style="padding: 6px 0 6px 8px; font-weight: 600">SLA</th></tr></thead><tbody><tr><td style="padding: 6px 8px 6px 0; border-top: 1px solid #eef0f3">sep 2026</td><td style="padding: 6px 8px; border-top: 1px solid #eef0f3">1.284 <span style="color: #1e6b2a">+6% t.o.v. 2025</span></td><td style="padding: 6px 8px; border-top: 1px solid #eef0f3">6m 40s</td><td style="padding: 6px 8px; border-top: 1px solid #eef0f3">72%</td><td style="padding: 6px 0 6px 8px; border-top: 1px solid #eef0f3">94%</td></tr><tr><td style="padding: 6px 8px 6px 0; border-top: 1px solid #eef0f3">aug 2026</td><td style="padding: 6px 8px; border-top: 1px solid #eef0f3">1.102 <span style="color: #1e6b2a">+2%</span></td><td style="padding: 6px 8px; border-top: 1px solid #eef0f3">7m 05s</td><td style="padding: 6px 8px; border-top: 1px solid #eef0f3">69%</td><td style="padding: 6px 0 6px 8px; border-top: 1px solid #eef0f3">92%</td></tr></tbody></table>
+          </section>
+          <section aria-labelledby="pq-agent-h" style="{{ s.card }}">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px"><h2 id="pq-agent-h" style="{{ s.h2 }}">Prestaties per medewerker</h2><div role="combobox" aria-expanded="false" aria-label="Medewerker" style="display: flex; align-items: center; gap: 8px; {{ s.field }}; height: 34px; font-size: 14px"><span>Fatma Yildiz</span><svg width="18" height="18" viewBox="0 0 24 24" fill="#3d4047" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></div></div>
+            <table style="border-collapse: collapse; width: 100%; font-size: 14px"><thead><tr style="color: #5e6168; text-align: left; font-size: 13px"><th style="padding: 6px 8px 6px 0; font-weight: 600">Deze maand</th><th style="padding: 6px 8px; font-weight: 600">Fatma</th><th style="padding: 6px 0 6px 8px; font-weight: 600">Team</th></tr></thead><tbody>
+              <sc-for list="{{ agentRows }}" as="r" hint-placeholder-count="4"><tr><td style="padding: 8px 8px 8px 0; border-top: 1px solid #eef0f3">{{ r.label }}</td><td style="padding: 8px; border-top: 1px solid #eef0f3; font-weight: 600">{{ r.me }}</td><td style="padding: 8px 0 8px 8px; border-top: 1px solid #eef0f3; color: #5e6168">{{ r.team }}</td></tr></sc-for>
+            </tbody></table>
+            <h3 style="{{ s.dateH }}">Activiteit per medewerker, deze periode</h3>
+            <table style="border-collapse: collapse; width: 100%; font-size: 14px"><thead><tr style="color: #5e6168; text-align: left; font-size: 13px"><th style="padding: 6px 8px 6px 0; font-weight: 600">Medewerker</th><th style="padding: 6px 8px; font-weight: 600">Gesprekken</th><th style="padding: 6px 8px; font-weight: 600">Mails</th><th style="padding: 6px 8px; font-weight: 600">Vergaderingen</th><th style="padding: 6px 0 6px 8px; font-weight: 600">T.o.v. vorige maand</th></tr></thead><tbody>
+              <sc-for list="{{ activity }}" as="a" hint-placeholder-count="3"><tr><td style="padding: 8px 8px 8px 0; border-top: 1px solid #eef0f3">{{ a.name }}</td><td style="padding: 8px; border-top: 1px solid #eef0f3">{{ a.calls }}</td><td style="padding: 8px; border-top: 1px solid #eef0f3">{{ a.mails }}</td><td style="padding: 8px; border-top: 1px solid #eef0f3">{{ a.meetings }}</td><td style="padding: 8px 0 8px 8px; border-top: 1px solid #eef0f3; color: {{ a.color }}; font-weight: 600">{{ a.delta }}</td></tr></sc-for>
+            </tbody></table>
+            <span style="{{ s.muted }}">Stilstaand: 3 leads in Voorstel en 1 in Benaderd zonder activiteit in 7 dagen.</span>
+          </section>
+          <section aria-labelledby="pq-life-h" style="{{ s.card }}">
+            <h2 id="pq-life-h" style="{{ s.h2 }}">Klantlevenscyclus</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px"><span style="display: flex; flex-direction: column"><strong style="font-size: 22px">1.842</strong><span style="{{ s.muted }}">actieve klanten</span></span><span style="display: flex; flex-direction: column"><strong style="font-size: 22px; color: #5e6168">317</strong><span style="{{ s.muted }}">inactief, geen contact in 12 maanden</span></span></div>
+            <table style="border-collapse: collapse; width: 100%; font-size: 14px"><thead><tr style="color: #5e6168; text-align: left; font-size: 13px"><th style="padding: 6px 8px 6px 0; font-weight: 600">Maand</th><th style="padding: 6px 8px; font-weight: 600">Nieuwe klanten</th><th style="padding: 6px 0 6px 8px; font-weight: 600">Gewonnen omzet</th></tr></thead><tbody>
+              <sc-for list="{{ lifecycle }}" as="l" hint-placeholder-count="3"><tr><td style="padding: 8px 8px 8px 0; border-top: 1px solid #eef0f3">{{ l.month }}</td><td style="padding: 8px; border-top: 1px solid #eef0f3"><a href="PqKlantenSelectie.dc.html" title="Toon de nieuwe klanten van deze maand">{{ l.new }}</a></td><td style="padding: 8px 0 8px 8px; border-top: 1px solid #eef0f3">{{ l.revenue }}</td></tr></sc-for>
+            </tbody></table>
+            <span style="{{ s.muted }}">Klik een maand voor de klanten erachter. De omzetlijn staat in de rapportage als trend per maand.</span>
+          </section>
+          <section aria-labelledby="pq-slar-h" style="{{ s.card }}">
+            <h2 id="pq-slar-h" style="{{ s.h2 }}">SLA-realisatie per beleid</h2>
+            <table style="border-collapse: collapse; width: 100%; font-size: 14px"><thead><tr style="color: #5e6168; text-align: left; font-size: 13px"><th style="padding: 6px 8px 6px 0; font-weight: 600">Beleid</th><th style="padding: 6px 8px; font-weight: 600">Reactie gehaald</th><th style="padding: 6px 8px; font-weight: 600">Oplossing gehaald</th><th style="padding: 6px 0 6px 8px; font-weight: 600">Open en al over tijd</th></tr></thead><tbody>
+              <sc-for list="{{ slaRows }}" as="r" hint-placeholder-count="3"><tr><td style="padding: 8px 8px 8px 0; border-top: 1px solid #eef0f3"><strong>{{ r.name }}</strong></td><td style="padding: 8px; border-top: 1px solid #eef0f3">{{ r.ack }}</td><td style="padding: 8px; border-top: 1px solid #eef0f3">{{ r.res }}</td><td style="padding: 8px 0 8px 8px; border-top: 1px solid #eef0f3"><span style="{{ r.openStyle }}">{{ r.open }}</span></td></tr></sc-for>
+            </tbody></table>
+            <span style="{{ s.muted }}">Open en al over tijd telt tickets die nog lopen maar hun termijn al voorbij zijn; ze tellen pas mee in gehaald of gemist als ze sluiten.</span>
+          </section>
+        </div>
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px">
           <div role="group" aria-label="Categorie" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 auto">
             <sc-for list="{{ chips }}" as="c" hint-placeholder-count="6">
@@ -125,10 +171,54 @@ class Component extends DCLogic {
       ['Weekoverzicht', 'Wat vorige week bewoog, wat je kunt proberen, en drie ideeën voor onderwerpen.', 'M6 1H8V3H16V1H18V3H19C20.11 3 21 3.9 21 5V19C21 20.11 20.11 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.89 3.89 3 5 3H6V1M5 8V19H19V8H5M7 10H17V12H7V10Z', 'marketing']
     ];
     const all = raw.map(([title, desc, icon, category]) => card({ title, desc, icon, category, kind: CAT[category], meta: 'Opent een eigen pagina', btn: 'Open', btnLabel: 'Open ' + title, btnStyle: BTN.outline, hasBtn: true }));
+    const kpis = [['Contacten', '84', '+9 t.o.v. vorige week', true], ['First-call resolution', '71%', '+3 punten', true], ['Gem. afhandeltijd', '6m 12s', '+40s, langzamer', false], ['Binnen SLA', '95%', 'gelijk', true], ['Wachtend nu', '3', 'langste 4m 10s', true]].map(([label, value, trend, good]) => ({ label, value, trend, trendStyle: 'font-size: 13px; font-weight: 600; color: ' + (good ? '#1e6b2a' : '#a30000') }));
+    const months = [['apr', 980, 1040], ['mei', 1010, 1120], ['jun', 1150, 1210], ['jul', 920, 990], ['aug', 1080, 1102], ['sep', 1211, 1284]].map(([label, prev, cur]) => ({ label, prevH: Math.round(prev / 1300 * 100) + '%', h: Math.round(cur / 1300 * 100) + '%', prevTitle: label + ' 2025: ' + prev, title: label + ' 2026: ' + cur }));
+    const agentRows = [['Contacten afgehandeld', '212', '186'], ['Gem. afhandeltijd', '5m 48s', '6m 40s'], ['First-call resolution', '76%', '72%'], ['Contacten per uur', '4,1', '3,6']].map(([label, me, team]) => ({ label, me, team }));
+    const activity = [['Fatma Yildiz', '96', '140', '12', '+12%', '#1e6b2a'], ['Pieter Jansen', '74', '118', '18', '+4%', '#1e6b2a'], ['Joris Bakker', '41', '92', '6', '-9%', '#a30000']].map(([name, calls, mails, meetings, delta, color]) => ({ name, calls, mails, meetings, delta, color }));
+    const lifecycle = [['sep 2026', '38', '€ 142.000'], ['aug 2026', '29', '€ 97.500'], ['jul 2026', '24', '€ 61.200']].map(([month, nw, revenue]) => ({ month, new: nw, revenue }));
+    const slaRows = [['Standaard', '96%', '91%', '4', 'display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #fff4de; color: #7a4f00'], ['Urgent', '89%', '82%', '2', 'display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #fcedec; color: #a30000'], ['Woo-verzoek', '100%', '97%', '0', 'display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #e7f3ea; color: #1e6b2a']].map(([name, ack, res, open, openStyle]) => ({ name, ack, res, open, openStyle }));
     const sections = categories.map(([key, title]) => ({ hid: 'rep-' + key, title, cards: all.filter((c) => c.category === key) }));
     const catList = categories.map(([key, title]) => ({ title, href: '#rep-' + key, count: all.filter((c) => c.category === key).length }));
     const ch = chips([['Alle categorieën', all.length, true]].concat(categories.map(([key, title]) => [title, all.filter((c) => c.category === key).length, false])));
-    return { chips: ch, sections, catList, nav };
+    const s = {
+      card: 'background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px',
+      h2: 'margin: 0; font-size: 17px; font-weight: 700; color: #1b1c1d',
+      h2s: 'margin: 0; font-size: 15px; font-weight: 600; color: #5e6168',
+      btn: "display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap; text-decoration: none",
+      btnP: "display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; font: 600 14px 'Fira Sans', sans-serif; color: #ffffff; white-space: nowrap",
+      chip: "display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 0; border-radius: 17px; background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif",
+      tag: 'padding: 3px 10px; border-radius: 12px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 600; text-decoration: none',
+      muted: 'font-size: 13px; color: #5e6168',
+      row: 'display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none',
+      note: 'display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: flex-start; padding: 12px 14px; border: 1px dashed #c9ced6; border-radius: 10px; background: #f5f6f8; font-size: 14px; color: #3d4047',
+      noteL: 'flex: none; font-size: 12px; font-weight: 600; color: #5e6168; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 2px',
+      ava: 'width: 32px; height: 32px; flex: none; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700',
+      ico: 'width: 36px; height: 36px; flex: none; border-radius: 18px; background: #f0f1f3; color: #3d4047; display: flex; align-items: center; justify-content: center',
+      field: "height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d",
+      dateH: 'margin: 10px 0 0; font-size: 13px; font-weight: 600; color: #5e6168; text-transform: uppercase; letter-spacing: 0.04em',
+      hl: 'background: #fff4de; border-radius: 3px; padding: 0 2px',
+      red: 'display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #fcedec; color: #a30000; white-space: nowrap',
+      green: 'display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #e7f3ea; color: #1e6b2a; white-space: nowrap',
+      amber: 'display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #fff4de; color: #7a4f00; white-space: nowrap'
+    };
+    const p = {
+      cal: 'M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.9 20.11 3 19 3M19 19H5V9H19V19M19 7H5V5H19V7Z',
+      clock: 'M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z',
+      pin: 'M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z',
+      lock: 'M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z',
+      note: 'M15 3H5A2 2 0 0 0 3 5V19A2 2 0 0 0 5 21H19A2 2 0 0 0 21 19V9L15 3M19 19H5V5H14V10H19M17 14H7V12H17M14 17H7V15H14',
+      folder: 'M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z',
+      people: 'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
+      attach: 'M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z',
+      trash: 'M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z',
+      eye: 'M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z',
+      search: 'M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z',
+      down: 'M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z',
+      chat: 'M20,2A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H6L2,22V4C2,2.89 2.9,2 4,2H20M4,4V17.17L5.17,16H20V4H4Z',
+      warn: 'M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z',
+      mail: 'M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z', phone: 'M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z'
+    };
+    return { chips: ch, sections, catList, nav , s, p, kpis, months, agentRows, activity, lifecycle, slaRows };
   }
 }
 </script>

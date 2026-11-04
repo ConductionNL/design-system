@@ -215,6 +215,23 @@ test('a map widget whose Leaflet has not loaded into its mount point yet keeps t
 	await withPage('<div class="leaflet-container" style="width:300px;height:200px"><div class="leaflet-pane leaflet-map-pane" style="width:10px;height:10px"></div></div>', async (page) => {
 		assert.deepEqual(await page.evaluate(loadingIndicators), [])
 	})
+	// A mount point Leaflet drew its map into (a child container with the attribution) is loaded.
+	await withPage('<div class="cn-map-widget"><div class="cn-map-widget__leaflet" style="width:344px;height:200px"><div class="leaflet-container" style="width:344px;height:200px"><div class="leaflet-control-attribution" style="width:200px;height:16px">Leaflet | © OpenStreetMap contributors</div></div></div></div>', async (page) => {
+		assert.deepEqual(await page.evaluate(loadingIndicators), [])
+	})
+})
+
+test('an avatar that has not loaded its picture yet (NcAvatar\'s empty span) keeps the wait going', { skip }, async () => {
+	const avatar = (inner) => `<span class="avatardiv popovermenu-wrapper" style="--avatar-size:32px;display:inline-block;width:32px;height:32px;border-radius:50%">${inner}</span>`
+	await withPage(`<ul><li>${avatar('<!---->')} Hanneke de Boer</li></ul>`, async (page) => {
+		assert.deepEqual(await page.evaluate(loadingIndicators), ['avatardiv'])
+		await page.evaluate(() => setTimeout(() => { document.querySelector('.avatardiv').innerHTML = '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="32" height="32" alt="">' }, 1000))
+		assert.equal(await waitForLoaded(page, { timeout: 6000, still: 300 }), true)
+	})
+	// An avatar with its picture, its initials or an icon is loaded.
+	await withPage(avatar('<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="32" height="32" alt="">') + avatar('<span class="avatardiv__initials-wrapper"><span class="avatardiv__initials">Z</span></span>') + avatar('<span class="avatar-class-icon icon-group" style="display:block;width:32px;height:32px"></span>'), async (page) => {
+		assert.deepEqual(await page.evaluate(loadingIndicators), [])
+	})
 })
 
 test('a step that fails once is tried once more, and a second failure is thrown', async () => {

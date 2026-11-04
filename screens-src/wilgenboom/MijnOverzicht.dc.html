@@ -23,7 +23,7 @@ a{color:#2f6b4a}a:hover{color:#1f4a33}
     <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
       <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: flex-end; justify-content: space-between">
         <div style="display: flex; flex-direction: column; gap: 6px">
-          <span style="font-size: 16px; color: #4a4a4a">Maandag 5 oktober 2026</span>
+          <span style="font-size: 16px; color: #4a4a4a">Donderdag 8 oktober 2026</span>
           <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.015em">Goedemorgen, Fatima</h1>
         </div>
         <a href="MobielDetail.dc.html" style="display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 10px; background: #2f6b4a; color: #ffffff; font-weight: 600; font-size: 18px; text-decoration: none">
@@ -75,10 +75,10 @@ a{color:#2f6b4a}a:hover{color:#1f4a33}
         </section>
         <section aria-labelledby="week" style="flex: 1 1 300px; max-width: 400px; display: flex; flex-direction: column; gap: 6px">
           <h2 id="week" style="margin: 0 0 8px; font-size: 26px; font-weight: 700">Deze maand</h2>
-          <p style="margin: 0 0 6px; font-size: 15px; color: #4a4a4a">Oktober 2026. De dagen van deze week die al voorbij zijn, blijven staan.</p>
+          <p style="margin: 0 0 6px; font-size: 15px; color: #4a4a4a">Oktober 2026. Vandaag is donderdag 8 oktober. Maandag 5, dinsdag 6 en woensdag 7 zijn geweest en blijven staan.</p>
           <div role="grid" aria-label="Oktober 2026" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 10px 0 14px; border-top: 1px solid #e6e9ee">
             <sc-for list="{{ month }}" as="d" hint-placeholder-count="35">
-              <span style="{{ d.style }}" aria-label="{{ d.label }}">{{ d.n }}</span>
+              <span style="{{ d.style }}" aria-label="{{ d.label }}" aria-current="{{ d.current }}">{{ d.n }}</span>
             </sc-for>
           </div>
           <sc-for list="{{ agenda }}" as="a" hint-placeholder-count="5">
@@ -122,19 +122,19 @@ class Component extends DCLogic {
     const pill = (bg, fg) => 'padding: 4px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
     const tag = (bg, fg) => 'padding: 3px 12px; border-radius: 14px; font-size: 14px; font-weight: 600; background: ' + bg + '; color: ' + fg;
     const children = [
-      { initial: 'V', name: 'Vera', group: 'Groep 7 · Meester Daan', today: 'Op school', pill: pill('#e7f3ea', '#1e6b2a'), todayNote: 'Gym om 13:15 uur', next: 'Woensdag: naar de kinderboerderij. Laarzen mee' },
+      { initial: 'V', name: 'Vera', group: 'Groep 7 · Meester Daan', today: 'Op school', pill: pill('#e7f3ea', '#1e6b2a'), todayNote: 'Luizencontrole vanochtend', next: 'Vrijdag: studiedag, beide kinderen vrij' },
       { initial: 'S', name: 'Sami', group: 'Groep 4 · Juf Esra', today: 'Ziek gemeld', pill: pill('#e8f1eb', '#1f4a33'), todayNote: 'Gezien door juf Esra om 8:12 uur', next: 'Donderdag 29 oktober: oudergesprek, nog geen tijd gekozen' }
     ];
     const news = [
-      { who: 'Groep 7', pill: tag('#e8f1eb', '#1f4a33'), when: 'vandaag', fresh: true, title: 'Woensdag naar de kinderboerderij: dit moet mee' },
+      { who: 'Groep 7', pill: tag('#e8f1eb', '#1f4a33'), when: 'vandaag', fresh: true, title: 'Foto\'s van de kinderboerderij staan online' },
       { who: 'Hele school', pill: tag('#f4f6f9', '#1a1a1a'), when: '2 oktober', fresh: false, title: 'De Kinderboekenweek is begonnen' },
       { who: 'Groep 4', pill: tag('#e8f1eb', '#1f4a33'), when: '1 oktober', fresh: false, title: 'Wij leren de tafel van 2 en 5' }
     ];
     const agenda = [
-      { day: '5', month: 'okt', title: 'Gym groep 7', meta: 'Vandaag, maandag · les', today: true },
-      { day: '7', month: 'okt', title: 'Schoolfotograaf', meta: 'Woensdag, Vera en Sami · foto' },
-      { day: '7', month: 'okt', title: 'Kinderboerderij', meta: 'Woensdag, groep 7 · uitje' },
-      { day: '8', month: 'okt', title: 'Luizencontrole', meta: 'Donderdag, alle groepen · controle' },
+      { day: '5', month: 'okt', title: 'Gym groep 7', meta: 'Maandag, geweest · les' },
+      { day: '7', month: 'okt', title: 'Schoolfotograaf', meta: 'Woensdag, geweest · foto' },
+      { day: '7', month: 'okt', title: 'Kinderboerderij', meta: 'Woensdag, geweest · uitje' },
+      { day: '8', month: 'okt', title: 'Luizencontrole', meta: 'Vandaag, donderdag · controle', today: true },
       { day: '9', month: 'okt', title: 'Studiedag', meta: 'Vrijdag, beide kinderen vrij · vrije dag' },
       { day: '29', month: 'okt', title: 'Ouderavond', meta: 'Vera 18:00 uur, bevestigd · gesprek' }
     ].map((a) => ({
@@ -142,12 +142,12 @@ class Component extends DCLogic {
       row: 'display: flex; gap: 16px; align-items: center; padding: 12px 0; border-top: 1px solid #e6e9ee' + (a.today ? '; background: #fdf3d7; margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 10px' : ''),
       tile: 'flex: none; width: 54px; height: 54px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.05; ' + (a.today ? 'background: #2f6b4a; color: #ffffff' : 'background: #e8f1eb; color: #1f4a33')
     }));
-    const marked = { 5: 'today', 7: 'past', 8: 'past', 9: 'past', 29: 'event' };
+    const marked = { 5: 'past', 6: 'past', 7: 'past', 8: 'today', 9: 'event', 29: 'event' };
     const cell = (kind) => 'display: flex; align-items: center; justify-content: center; height: 36px; border-radius: 8px; font-size: 15px; ' +
       (kind === 'today' ? 'background: #2f6b4a; color: #ffffff; font-weight: 700' : kind === 'past' ? 'background: #e8f1eb; color: #1f4a33; font-weight: 600' : kind === 'event' ? 'box-shadow: inset 0 0 0 2px #f5b82e; font-weight: 600' : kind === 'head' ? 'color: #4a4a4a; font-size: 13px; font-weight: 600' : kind === 'blank' ? '' : 'color: #1a1a1a');
     const month = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'].map((n) => ({ n, style: cell('head'), label: n }))
       .concat([3, 4].map(() => ({ n: '', style: cell('blank'), label: '' })))
-      .concat(Array.from({ length: 31 }, (_, i) => { const n = i + 1; const k = marked[n] || ''; return { n: String(n), style: cell(k), label: n + ' oktober' + (k === 'today' ? ', vandaag' : k === 'past' ? ', deze week' : k === 'event' ? ', activiteit' : '') }; }));
+      .concat(Array.from({ length: 31 }, (_, i) => { const n = i + 1; const k = marked[n] || ''; return { n: String(n), style: cell(k), current: k === 'today' ? 'date' : 'false', label: n + ' oktober' + (k === 'today' ? ', vandaag' : k === 'past' ? ', deze week, geweest' : k === 'event' ? ', activiteit' : '') }; }));
     const gradeGroups = [
       { child: 'Vera · groep 7', rows: [{ subject: 'Rekenen', what: 'Breuken, 1 oktober', grade: '7,9' }, { subject: 'Taal', what: 'Spelling blok 2, 29 september', grade: '8,3' }] },
       { child: 'Sami · groep 4', rows: [{ subject: 'Rekenen', what: 'Tafels van 2 en 5, 2 oktober', grade: '6,8' }, { subject: 'Lezen', what: 'AVI-toets, 24 september', grade: 'E4' }] }

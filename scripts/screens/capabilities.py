@@ -314,7 +314,7 @@ def build_features(app, d, caps):
     return {k: v for k, v in out.items() if v['caps']}
 
 
-CAP_SLUG = re.compile(r'^[a-z0-9]+(?:[.-][a-z0-9]+)*-[a-z0-9]+$')
+CAP_SLUG = re.compile(r'^(?:[a-z]+:)?[a-z0-9]+(?:[.-][a-z0-9]+)*-[a-z0-9]+$')
 
 
 def split_caps(caps, problems=None):
@@ -491,6 +491,15 @@ def main():
     unresolved, cross, torn = [], [], []
 
     def resolve(token, home, extra_apps):
+        """(kind, app, far) for a token. 'app:token' looks in that app only: a spec, change or
+        matrix row that several apps share otherwise resolves nowhere."""
+        qualified = re.match(r'^([a-z]+):(.+)$', token)
+        if qualified:
+            app, token = qualified.groups()
+            if app not in data:
+                return None, None, False
+            kind, hit, _ = resolve(token, app, [])
+            return (kind, hit, hit != home) if kind and hit == app else (None, None, False)
         order = ([home] if home else []) + [a for a in extra_apps if a != home]
         for kind, test in (('spec', lambda a: token in data[a]['specs']),
                            ('matrix', lambda a: f'{a}/{token}' in caps and caps[f'{a}/{token}']['kind'] == 'matrix'),
@@ -515,6 +524,7 @@ def main():
             first = re.split(r'[\s(]', bare, maxsplit=1)[0]
             kind, app, far = resolve(first, home, extra_apps)
             if kind:
+                first = first.split(':', 1)[-1]
                 ck = f'{app}/{first}'
                 if far:
                     cross.append(f'{b["id"]}: {first} -> {app}')

@@ -13,7 +13,7 @@
 body{margin:0}
 </style>
 </helmet>
-<dc-import name="NcBeheerInstellingen" app="Dossiq" max-width="1240px" app-icon="M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z" apps="{{ apps }}" title="Dossiq-beheer: geavanceerd" section="Geavanceerd" tabs="{{ tabs }}" scope="geldt voor de hele organisatie; instellingen die u eenmalig of met een specialist zet" sections="{{ sections }}" hint-size="100%,7600px"></dc-import>
+<dc-import name="NcBeheerInstellingen" app="Dossiq" max-width="1240px" app-icon="M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z" apps="{{ apps }}" title="Dossiq-beheer: geavanceerd" section="Geavanceerd" tabs="{{ tabs }}" scope="geldt voor de hele organisatie; instellingen die u eenmalig of met een specialist zet" sections="{{ sections }}" hint-size="100%,8500px"></dc-import>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7600}}'>
 class Component extends DCLogic {
@@ -203,6 +203,28 @@ class Component extends DCLogic {
         { switch: 'Productie per beoordelaar per dag rapporteren', on: false },
         { switch: 'Verzamelde mail rapporteren per afzender, ontvanger en domein', on: false },
         { buttons: [['Opslaan', 'primary']] }
+      ] },
+      { name: 'Verwerkingen (FG)', desc: 'Het overzicht voor de functionaris gegevensbescherming, beperkt tot de registers van dossiq. Wie de FG-rol mist, krijgt van OpenRegister geen toegang.', rows: [
+        { note: 'Je ziet dit onderdeel omdat je de FG-rol hebt. Een beheerder zonder die rol krijgt: Geen toegang tot de verwerkingen van dossiq.', tone: 'plain' },
+        { table: ['Onderdeel', 'Stand', ''], lines: [
+          ['Verwerkingscatalogus', { pill: 'Beoordeeld op 1 okt 2026, 14 activiteiten' }, { buttons: [['Openen in OpenRegister', '']] }],
+          ['Niet geclassificeerde verwerkingen', { pill: '3 te classificeren' }, { buttons: [['Classificeren', '']] }],
+          ['Inzageverzoek per betrokkene', { pill: 'Export door het platform, met doel en grondslag per regel' }, { buttons: [['Inzageverzoek exporteren', 'primary']] }]
+        ] },
+        { note: 'De export maakt OpenRegister, beperkt tot de registers van dossiq, en logt de export zelf.', tone: 'plain' }
+      ] },
+      { name: 'Rolset van de gemeente', desc: 'Een meegeleverde set roltypen: behandelaar, coördinator, teamleider, intake, archief en lezer. Slapend tot een beheerder hem in gebruik neemt; één handeling, vastgelegd met wie en wanneer.', rows: [
+        { table: ['Rol', 'Toekenningen', ''], lines: [
+          ['Behandelaar', '12', { pill: 'In gebruik' }],
+          ['Coördinator', '2', { pill: 'In gebruik' }],
+          ['Teamleider', '0', { pill: 'In gebruik' }],
+          ['Intake', '0', { pill: 'In gebruik' }],
+          ['Archief', '0', { pill: 'In gebruik' }],
+          ['Lezer', '0', { pill: 'In gebruik' }]
+        ] },
+        { note: 'In gebruik genomen door Anouk Bakker op 3 okt 2026. Voor die datum stond hier: Slapend, met de knop In gebruik nemen; na ongedaan maken staat de set weer slapend.', tone: 'plain' },
+        { buttons: [['Ongedaan maken', '']] },
+        { note: 'Ongedaan maken geweigerd: de rol Behandelaar is in gebruik (12 toekenningen). Haal die toekenningen eerst weg.', tone: 'error' }
       ] }
     ];
     return { apps, tabs, sections };

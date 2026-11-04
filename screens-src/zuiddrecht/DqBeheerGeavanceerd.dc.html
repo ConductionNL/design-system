@@ -172,6 +172,27 @@ class Component extends DCLogic {
           ['1', 'Mandaatbesluit Zuiddrecht 2026', { pill: 'Vastgesteld' }, '—', '—', { buttons: [['Bewerken', '']] }]
         ] }
       ] },
+      { name: 'Adviesinstanties', desc: 'Afdelingen en externe instanties die een adviesaanvraag kunnen ontvangen. Elke instantie is een object in OpenRegister; bij het vragen van advies zoekt een behandelaar hier op naam of specialisatie.', rows: [
+        { buttons: [['Adviesinstantie toevoegen', 'primary']] },
+        { text: 'Zoeken op naam of specialisatie', value: 'brand', hint: 'Op "brand" staan de 3 instanties met specialisatie brandveiligheid bovenaan; alle 15 blijven te kiezen.' },
+        { table: ['Naam', 'Soort', 'Contactgroep', 'E-mailadres', 'Specialisaties', ''], lines: [
+          ['Brandweer Zuiddrecht', 'Interne afdeling', 'dossiq-brandweer', 'brandweer@zuiddrecht.example', 'brandveiligheid, evenementen', { buttons: [['Bewerken', '']] }],
+          ['Veiligheidsregio Midden', 'Externe organisatie', '—', 'advies@vrmidden.example', 'brandveiligheid, crisisbeheersing', { buttons: [['Bewerken', '']] }],
+          ['GGD Regio Utrecht', 'Externe organisatie', '—', 'advies@ggdru.example', 'brandveiligheid, gezondheid', { buttons: [['Bewerken', '']] }],
+          ['Welstandscommissie', 'Externe organisatie', '—', 'secretaris@welstand.example', 'welstand, monumenten', { buttons: [['Bewerken', '']] }],
+          ['Mobiliteit en verkeer', 'Interne afdeling', 'dossiq-mobiliteit', 'verkeer@zuiddrecht.example', 'verkeer, parkeren', { buttons: [['Bewerken', '']] }]
+        ] },
+        { note: '5 van 15. Een externe instantie zonder Nextcloud-account krijgt de aanvraag per e-mail: nummer, onderwerp, vraag, termijn en een beveiligde antwoordlink waarmee zij het advies uploadt en de uitkomst kiest.', tone: 'plain' }
+      ] },
+      { name: 'Privacy: datalekken', desc: 'Het register van datalekken (avgIncident). Alleen wie de rolpermissie privacy heeft ziet dit tabblad en leest het register; elke medewerker kan wel een datalek melden.', rows: [
+        { note: 'Je ziet dit tabblad omdat je in dossiq-privacy zit. Een medewerker in alleen dossiq-medewerkers ziet het tabblad Datalekken niet, en OpenRegister weigert zijn lezing van avgIncident.', tone: 'plain' },
+        { buttons: [['Datalek melden', 'primary'], ['Exporteren voor de Autoriteit Persoonsgegevens', '']] },
+        { table: ['Nummer', 'Gemeld op', 'Wat', 'Betrokkenen', 'Status', ''], lines: [
+          ['DL-2026-007', '28 okt 2026', 'Mail met bijlage naar verkeerd adres', '1', { pill: 'In beoordeling' }, { buttons: [['Openen', '']] }],
+          ['DL-2026-006', '14 okt 2026', 'Laptop vermist, versleuteld', '0', { pill: 'Gesloten, geen melding nodig' }, { buttons: [['Openen', '']] }],
+          ['DL-2026-005', '2 sep 2026', 'Woo-besluit met ongelakte naam gepubliceerd', '3', { pill: 'Gemeld bij de AP' }, { buttons: [['Openen', '']] }]
+        ] }
+      ] },
       { name: 'Archivering', desc: 'Hoe vaak een beoordelaar wordt herinnerd aan de archiefbeslissingen die bij hem liggen. De instelling staat in OpenRegister, dat het archiveringsproces uitvoert; dossiq bewaart er geen kopie van.', rows: [
         { text: 'Herinneringsfrequentie voor beoordelingen', value: 'P7D', hint: 'Een ISO 8601-duur, bijvoorbeeld P7D voor elke zeven dagen.' },
         { buttons: [['Opslaan', 'primary']] }

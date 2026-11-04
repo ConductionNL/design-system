@@ -68,16 +68,53 @@ a{color:#3669a5}a:hover{color:#234a78}
                   <a href="#" style="{{ k.box }}">
                     <strong style="font-size: 15px; color: #1b1c1d; line-height: 1.3">{{ k.title }}</strong>
                     <span style="font-size: 13px; color: #5e6168">{{ k.sub }}</span>
-                    <span style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center"><span style="{{ k.pillStyle }}">{{ k.pill }}</span></span>
+                    <span style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center"><span style="{{ k.pillStyle }}">{{ k.pill }}</span><sc-if value="{{ k.hasPrio }}" hint-placeholder-val="{{ false }}"><span style="{{ k.prioStyle }}">{{ k.prio }}</span></sc-if><span aria-label="{{ k.scoreSr }}" title="{{ k.scoreSr }}" style="margin-left: auto; min-width: 26px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; background: #1b1c1d; color: #ffffff; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{ k.score }}</span></span>
+                    <sc-if value="{{ k.stale }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 600; color: #a30000">{{ k.staleText }}</span></sc-if>
+                    <sc-if value="{{ k.sla }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 600; color: #a30000">SLA van deze fase overschreden (10 werkdagen)</span></sc-if>
+                    <sc-if value="{{ k.hasClose }}" hint-placeholder-val="{{ false }}"><span style="{{ k.closeStyle }}">{{ k.close }}</span></sc-if>
                     <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid #eef0f3"><span style="{{ k.dueStyle }}">{{ k.due }}</span><span title="{{ k.ownerName }}" style="flex: none; width: 26px; height: 26px; border-radius: 13px; background: #eaf0f7; color: #234a78; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ k.owner }}</span></span>
                   </a>
                 </sc-for>
-                
+                <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 6px; height: 36px; border: 1px dashed #828a95; border-radius: 8px; background: transparent; font: 600 13px 'Fira Sans', sans-serif; color: #3d4047"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Lead in deze fase</button>
               </section>
             </sc-for>
           </div>
         </div>
-        <span style="font-size: 14px; color: #5e6168">Sleep een lead naar een andere fase, of gebruik het menu: openen, verplaatsen, toewijzen, gewonnen of verloren. Naar Gewonnen of Verloren sluit de lead. Een lead die langer dan 14 dagen in een fase staat, wordt gemarkeerd. Een lijst van dezelfde leads staat op Leads.</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; padding: 12px 16px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; font-size: 14px"><span>Totaal open <strong>{{ totals.grand }}</strong></span><span>Gewogen: <strong>{{ totals.weighted }}</strong></span><span style="{{ s.muted }}">gewogen naar de kans van de fase</span><span style="flex: 1"></span><span style="{{ s.muted }}">Rode linkerrand en een rode sluitdatum: de verwachte sluiting is verstreken. In de tabelweergave is die rij rood getint.</span></div>
+        <div role="status" style="display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 14px; border-radius: 10px; background: #fcedec; border: 1px solid #f3c7c4; font-size: 14px; color: #a30000"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path></svg><span><strong>Fase Voorstel is vol, 4 van 3.</strong> Bouwbedrijf Van Dijk staat terug in Gekwalificeerd. Sluit of verplaats eerst een lead.</span></div>
+        <div role="note" style="{{ s.note }}"><span style="{{ s.noteL }}">Niet op een bord</span><span style="flex: 1 1 320px">6 leads staan op geen enkele pijplijn. <a href="PqLeads.dc.html" style="font-weight: 600">Toon ze</a>, en sleep ze hierheen of kies een pijplijn op de lead.</span></div>
+        <span style="font-size: 14px; color: #5e6168">Sleep een lead naar een andere fase, of gebruik het menu: openen, verplaatsen, toewijzen, gewonnen of verloren. Naar Gewonnen of Verloren sluit de lead. Een lead die langer dan 14 dagen in een fase staat, wordt gemarkeerd. Een lijst van dezelfde leads staat op Leads. Het zwarte rondje is de score van de lead; de badge Laag, Hoog of Urgent staat alleen bij een lead die niet de normale prioriteit heeft.</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <section aria-labelledby="pq-pipe-side" style="flex: 1 1 320px; {{ s.card }}">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><h2 id="pq-pipe-side" style="{{ s.h2 }}">Pijplijn Verkoop</h2><button type="button" style="{{ s.btn }}">Fasen bewerken</button></div>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; font-size: 14px">
+              <sc-for list="{{ cols }}" as="c" hint-placeholder-count="6">
+                <li style="display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 8px 0; border-top: 1px solid #eef0f3"><span style="{{ c.dot }}"></span><strong style="flex: 1 1 120px">{{ c.title }}</strong><span style="{{ s.muted }}">{{ c.count }} leads</span><span style="min-width: 80px; text-align: right">{{ c.total }}</span><span style="{{ s.muted }}; min-width: 150px">SLA {{ c.sla }}</span></li>
+              </sc-for>
+            </ol>
+            <span style="{{ s.muted }}">Fasen bewerken: per fase de naam, de kans, de limiet en de SLA in werkdagen of kalenderdagen. Een lead die langer in een fase staat dan de SLA krijgt de rode regel op de kaart.</span>
+          </section>
+          <section role="dialog" aria-labelledby="pq-lost-h" style="flex: 1 1 360px; {{ s.card }}; box-shadow: 0 8px 24px rgba(27,28,29,0.12)">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><h2 id="pq-lost-h" style="{{ s.h2 }}">Fietsenmaker Peters naar Verloren</h2><span style="{{ s.muted }}">venster</span></div>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5">Een reden is verplicht; zonder reden blijft de lead in Voorstel.</p>
+            <div style="display: flex; flex-direction: column; gap: 6px"><span id="pq-lost-r" style="font-size: 14px; font-weight: 600">Reden</span><div role="combobox" aria-expanded="false" aria-labelledby="pq-lost-r" style="display: flex; align-items: center; justify-content: space-between; {{ s.field }}"><span>Prijs te hoog</span><svg width="18" height="18" viewBox="0 0 24 24" fill="#3d4047" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></div><span style="{{ s.muted }}">Prijs te hoog · Gekozen voor een ander · Geen budget · Geen reactie meer · Anders</span></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="pq-lost-n" style="font-size: 14px; font-weight: 600">Toelichting</label><textarea id="pq-lost-n" rows="2" style="{{ s.field }}; height: auto; padding: 8px 12px; line-height: 1.5; resize: vertical">Koos een leverancier uit de regio voor € 4.200.</textarea></div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px"><button type="button" style="{{ s.btn }}; height: 40px">Annuleren</button><button type="button" style="{{ s.btnP }}; height: 40px">Markeer als verloren</button></div>
+          </section>
+        </div>
+        <section aria-labelledby="pq-service-h" style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center"><h2 id="pq-service-h" style="{{ s.h2 }}">Servicepijplijn: meldingen en verzoeken</h2><span style="{{ s.muted }}">dezelfde bordweergave met Pijplijn: Service gekozen; een verzoekkaart heeft geen waarderegel</span></div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(240px, 1fr)); gap: 16px; align-items: start">
+            <sc-for list="{{ service }}" as="c" hint-placeholder-count="3">
+              <section aria-label="{{ c.title }}" style="background: #eceef1; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 12px">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700">{{ c.title }}<span style="margin-left: auto; padding: 1px 8px; border-radius: 10px; font-size: 12px; background: #ffffff; color: #3d4047">{{ c.count }}</span></h3>
+                <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="2">
+                  <a href="PqTicket.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 10px; background: #ffffff; border: 1px solid #e4e6ea; text-decoration: none; color: #1b1c1d"><span style="display: flex; gap: 6px; align-items: center"><span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 700; background: #e3f1f3; color: #1d5e66">Verzoek</span><span style="{{ k.prioStyle }}">{{ k.prio }}</span></span><strong style="font-size: 15px; line-height: 1.3">{{ k.title }}</strong><span style="{{ s.muted }}">{{ k.owner }}</span></a>
+                </sc-for>
+              </section>
+            </sc-for>
+          </div>
+        </section>
       </main>
     </div>
   </div>
@@ -109,23 +146,33 @@ class Component extends DCLogic {
     const cntS = (over) => 'margin-left: auto; padding: 1px 8px; border-radius: 10px; font-size: 12px; white-space: nowrap; ' + (over ? 'background: #a30000; color: #ffffff; font-weight: 700;' : 'background: #ffffff; color: #3d4047;');
     const PP = { 10: pill('#eaf0f7', '#234a78'), 30: pill('#e8e6f6', '#4a3f8f'), 50: pill('#e3f1f3', '#1d5e66'), 70: pill('#fff4de', '#7a4f00'), 100: pill('#e7f3ea', '#1e6b2a'), 0: pill('#f0f1f3', '#3d4047') };
     const leads = {
-      'Nieuw': [['Energiecoöperatie Zuid', 18000, 'Pieter Jansen', 2], ['Sportvereniging Zuiddrecht', 6500, 'Fatma Yildiz', 4], ['Drukkerij Hofman', 4200, 'Joris Bakker', 9], ['Garage Bakker', 9800, 'Pieter Jansen', 1]],
-      'Benaderd': [['Zorggroep Merwede', 64000, 'Fatma Yildiz', 6], ['Schoonmaak Zuid BV', 27500, 'Joris Bakker', 12], ['Ingenieursbureau Delta', 41000, 'Pieter Jansen', 18]],
-      'Gekwalificeerd': [['Woningcorporatie Drechtwonen', 120000, 'Pieter Jansen', 8], ['Bouwbedrijf Van Dijk', 85000, 'Fatma Yildiz', 15], ['Stichting Kindzorg', 32000, 'Joris Bakker', 5], ['CloudGemeente B.V.', 0, 'Daan Verbeek', 3]],
-      'Voorstel': [['Dagblad Drechtsteden', 48000, 'Joris Bakker', 11], ['Café De Kroon', 7500, 'Fatma Yildiz', 24], ['Bakkerij De Graaf', 4428, 'Pieter Jansen', 2], ['Sportclub Zuiddrecht 1958', 42000, 'Pieter Jansen', 6]],
-      'Gewonnen': [['Buurtvereniging Oost', 12500, 'Pieter Jansen', 3]],
-      'Verloren': [['Fietsenmaker Peters', 5400, 'Joris Bakker', 30]]
+      'Nieuw': [['Energiecoöperatie Zuid', 18000, 'Pieter Jansen', 2, 'Hoog', 58, 'sluit 30 nov', false], ['Sportvereniging Zuiddrecht', 6500, 'Fatma Yildiz', 4, '', 31, '', false], ['Drukkerij Hofman', 4200, 'Joris Bakker', 9, 'Laag', 22, '', false], ['Garage Bakker', 9800, 'Pieter Jansen', 1, '', 40, '', false]],
+      'Benaderd': [['Zorggroep Merwede', 64000, 'Fatma Yildiz', 6, 'Urgent', 92, 'sluit 31 okt', false], ['Schoonmaak Zuid BV', 27500, 'Joris Bakker', 12, '', 47, '', false], ['Ingenieursbureau Delta', 41000, 'Pieter Jansen', 18, '', 35, 'sluit 30 sep, verstreken', true]],
+      'Gekwalificeerd': [['Woningcorporatie Drechtwonen', 120000, 'Pieter Jansen', 8, 'Hoog', 85, 'sluit 30 okt', false], ['Bouwbedrijf Van Dijk', 85000, 'Fatma Yildiz', 15, '', 60, '', false, true], ['Stichting Kindzorg', 32000, 'Joris Bakker', 5, '', 55, '', false], ['CloudGemeente B.V.', 0, 'Daan Verbeek', 3, '', 20, '', false]],
+      'Voorstel': [['Dagblad Drechtsteden', 48000, 'Joris Bakker', 11, '', 72, 'sluit 15 okt', false], ['Café De Kroon', 7500, 'Fatma Yildiz', 24, '', 38, 'sluit 1 okt, verstreken', true], ['Bakkerij De Graaf', 4428, 'Pieter Jansen', 2, '', 66, '', false], ['Sportclub Zuiddrecht 1958', 42000, 'Pieter Jansen', 6, 'Hoog', 80, 'sluit 20 okt', false]],
+      'Gewonnen': [['Buurtvereniging Oost', 12500, 'Pieter Jansen', 3, '', 100, '', false]],
+      'Verloren': [['Fietsenmaker Peters', 5400, 'Joris Bakker', 30, '', 0, '', false]]
     };
+    let grand = 0, weighted = 0;
     const cols = stages.map(([title, prob, colour, limit]) => {
-      const cards = leads[title].map(([org, value, owner, days]) => {
+      const cards = leads[title].map(([org, value, owner, days, prio, score, close, overdue, sla]) => {
         const stale = days > 14 && prob > 0 && prob < 100;
-        return { title: org, sub: value ? eur(value) : '', pill: prob + '% kans', pillStyle: PP[prob], due: days + (days === 1 ? ' dag' : ' dagen') + ' in fase', dueStyle: dueS(stale ? 'late' : 'ok'), owner: owner.split(' ').map((p) => p[0]).join(''), ownerName: owner, box: box(stale) };
+        const prioStyle = prio === 'Urgent' ? pill('#fcedec', '#a30000') : prio === 'Hoog' ? pill('#fff4de', '#7a4f00') : pill('#f0f1f3', '#3d4047');
+        return { title: org, sub: value ? eur(value) : '', pill: prob + '% kans', pillStyle: PP[prob], due: days + (days === 1 ? ' dag' : ' dagen') + ' in fase', dueStyle: dueS(stale ? 'late' : 'ok'), owner: owner.split(' ').map((p) => p[0]).join(''), ownerName: owner, box: box(stale || overdue), hasPrio: !!prio, prio: prio || '', prioStyle, score: String(score), scoreSr: 'Score ' + score + ', ' + (score >= 70 ? 'hoog' : score >= 40 ? 'midden' : 'laag'), stale, staleText: days + ' dagen geen activiteit', close: close || '', hasClose: !!close, closeStyle: overdue ? 'font-size: 13px; font-weight: 700; color: #a30000' : 'font-size: 13px; color: #3d4047', sla: !!sla };
       });
       const total = leads[title].reduce((sum, l) => sum + l[1], 0);
+      grand += prob < 100 && prob > 0 ? total : 0; weighted += prob < 100 && prob > 0 ? total * prob / 100 : 0;
       const over = limit > 0 && cards.length > limit;
-      return { title, dot: dot(colour), count: cards.length, countLabel: limit ? cards.length + ' van ' + limit : String(cards.length), countStyle: cntS(over), colStyle: colS(over), over, overText: 'Boven de limiet van ' + limit + ': sluit of verplaats een lead voor je er een toevoegt', total: eur(total), prob: prob + '%', cards };
+      return { title, dot: dot(colour), count: cards.length, countLabel: limit ? cards.length + ' van ' + limit : String(cards.length), countStyle: cntS(over), colStyle: colS(over), over, overText: 'Boven de limiet van ' + limit + ': sluit of verplaats een lead voor je er een toevoegt', total: eur(total), prob: prob + '%', cards, sla: [null, '5 werkdagen', '10 werkdagen', '14 kalenderdagen', null, null][stages.findIndex((s) => s[0] === title)] || 'geen' };
     });
-    return { nav, views, modes, cols };
+    const totals = { grand: eur(Math.round(grand)), weighted: eur(Math.round(weighted)) };
+    const service = [
+      { title: 'Nieuw', cards: [['Kapotte lantaarnpaal Lindelaan', 'Hoog', 'Fatma Yildiz'], ['Vraag over afvalpas', 'Normaal', 'Pieter Jansen']] },
+      { title: 'In behandeling', cards: [['Overlast bouwplaats Parkstraat', 'Urgent', 'Joris Bakker']] },
+      { title: 'Wacht op inwoner', cards: [['Aanvraag parkeervergunning', 'Normaal', 'Anouk Bakker']] }
+    ].map((c) => ({ title: c.title, count: c.cards.length, cards: c.cards.map(([title, prio, owner]) => ({ title, prio, owner, prioStyle: prio === 'Urgent' ? pill('#fcedec', '#a30000') : prio === 'Hoog' ? pill('#fff4de', '#7a4f00') : pill('#f0f1f3', '#3d4047') })) }));
+    const s = { note: 'display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: flex-start; padding: 12px 14px; border: 1px dashed #c9ced6; border-radius: 10px; background: #f5f6f8; font-size: 14px; color: #3d4047', noteL: 'flex: none; font-size: 12px; font-weight: 600; color: #5e6168; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 2px', btn: "display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap; text-decoration: none", btnP: "display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; font: 600 14px 'Fira Sans', sans-serif; color: #ffffff; white-space: nowrap", card: 'background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px', h2: 'margin: 0; font-size: 17px; font-weight: 700; color: #1b1c1d', muted: 'font-size: 13px; color: #5e6168', field: "height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d" };
+    return { nav, views, modes, cols, totals, service, s };
   }
 }
 </script>

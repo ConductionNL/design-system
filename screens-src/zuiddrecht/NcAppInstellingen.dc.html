@@ -76,7 +76,7 @@ body{margin:0}
         </div>
       </section>
     </sc-for>
-    <p style="margin: 0; font-size: 14px; color: #5e6168">{{ savedNote }}</p>
+    <p style="margin: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; font-size: 14px; color: #5e6168"><span>{{ savedNote }}</span><span>{{ footer }}</span></p>
   </div>
   <button type="button" aria-label="Sluiten" style="position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 22px; background: transparent; color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
 </div>
@@ -88,7 +88,7 @@ class Component extends DCLogic {
     // in the navigation. Left: the dialog name and one link per section on a primary tint, the open section
     // with a stronger tint and a 3px bar; with ncLinks, Nextcloud's own personal settings come first and the
     // sections follow under the app's name. Right: the sections on white, scrolled to the open one, and at the
-    // bottom "Wijzigingen worden meteen bewaard · <app>". There is no footer: every change is saved at once.
+    // bottom "Wijzigingen worden meteen bewaard" and the footer "<app> <version>" (the installed version, REQ-NIA-108).
     // height is the most the dialog grows to (Nextcloud caps a large dialog at the window); shorter content
     // gives a shorter dialog, longer content is cut off as if scrolled.
     // sections: [{ name, desc, rows: [row] }]. A row is one of:
@@ -143,9 +143,11 @@ class Component extends DCLogic {
     };
     const shown = raw.slice(at).map((s, i) => ({ id: 'nai-s' + (at + i), name: s.name, desc: s.desc || '', hasDesc: !!s.desc, rows: (s.rows || []).map(row) }));
     const app = this.props.app || '';
-    // Under the sections, as live draws it: every change is saved at once, so there is no footer.
-    const savedNote = 'Wijzigingen worden meteen bewaard' + (app ? ' · ' + app : '');
-    return { title: this.props.title || 'Persoonlijke instellingen', app, height: this.props.height || '720', nav, shown, ncLinks, hasGroup: ncLinks.length > 0 && !!app, navGroup: ncLinks.length > 0 ? 'display: flex; flex-direction: column; gap: 2px; padding-left: 10px' : 'display: flex; flex-direction: column; gap: 2px', savedNote };
+    // Under the sections, as live draws it: every change is saved at once; the footer names the installed version.
+    const savedNote = 'Wijzigingen worden meteen bewaard';
+    const version = this.props.version || '';
+    const footer = (app.toLowerCase() + ' ' + version).trim();
+    return { title: this.props.title || 'Persoonlijke instellingen', app, height: this.props.height || '720', nav, shown, ncLinks, hasGroup: ncLinks.length > 0 && !!app, navGroup: ncLinks.length > 0 ? 'display: flex; flex-direction: column; gap: 2px; padding-left: 10px' : 'display: flex; flex-direction: column; gap: 2px', savedNote, footer };
   }
 }
 </script>

@@ -27,7 +27,17 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 <dl style="margin: 0; display: grid; grid-template-columns: minmax(200px, max-content) 1fr; font-size: 17px; border-top: 1px solid #d3d8df"><dt style="padding: 12px 24px 12px 0; border-bottom: 1px solid #d3d8df; font-weight: 600">Website</dt><dd style="margin: 0; padding: 12px 0; border-bottom: 1px solid #d3d8df">www.zuiddrecht.nl en Mijn Zuiddrecht</dd><dt style="padding: 12px 24px 12px 0; border-bottom: 1px solid #d3d8df; font-weight: 600">Onderzocht door</dt><dd style="margin: 0; padding: 12px 0; border-bottom: 1px solid #d3d8df">[naam onderzoeksbureau]</dd><dt style="padding: 12px 24px 12px 0; border-bottom: 1px solid #d3d8df; font-weight: 600">Datum verklaring</dt><dd style="margin: 0; padding: 12px 0; border-bottom: 1px solid #d3d8df">15 september 2026</dd></dl>
 <h2 style="margin: 12px 0 0; font-size: 30px; font-weight: 700">Wat nog niet goed werkt</h2>
-<ul style="margin: 0; padding-left: 24px; font-size: 18px; line-height: 1.7"><li>Sommige oudere PDF-documenten bij Woo-publicaties zijn niet toegankelijk. Vraag ze aan in een andere vorm, dan sturen wij die.</li><li>Een aantal kaarten heeft nog geen tekstalternatief. Wij vullen dat aan voor 1 januari 2027.</li></ul>
+<p style="margin: 0; font-size: 17px; color: #4a4a4a">Uit de meting van 15 september 2026. Deze lijst wordt bijgewerkt na elke nieuwe meting.</p>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
+  <sc-for list="{{ issues }}" as="i" hint-placeholder-count="3">
+    <li style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; padding: 14px 18px; border: 1px solid #d3d8df; border-radius: 6px">
+      <span style="flex: 1 1 320px; font-size: 18px; line-height: 1.5">{{ i.text }}</span>
+      <span style="{{ i.pill }}">{{ i.impact }}</span>
+      <span style="font-size: 16px; color: #4a4a4a; white-space: nowrap">{{ i.pages }}</span>
+    </li>
+  </sc-for>
+</ul>
+<p style="margin: 0; font-size: 17px; line-height: 1.6">Sommige oudere PDF-documenten bij Woo-publicaties zijn niet toegankelijk. Vraag ze aan in een andere vorm, dan sturen wij die.</p>
 <h2 style="margin: 12px 0 0; font-size: 30px; font-weight: 700">Iets niet goed te gebruiken?</h2>
 <p style="margin: 0; font-size: 18px; line-height: 1.6">Laat het ons weten. Wij antwoorden binnen vijf werkdagen en zoeken samen met u een oplossing.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 12px"><a href="Contact.dc.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 22px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px 'Fira Sans', sans-serif; text-decoration: none; box-sizing: border-box">Probleem melden</a><a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif; text-decoration: none; box-sizing: border-box">Verklaring in het register bekijken</a></div>
@@ -44,7 +54,13 @@ a{color:#3669a5}a:hover{color:#234a78}
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1458}}'>
 class Component extends DCLogic {
   renderVals() {
-    return { crumbs: [{"label": "Home"}, {"label": "Over deze website", "href": "Contentpagina.dc.html"}, {"label": "Toegankelijkheid"}] };
+    const pill = (bg, fg) => 'padding: 3px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const issues = [
+      { text: 'Onvoldoende kleurcontrast tussen tekst en achtergrond', impact: 'Ernstig', pill: pill('#fde7e7', '#a30000'), pages: 'Op 2 pagina\'s' },
+      { text: 'Een aantal kaarten heeft geen tekstalternatief', impact: 'Ernstig', pill: pill('#fde7e7', '#a30000'), pages: 'Op 3 pagina\'s' },
+      { text: 'Een koppeling zegt niet waar hij heen gaat', impact: 'Matig', pill: pill('#fff4de', '#7a4f00'), pages: 'Op 1 pagina' }
+    ];
+    return { issues, crumbs: [{"label": "Home"}, {"label": "Over deze website", "href": "Contentpagina.dc.html"}, {"label": "Toegankelijkheid"}] };
   }
 }
 </script>

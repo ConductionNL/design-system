@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # runall.sh <outdir> <specs.tsv | boards.json>
 # Runs compdiff.mjs for every row of specs.tsv: board<TAB>route[<TAB>--flag<TAB>value]...
+# A row with a flag this compdiff does not read (compdiff.mjs --list-flags) is refused, never run without it.
 # Given a REVIEW boards.json, it writes <outdir>/specs.tsv from it (specs-from-boards.mjs) and runs that.
 # Optional environment:
 #   COMPDIFF_HEALTH      command that must succeed before a board is measured (waits up to 30 min)
@@ -18,6 +19,8 @@ if [[ "$specs" == *.json ]]; then
 	node "$HERE/specs-from-boards.mjs" "$specs" > "$out/specs.tsv" || exit 2
 	specs="$out/specs.tsv"
 fi
+# The flags compdiff reads; a row naming any other is refused.
+known=$(node "$HERE/compdiff.mjs" --list-flags) || { echo "compdiff at $HERE cannot list its flags: too old for this runall.sh" >&2; exit 2; }
 # One login per batch: the boards reuse it from a private directory that is removed when the batch ends.
 auth=$(mktemp -d); trap 'rm -rf "$auth"' EXIT
 slots=${COMPDIFF_SLOTS:-2}
@@ -55,6 +58,12 @@ while IFS=$'\t' read -r b u rest; do
 	extra=(); [ -n "$rest" ] && IFS=$'\t' read -r -a extra <<< "$rest"
 	skip=(); [ -n "${COMPDIFF_SKIP_FIRST_RUN:-}" ] && skip=(--skip-first-run "$COMPDIFF_SKIP_FIRST_RUN")
 	case "$u" in /settings/*) skip=();; esac
+	# A flag this compdiff does not read would be dropped and the board measured in another state: refuse the row.
+	bad=""; for a in "${extra[@]:-}"; do [[ "$a" == --* ]] && ! grep -qxF -- "$a" <<< "$known" && bad="$bad $a"; done
+	if [ -n "$bad" ]; then
+		echo "$(date +%T) $b refused: unknown flag$bad (compdiff $HERE reads: $(echo $known))" >> "$out/run.log"
+		echo "{\"board\":\"$b\",\"error\":1}" >> "$out/results.jsonl"; echo "$b refused (unknown flag${bad})"; continue
+	fi
 	# An injected fix is not the live page: a batch never measures one.
 	if [[ " ${extra[*]:-} " == *" --inject-"* ]]; then
 		echo "$(date +%T) $b refused: --inject-css/--inject-js are for one board run by hand" >> "$out/run.log"

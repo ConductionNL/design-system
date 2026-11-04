@@ -94,12 +94,13 @@ a{color:#3669a5}a:hover{color:#234a78}
           <p style="margin: 0; font-size: 16px; color: #4a4a4a">Verstuurde nieuwsbrieven, de nieuwste bovenaan. De titels en berichten leest u in uw taal, net als op de nieuwspagina.</p>
         </div>
         <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
-          <sc-for list="{{ letters }}" as="n" hint-placeholder-count="2">
+          <sc-for list="{{ letters }}" as="n" hint-placeholder-count="3">
             <li style="display: flex; flex-direction: column; gap: 6px; padding: 16px 20px; border: 1px solid #d3d8df; border-radius: 6px">
               <div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between"><strong lang="ar" dir="rtl" style="font-size: 19px">{{ n.titleAr }}</strong><span style="font-size: 15px; color: #4a4a4a">{{ n.title }} · verstuurd op {{ n.sent }}</span></div>
-              <ul style="margin: 0; padding-left: 20px; font-size: 16px; line-height: 1.6">
+              <sc-if value="{{ n.hasItems }}" hint-placeholder-val="{{ true }}"><ul style="margin: 0; padding-left: 20px; font-size: 16px; line-height: 1.6">
                 <sc-for list="{{ n.items }}" as="i" hint-placeholder-count="2"><li><a href="#" lang="ar" dir="rtl">{{ i.ar }}</a> <span style="color: #4a4a4a">({{ i.nl }})</span></li></sc-for>
-              </ul>
+              </ul></sc-if>
+              <sc-if value="{{ n.noItems }}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: 16px; line-height: 1.5; color: #4a4a4a; font-style: italic">Deze nieuwsbrief heeft geen berichten voor u. De berichten erin waren voor een andere groep of school.</p></sc-if>
             </li>
           </sc-for>
         </ul>
@@ -176,8 +177,9 @@ class Component extends DCLogic {
     });
     const letters = [
       { titleAr: 'نشرة أكتوبر 2026', title: 'Nieuwsbrief oktober 2026', sent: '2 oktober 2026', items: [{ ar: 'بدأ أسبوع كتاب الأطفال', nl: 'De Kinderboekenweek is begonnen' }, { ar: 'أمسية أولياء الأمور يوم الخميس 29 أكتوبر', nl: 'Ouderavond op donderdag 29 oktober' }] },
-      { titleAr: 'نشرة سبتمبر 2026', title: 'Nieuwsbrief september 2026', sent: '4 september 2026', items: [{ ar: 'يأتي مصور المدرسة يوم الأربعاء 7 أكتوبر', nl: 'De schoolfotograaf komt op woensdag 7 oktober' }] }
-    ];
+      { titleAr: 'نشرة سبتمبر 2026', title: 'Nieuwsbrief september 2026', sent: '4 september 2026', items: [{ ar: 'يأتي مصور المدرسة يوم الأربعاء 7 أكتوبر', nl: 'De schoolfotograaf komt op woensdag 7 oktober' }] },
+      { titleAr: 'نشرة المجموعة 8، سبتمبر 2026', title: 'Nieuwsbrief groep 8, september 2026', sent: '1 september 2026', items: [] }
+    ].map((n) => ({ ...n, hasItems: n.items.length > 0, noItems: n.items.length === 0 }));
     return { threads, members, messages, letters, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Berichten van school' }] };
   }
 }

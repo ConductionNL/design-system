@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; min-height: 1734px">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; min-height: 2883px">
   <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
   <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
     <div style="flex: 1 1 260px; max-width: 300px">
@@ -22,46 +22,84 @@ a{color:#3669a5}a:hover{color:#234a78}
     </div>
     <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
-        <h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Berichten</h1>
-        <button type="button" style="padding: 0; border: 0; background: transparent; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif; text-decoration: underline; cursor: pointer">Meldingen instellen</button>
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Berichten <span style="font-size: 20px; font-weight: 600; color: #4a4a4a">3 ongelezen</span></h1>
+        <a href="#keuzes" style="color: #3669a5; font: 600 17px 'Fira Sans', sans-serif; text-decoration: underline">Meldingen instellen</a>
+      </div>
+      <div role="status" style="display: flex; gap: 12px; padding: 14px 18px; border-radius: 4px; background: #e7f3ea; border: 1px solid #a9d1b3; align-items: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1e6b2a" aria-hidden="true" style="flex: none"><path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"></path></svg><span style="font-size: 17px">Het bericht is verwijderd. U heeft nu 3 ongelezen berichten.</span></div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px">
+        <label style="display: flex; align-items: center; font-size: 17px; line-height: 21px"><input type="checkbox" checked style="margin: 3px 6px 3px 4px">Alles selecteren</label>
+        <button type="button" style="height: 40px; padding: 0 14px; border: 2px solid #a30000; border-radius: 4px; background: #ffffff; color: #a30000; font: 600 16px 'Fira Sans', sans-serif">Verwijderen (2 geselecteerd)</button>
+        <span style="font-size: 15px; color: #4a4a4a">Alleen uw eigen berichten in Mijn Zuiddrecht; een bericht bij een zaak blijft bij de zaak staan.</span>
       </div>
       <div style="display: flex; flex-direction: column; margin-top: -8px">
-      <label style="display: flex; align-items: center; font-size: 17px; line-height: 21px"><input type="checkbox" style="margin: 3px 6px 3px 4px">Alles selecteren</label>
       <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
         <sc-for list="{{ items }}" as="m" hint-placeholder-count="4">
           <li style="{{ m.box }}">
             <div style="display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center">
+              <sc-if value="{{ m.deletable }}" hint-placeholder-val="{{ true }}"><input type="checkbox" aria-label="Selecteer {{ m.title }}" style="width: 22px; height: 22px; margin: 0; accent-color: #3669a5"></sc-if>
               <sc-if value="{{ m.unread }}" hint-placeholder-val="{{ true }}"><span style="padding: 2px 10px; border-radius: 12px; background: #cc0000; color: #ffffff; font-size: 14px; font-weight: 700">Nieuw</span></sc-if>
               <h2 style="margin: 0; font-size: 20px; font-weight: 700">{{ m.title }}</h2>
               <span style="font-size: 15px; color: #4a4a4a">{{ m.date }}</span>
             </div>
             <span style="font-size: 15px; color: #4a4a4a">{{ m.source }}</span>
             <p style="margin: 0; font-size: 17px; line-height: 1.55">{{ m.text }} <sc-if value="{{ m.hasLink }}" hint-placeholder-val="{{ true }}"><a href="Publicatie.dc.html">{{ m.link }}</a></sc-if></p>
+            <sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; font-size: 15px; padding: 10px 14px; border-radius: 4px; background: #f4f6f9"><dt style="font-weight: 600">Aard</dt><dd style="margin: 0">{{ m.aard }}</dd><dt style="font-weight: 600">Rechtsgevolg</dt><dd style="margin: 0">{{ m.gevolg }}</dd><dt style="font-weight: 600">Termijn</dt><dd style="margin: 0">{{ m.termijn }}</dd></dl></sc-if>
             <div style="display: flex; flex-wrap: wrap; gap: 12px">
               <a href="{{ m.open }}" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border: 2px solid #3669a5; border-radius: 4px; font-weight: 600; text-decoration: none">Openen</a>
               <sc-if value="{{ m.unread }}" hint-placeholder-val="{{ true }}"><button type="button" style="height: 44px; padding: 0 12px; border: 0; background: transparent; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif; text-decoration: underline">Markeren als gelezen</button></sc-if>
+              <sc-if value="{{ m.deletable }}" hint-placeholder-val="{{ true }}"><button type="button" style="height: 44px; padding: 0 12px; border: 0; background: transparent; color: #a30000; font: 600 17px 'Fira Sans', sans-serif; text-decoration: underline">Verwijderen<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)"> {{ m.title }}</span></button></sc-if>
               <sc-if value="{{ m.receipt }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 15px; color: #1f6b3a"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg>Leesbevestiging gevraagd: gelezen door de gemeente op 5 oktober 2026, 10:12</span></sc-if>
             </div>
           </li>
         </sc-for>
       </ul>
       </div>
+      <section id="keuzes" aria-labelledby="keuzes-t" style="display: flex; flex-direction: column; gap: 14px; padding: 24px; border: 1px solid #d3d8df; border-radius: 6px">
+        <h2 id="keuzes-t" style="margin: 0; font-size: 24px; font-weight: 700">Hoe wilt u bericht krijgen?</h2>
+        <div role="status" style="display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 4px; background: #e7f3ea; border: 1px solid #a9d1b3; font-size: 16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1e6b2a" aria-hidden="true" style="flex: none"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg>Uw keuzes zijn opgeslagen.</div>
+        <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+          <legend style="font-size: 17px; font-weight: 600; margin-bottom: 6px">Stuur mij een e-mail bij</legend>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #3669a5">Een nieuw bericht van de gemeente</label>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #3669a5">Een taak die bijna moet zijn afgerond</label>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" style="width: 22px; height: 22px; accent-color: #3669a5">Een nieuwe publicatie bij een bewaarde zoekopdracht</label>
+        </fieldset>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 17px; font-weight: 600; max-width: 420px">E-mailadres voor berichten<input type="email" value="sanne.devries@example.nl" style="height: 48px; box-sizing: border-box; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif"></label>
+        <span style="font-size: 15px; color: #4a4a4a">De e-mail bevat nooit de inhoud, alleen dat er iets nieuws voor u klaarstaat.</span>
+        <button type="button" style="align-self: flex-start; height: 48px; padding: 0 22px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px 'Fira Sans', sans-serif">Keuzes opslaan</button>
+      </section>
+      <section aria-label="Andere toestanden van deze pagina" style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 1px dashed #828a95">
+        <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #4a4a4a">Andere toestanden van deze pagina</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px">
+          <section style="display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 1px solid #d3d8df; border-radius: 6px">
+            <h3 style="margin: 0; font-size: 18px; font-weight: 700">Bij een waterschap</h3>
+            <div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px solid #d3d8df; border-radius: 4px"><span style="font-size: 20px; font-weight: 700">Uw Woo-verzoek is ontvangen</span><span style="font-size: 15px; color: #4a4a4a">Van het waterschap, bij zaak 2026-0082</span></div>
+            <span style="font-size: 15px; color: #4a4a4a">De afzender noemt de soort organisatie uit het organisatietype van TOOI, met het lidwoord dat erbij hoort: het waterschap, het ministerie, de gemeente, de provincie. Nergens staat dan Van de gemeente.</span>
+          </section>
+          <section style="display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 1px solid #d3d8df; border-radius: 6px">
+            <h3 style="margin: 0; font-size: 18px; font-weight: 700">Zonder organisatietype</h3>
+            <div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px solid #d3d8df; border-radius: 4px"><span style="font-size: 20px; font-weight: 700">Uw Woo-verzoek is ontvangen</span><span style="font-size: 15px; color: #4a4a4a">Van de organisatie, bij zaak 2026-0082</span></div>
+            <span style="font-size: 15px; color: #4a4a4a">Is er geen organisatietype gekozen, dan staat er Van de organisatie. Dezelfde soort staat in de voet van de site.</span>
+          </section>
+        </div>
+      </section>
     </main>
   </div>
   <dc-import name="Voet" hint-size="100%,420px"></dc-import>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1734}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2883}}'>
 class Component extends DCLogic {
   renderVals() {
     const box = (unread) => 'display: flex; flex-direction: column; gap: 10px; padding: 20px 24px; border-radius: 6px; border: 1px solid #d3d8df;' + (unread ? ' box-shadow: inset 4px 0 0 #cc0000;' : '');
     const items = [
+      { unread: true, overdue: true, title: 'Uw taak is te laat: stuur uw laatste loonstrook', date: '6 oktober 2026, 08:00', text: 'De taak bij uw aanvraag 2026-0061 moest op 5 oktober zijn afgerond. Rond hem alsnog af, dan gaan wij verder met uw aanvraag.', hasLink: false, link: '', open: 'TaakAfronden.dc.html' },
+      { unread: true, title: 'Besluit op uw bezwaar', date: '5 oktober 2026, 16:30', text: 'Het college heeft een besluit genomen op uw bezwaar tegen de weigering van de parkeervergunning.', hasLink: false, link: '', open: 'Zaak.dc.html', hasMeta: true, aard: 'Besluit op bezwaar', gevolg: 'Tegen dit besluit kunt u in beroep gaan bij de rechtbank', termijn: 'Binnen 6 weken, tot en met 16 november 2026' },
       { unread: true, title: 'Het besluit op uw Woo-verzoek is gepubliceerd', date: '4 oktober 2026, 13:59', text: 'Wij hebben het besluit op uw Woo-verzoek "Verlichting fietspad Lindelaan" gepubliceerd.', hasLink: true, link: 'Bekijk de publicatie', open: 'Zaak.dc.html' },
       { unread: true, title: 'Uw vraag is beantwoord', date: '4 oktober 2026, 10:51', text: 'Er is een antwoord op uw vraag "Planning fietspad Lindelaan".', hasLink: false, link: '', open: 'MijnOverzicht.dc.html' },
       { unread: true, title: 'Nieuwe publicatie voor uw zoekopdracht "Fietspad Lindelaan"', date: '4 oktober 2026, 09:50', text: 'Er is een nieuwe publicatie die past bij uw zoekopdracht.', hasLink: true, link: 'Verlichting fietspad Lindelaan', open: 'Dossiers.dc.html' },
       { unread: false, title: 'Wij hebben uw aanvraag ontvangen', date: '3 oktober 2026, 11:56', text: 'Uw aanvraag heeft zaaknummer 2026-0082. U hoort uiterlijk 1 november van ons.', hasLink: false, link: '', open: 'Zaak.dc.html' },
       { unread: false, sent: true, title: 'Door u gestuurd: foto van de donkere plek', date: '3 oktober 2026, 19:05', text: 'U stuurde een extra foto van het stuk fietspad bij de brug, met bijlage foto-brug.jpg (2,1 MB).', hasLink: false, link: '', open: 'Zaak.dc.html' }
-    ].map((m) => ({ ...m, box: box(m.unread), receipt: !!m.sent,
+    ].map((m) => ({ hasMeta: false, aard: '', gevolg: '', termijn: '', ...m, box: box(m.unread), receipt: !!m.sent, deletable: !m.sent && !/2026-0082|bezwaar|loonstrook/.test(m.title + m.text),
       source: m.sent ? 'Van u, bij zaak 2026-0082 (berichtenbox)' : /2026-0082|Woo-verzoek|vraag/.test(m.title + m.text) ? 'Van de gemeente, bij zaak 2026-0082 (berichtenbox van dossiq)' : 'Van Mijn Zuiddrecht' }));
     return { items, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Berichten' }] };
   }

@@ -314,24 +314,32 @@ def build_features(app, d, caps):
     return {k: v for k, v in out.items() if v['caps']}
 
 
+CAP_SLUG = re.compile(r'^[a-z0-9]+(?:[.-][a-z0-9]+)*-[a-z0-9]+$')
+
+
 def split_caps(caps, problems=None):
     """'a, b (remark, with comma), c' -> [(raw, 'a', []), (raw, 'b', ['remark, with comma']), ...]
 
     Some board notes were sorted after a naive comma split, which tore a remark apart:
     'x) (y), a (b, c' stands for 'a (b, x; y), c'. A fragment that closes a parenthesis it never
     opened is such a tail; its text joins the remark of the fragment that left one open.
+    A remark may hold any number of commas: while one is open, every fragment up to the closing
+    one joins it, except a bare kebab-case id, which stays a capability token.
     """
     if (caps or '').strip().lower().startswith('geen spec genoemd'):
         return []
-    parsed, open_at, pending_tails = [], None, []
+    parsed, open_at, pending_tails, middle = [], None, [], []
     for raw in (caps or '').split(','):
         raw = raw.strip().rstrip('.').strip()
+        if open_at is not None and raw.count(')') <= raw.count('(') and not CAP_SLUG.match(raw):
+            middle.append(raw)  # 'y' in 'b (x, y, z)'
+            continue
         m = re.match(r'^([^()]*)\)(.*)$', raw)
         if m:  # closes a parenthesis it never opened: the tail of a remark
             tail = [m.group(1).strip()] + [n.strip() for n in re.findall(r'\(([^()]*)\)', m.group(2)) if n.strip()]
-            if open_at is not None:  # well formed: 'b (x, y)' split into 'b (x' and 'y)'
-                parsed[open_at][2][-1] += ', ' + '; '.join(tail)
-                open_at = None
+            if open_at is not None:  # well formed: 'b (x, y, z)' split into 'b (x', 'y' and 'z)'
+                parsed[open_at][2][-1] += ', ' + ', '.join(middle + ['; '.join(tail)])
+                open_at, middle = None, []
             else:  # torn and sorted: the opening fragment comes later
                 pending_tails += tail
             continue
@@ -353,6 +361,8 @@ def split_caps(caps, problems=None):
             else:
                 open_at = len(parsed)
         parsed.append((raw, bare, notes))
+    if middle:  # a remark that never closes: its later fragments are tokens after all
+        parsed += split_caps(', '.join(middle))
     if pending_tails and problems is not None:
         problems.append(caps)
     return parsed

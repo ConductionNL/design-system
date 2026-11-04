@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: lokaalbezetting</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1280px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek lokalen, groepen of lessen" role="Planner" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor planners" primary="Aanwezigheid invullen" active="Roosters" groups="{{ nav }}" hint-size="264px,1258px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Lokaalbezetting</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Downloaden</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+            <nav aria-label="Kruimelpad" style="font-size: 14px; color: #5e6168; display: flex; flex-wrap: wrap; gap: 8px"><a href="#">Roosters</a><span aria-hidden="true">/</span><span aria-current="page">Lokaalbezetting</span></nav>
+            <span aria-hidden="true" style="color: #5e6168">·</span>
+            <span style="font-size: 14px; color: #5e6168">Periode 1, van maandag 31 augustus tot en met vrijdag 9 oktober 2026 · 40 lesuren per week</span>
+          </div>
+        </section>
+
+        <form style="display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-end; font-size: 14px">
+          <div style="display: flex; flex-direction: column; gap: 4px"><label for="lb-van" style="font-weight: 600">Van</label><input id="lb-van" type="text" value="31-08-2026" style="height: 36px; width: 130px; box-sizing: border-box; padding: 0 10px; border: 1px solid #828a95; border-radius: 8px; font: 400 14px 'Fira Sans', sans-serif"></div>
+          <div style="display: flex; flex-direction: column; gap: 4px"><label for="lb-tot" style="font-weight: 600">Tot en met</label><input id="lb-tot" type="text" value="09-10-2026" style="height: 36px; width: 130px; box-sizing: border-box; padding: 0 10px; border: 1px solid #828a95; border-radius: 8px; font: 400 14px 'Fira Sans', sans-serif"></div>
+          <div style="display: flex; flex-direction: column; gap: 4px"><label for="lb-soort" style="font-weight: 600">Soort lokaal</label><select id="lb-soort" style="height: 36px; padding: 0 10px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif"><option>Alle soorten</option><option>Gymzaal</option><option>Practicumlokaal</option><option>Theorielokaal</option></select></div>
+          <button type="button" style="height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Tonen</button>
+        </form>
+
+        <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 14px; border-radius: 10px; background: #fff4de; color: #7a4f00; font-size: 14px; line-height: 1.5">
+          <span style="flex: 1 1 320px"><strong>14 lessen hebben geen lokaal</strong> in deze periode. Ze tellen niet mee in de bezetting hieronder.</span>
+          <a href="#" style="font-weight: 600; color: #7a4f00">Lessen zonder lokaal bekijken</a>
+        </div>
+
+        <section aria-labelledby="lb-lokalen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px">
+            <h2 id="lb-lokalen" style="margin: 0; font-size: 18px; font-weight: 700">Per lokaal</h2>
+            <span style="font-size: 13px; color: #5e6168">Uren in gebruik van de 240 roosteruren in deze periode · 8 van 46 lokalen</span>
+          </div>
+          <div style="overflow-x: auto">
+            <table style="border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px">
+              <caption style="position: absolute; left: -9999px">Bezetting per lokaal</caption>
+              <thead>
+                <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Lokaal</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Soort</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Uren in gebruik</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; width: 40%">Bezetting</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ rooms }}" as="r" hint-placeholder-count="8">
+                  <tr style="border-top: 1px solid #eef0f3">
+                    <th scope="row" style="padding: 12px 16px; text-align: left; font-weight: 600">{{ r.name }}</th>
+                    <td style="padding: 12px 16px">{{ r.kind }}</td>
+                    <td style="padding: 12px 16px; text-align: right; font-variant-numeric: tabular-nums">{{ r.hours }} van 240</td>
+                    <td style="padding: 12px 16px"><span style="display: flex; align-items: center; gap: 10px"><span role="img" aria-label="{{ r.pctLabel }}" style="flex: 1 1 auto; height: 10px; border-radius: 5px; background: #e4e6ea; overflow: hidden; display: flex"><span style="{{ r.bar }}"></span></span><strong style="flex: none; width: 76px; text-align: right; font-variant-numeric: tabular-nums">{{ r.pct }} procent</strong></span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5">De gymzalen zitten boven 90 procent: daar past geen les meer bij. De practicumlokalen staan rond 34 procent leeg, daar is ruimte.</p>
+        </section>
+
+        <section aria-labelledby="lb-raster" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px">
+            <h2 id="lb-raster" style="margin: 0; font-size: 18px; font-weight: 700">Wanneer alle gymzalen bezet zijn</h2>
+            <span style="font-size: 13px; color: #5e6168">Een gekleurd vak: in dat lesuur is geen gymzaal meer vrij, in een gewone week van deze periode</span>
+          </div>
+          <div style="overflow-x: auto">
+            <table style="border-collapse: separate; border-spacing: 3px; width: 100%; min-width: 640px; font-size: 13px">
+              <caption style="position: absolute; left: -9999px">Lesuren waarin alle gymzalen bezet zijn</caption>
+              <thead>
+                <tr style="color: #5e6168">
+                  <th scope="col" style="padding: 6px 8px; text-align: left; font-weight: 600">Uur</th>
+                  <sc-for list="{{ days }}" as="d" hint-placeholder-count="5"><th scope="col" style="padding: 6px 8px; font-weight: 600">{{ d }}</th></sc-for>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ grid }}" as="g" hint-placeholder-count="8">
+                  <tr>
+                    <th scope="row" style="padding: 6px 8px; text-align: left; font-weight: 600; color: #5e6168">{{ g.hour }}</th>
+                    <sc-for list="{{ g.cells }}" as="c" hint-placeholder-count="5"><td style="{{ c.style }}"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{ c.label }}</span></td></sc-for>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: #5e6168"><span style="display: inline-flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 3px; background: #cc0000"></span>alle 3 gymzalen bezet</span><span style="display: inline-flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 3px; background: #eaf0f7"></span>nog een gymzaal vrij</span></div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1280}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Roosters', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const rooms = [
+      ['Gymzaal 1', 'Gymzaal', 226], ['Gymzaal 2', 'Gymzaal', 222], ['Gymzaal 3', 'Gymzaal', 218],
+      ['B1.12', 'Theorielokaal', 198], ['A0.04', 'Theorielokaal', 184],
+      ['Nask-lab 1', 'Practicumlokaal', 86], ['Bio-lab', 'Practicumlokaal', 79], ['Scheikunde-lab', 'Practicumlokaal', 78]
+    ].map(([name, kind, hours]) => {
+      const pct = Math.round(hours / 240 * 100);
+      return { name, kind, hours: String(hours), pct: String(pct), pctLabel: pct + ' procent bezet', bar: 'width: ' + pct + '%; background: ' + (pct > 90 ? '#cc0000' : pct < 40 ? '#3669a5' : '#1e6b2a') };
+    });
+    const days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag'];
+    const full = { 1: [0, 1, 0, 1, 0], 2: [1, 1, 1, 1, 0], 3: [1, 1, 1, 1, 1], 4: [1, 1, 0, 1, 1], 5: [1, 0, 1, 1, 1], 6: [1, 1, 1, 0, 1], 7: [0, 1, 0, 1, 0], 8: [0, 0, 0, 0, 0] };
+    const grid = Object.keys(full).map((h) => ({ hour: h + 'e uur', cells: full[h].map((on, i) => ({ label: days[i] + ' ' + h + 'e uur: ' + (on ? 'alle gymzalen bezet' : 'een gymzaal vrij'), style: 'height: 28px; border-radius: 4px; position: relative; background: ' + (on ? '#cc0000' : '#eaf0f7') })) }));
+    return { nav, rooms, days, grid };
+  }
+}
+</script>
+</body>
+</html>

@@ -112,6 +112,21 @@ a{color:#5b2e91}a:hover{color:#43206e}
         </div>
       </aside>
     </section>
+    <section aria-labelledby="start-t" style="max-width: 1280px; box-sizing: border-box; margin: 32px auto 0; padding: 0 24px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <h2 id="start-t" style="margin: 0; font-size: 24px; font-weight: 600">Zelf regelen</h2>
+        <p style="margin: 0; font-size: 17px; color: #4a4a4a">Deze starttegels komen van de acties die de school aanbiedt. Elke tegel zegt kort wat je regelt en voor wie hij is.</p>
+        <ul style="margin: 8px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 20px">
+          <sc-for list="{{ starts }}" as="s" hint-placeholder-count="3">
+            <li style="border: 1px solid #d3d8df; border-radius: 8px; padding: 22px 24px; display: flex; flex-direction: column; gap: 10px; background: #ffffff">
+              <a href="Contentpagina.dc.html" style="font-size: 22px; font-weight: 600; color: #43206e; text-decoration: none">{{ s.title }}</a>
+              <span style="font-size: 16px; line-height: 1.5; color: #4a4a4a">{{ s.summary }}</span>
+              <span style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto"><sc-for list="{{ s.audiences }}" as="a" hint-placeholder-count="2"><span style="display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #f0eaf7; color: #43206e">{{ a }}</span></sc-for></span>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+    </section>
   </main>
   <dc-import name="Voet" hint-size="100%,348px"></dc-import>
 </div>
@@ -128,6 +143,11 @@ class Component extends DCLogic {
       { label: 'Ziek melden', href: 'Contentpagina.dc.html', icon: 'M12 5v14M5 12h14M4 4h16v16H4z' },
       { label: 'Leerbedrijf worden', href: 'Contentpagina.dc.html', icon: 'M4 21V7l8-4 8 4v14M9 21v-6h6v6M8 10h.01M12 10h.01M16 10h.01' },
       { label: 'Contact', href: 'Contentpagina.dc.html', icon: 'M4 5h16v11H8l-4 4z' }
+    ];
+    const starts = [
+      { title: 'Ziek melden', summary: 'Meld voor 8:30 uur dat je er vandaag niet bent. Je begeleider en het leerbedrijf krijgen bericht.', audiences: ['Studenten', 'Ouders'] },
+      { title: 'Bezwaar maken', summary: 'Niet eens met een examenuitslag of een beoordeling? Dien binnen tien werkdagen bezwaar in.', audiences: ['Studenten', 'Ouders'] },
+      { title: 'Uren doorgeven', summary: 'Geef de uren van je stageweek door. Het leerbedrijf keurt ze goed.', audiences: ['Studenten', 'Leerbedrijven'] }
     ];
     const fields = [
       { title: 'Techniek en ICT', links: ['Mechatronica', 'Elektrotechniek', 'Software developer'] },

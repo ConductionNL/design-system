@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: lvs-resultaten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1200px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Coördinator" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor coördinatoren" primary="Aanwezigheid invullen" active="Voortgang" groups="{{ nav }}" hint-size="264px,1178px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Geïmporteerde LVS-resultaten</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Downloaden</button>
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Bestand importeren</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+            <nav aria-label="Kruimelpad" style="font-size: 14px; color: #5e6168; display: flex; flex-wrap: wrap; gap: 8px"><a href="LqVoortgang.dc.html">Voortgang</a><span aria-hidden="true">/</span><span aria-current="page">LVS-resultaten</span></nav>
+            <span aria-hidden="true" style="color: #5e6168">·</span>
+            <span style="font-size: 14px; color: #5e6168">Uit Cito, IEP, Boom en DIA. Een resultaat telt pas mee als een coördinator het heeft vastgesteld; 3 wachten nog.</span>
+          </div>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+          <sc-for list="{{ views }}" as="v" hint-placeholder-count="3">
+            <button type="button" aria-pressed="{{ v.pressed }}" style="{{ v.style }}">{{ v.label }}<span style="{{ v.countStyle }}">{{ v.count }}</span></button>
+          </sc-for>
+        </div>
+
+        <section aria-label="LVS-resultaten" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+          <div role="alert" style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 10px; background: #fde8e8; color: #1b1c1d; font-size: 14px; line-height: 1.5; border-left: 4px solid #a30000"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 1px; color: #a30000"><path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path></svg><span>Niet opgeslagen: het resultaat Diatekst van Daan Visser is vastgesteld (lvs-result-verified). Een vastgestelde vaardigheidsscore is niet meer te wijzigen en gaat niet terug naar geïmporteerd; archiveren kan wel.</span></div><div style="overflow-x: auto">
+            <table style="border-collapse: collapse; width: 100%; min-width: 900px; font-size: 14px">
+              <caption style="position: absolute; left: -9999px">Geïmporteerde LVS-resultaten</caption>
+              <thead>
+                <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Leerling</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Instrument</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Moment</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Vaardigheidsscore</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Status</th>
+                  <th scope="col" style="padding: 12px 16px; font-weight: 600">Acties</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+                  <tr style="border-top: 1px solid #eef0f3; vertical-align: top">
+                    <td style="padding: 13px 16px"><span style="display: flex; flex-direction: column; gap: 2px"><a href="LqLeerling.dc.html" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ r.learner }}</a><span style="color: #5e6168">{{ r.group }}</span></span></td>
+                    <td style="padding: 13px 16px"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">{{ r.instrument }}</span><span style="color: #5e6168">{{ r.test }}</span></span></td>
+                    <td style="padding: 13px 16px">{{ r.moment }}</td>
+                    <td style="padding: 13px 16px; text-align: right; font-variant-numeric: tabular-nums"><strong>{{ r.score }}</strong><span style="color: #5e6168"> {{ r.level }}</span></td>
+                    <td style="padding: 13px 16px"><span style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start"><span style="{{ r.style }}">{{ r.state }}</span><sc-if value="{{ r.hasBy }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #5e6168">{{ r.by }}</span></sc-if></span></td>
+                    <td style="padding: 13px 16px"><sc-if value="{{ r.open }}" hint-placeholder-val="{{ true }}"><button type="button" style="height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Controleren en vaststellen</button></sc-if><sc-if value="{{ r.locked }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #5e6168"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"></path></svg>Vastgesteld, niet meer te wijzigen</span></sc-if></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid #eef0f3; font-size: 14px; color: #5e6168">
+            <span>6 van 41 resultaten · laatste import: Cito, 2 november, 14 rijen</span>
+            <a href="#" style="font-weight: 600">Alle resultaten</a>
+          </div>
+        </section>
+
+        <section aria-labelledby="lvs-rollen" style="border: 1px dashed #828a95; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; background: #fafbfc">
+          <h2 id="lvs-rollen" style="margin: 0; font-size: 16px; font-weight: 700">Wie ziet wat</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px">
+            <div style="flex: 1 1 280px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+              <strong style="font-size: 15px">Coördinator zorg of intern begeleider</strong>
+              <span style="font-size: 14px; color: #3d4047; line-height: 1.45">Ziet de geïmporteerde resultaten én de overdrachtsdossiers, stelt vast, en mag een rij afkeuren met een reden.</span>
+            </div>
+            <div style="flex: 1 1 280px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+              <strong style="font-size: 15px">Instructeur of vakdocent</strong>
+              <span style="font-size: 14px; color: #3d4047; line-height: 1.45">Ziet alleen vastgestelde resultaten van de eigen groepen. Overdrachtsdossiers staan voor deze rol niet in het menu en geven bij een directe link: <em>Geen toegang tot overdrachtsdossiers</em>.</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const view = (on) => 'display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px \'Fira Sans\', sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;');
+    const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
+    const views = [['Wacht op vaststelling', 3, true], ['Vastgesteld', 36, false], ['Afgekeurd', 2, false]].map(([label, count, on]) => ({ label, count: String(count), pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
+    const S = { imp: ['Geïmporteerd', pill('#fff4de', '#7a4f00')], ok: ['Vastgesteld', pill('#e7f3ea', '#1e6b2a')] };
+    const rows = [
+      ['Sami Yilmaz', 'Groep 4', 'Cito', 'Rekenen-Wiskunde 3.0, M4', 'januari 2026', '112', 'niveau II', 'imp', ''],
+      ['Vera Hulstkamp', 'Groep 7', 'IEP', 'Begrijpend lezen, E6', 'juni 2026', '78', 'boven gemiddeld', 'imp', ''],
+      ['Tess Bakker', 'Groep 6', 'Boom', 'Spelling, M6', 'januari 2026', '231', 'niveau III', 'imp', ''],
+      ['Daan Visser', '3HV-B', 'DIA', 'Diatekst, voortgezet onderwijs', 'september 2026', '64', 'referentieniveau 2F', 'ok', 'Vastgesteld door Lotte Kramer op 2 oktober 2026'],
+      ['Noor Bakker', '3HV-B', 'DIA', 'Diatekst, voortgezet onderwijs', 'september 2026', '71', 'referentieniveau 2F', 'ok', 'Vastgesteld door Lotte Kramer op 2 oktober 2026'],
+      ['Fenna de Jong', '3HV-B', 'Cito', 'Volgsysteem VO, leerjaar 3', 'september 2026', '58', 'referentieniveau 2F', 'ok', 'Vastgesteld door Lotte Kramer op 2 oktober 2026']
+    ].map(([learner, group, instrument, test, moment, score, level, s, by]) => ({ learner, group, instrument, test, moment, score, level, state: S[s][0], style: S[s][1], by, hasBy: !!by, open: s === 'imp', locked: s === 'ok' }));
+    return { nav, views, rows };
+  }
+}
+</script>
+</body>
+</html>

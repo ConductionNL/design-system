@@ -329,16 +329,26 @@ const sameRole = (b, l) => nested(b) === nested(l) && (b.interactive === undefin
 const TAG = new Set(['pill', 'badge'])
 const rowsApart = (b, l) => (b.count > 1 || l.count > 1) && TAG.has(b.rep.kind) && TAG.has(l.rep.kind) && b.rep.inRow !== undefined && l.rep.inRow !== undefined && b.rep.inRow !== l.rep.inRow
 
-export function pairElements (B = [], L = [], H = 2000) {
+const holds = (r, e) => { const cx = e.rect.x + e.rect.w / 2, cy = e.rect.y + e.rect.h / 2; return cx >= r.x && cx <= r.x + r.w && cy >= r.y && cy <= r.y + r.h }
+// The innermost paired card whose box on that side holds the element's centre.
+const cardOf = (e, cards, side) => cards.filter((c) => holds(c[side].rect, e)).sort((a, b) => a[side].rect.w * a[side].rect.h - b[side].rect.w * b[side].rect.h)[0]
+
+// cards: the paired cards ({ board, live } components). An element pairs by label inside its own paired card first. It
+// never takes a label from another paired card that draws that label itself: the third "Kritiek" of a table whose live
+// copy has two is missing there, not paired with the "Kritiek" of the card below.
+export function pairElements (B = [], L = [], H = 2000, cards = []) {
 	const pairs = [], usedB = new Set(), usedL = new Set()
 	const byKey = new Map()
 	for (const l of L) { if (!norm(l.label)) continue; const k = ekey(l); if (!byKey.has(k)) byKey.set(k, []); byKey.get(k).push(l) }
+	const liveCard = new Map(L.map((l) => [l, cardOf(l, cards, 'live')]))
+	const drawsOwn = (card, key) => B.some((x) => norm(x.label) && ekey(x) === key && holds(card.board.rect, x))
 	for (const b of B) {
 		if (!norm(b.label)) continue
-		const list = byKey.get(ekey(b))
+		const key = ekey(b), card = cardOf(b, cards, 'board')
+		const fits = (x) => { const c = liveCard.get(x); return !c || c === card || !drawsOwn(c, key) }
 		// Of the live elements with the same label, the nearest: in a deck of cards the same tag repeats on every card.
-		const near = (x) => Math.abs(x.rect.x - b.rect.x) + Math.abs(x.rect.y - b.rect.y)
-		const l = list && list.filter((x) => !usedL.has(x)).sort((x, y) => near(x) - near(y))[0]
+		const near = (x) => (card && liveCard.get(x) === card ? 0 : 1e6) + Math.abs(x.rect.x - b.rect.x) + Math.abs(x.rect.y - b.rect.y)
+		const l = (byKey.get(key) || []).filter((x) => !usedL.has(x) && fits(x)).sort((x, y) => near(x) - near(y))[0]
 		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
 	}
 	// A control whose accessible name starts with its visible text and a colon ("Beschikbaar: routering stelt je in de
@@ -348,6 +358,16 @@ export function pairElements (B = [], L = [], H = 2000) {
 		if (usedB.has(b) || !norm(b.label)) continue
 		const l = L.find((x) => !usedL.has(x) && EGROUP[x.kind] === EGROUP[b.kind] && norm(x.inControl || '') === norm(b.inControl || '') && (named(x.label, b.label) || named(b.label, x.label)))
 		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
+	}
+	// A filter chip reads "<field>: <value>" ("Deadline: 1 tot en met 31 oktober", its remove button "Filter
+	// verwijderen: Deadline: ..."). The value follows the data or the day, so two chips on the same field are one chip.
+	const field = (e) => { const s = (e.label || '').trim().toLowerCase(), i = s.lastIndexOf(': '); return e.kind === 'pill' && i >= 2 && s.length > i + 2 ? `${norm(e.inControl || '')}|${norm(s.slice(0, i))}` : null }
+	for (const b of B) {
+		const k = usedB.has(b) ? null : field(b)
+		if (!k) continue
+		const near = (x) => Math.abs(x.rect.x - b.rect.x) + Math.abs(x.rect.y - b.rect.y)
+		const l = L.filter((x) => !usedL.has(x) && field(x) === k).sort((x, y) => near(x) - near(y))[0]
+		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'field' }) }
 	}
 	// A nav entry or a list action drawn as a button on one side and as a list row (a link in an li) on the other is one
 	// element: the same label in a control or a row pairs across the two.
@@ -410,9 +430,9 @@ export function pairElements (B = [], L = [], H = 2000) {
 }
 
 export function compareElement (b, l, by = 'label') {
-	// A status tag paired by group, not by label, takes its colour from its value (Aanwezig green, Afwezig amber):
+	// A status tag paired by group, not by label or field, takes its colour from its value (Aanwezig green, Afwezig amber):
 	// compare its shape, size and type, not its colours.
-	const semantic = by !== 'label' && (b.kind === 'pill' || b.kind === 'badge') && (l.kind === 'pill' || l.kind === 'badge')
+	const semantic = by !== 'label' && by !== 'field' && (b.kind === 'pill' || b.kind === 'badge') && (l.kind === 'pill' || l.kind === 'badge')
 	const rows = []
 	const add = (prop, vb, vl, flag) => rows.push({ prop, board: vb, live: vl, delta: typeof vb === 'number' && typeof vl === 'number' ? Math.round((vl - vb) * 10) / 10 : null, flag })
 	const pb = b.props, pl = l.props

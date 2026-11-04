@@ -155,6 +155,20 @@ test('--clock fixes the live page\'s date for a board drawn on one (a calendar o
 	assert.throws(() => parseClock('2026-13-45'), /--clock/)
 })
 
+test('--clock "@monday 13:00" is that weekday of the measuring week, so a board drawn on a weekday keeps its day', () => {
+	// Wednesday 4 November 2026, 03:10: the week runs Monday 2 to Sunday 8 November.
+	const now = new Date(2026, 10, 4, 3, 10)
+	const mon = parseClock('@monday 13:00', now)
+	assert.deepEqual([mon.getFullYear(), mon.getMonth(), mon.getDate(), mon.getHours(), mon.getMinutes()], [2026, 10, 2, 13, 0])
+	assert.equal(parseClock('@wednesday 09:30', now).getDate(), 4)
+	assert.equal(parseClock('@friday 09:00', now).getDate(), 6)
+	assert.equal(parseClock('@today 16:45', now).getHours(), 16)
+	// A Sunday belongs to the week that started the Monday before it.
+	assert.equal(parseClock('@monday 09:00', new Date(2026, 10, 8, 12, 0)).getDate(), 2)
+	assert.throws(() => parseClock('@maandag 09:00', now), /--clock/)
+	assert.throws(() => parseClock('@monday 25:00', now), /--clock/)
+})
+
 test('a filled field is left (blurred) so it is measured at rest; a typed one keeps its focus', async () => {
 	const page = fakePage()
 	await playSteps(page, parseSteps('[{"type":"#zoek","value":"han"},{"fill":"#notitie","value":"Gebeld"}]'))

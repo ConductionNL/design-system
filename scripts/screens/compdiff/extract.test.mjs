@@ -318,6 +318,33 @@ test('a map is measured as a map, for place and size only, and its attribution i
 	assert.equal(live.elements.length, 0, JSON.stringify(live.elements.map((e) => e.label)))
 })
 
+test('the frame that hugs a drawn map is the map\'s edge, not a box left unmeasured', { skip }, async () => {
+	const r = await measure(`<section style="position:absolute;left:292px;top:300px;width:1120px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:18px">
+		<div style="position:relative;display:flex;flex-direction:column;width:655px;border:1px solid #e4e6ea;border-radius:10px;overflow:hidden">
+			<svg viewBox="0 0 640 520" width="100%" height="100%" role="img" aria-label="Kaart van Zuiddrecht met 5 genummerde zaken" style="display:block;min-height:520px;background:#f1efe9"><text x="555" y="440">Stadspark</text></svg>
+			<button type="button" aria-label="Kaartlagen" style="position:absolute;top:12px;left:12px;width:36px;height:36px;border:1px solid #828a95;border-radius:8px;background:#fff"></button></div></section>`)
+	assert.deepEqual(r.unmeasured, [])
+})
+
+test('a pill set apart by a space-between row has no gap of its own: the room is the texts\' (DqAanMijToegewezen)', { skip }, async () => {
+	const card = (due) => `<div style="width:222px;display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:10px">
+		<span style="display:inline-block;padding:3px 10px;border-radius:12px;background:#e8e6f6;font-size:13px;font-weight:600">In behandeling</span><span style="font-size:14px;font-weight:600">${due}</span></div>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px">${card('Termijn 25 okt')}</div><div style="position:absolute;left:600px;top:200px;display:flex;gap:8px"><span style="display:inline-block;padding:3px 10px;border-radius:12px;background:#e8e6f6;font-size:13px">Open</span><span>3</span></div>`)
+	const pills = r.elements.filter((e) => e.kind === 'pill')
+	assert.equal(pills.find((p) => p.label === 'In behandeling').props.gapNext, null)
+	assert.equal(pills.find((p) => p.label === 'Open').props.gapNext, 8)
+})
+
+test('a drawn avatar\'s initials in an svg are its picture, not the row\'s text (DqFilterDelen "HD Hanneke de Boer")', { skip }, async () => {
+	const r = await measure(`<ul role="listbox" style="position:absolute;left:431px;top:300px;width:578px;margin:0;padding:0;list-style:none">
+		<li role="option" style="display:flex;align-items:center;gap:12px;height:48px;padding:0 14px"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="flex:none"><circle cx="16" cy="16" r="16" fill="#f7f8ef"></circle><text x="16" y="21" text-anchor="middle" font-size="14" font-weight="400">HD</text></svg><span style="font-size:14px;font-weight:600">Hanneke de Boer</span></li>
+		<li role="option" style="display:flex;align-items:center;gap:12px;height:48px;padding:0 14px"><span style="font-size:14px;font-weight:600">Hanna Bos</span></li></ul>`)
+	const row = r.elements.find((e) => e.kind === 'row' && /Hanneke/.test(e.label))
+	assert.ok(row, JSON.stringify(r.elements.map((e) => [e.kind, e.label])))
+	assert.equal(row.props.fontWeight, 600)
+	assert.equal(row.props.textInsetLeft, 58)
+})
+
 test('a card is named by its own library class, not by an icon in its corner', { skip }, async () => {
 	const r = await measure(`<aside class="app-sidebar" style="position:absolute;left:1050px;top:68px;width:388px;height:600px;background:#f5f6f8">
 		<div class="cn-index-sidebar__header-icon" style="position:absolute;left:0;top:0;width:40px;height:40px"></div>
@@ -582,6 +609,8 @@ test('facts, a pill row or a list of rows right under a card title is content, n
 		facts: '<dl style="margin:0;display:grid;grid-template-columns:130px 1fr;gap:8px 16px;font-size:14px"><dt>Prioriteit</dt><dd style="margin:0">Hoog</dd><dt>Reden</dt><dd style="margin:0">Raadsvraag</dd></dl>',
 		pills: '<div style="font-size:13px"><span style="padding:2px 8px;border-radius:10px;background:#eaf0f7">Programma Fietsroutes</span> <span style="padding:2px 8px;border-radius:10px;background:#eaf0f7">3 zaken</span></div>',
 		rows: '<div style="font-size:14px"><div style="display:flex;justify-content:space-between;padding:8px 0">Woo-verzoek<span>12</span></div><div style="display:flex;justify-content:space-between;padding:8px 0">Bezwaar<span>4</span></div><div style="display:flex;justify-content:space-between;padding:8px 0">Melding<span>9</span></div></div>',
+		// A pill set straight under the title, with no wrapper (DqFlow's inspector "Beslistabel van OpenRegister").
+		lonePill: '<span style="align-self:flex-start;padding:3px 10px;border-radius:12px;background:#e8e6f6;color:#4a3f8f;font-size:13px">Beslistabel van OpenRegister</span>',
 	}
 	for (const [name, body] of Object.entries(bodies)) {
 		const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:400px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:10px">
@@ -1743,4 +1772,35 @@ test('a marked description right under a card\'s title stays its description', {
 	const card = (t) => `<section style="border:1px solid #e4e6ea;border-radius:12px;padding:20px;margin-bottom:16px;background:#fff"><h2 style="margin:0 0 4px;font-size:17px">${t}</h2><p class="card__description" style="margin:0;font-size:14px;color:#5e6168">Waar zaken wachten.</p><table style="margin-top:24px"><tr><td>Vergunningen</td></tr></table></section>`
 	const r = await measure(`<div style="position:absolute;left:316px;top:200px;width:700px">${card('Knelpunten')}</div>`)
 	assert.ok(r.components.find((c) => c.title === 'Knelpunten').content.gapBelowTitle > 30)
+})
+
+test('a heat cell stretched by a two-line row is a badge, as its one-line neighbours are', { skip }, async () => {
+	const cell = (text) => `<span role="cell" style="padding:10px;border-radius:6px;background:#eaf0f7;color:#234a78;font-weight:600;text-align:center">${text}</span>`
+	const r = await measure(`<section style="position:absolute;left:292px;top:200px;width:1076px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px"><h2 style="margin:0;font-size:17px">Dagen per fase</h2><div role="table" style="display:grid;grid-template-columns:240px repeat(6,minmax(0,1fr));gap:4px;font-size:14px"><span role="rowheader" style="padding:10px 6px">Woo-verzoek</span>${cell('10 d')}${cell('11 d')}${'<span></span>'.repeat(4)}<span role="rowheader" style="padding:10px 6px;width:120px">Kenteken wijzigen parkeervergunning</span>${cell('3 d')}${cell('4 d')}${'<span></span>'.repeat(4)}</div></section>`)
+	const badges = r.elements.filter((e) => e.kind === 'badge')
+	assert.deepEqual(badges.map((e) => e.label).sort(), ['10 d', '11 d', '3 d', '4 d'])
+	assert.ok(badges.some((e) => e.rect.h > 44), 'the two-line row stretches its cells past 44px')
+	assert.equal(r.unmeasured.length, 0)
+})
+
+test('a pill\'s screen-reader prefix is not part of its label, as the board draws only the value', { skip }, async () => {
+	const hidden = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap'
+	const r = await measure(`<ul style="position:absolute;left:300px;top:140px;margin:0;padding:0;list-style:none;display:flex"><li style="display:inline-flex;align-items:center;height:21px;padding:0 10px;border-radius:10.5px;background:#edeff2;color:#5e6168;font-size:13px;font-weight:600"><span style="${hidden}">slug: </span><span>waterland</span></li></ul>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'pill').map((e) => e.label), ['waterland'])
+})
+
+test('text in a display: contents wrapper is drawn: it stays in the label, unlike a 1px screen-reader span', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:140px"><span style="display:inline-flex;align-items:center;height:21px;padding:0 10px;border-radius:10.5px;background:#edeff2;color:#5e6168;font-size:13px;font-weight:600"><span style="display:contents">In behandeling</span></span></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'pill').map((e) => e.label), ['In behandeling'])
+})
+
+test('a filter chip longer than 320px with its remove button is a pill; a long round box without one is not', { skip }, async () => {
+	const chip = (w, inner) => `<span style="display:inline-flex;align-items:center;gap:6px;height:30px;width:${w}px;border-radius:15px;background:rgb(234,240,247);color:rgb(35,74,120);padding:0 6px 0 12px;font-weight:600">${inner}</span>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:250px;display:flex;gap:24px">
+		${chip(330, 'Deadline: 21 oktober tot en met 10 november<button aria-label="Filter verwijderen" style="width:22px;height:22px;border:0;border-radius:11px;background:rgb(234,240,247)">x</button>')}
+		${chip(400, 'Een lange afgeronde melding zonder knop')}
+	</div>`)
+	const labels = r.elements.filter((e) => e.kind === 'pill').map((e) => e.label)
+	assert.ok(labels.some((l) => l.startsWith('Deadline: 21 oktober')), JSON.stringify(labels))
+	assert.ok(!labels.some((l) => l.startsWith('Een lange')), JSON.stringify(labels))
 })

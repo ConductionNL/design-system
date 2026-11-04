@@ -11,6 +11,8 @@
 //   while the page is measured, so "kijkt nu ook naar deze zaak" shows (presence.mjs); presence beats pass in both
 //   contexts, every other write stays refused
 //   [--ignore "<sel>|<sel>"]   elements on either side to leave out, like the app's own chrome
+//   [--exempt banner|side-states|none]   the regions a board marks with data-compdiff-exempt="<kind>" that are taken
+//   out of the layout on both sides (exempt.mjs); default banner, side-states only when named
 //   [--storage <path>]   keep the login in <path>-<user>.json and reuse it, so a batch logs in once
 //   --url may name a record by a lookup, {task:title=...} or {object:<register>/<schema>:<field>=<value>}, resolved
 //   through the OpenRegister API at run time (lookup.mjs)
@@ -43,6 +45,7 @@ import { parseLookups, resolveRoute } from './lookup.mjs'
 import { KNOWN_FLAGS, unknownFlags } from './flags.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
+import { collapseExempt, parseExempt } from './exempt.mjs'
 import { presenceWrite, presentAs } from './presence.mjs'
 import { accountFor, applyInjection, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, logIn, markIgnored, onLoginPage, parkPointer, readInjection, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
@@ -68,10 +71,11 @@ const BOARDS = args.boards || path.join(HERE, '..', '..', '..', 'preview', 'scre
 const base = args.base || 'http://localhost:8080'
 const board = args.board
 const out = args.out || path.join(process.cwd(), 'compdiff-out')
-let width, clock
+let width, clock, exemptKinds
 try {
 	width = parseWidth(args.width)
 	clock = parseClock(args.clock)
+	exemptKinds = parseExempt(args.exempt)
 } catch (e) {
 	console.error(e.message)
 	process.exit(2)
@@ -170,6 +174,8 @@ try {
 		if (!found) throw new Error(`--board-frame ${args['board-frame']} matches nothing on the board`)
 		await bpage.waitForTimeout(300)
 	}
+	// Marked regions come out before the board's height is read: a side-state panel at the foot shortens the board.
+	const exempted = { kinds: exemptKinds, board: await bpage.evaluate(collapseExempt, exemptKinds), live: [] }
 	const boardHeight = await bpage.evaluate(() => Math.ceil((document.querySelector('[data-board]') || document.body).getBoundingClientRect().height) || 1070)
 	await bpage.setViewportSize({ width, height: boardHeight })
 	await bpage.waitForTimeout(300)
@@ -282,6 +288,8 @@ try {
 	lap('tables')
 	if (args['keep-scroll'] !== 'true' && (await resetScroll(lpage)) > 0) await lpage.waitForTimeout(500)
 	await waitForTransitions(lpage).catch(() => {})
+	exempted.live = await lpage.evaluate(collapseExempt, exemptKinds)
+	if (exempted.live.length) await lpage.waitForTimeout(300)
 	await markIgnored(lpage, args.ignore)
 	// The keyboard focus rings round a field typed into are the theme's, kept in the apps (Ruben, 30 Oct); a board draws
 	// the field without them.
@@ -353,6 +361,7 @@ try {
 		board, url: liveRoute, ...(liveRoute !== args.url ? { urlSpec: args.url } : {}), height: boardHeight, measuredAt: new Date().toISOString(),
 		...(fresh.state === 'stale' ? { staleBoard: true } : {}),
 		...(injection ? { injected: injection.files } : {}),
+		exempted,
 		...(presence ? { presentAs: { role: presentRole, beats: presence.beats, blockedWrites: presence.blocked } } : {}),
 		counts: { boardComponents: B.components.length, liveComponents: L.components.length, paired: pairs.length, missingOnLive: missing.length, extraOnLive: extra.length, flaggedComponents: results.filter((r) => r.flagged).length },
 		page: pageBg,
@@ -384,7 +393,7 @@ try {
 }
 
 function renderTable (r) {
-	const lines = [`# ${r.board}  (${r.url})`, '', ...(r.injected ? [`injected: ${Object.values(r.injected).join(', ')} (a proposed fix, not the live page)`, ''] : []), `components: board ${r.counts.boardComponents}, live ${r.counts.liveComponents}, paired ${r.counts.paired}, flagged ${r.counts.flaggedComponents}`, '']
+	const lines = [`# ${r.board}  (${r.url})`, '', ...(r.injected ? [`injected: ${Object.values(r.injected).join(', ')} (a proposed fix, not the live page)`, ''] : []), ...exemptLines(r.exempted), `components: board ${r.counts.boardComponents}, live ${r.counts.liveComponents}, paired ${r.counts.paired}, flagged ${r.counts.flaggedComponents}`, '']
 	const sorted = [...r.components].sort((a, b) => b.score - a.score)
 	for (const c of sorted) {
 		lines.push(`## ${c.role}: ${c.name}  [${c.matchedBy}]  flags ${c.flagged}, crop mismatch ${c.cropMismatchPct ?? 'n/a'}%`, '')
@@ -396,5 +405,10 @@ function renderTable (r) {
 	if (r.extraOnLive.length) lines.push('## Extra on live', '', ...r.extraOnLive.map((c) => `- ${c.role}: ${c.title || '(untitled)'} at ${c.rect.x},${c.rect.y} ${c.rect.w}x${c.rect.h}`), '')
 	if (r.crossKind) lines.push('## Paired across kinds', '', ...r.crossKind.map((p) => `- "${p.board.label}": ${p.board.kind} at ${p.board.rect.x},${p.board.rect.y} ${p.board.rect.w}x${p.board.rect.h} on the board, ${p.live.kind} at ${p.live.rect.x},${p.live.rect.y} ${p.live.rect.w}x${p.live.rect.h} on live`), '')
 	return lines.join('\n')
+}
+function exemptLines (x) {
+	if (!x || (!x.board.length && !x.live.length)) return []
+	const line = (side, e) => `- ${side} ${e.kind}: "${e.text}" at ${e.rect.x},${e.rect.y} ${e.rect.w}x${e.rect.h}`
+	return [`exempted (${x.kinds.join(', ')}), taken out of the layout before measuring:`, '', ...x.board.map((e) => line('board', e)), ...x.live.map((e) => line('live', e)), '']
 }
 function fmt (v) { return v === null || v === undefined ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v) }

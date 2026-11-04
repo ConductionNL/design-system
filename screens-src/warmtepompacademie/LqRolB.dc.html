@@ -75,6 +75,16 @@ a{color:#0b6e7a}a:hover{color:#084f58}
               </a>
             </sc-for>
           </section>
+          <section aria-labelledby="rb-exam" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px 24px 12px; display: flex; flex-direction: column; gap: 4px">
+            <h2 id="rb-exam" style="margin: 0 0 2px; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Praktijkexamen donderdag: uw kandidaten</h2>
+            <p style="margin: 0 0 6px; font-size: 13px; color: #5e6168">U bent beoordelaar van 3 van de 4 zittingen van 8 oktober. De vierde beoordeelt Rob Maas en ziet u niet.</p>
+            <sc-for list="{{ exams }}" as="x" hint-placeholder-count="3">
+              <a href="LqExamenBeoordeling.dc.html" style="display: flex; gap: 14px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span style="flex: none; width: 52px; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">{{ x.time }}</span>
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 15px; font-weight: 600">{{ x.who }}</span><span style="font-size: 13px; color: #5e6168">{{ x.exam }} · {{ x.room }}</span></span>
+              </a>
+            </sc-for>
+          </section>
           <section aria-labelledby="rb-week" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px 24px 8px; display: flex; flex-direction: column; gap: 4px">
             <h2 id="rb-week" style="margin: 0 0 8px; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Mijn cursusdagen deze week</h2>
             <sc-for list="{{ week }}" as="w" hint-placeholder-count="3">
@@ -125,12 +135,17 @@ class Component extends DCLogic {
       { day: '6', dow: 'di', title: 'Storingen zoeken, dag 2', meta: '08:30 tot 16:30 uur · praktijkhal' },
       { day: '8', dow: 'do', title: 'F-gassen: herhaling en examen', meta: '11 deelnemers · lokaal 2 en hal · examinator vanaf 12:30 uur' }
     ];
+    const exams = [
+      { time: '12:30', who: 'Tom Verbeek', exam: 'F-gassen categorie 1, praktijk', room: 'praktijkhal, opstelling 2' },
+      { time: '13:30', who: 'Youssef El Amrani', exam: 'F-gassen categorie 1, praktijk', room: 'praktijkhal, opstelling 2' },
+      { time: '14:30', who: 'Karim Bouzid', exam: 'F-gassen categorie 1, praktijk', room: 'praktijkhal, opstelling 3' }
+    ];
     const prep = [
       { title: 'Vier examenopstellingen vullen en afpersen', meta: 'Woensdag na 16:30 uur, als de hal vrij is', done: false },
       { title: 'Tweede stikstoffles aangevraagd bij de planning', meta: 'Sophie van Dam antwoordt vandaag', done: true },
       { title: 'Lekdetectors gekalibreerd', meta: 'Vrijdag gedaan', done: true }
     ];
-    return { nav, group, tasks, week, prep };
+    return { nav, group, tasks, week, prep, exams };
   }
 }
 </script>

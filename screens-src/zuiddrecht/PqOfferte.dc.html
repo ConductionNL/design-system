@@ -92,11 +92,15 @@ a{color:#3669a5}a:hover{color:#234a78}
               </div>
               <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 16px 24px; padding: 18px 22px">
                 <span style="flex: 1 1 260px; font-size: 14px; color: #5e6168; line-height: 1.5">Producten komen uit de catalogus met hun huidige prijs. Onder de stukprijs staat uit welke prijslijst en staffel die komt. Een eigen regel is voor werk dat niet in de catalogus staat: die prijs typ je zelf, heet Handmatig ingesteld en blijft staan als de prijslijst verandert.</span>
-                <dl aria-label="Totalen" style="flex: 0 1 300px; margin: 0; display: grid; grid-template-columns: 1fr max-content; gap: 8px 24px; font-size: 15px; padding: 14px 16px; border-radius: 8px; background: #f5f6f8">
-                  <dt style="color: #3d4047">Subtotaal</dt><dd style="margin: 0; text-align: right">€ 4.390,20</dd>
-                  <dt style="color: #3d4047">Btw 21%</dt><dd style="margin: 0; text-align: right">€ 921,94</dd>
-                  <dt style="font-weight: 700; padding-top: 8px; border-top: 1px solid #d6d9de">Totaal</dt><dd style="margin: 0; text-align: right; font-weight: 700; font-size: 18px; padding-top: 8px; border-top: 1px solid #d6d9de">€ 5.312,14</dd>
-                </dl>
+                <table aria-label="Totalen per btw-tarief" style="flex: 0 1 420px; border-collapse: collapse; font-size: 15px; padding: 14px 16px; border-radius: 8px; background: #f5f6f8; display: block">
+                  <thead><tr style="font-size: 13px; color: #5e6168"><th scope="col" style="padding: 4px 0; text-align: left; font-weight: 400; color: #3d4047; white-space: nowrap; color: #5e6168">Tarief</th><th scope="col" style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap; font-weight: 400">Netto</th><th scope="col" style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap; font-weight: 400">Btw</th><th scope="col" style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap; font-weight: 400">Bruto</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row" style="padding: 4px 0; text-align: left; font-weight: 400; color: #3d4047; white-space: nowrap">Btw 21%</th><td style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap">€ 3.490,20</td><td style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap">€ 732,94</td><td style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap">€ 4.223,14</td></tr>
+                    <tr><th scope="row" style="padding: 4px 0; text-align: left; font-weight: 400; color: #3d4047; white-space: nowrap">Btw 9%</th><td style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap">€ 900,00</td><td style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap">€ 81,00</td><td style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap">€ 981,00</td></tr>
+                    <tr><th scope="row" style="padding: 4px 0; text-align: left; font-weight: 400; color: #3d4047; white-space: nowrap; padding-top: 8px; border-top: 1px solid #d6d9de">Totaal excl. btw</th><td colspan="3" style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap; padding-top: 8px; border-top: 1px solid #d6d9de">€ 4.390,20</td></tr>
+                    <tr><th scope="row" style="padding: 4px 0; text-align: left; font-weight: 400; color: #3d4047; white-space: nowrap; font-weight: 700; color: #1b1c1d">Totaal incl. btw</th><td colspan="3" style="padding: 4px 0 4px 16px; text-align: right; white-space: nowrap; font-weight: 700; font-size: 18px">€ 5.204,14</td></tr>
+                  </tbody>
+                </table>
               </div>
             </section>
 
@@ -192,7 +196,7 @@ class Component extends DCLogic {
     const lines = [
       ['Website, basispakket', 'Catalogusproduct', 'Ontwerp en bouw, tot 8 pagina\'s', '1', '€ 2.400,00', '0', '€ 2.400,00', 'Inclusief de fotogalerij voor de winkel.', 'Prijs uit lijst Standaard 2026'],
       ['Hosting, per maand', 'Catalogusproduct', 'Hosting met dagelijkse back-ups en SSL', '12', '€ 31,50', '10', '€ 340,20', 'Eerste jaar. Maandelijks gefactureerd na de bestelling. Staffelprijs: 12 maanden valt in staffel 10+.', 'Prijs uit lijst Overheid 2027 · staffel 10+'],
-      ['Workshop teksten', 'Catalogusproduct', 'Halve dag, samen de teksten schrijven', '2', '€ 450,00', '0', '€ 900,00', 'In de bakkerij, op een maandag als de winkel dicht is.', 'Prijs uit lijst Standaard 2026'],
+      ['Workshop teksten', 'Catalogusproduct', 'Halve dag, samen de teksten schrijven', '2', '€ 450,00', '0', '€ 900,00', 'In de bakkerij, op een maandag als de winkel dicht is.', 'Prijs uit lijst Standaard 2026 · btw 9%'],
       ['Koppeling met het kassasysteem', 'Eigen regel', 'Dagvoorraad tonen op de website', '1', '€ 750,00', '0', '€ 750,00', 'Schatting. Hangt af van de leverancier van de kassa. Getypte prijs, blijft staan bij een nieuwe prijslijst.', 'Handmatig ingesteld']
     ].map(([product, kind, desc, qty, unit, disc, total, note, source]) => ({
       product, kind, desc, qty, unit, disc, total, note, source,

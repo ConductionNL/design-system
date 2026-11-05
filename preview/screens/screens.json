@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-04",
+ "generated": "2026-11-05",
  "designSystems": [
   "conduction",
   "zuiddrecht",
@@ -1462,6 +1462,18 @@
      "boards": [
       "LqBsaWaarschuwing",
       "LqCompetentie"
+     ],
+     "blurb": "leersysteem voor scholen, opleiders en bedrijven: cursussen, voortgang en compliance"
+    },
+    {
+     "id": "rowLearniqOpenLesmateriaal",
+     "app": "learniq",
+     "title": "learniq: open lesmateriaal uit Edurep (5 nov, lane od-design)",
+     "boards": [
+      "LqLesmateriaal",
+      "LqOpenLesmateriaal",
+      "LqOpenLesmateriaalDetail",
+      "LqOpenLesmateriaalStaten"
      ],
      "blurb": "leersysteem voor scholen, opleiders en bedrijven: cursussen, voortgang en compliance"
     },
@@ -15430,13 +15442,13 @@
    "app": "learniq",
    "title": "learniq: les maken",
    "w": 1440,
-   "h": 2930,
+   "h": 2980,
    "set": "zuiddrecht",
    "row": "rowLearniq",
    "file": "boards/LqLesMaken.html",
    "thumb": "thumbs/LqLesMaken.webp",
-   "caps": "competency, content-adaptive-path, course-management",
-   "note": "Wat je ziet: Een les samenstellen uit blokken, met doelen en regels voor de volgende stap.",
+   "caps": "competency, content-adaptive-path, course-management, open-learning-material",
+   "note": "Wat je ziet: Een les samenstellen uit blokken, met doelen en regels voor de volgende stap. Het mediablok heeft naast Nieuw bestand uploaden de knop Zoek open lesmateriaal, die het Edurep-zoekpaneel opent (LqOpenLesmateriaal).",
    "src": "screens-src/zuiddrecht/LqLesMaken.dc.html",
    "blurb": "leersysteem voor scholen, opleiders en bedrijven: cursussen, voortgang en compliance",
    "repo": "ConductionNL/scholiq",
@@ -43107,7 +43119,7 @@
    "file": "boards/LqKoppelingen.html",
    "thumb": "thumbs/LqKoppelingen.webp",
    "caps": "gov-see-which-connections-work, integrations",
-   "note": "Wat je ziet: Alle koppelingen die learniq aangeeft op één pagina, met de status die integriq controleerde, de statusmelding, wanneer het laatst gecontroleerd is en waar je hem instelt. Een koppeling kan ook Beperkt zijn. Een koppeling die learniq zelf niet beschikbaar noemt (SBB, proctoring, plagiaatcontrole) leest Niet beschikbaar met de reden uit connections.json en zonder Instellen.",
+   "note": "Wat je ziet: Alle koppelingen die learniq aangeeft op één pagina, met de status die integriq controleerde, de statusmelding, wanneer het laatst gecontroleerd is en waar je hem instelt. Een koppeling kan ook Beperkt zijn. Een koppeling die learniq zelf niet beschikbaar noemt (SBB, proctoring, plagiaatcontrole) leest Niet beschikbaar met de reden uit connections.json en zonder Instellen. Open lesmateriaal via Edurep (Kennisnet, gratis en zonder sleutel) staat erbij als Werkt met de collecties aan of uit; Edusources (SURF) leest Niet beschikbaar zolang SURF geen zoek-API voor externe apps biedt (getest 5 nov 2026, zie open-learning-material).",
    "src": "screens-src/zuiddrecht/LqKoppelingen.dc.html",
    "blurb": "leersysteem voor scholen, opleiders en bedrijven: cursussen, voortgang en compliance",
    "repo": "ConductionNL/scholiq",
@@ -45218,6 +45230,66 @@
      "url": "https://github.com/ConductionNL/scholiq/blob/development/openspec/specs/competency/spec.md"
     }
    ]
+  },
+  "LqLesmateriaal": {
+   "id": "learniq/LqLesmateriaal",
+   "app": "learniq",
+   "title": "learniq: lesmateriaal van een cursus",
+   "w": 1440,
+   "h": 1240,
+   "set": "zuiddrecht",
+   "row": "rowLearniqOpenLesmateriaal",
+   "file": "boards/LqLesmateriaal.html",
+   "thumb": "thumbs/LqLesmateriaal.webp",
+   "caps": "open-learning-material, course-management",
+   "note": "Wat je ziet: Het tabblad Lesmateriaal van een cursus. Elke kaart zegt waar het materiaal vandaan komt (eigen bestand, Edurep-collectie) en draagt de naamsvermelding met makers en licentie. Een koppeling opent de bron, een kopie staat in Nextcloud. De knop Zoek open lesmateriaal opent het zoekpaneel; dezelfde knop staat in het mediablok van de leseditor (LqLesMaken). Alle voorbeelden zijn echte Edurep-records (SRU, 5 nov 2026).",
+   "src": "zuiddrecht/LqLesmateriaal.dc.html",
+   "blurb": "leersysteem voor scholen, opleiders en bedrijven: cursussen, voortgang en compliance"
+  },
+  "LqOpenLesmateriaal": {
+   "id": "learniq/LqOpenLesmateriaal",
+   "app": "learniq",
+   "title": "learniq: open lesmateriaal zoeken",
+   "w": 1440,
+   "h": 1560,
+   "set": "zuiddrecht",
+   "row": "rowLearniqOpenLesmateriaal",
+   "file": "boards/LqOpenLesmateriaal.html",
+   "thumb": "thumbs/LqOpenLesmateriaal.webp",
+   "caps": "open-learning-material, edurep-source (integriq)",
+   "note": "Wat je ziet: Het zoekpaneel over Edurep van Kennisnet, met filters op niveau, licentie, collectie en bestandstype met aantallen uit de Edurep-facetten (x-term-drilldown), en resultaatkaarten met licentiebadge, makers, collectie en niveau. Het schoolprofiel zet het niveau vooraf; KlasCement (Vlaanderen) staat standaard uit. Een open licentie geeft Toevoegen als koppeling of als kopie; CC BY-NC en CC BY-NC-ND krijgen een gele badge en een waarschuwing; Schooltv is alleen een koppeling. Schooltv (NTR) staat insluiten van zijn speler alleen toe voor eigen, niet-commercieel gebruik door particuliere eindgebruikers (FAQ op https://schooltv.nl/veelgestelde-vragen, gelezen 5 nov 2026; formele voorwaarden niet online gevonden), dus learniq speelt Schooltv-video's niet zelf af en linkt naar schooltv.nl. Echte records: urn:wikiwijsmaken:194413, 187987, 81631, SURFsharekit urn:uuid:65fc6ffd, Nieuws in de klas, Schooltv WO_NTR_20306689.",
+   "src": "zuiddrecht/LqOpenLesmateriaal.dc.html",
+   "blurb": "leersysteem voor scholen, opleiders en bedrijven: cursussen, voortgang en compliance"
+  },
+  "LqOpenLesmateriaalDetail": {
+   "id": "learniq/LqOpenLesmateriaalDetail",
+   "app": "learniq",
+   "title": "learniq: open lesmateriaal, licentie en toevoegen",
+   "w": 1440,
+   "h": 1640,
+   "set": "zuiddrecht",
+   "row": "rowLearniqOpenLesmateriaal",
+   "file": "boards/LqOpenLesmateriaalDetail.html",
+   "thumb": "thumbs/LqOpenLesmateriaalDetail.webp",
+   "caps": "open-learning-material",
+   "note": "Wat je ziet: De detailkaart van een resultaat met de licentie in gewoon Nederlands (mag je het gebruiken, kopiëren, aanpassen, in een betaalde cursus) en wat Toevoegen doet. Boven: een Wikiwijs-arrangement onder CC BY 4.0 wordt een koppeling, learniq kopieert niets. Onder: een open toegankelijk Word-bestand uit SURFsharekit onder CC BY-NC 4.0 wordt een kopie in Nextcloud, met de waarschuwing dat het niet in een betaalde cursus mag. De naamsvermelding komt altijd op de kaart; de docent kiest alleen bij welke les het komt.",
+   "src": "zuiddrecht/LqOpenLesmateriaalDetail.dc.html",
+   "blurb": "leersysteem voor scholen, opleiders en bedrijven: cursussen, voortgang en compliance"
+  },
+  "LqOpenLesmateriaalStaten": {
+   "id": "learniq/LqOpenLesmateriaalStaten",
+   "app": "learniq",
+   "title": "learniq: open lesmateriaal, lege staat, niets gevonden en bron niet bereikbaar",
+   "w": 1440,
+   "h": 1560,
+   "set": "zuiddrecht",
+   "row": "rowLearniqOpenLesmateriaal",
+   "file": "boards/LqOpenLesmateriaalStaten.html",
+   "thumb": "thumbs/LqOpenLesmateriaalStaten.webp",
+   "caps": "open-learning-material",
+   "note": "Wat je ziet: De drie staten van het zoekpaneel. Nog niet gezocht: suggesties uit de cursus en de uitleg dat alleen open licenties toe te voegen zijn. Niets gevonden: minder woorden, filters uit, KlasCement erbij, met het aantal dat dat oplevert. Bron niet bereikbaar: Edurep antwoordde niet binnen 10 seconden, opnieuw proberen, eigen bestanden blijven werken, de beheerder ziet de status onder Koppelingen (LqKoppelingen).",
+   "src": "zuiddrecht/LqOpenLesmateriaalStaten.dc.html",
+   "blurb": "leersysteem voor scholen, opleiders en bedrijven: cursussen, voortgang en compliance"
   },
   "MlInbox": {
    "id": "mail/MlInbox",

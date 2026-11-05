@@ -13,7 +13,9 @@
    4. Swaps the src of every <img data-sc-logo="logo|logo-wit|
       emblem|emblem-grijs"> to that system's logo file.
    5. Writes the system's orgName into every [data-sc-org]
-      element (the organisation line beside the app name), and
+      element (the organisation line beside the app name) and
+      into every text node that reads exactly boardOrg (the
+      organisation the boards are drawn for), and
       puts its headerStyle ("default" when it names none) on
       <html data-sc-header>, which screens.css reads for the
       header variants, such as the lint bar, and its look
@@ -65,6 +67,24 @@
     link.setAttribute('href', href);
   }
 
+  /* Text nodes that read exactly data.boardOrg (the organisation the boards are
+     drawn for), with their drawn text. Collected once, so a later switch starts
+     from the drawn text. Only whole-node matches: a sentence that names the
+     organisation keeps its Dutch catalogue key. */
+  var orgNodes = null;
+  function boardOrgNodes() {
+    if (orgNodes) return orgNodes;
+    orgNodes = [];
+    if (!data.boardOrg || !document.body) return orgNodes;
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      var n = walker.currentNode;
+      var inOrgLine = n.parentNode && n.parentNode.closest && n.parentNode.closest('[data-sc-org]');
+      if (!inOrgLine && n.nodeValue.trim() === data.boardOrg) orgNodes.push({ node: n, text: n.nodeValue });
+    }
+    return orgNodes;
+  }
+
   function apply(id) {
     if (!data || !data.systems) return;
     var sys = data.systems[id] || data.systems[data.default];
@@ -87,6 +107,8 @@
       if (!el.hasAttribute('data-sc-org-default')) el.setAttribute('data-sc-org-default', el.textContent);
       el.textContent = sys.orgName || el.getAttribute('data-sc-org-default');
     });
+    var org = sys.orgName || data.boardOrg;
+    boardOrgNodes().forEach(function (n) { n.node.nodeValue = n.text.replace(data.boardOrg, org); });
     root.setAttribute('data-sc-header', sys.headerStyle || 'default');
     root.setAttribute('data-sc-look', sys.look || 'default');
     root.setAttribute('data-sc-ds', current);

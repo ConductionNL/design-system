@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Flow: levenscyclus</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<section data-or-flow="levenscyclus" aria-label="Levenscyclus van de flow" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 14px">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+    <ol aria-label="Fasen" style="margin: 0; padding: 0; list-style: none; display: inline-flex; align-items: center; gap: 0">
+      <sc-for list="{{ phases }}" as="ph" hint-placeholder-count="3">
+        <li aria-current="{{ ph.current }}" style="{{ ph.style }}"><span aria-hidden="true" style="{{ ph.dot }}"></span>{{ ph.label }}</li>
+        <sc-if value="{{ ph.hasArrow }}" hint-placeholder-val="{{ true }}"><li aria-hidden="true" style="width: 28px; height: 2px; background: #d6d9de"></li></sc-if>
+      </sc-for>
+    </ol>
+    <span style="flex: 1 1 auto"></span>
+    <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span role="img" aria-label="{{ healthLabel }}" title="{{ healthLabel }}" style="{{ healthDot }}"></span>{{ healthLabel }}</span>
+  </div>
+  <dl style="margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 16px">
+    <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">Versie</dt><dd style="margin: 0; font-size: 14px; font-weight: 600">{{ version }}</dd></div>
+    <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">Eigenaar</dt><dd style="margin: 0; font-size: 14px; font-weight: 600">{{ owner }}</dd></div>
+    <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">App</dt><dd style="margin: 0; font-size: 14px; font-weight: 600">{{ app }}</dd></div>
+    <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">Draait</dt><dd style="margin: 0; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600"><button type="button" role="switch" aria-checked="{{ on }}" aria-label="Flow aan of uit" style="{{ trackStyle }}"><span style="{{ knobStyle }}"></span></button>{{ onWord }}</dd></div>
+  </dl>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 10px; border-top: 1px solid #eef0f3">
+    <sc-for list="{{ buttons }}" as="b" hint-placeholder-count="3"><button type="button" disabled="{{ b.disabled }}" title="{{ b.title }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+  </div>
+  <sc-if value="{{ hasVersions }}" hint-placeholder-val="{{ true }}">
+  <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid #eef0f3">
+    <h3 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Versies</h3>
+    <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{ versions }}" as="v" hint-placeholder-count="3"><li style="display: flex; align-items: center; gap: 10px; font-size: 13px"><strong style="min-width: 44px">{{ v.v }}</strong><span style="{{ v.pill }}">{{ v.state }}</span><span style="flex: 1; color: #5e6168">{{ v.note }}</span><span style="color: #5e6168; white-space: nowrap">{{ v.when }}</span></li></sc-for>
+    </ul>
+    <span style="font-size: 12px; color: #5e6168; line-height: 1.4">Een hoofdversie betekent dat een stap, een verbinding of een instelling is weggehaald. De live versie draait door tot u publiceert.</span>
+  </div>
+  </sc-if>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"text","default":"gepubliceerd"},"version":{"editor":"text","default":"4.2.0, concept 5 in bewerking"},"owner":{"editor":"text","default":"Sanne Visser"},"app":{"editor":"text","default":"Meldingen (meegeleverd)"},"enabled":{"editor":null,"default":true},"health":{"editor":"text","default":"success"},"versions":{"editor":null,"default":[["v5","concept","beoordeling krijgt een termijn","vandaag"],["v4.2.0","live","sms bij spoed","12 okt"],["v4.1.0","vervangen","ontvangstbevestiging","3 okt"],["v3.0.0","afgevoerd","hoofdversie: wachtstap weggehaald","1 sep"]]},"$preview":{"width":720,"height":380}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const J = (v, d) => { if (v == null || v === '') return d; if (typeof v === 'string') { try { return JSON.parse(v); } catch (e) { return d; } } return v; };
+    const B = (v) => v === true || v === 'true';
+    const order = ['concept', 'gepubliceerd', 'afgevoerd'];
+    const LABEL = { concept: 'Concept', gepubliceerd: 'Gepubliceerd', afgevoerd: 'Afgevoerd' };
+    const COL = { concept: '#3669a5', gepubliceerd: '#1e6b2a', afgevoerd: '#828a95' };
+    const idx = Math.max(0, order.indexOf(p.state));
+    const phases = order.map((s, i) => { const cur = i === idx; const past = i < idx; return { label: LABEL[s], current: cur ? 'step' : 'false', hasArrow: i < order.length - 1,
+      style: 'display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 17px; font-size: 14px; font-weight: ' + (cur ? 700 : 600) + '; background: ' + (cur ? '#ffffff' : '#f5f6f8') + '; color: ' + (cur ? '#1b1c1d' : '#5e6168') + '; border: 1px solid ' + (cur ? COL[s] : '#e4e6ea') + (cur ? '; box-shadow: 0 0 0 2px ' + COL[s] : ''),
+      dot: 'width: 10px; height: 10px; border-radius: 5px; background: ' + (cur || past ? COL[s] : '#d6d9de') }; });
+    const HEALTH = { success: ['#1e6b2a', 'De laatste run is afgerond'], alert: ['#cc0000', 'De laatste run is mislukt'], warning: ['#b27300', 'De laatste run eindigde zonder af te ronden'], waiting: ['#1d5e66', 'De laatste run wacht op een taak'], paused: ['#828a95', 'Uitgeschakeld'], none: ['#c9ccd1', 'Ingeschakeld, nog geen afgeronde run'], noowner: ['#b27300', 'Ingeschakeld, maar zonder eigenaar: start niet'] };
+    const h = HEALTH[p.health] || HEALTH.none;
+    const on = B(p.enabled) && p.state === 'gepubliceerd';
+    const base = "display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d";
+    const dis = "display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border: 1px solid #e4e6ea; border-radius: 8px; background: #f5f6f8; font: 600 14px 'Fira Sans', sans-serif; color: #8a8e95";
+    const buttons = [
+      { label: 'Conceptversie maken', ok: p.state === 'gepubliceerd', title: 'Een gepubliceerde flow wijzigt u niet; maak een concept.' },
+      { label: 'Publiceren', ok: p.state === 'concept', title: 'Alleen een concept kan worden gepubliceerd.' },
+      { label: 'Afvoeren', ok: p.state === 'gepubliceerd', title: 'Alleen een gepubliceerde versie kan worden afgevoerd.' },
+      { label: 'Verwijderen', ok: p.state !== 'gepubliceerd', title: 'Een versie met een lopende run kan niet weg.' },
+    ].map((b) => ({ label: b.label, disabled: b.ok ? 'false' : 'true', title: b.ok ? '' : b.title, style: b.ok ? base + (b.label === 'Verwijderen' ? '; color: #a30000' : '') : dis }));
+    const VP = { concept: ['#eaf0f7', '#234a78'], live: ['#e7f3ea', '#1e6b2a'], vervangen: ['#f0f1f3', '#3d4047'], afgevoerd: ['#f0f1f3', '#5e6168'] };
+    const versions = J(p.versions, []).map((v) => { const c = VP[v[1]] || VP.vervangen; return { v: v[0], state: v[1], note: v[2] || '', when: v[3] || '', pill: 'padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 700; background: ' + c[0] + '; color: ' + c[1] }; });
+    return {
+      phases, version: p.version, owner: p.owner || 'geen eigenaar', app: p.app,
+      healthLabel: h[1], healthDot: 'width: 12px; height: 12px; border-radius: 6px; background: ' + h[0],
+      on: on ? 'true' : 'false', onWord: on ? 'Aan' : 'Uit',
+      trackStyle: 'flex: none; position: relative; width: 40px; height: 22px; border: 7px solid transparent; background-clip: padding-box; box-sizing: content-box; margin: -7px; padding: 0; border-radius: 18px; background-color: ' + (on ? '#3669a5' : '#828a95'),
+      knobStyle: 'position: absolute; top: 3px; left: ' + (on ? 21 : 3) + 'px; width: 16px; height: 16px; border-radius: 8px; background: #ffffff',
+      buttons, hasVersions: versions.length > 0, versions,
+    };
+  }
+}
+</script>
+</body>
+</html>

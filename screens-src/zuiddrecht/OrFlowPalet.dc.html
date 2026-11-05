@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Flow: stappenpalet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<aside data-or-flow="palet" aria-label="{{ title }}" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 2px 8px rgba(27,28,29,0.08)">
+  <div style="display: flex; align-items: center; gap: 8px"><h2 style="flex: 1; margin: 0; font-size: 15px; font-weight: 700">{{ title }}</h2><span style="font-size: 12px; color: #5e6168">{{ count }}</span></div>
+  <div style="display: flex; flex-direction: column; gap: 4px"><label for="orfl-palet-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{ placeholder }}</label><input id="orfl-palet-q" type="search" placeholder="{{ placeholder }}" style="height: 36px; box-sizing: border-box; padding: 0 10px; border: 1px solid #828a95; border-radius: 8px; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"></div>
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <h3 style="margin: 0; display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">{{ g.title }}<sc-if value="{{ g.hasApp }}" hint-placeholder-val="{{ false }}"><span style="padding: 1px 8px; border-radius: 10px; background: #eaf0f7; color: #234a78; font-size: 12px; font-weight: 700; text-transform: none; letter-spacing: 0">{{ g.app }}</span></sc-if></h3>
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px">
+        <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+          <li><button type="button" draggable="true" aria-pressed="{{ it.pressed }}" style="{{ it.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="{{ it.colour }}" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg><span style="flex: 1; display: flex; flex-direction: column; gap: 1px; min-width: 0"><span style="font-weight: 600">{{ it.label }}</span><sc-if value="{{ it.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.note }}</span></sc-if></span></button></li>
+        </sc-for>
+      </ul>
+    </div>
+  </sc-for>
+  <sc-if value="{{ hasTemplates }}" hint-placeholder-val="{{ false }}">
+  <div style="display: flex; flex-direction: column; gap: 4px; padding: 8px 10px 0; border-top: 1px solid #eef0f3"><h3 style="margin: 0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #5e6168">{{ templatesTitle }}</h3>
+    <sc-for list="{{ templates }}" as="tp" hint-placeholder-count="1"><button type="button" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #e4e6ea; border-radius: 8px; background: #fbfbfc; text-align: left; font: 500 14px 'Fira Sans', sans-serif; color: #1b1c1d"><span>{{ tp.title }}</span><span style="font-size: 12px; font-weight: 400; color: #5e6168; line-height: 1.4">{{ tp.note }}</span></button></sc-for>
+  </div>
+  </sc-if>
+  <sc-if value="{{ hasNote }}" hint-placeholder-val="{{ true }}"><p style="margin: 0; padding: 8px 10px 2px; border-top: 1px solid #eef0f3; font-size: 12px; line-height: 1.45; color: #5e6168">{{ note }}</p></sc-if>
+</aside>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"text","default":"Stappen"},"placeholder":{"editor":"text","default":"Zoek een stap"},"groups":{"editor":null,"default":[{"title":"Triggers","items":[["trigger","Record aangemaakt","bij een nieuw record in een schema"],["trigger","Record gewijzigd","bij een wijziging of statusovergang"],["schedule","Op schema","elke nacht, elk uur, cron"],["manual","Handmatig","iemand drukt op Uitvoeren"]]},{"title":"Logica","items":[["condition","Voorwaarde","routes op een veld of regel"],["condition","Beslistabel","uitkomst uit regels"],["wait","Wachten","tot een datum of signaal"]]},{"title":"Mensen","items":[["human","Menselijke taak","met een formulier"],["approval","Goedkeuring","in een of meer stappen"]]},{"title":"Berichten","items":[["message","E-mail sturen","ook naar externe adressen"],["message","SMS of WhatsApp","via de provider"]]},{"title":"Objecten","items":[["object","Object schrijven","enkel of bulk"],["object","Object lezen","uit een register"]]},{"title":"Overig","items":[["ai","Agent-actie","naar een andere app"],["subflow","Subflow","een andere flow aanroepen"],["end","Einde","sluit de run af"]]}]},"selected":{"editor":"text","default":""},"templates":{"editor":null,"default":[]},"templatesTitle":{"editor":"text","default":"Kant-en-klaar"},"note":{"editor":"text","default":"Sleep een stap op het canvas of kies hem met Enter. Een app levert alleen stappen die hij zelf kan uitvoeren; de groep staat er zodra de app is geïnstalleerd."},"$preview":{"width":288,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const J = (v, d) => { if (v == null || v === '') return d; if (typeof v === 'string') { try { return JSON.parse(v); } catch (e) { return d; } } return v; };
+    const KIND = {
+      trigger: ['#1e6b2a', 'M11 15H6L13 1V9H18L11 23V15Z'],
+      schedule: ['#1e6b2a', 'M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z'],
+      manual: ['#1e6b2a', 'M8,5.14V19.14L19,12.14L8,5.14Z'],
+      condition: ['#4a3f8f', 'M14,4L16.29,6.29L13.41,9.17L14.83,10.59L17.71,7.71L20,10V4M10,4H4V10L6.29,7.71L11,12.41V20H13V11.59L7.71,6.29'],
+      action: ['#3669a5', 'M8,5.14V19.14L19,12.14L8,5.14Z'],
+      message: ['#3669a5', 'M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z'],
+      object: ['#3669a5', 'M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z'],
+      document: ['#3669a5', 'M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M6,4H13V9H18V20H6V4M8,12V14H16V12H8M8,16V18H13V16H8Z'],
+      human: ['#7a4f00', 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z'],
+      approval: ['#7a4f00', 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z'],
+      wait: ['#1d5e66', 'M6,2V8H6V8L10,12L6,16V16H6V22H18V16H18V16L14,12L18,8V8H18V2H6M16,16.5V20H8V16.5L12,12.5L16,16.5M12,11.5L8,7.5V4H16V7.5L12,11.5Z'],
+      ai: ['#6b2a8f', 'M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z'],
+      subflow: ['#1d5e66', 'M3,3H9V7H3V3M15,10H21V14H15V10M15,17H21V21H15V17M13,13H11V18H13V20H9V12H13V13Z'],
+      code: ['#3d4047', 'M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z'],
+      integration: ['#1d5e66', 'M16,7V3H14V7H10V3H8V7C7,7 6,8 6,9V14.5L9.5,18V21H14.5V18L18,14.5V9C18,8 17,7 16,7Z'],
+      error: ['#a30000', 'M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z'],
+      status: ['#234a78', 'M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4Z'],
+      end: ['#cc0000', 'M14.4,6H20V16H13L12.6,14H7V21H5V4H14L14.4,6Z'],
+    };
+    const sel = p.selected || '';
+    let count = 0;
+    const groups = J(p.groups, []).map((g) => ({
+      title: g.title, hasApp: !!g.app, app: g.app || '',
+      items: (g.items || []).map((it) => { count++; const [kind, label, note] = it; const k = KIND[kind] || KIND.action; const on = label === sel; return {
+        label, note: note || '', hasNote: !!note, icon: k[1], colour: k[0], pressed: on ? 'true' : 'false',
+        style: 'display: flex; align-items: center; gap: 8px; width: 100%; box-sizing: border-box; min-height: 36px; padding: 4px 10px; border: 0; border-radius: 8px; background: ' + (on ? '#eaf0f7' : 'transparent') + "; text-align: left; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; cursor: grab",
+      }; }),
+    }));
+    const templates = J(p.templates, []).map((t) => ({ title: t[0], note: t[1] || '' }));
+    return { title: p.title, placeholder: p.placeholder, groups, count: count + ' stappen', hasTemplates: templates.length > 0, templates, templatesTitle: p.templatesTitle, hasNote: !!p.note, note: p.note };
+  }
+}
+</script>
+</body>
+</html>

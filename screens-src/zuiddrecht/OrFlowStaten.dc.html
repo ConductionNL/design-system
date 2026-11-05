@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Open Register: levenscyclus en toestanden</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<!-- Gedeelde flow-delen (decision 379): OrFlowLevenscyclus, OrFlowToestand. -->
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1700px; position: relative">
+  <dc-import name="DqKop" app="Open Register" placeholder="Zoek registers, schema's en records" user="Sanne Visser" initials="SV" role="Functioneel beheerder" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="openregister" primary="Nieuwe flow" active="Flows" groups="{{ nav }}" hint-size="264px,1032px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; width: 100%">
+<div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Flows: levenscyclus en toestanden</h1><span style="font-size: 14px; color: #5e6168">Dezelfde delen als op de andere flowschermen, hier in elke toestand naast elkaar.</span></div><h2 style="margin: 0; font-size: 17px; font-weight: 700">Levenscyclus: concept, gepubliceerd, afgevoerd</h2><div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start"><dc-import name="OrFlowLevenscyclus" state="concept" version="1 (concept), nog niet gepubliceerd" enabled='false' health="none" app="Open Register" owner="" versions='[["v1", "concept", "eerste versie", "vandaag"]]'></dc-import><dc-import name="OrFlowLevenscyclus" state="afgevoerd" version="3.0.0, afgevoerd op 1 sep" enabled='false' health="paused" app="Meldingen (meegeleverd)" versions='[["v3.0.0", "afgevoerd", "vervangen door Melding afhandelen v4", "1 sep"]]'></dc-import></div><section aria-label="Deze versie publiceren" style="max-width: 560px; background: #ffffff; border: 1px solid #d6d9de; border-radius: 12px; box-shadow: 0 8px 24px rgba(27,28,29,0.16); padding: 16px 18px; display: flex; flex-direction: column; gap: 12px"><h2 style="margin: 0; font-size: 17px; font-weight: 700">Deze versie publiceren</h2><p style="margin: 0; font-size: 14px; line-height: 1.5">Versie 4.2.0 wordt 5.0.0. Dit is een brekende wijziging: de stap Wachten op antwoord is weggehaald en een andere flow of app kan daarop rekenen.</p><ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.5; color: #3d4047"><li>Stap weggehaald: Wachten op antwoord</li><li>Verbinding weggehaald: Beantwoord? naar Wachten op antwoord</li></ul><label style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.45; color: #3d4047"><input type="checkbox" style="width: 18px; height: 18px; accent-color: #3669a5; flex: none"><span>Een waarde gewijzigd die iets anders leest? De vergelijking ziet dat niet; alleen u. Vink dan dit aan, dan wordt het toch een hoofdversie.</span></label><div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 8px; border-top: 1px solid #eef0f3"><button type="button" style="height: 36px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Annuleren</button><button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Toch publiceren als brekende wijziging</button></div></section><h2 style="margin: 0; font-size: 17px; font-weight: 700">Toestanden: leeg, fout, geen toegang, laden</h2><div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: stretch"><dc-import name="OrFlowToestand" kind="leeg"></dc-import><dc-import name="OrFlowToestand" kind="geenstappen"></dc-import><dc-import name="OrFlowToestand" kind="nietgepubliceerd"></dc-import><dc-import name="OrFlowToestand" kind="geeneigenaar"></dc-import><dc-import name="OrFlowToestand" kind="nooitgedraaid"></dc-import><dc-import name="OrFlowToestand" kind="geentoegang"></dc-import><dc-import name="OrFlowToestand" kind="nietgevonden"></dc-import><dc-import name="OrFlowToestand" kind="fout"></dc-import><dc-import name="OrFlowToestand" kind="laden"></dc-import></div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'dashboard'], ['Zoeken en weergaven', 'queue'], ['Taken', 'inbox', 4], ['Rapporten', 'chart']] },
+      { title: 'Data', items: [['Registers', 'book'], ["Schema's", 'doc'], ['Bestanden', 'products'], ['Configuraties', 'pipeline']] },
+      { title: 'Integratie', items: [['Organisaties', 'org'], ['Databronnen', 'trend'], ['Webhooks', 'bullhorn'], ['Koppelingen', 'key'], ['Flows', 'pipeline']] },
+      { title: 'Beheer', items: [['Agents', 'chat'], ['AVG-register', 'shield'], ['Entiteiten', 'people'], ['Archivering', 'gavel'], ['Operations', 'chart']] },
+      { title: 'Audit', items: [['Audit trails', 'check'], ['Verwijderd', 'bin']] },
+      { title: 'Datakwaliteit', items: [['Datakwaliteit', 'trend'], ['Dubbele records', 'people'], ['Gouden records', 'cert']] },
+      { title: 'Over de app', items: [['Functies en roadmap', 'bullhorn']] }
+    ];
+
+    return { nav };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Flow: runhistorie</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<section data-or-flow="runs" aria-label="Runs" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+  <sc-if value="{{ hasStats }}" hint-placeholder-val="{{ true }}">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
+    <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+      <div style="{{ s.style }}"><span style="font-size: 13px; font-weight: 600; color: #5e6168">{{ s.label }}</span><strong style="font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums">{{ s.value }}</strong><span style="font-size: 13px; color: #5e6168">{{ s.note }}</span></div>
+    </sc-for>
+  </div>
+  </sc-if>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+    <h2 style="flex: 1 1 auto; margin: 0; font-size: 17px; font-weight: 700">{{ title }}</h2>
+    <sc-for list="{{ filters }}" as="f" hint-placeholder-count="2"><label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600"><span>{{ f.label }}</span><select aria-label="{{ f.label }}" style="height: 34px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>{{ f.value }}</option></select></label></sc-for>
+    <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 13px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg>Vernieuwen</button>
+  </div>
+  <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+      <thead><tr style="text-align: left; background: #f5f6f8; color: #3d4047"><th scope="col" style="padding: 10px 16px; font-weight: 600; border-bottom: 1px solid #e4e6ea">Run</th><th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">{{ subjectHead }}</th><th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">Status</th><th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">Gestart</th><th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">Duur</th><th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">Stappen</th><th scope="col" style="padding: 10px 16px; font-weight: 600; border-bottom: 1px solid #e4e6ea; text-align: right">Acties</th></tr></thead>
+      <tbody>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+          <tr aria-selected="{{ r.sel }}" style="{{ r.style }}"><td style="padding: 12px 16px; white-space: nowrap"><a href="{{ r.href }}" style="font-weight: 600; color: #1b1c1d; text-decoration: none">{{ r.run }}</a></td><td style="padding: 12px"><span style="display: flex; flex-direction: column; gap: 2px"><span>{{ r.subject }}</span><sc-if value="{{ r.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #5e6168">{{ r.note }}</span></sc-if></span></td><td style="padding: 12px; white-space: nowrap"><span style="{{ r.pill }}">{{ r.word }}</span></td><td style="padding: 12px; white-space: nowrap; color: #5e6168; font-variant-numeric: tabular-nums">{{ r.started }}</td><td style="padding: 12px; white-space: nowrap; color: #5e6168; font-variant-numeric: tabular-nums">{{ r.duration }}</td><td style="padding: 12px; white-space: nowrap; font-variant-numeric: tabular-nums">{{ r.steps }}</td><td style="padding: 12px 16px; text-align: right; white-space: nowrap"><a href="{{ r.href }}" aria-label="{{ r.run }} op het canvas" title="Op het canvas" style="display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2,4V20H22V4H2M4,6H20V18H4V6M6,8V16H8V8H6M10,11V16H12V11H10M14,9V16H16V9H14"></path></svg></a></td></tr>
+        </sc-for>
+      </tbody>
+    </table>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 16px; border-top: 1px solid #e4e6ea; font-size: 13px; color: #5e6168">
+      <span>{{ footer }}</span>
+      <nav aria-label="Paginering" style="display: inline-flex; gap: 4px"><span aria-current="page" style="display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; border-radius: 8px; background: #3669a5; color: #ffffff; font-weight: 600">1</span><a href="#" style="display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; border-radius: 8px; text-decoration: none; color: #1b1c1d">2</a><a href="#" style="display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; border-radius: 8px; text-decoration: none; color: #1b1c1d">3</a><a href="#" style="display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 10px; border-radius: 8px; text-decoration: none; color: #1b1c1d">Volgende<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></a></nav>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"text","default":"Runs"},"stats":{"editor":null,"default":[["Runs vandaag","214","sinds 00:00","none"],["Geslaagd","201","94%","success"],["Mislukt","3","object schrijven","alert"],["Wacht op taak","10","Beoordelen","waiting"]]},"filters":{"editor":null,"default":[["Uitkomst","Alle"],["Periode","Laatste 7 dagen"]]},"subjectHead":{"editor":"text","default":"Onderwerp"},"rows":{"editor":null,"default":[["88213","MOR-2026-04812","Lantaarnpaal kapot","waiting","10:12","0,4 s","2 van 6",true],["88212","MOR-2026-04811","Zwerfvuil Parkstraat","success","10:07","0,9 s","6 van 6"],["88209","MOR-2026-04808","Stoeptegel los","alert","09:51","1,2 s","5 van 6"],["88207","nachtelijke sync","","success","02:00","12 s","3 van 3"]]},"runHref":{"editor":"text","default":"OrFlowRun.dc.html"},"footer":{"editor":"text","default":"1 tot 4 van 214"},"$preview":{"width":900,"height":480}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const J = (v, d) => { if (v == null || v === '') return d; if (typeof v === 'string') { try { return JSON.parse(v); } catch (e) { return d; } } return v; };
+    const OUT = { success: ['Geslaagd', '#e7f3ea', '#1e6b2a'], warning: ['Met waarschuwing', '#fff4de', '#7a4f00'], alert: ['Mislukt', '#fcedec', '#a30000'], waiting: ['Wacht op taak', '#e3f1f3', '#1d5e66'], running: ['Bezig', '#eaf0f7', '#234a78'], skipped: ['Overgeslagen', '#f0f1f3', '#3d4047'], stopped: ['Gestopt', '#f0f1f3', '#3d4047'], none: ['', '#ffffff', '#1b1c1d'] };
+    const stats = J(p.stats, []).map((s) => { const o = OUT[s[3]] || OUT.none; return { label: s[0], value: s[1], note: s[2] || '', style: 'display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 12px; border: 1px solid #e4e6ea; background: ' + (o[1] === '#ffffff' ? '#ffffff' : o[1]) + '; color: ' + (o[1] === '#ffffff' ? '#1b1c1d' : o[2]) }; });
+    const filters = J(p.filters, []).map((f) => ({ label: f[0], value: f[1] }));
+    const rows = J(p.rows, []).map((r) => { const o = OUT[r[3]] || OUT.success; const sel = !!r[7]; return { run: 'Run ' + r[0], subject: r[1], note: r[2] || '', hasNote: !!r[2], word: o[0], pill: 'display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; background: ' + o[1] + '; color: ' + o[2], started: r[4], duration: r[5] || '', steps: r[6], sel: sel ? 'true' : 'false', href: p.runHref || '#', style: 'border-bottom: 1px solid #eef0f3; background: ' + (sel ? '#eaf0f7' : '#ffffff') }; });
+    return { title: p.title, hasStats: stats.length > 0, stats, filters, subjectHead: p.subjectHead, rows, footer: p.footer };
+  }
+}
+</script>
+</body>
+</html>

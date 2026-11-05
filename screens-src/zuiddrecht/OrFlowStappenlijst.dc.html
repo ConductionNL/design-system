@@ -93,7 +93,7 @@ class Component extends DCLogic {
     const OUT = { success: ['Geslaagd', '#e7f3ea', '#1e6b2a'], warning: ['Waarschuwing', '#fff4de', '#7a4f00'], info: ['Info', '#eaf0f7', '#234a78'], alert: ['Mislukt', '#fcedec', '#a30000'], waiting: ['Wacht', '#e3f1f3', '#1d5e66'], running: ['Bezig', '#eaf0f7', '#234a78'] };
     const edges = (flow.edges || []).map((e) => Array.isArray(e) ? { from: e[0], to: e[1], label: e[2] || '' } : e);
     const isStart = (n) => n.kind === 'trigger' || n.kind === 'schedule' || n.kind === 'manual';
-    const ordered = flow.nodes.slice().sort((a, b) => (a.col - b.col) || (a.row - b.row));
+    const ordered = flow.nodes.slice().sort((a, b) => (a.row - b.row) || (a.col - b.col));
     const triggersSrc = ordered.filter(isStart);
     const stepsSrc = ordered.filter((n) => !isStart(n));
     const numOf = {};

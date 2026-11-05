@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Open Register: uitvoering op het canvas</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<!-- Gedeelde flow-delen (decision 379): OrFlowCanvas, OrFlowKop, OrFlowRunSamenvatting, OrFlowRunStap. -->
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1300px; position: relative">
+  <dc-import name="DqKop" app="Open Register" placeholder="Zoek registers, schema's en records" user="Sanne Visser" initials="SV" role="Functioneel beheerder" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="openregister" primary="Nieuwe flow" active="Flows" groups="{{ nav }}" hint-size="264px,1032px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; width: 100%">
+<dc-import name="OrFlowKop" title="Melding afhandelen" state="actief" mode="run" crumbs='[["Flows", "OrFlows.dc.html"], ["Melding afhandelen", "OrFlow.dc.html"]]' current="Run 88212" meta="van vandaag 10:07 · melding MOR-2026-04811 · klaar in 0,9 s" pill="" actions='[["edit", "Bewerken"], "more"]' primary="" switch='false'></dc-import><dc-import name="OrFlowRunSamenvatting" level="warning" title="Run 88212" warn="1 stap met een waarschuwing" facts='[["Gestart", "vandaag 10:07:02"], ["Duur", "0,9 s"], ["Gestart door", "Record aangemaakt, MOR-2026-04811"], ["Stappen", "6 van 8 uitgevoerd"]]' subject-label="Melding openen" back-href="OrFlow.dc.html"></dc-import><div style="display: flex; align-items: flex-start; gap: 12px"><div style="flex: 1 1 auto; min-width: 0"><dc-import name="OrFlowCanvas" flow="{{ flow }}" direction="down" height="auto" title="{{ title }}" run="{{ run }}" selected="m"></dc-import></div><div style="flex: 0 0 336px; width: 336px"><dc-import name="OrFlowRunStap" edit-href="OrFlow.dc.html"></dc-import></div></div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'dashboard'], ['Zoeken en weergaven', 'queue'], ['Taken', 'inbox', 4], ['Rapporten', 'chart']] },
+      { title: 'Data', items: [['Registers', 'book'], ["Schema's", 'doc'], ['Bestanden', 'products'], ['Configuraties', 'pipeline']] },
+      { title: 'Integratie', items: [['Organisaties', 'org'], ['Databronnen', 'trend'], ['Webhooks', 'bullhorn'], ['Koppelingen', 'key'], ['Flows', 'pipeline']] },
+      { title: 'Beheer', items: [['Agents', 'chat'], ['AVG-register', 'shield'], ['Entiteiten', 'people'], ['Archivering', 'gavel'], ['Operations', 'chart']] },
+      { title: 'Audit', items: [['Audit trails', 'check'], ['Verwijderd', 'bin']] },
+      { title: 'Datakwaliteit', items: [['Datakwaliteit', 'trend'], ['Dubbele records', 'people'], ['Gouden records', 'cert']] },
+      { title: 'Over de app', items: [['Functies en roadmap', 'bullhorn']] }
+    ];
+    const flow = {"nodes": [{"id": "t", "kind": "trigger", "title": "Record aangemaakt", "sub": "schema Melding", "col": 1, "row": 0}, {"id": "g", "kind": "ai", "title": "Triage-agent", "sub": "stelt categorie en prioriteit voor", "col": 1, "row": 1}, {"id": "c", "kind": "condition", "title": "Prioriteit bepalen", "sub": "beslistabel, 2 routes", "col": 1, "row": 2}, {"id": "h", "kind": "human", "title": "Beoordelen", "sub": "team Openbare ruimte, 8 werkuren", "col": 0, "row": 3}, {"id": "a", "kind": "approval", "title": "Goedkeuring", "sub": "teamleider, dan wijkregisseur", "col": 0, "row": 4}, {"id": "m", "kind": "message", "title": "Melder bevestigen", "sub": "sjabloon Ontvangstbevestiging", "col": 2, "row": 3}, {"id": "o", "kind": "object", "title": "Werkorders schrijven", "sub": "bulk, overslaan als niet gewijzigd", "col": 1, "row": 5}, {"id": "e", "kind": "end", "title": "Einde", "sub": "sluit de run af", "col": 1, "row": 6}], "edges": [["t", "g"], ["g", "c"], ["c", "h", "hoog"], ["c", "m", "normaal"], ["h", "a"], ["a", "o"], ["m", "o"], ["o", "e"]]};
+    const run = {"steps": {"t": {"level": "success", "count": 1}, "g": {"level": "success", "count": 2}, "c": {"level": "info", "count": 2}, "m": {"level": "warning", "count": 4}, "o": {"level": "success", "count": 3}, "e": {"level": "success", "count": 1}}};
+    const title = "Melding afhandelen";
+
+    return { nav, flow, run, title };
+  }
+}
+</script>
+</body>
+</html>

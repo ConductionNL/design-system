@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Open Register: runs-widget op het dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<!-- Gedeelde flow-delen (decision 379): OrFlowRunsWidget. -->
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 760px; position: relative">
+  <dc-import name="DqKop" app="Open Register" placeholder="Zoek registers, schema's en records" user="Sanne Visser" initials="SV" role="Functioneel beheerder" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="openregister" primary="Nieuwe flow" active="Flows" groups="{{ nav }}" hint-size="264px,1032px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; width: 100%">
+<div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Dashboard</h1><span style="font-size: 14px; color: #5e6168">De runs-widget in zijn drie toestanden: lopende runs, alles rustig, en de fout die niet betekent dat er geen runs zijn. Welke flows, hoeveel rijen en pills of lijst stelt u in het widgetformulier in.</span></div><div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start"><dc-import name="OrFlowRunsWidget"></dc-import><dc-import name="OrFlowRunsWidget" title="Lopende flows" rows='[]' quiet="Alles is rustig: geen lopende runs." hidden="" history='[["Melding afhandelen", "geslaagd", "09:51"], ["Herinnering bij te laat", "geslaagd", "08:00"]]'></dc-import><dc-import name="OrFlowRunsWidget" title="Lopende flows" rows='[]' error="De runs konden niet worden geladen. Dat betekent niet dat er geen zijn." hidden="" history='[]' quiet=""></dc-import></div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'dashboard'], ['Zoeken en weergaven', 'queue'], ['Taken', 'inbox', 4], ['Rapporten', 'chart']] },
+      { title: 'Data', items: [['Registers', 'book'], ["Schema's", 'doc'], ['Bestanden', 'products'], ['Configuraties', 'pipeline']] },
+      { title: 'Integratie', items: [['Organisaties', 'org'], ['Databronnen', 'trend'], ['Webhooks', 'bullhorn'], ['Koppelingen', 'key'], ['Flows', 'pipeline']] },
+      { title: 'Beheer', items: [['Agents', 'chat'], ['AVG-register', 'shield'], ['Entiteiten', 'people'], ['Archivering', 'gavel'], ['Operations', 'chart']] },
+      { title: 'Audit', items: [['Audit trails', 'check'], ['Verwijderd', 'bin']] },
+      { title: 'Datakwaliteit', items: [['Datakwaliteit', 'trend'], ['Dubbele records', 'people'], ['Gouden records', 'cert']] },
+      { title: 'Over de app', items: [['Functies en roadmap', 'bullhorn']] }
+    ];
+
+    return { nav };
+  }
+}
+</script>
+</body>
+</html>

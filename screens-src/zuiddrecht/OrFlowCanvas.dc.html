@@ -71,7 +71,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"flow":{"editor":null,"default":{"nodes":[{"id":"t","kind":"trigger","title":"Record aangemaakt","sub":"schema Melding","col":0,"row":1},{"id":"c","kind":"condition","title":"Prioriteit bepalen","sub":"beslistabel, 2 routes","col":1,"row":1},{"id":"h","kind":"human","title":"Beoordelen","sub":"team Openbare ruimte","col":2,"row":0},{"id":"m","kind":"message","title":"Melder bevestigen","sub":"sjabloon Ontvangstbevestiging","col":2,"row":2},{"id":"o","kind":"object","title":"Werkorder schrijven","sub":"bulk, overslaan als gelijk","col":3,"row":0},{"id":"e","kind":"end","title":"Einde","sub":"sluit de run af","col":4,"row":1}],"edges":[["t","c"],["c","h","hoog"],["c","m","normaal"],["h","o"],["o","e"],["m","e"]]}},"run":{"editor":null,"default":""},"selected":{"editor":"text","default":""},"messages":{"editor":null,"default":[]},"valid":{"editor":"text","default":"Flow is geldig"},"validLevel":{"editor":"text","default":"success"},"height":{"editor":"text","default":"560"},"zoom":{"editor":"text","default":"100%"},"title":{"editor":"text","default":"Flow"},"direction":{"editor":"text","default":"right"},"$preview":{"width":1100,"height":640}}'>
+<script type="text/x-dc" data-dc-script data-props='{"flow":{"editor":null,"default":{"nodes":[{"id":"t","kind":"trigger","title":"Record aangemaakt","sub":"schema Melding","col":0,"row":1},{"id":"c","kind":"condition","title":"Prioriteit bepalen","sub":"beslistabel, 2 routes","col":1,"row":1},{"id":"h","kind":"human","title":"Beoordelen","sub":"team Openbare ruimte","col":2,"row":0},{"id":"m","kind":"message","title":"Melder bevestigen","sub":"sjabloon Ontvangstbevestiging","col":2,"row":2},{"id":"o","kind":"object","title":"Werkorder schrijven","sub":"bulk, overslaan als gelijk","col":3,"row":0},{"id":"e","kind":"end","title":"Einde","sub":"sluit de run af","col":4,"row":1}],"edges":[["t","c"],["c","h","hoog"],["c","m","normaal"],["h","o"],["o","e"],["m","e"]]}},"run":{"editor":null,"default":""},"selected":{"editor":"text","default":""},"messages":{"editor":null,"default":[]},"valid":{"editor":"text","default":"Flow is geldig"},"validLevel":{"editor":"text","default":"success"},"height":{"editor":"text","default":"560"},"zoom":{"editor":"text","default":"100%"},"title":{"editor":"text","default":"Flow"},"direction":{"editor":"text","default":"right"},"nodew":{"editor":"text","default":""},"colgap":{"editor":"text","default":""},"rowgap":{"editor":"text","default":""},"$preview":{"width":1100,"height":640}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
@@ -81,8 +81,9 @@ class Component extends DCLogic {
     const RUN = !!run && !!run.steps;
     const selected = p.selected || '';
     const down = p.direction === 'down';
-    const W = 148, H = 88;
-    const CX = (c) => 20 + (down ? 196 : 188) * c, RY = (r) => 20 + (down ? 118 : 136) * r;
+    const W = parseInt(p.nodew, 10) || 148, H = 88;
+    const colgap = parseInt(p.colgap, 10) || (down ? 160 : 188), rowgap = parseInt(p.rowgap, 10) || (down ? 118 : 136);
+    const CX = (c) => 20 + colgap * c, RY = (r) => 20 + rowgap * r;
     // Each kind: colour, type word, icon.
     const KIND = {
       trigger: ['#1e6b2a', 'Trigger', 'M11 15H6L13 1V9H18L11 23V15Z'],
@@ -113,7 +114,8 @@ class Component extends DCLogic {
       running: { edge: '#3669a5', bg: '#eaf0f7', fg: '#234a78', icon: 'M8,5.14V19.14L19,12.14L8,5.14Z', word: 'Bezig' },
     };
     const N = {};
-    flow.nodes.forEach((n) => { N[n.id] = Object.assign({ x: CX(n.col), y: RY(n.row), outs: [] }, n); });
+    let maxRow = 0, maxCol = 0;
+    flow.nodes.forEach((n) => { N[n.id] = Object.assign({ x: CX(n.col), y: RY(n.row), outs: [] }, n); maxRow = Math.max(maxRow, n.row); maxCol = Math.max(maxCol, n.col); });
     const edges = (flow.edges || []).map((e) => Array.isArray(e) ? { from: e[0], to: e[1], label: e[2] || '' } : e).filter((e) => N[e.from] && N[e.to]);
     edges.forEach((e) => N[e.from].outs.push(e));
     const EXITS = { 1: [44], 2: [30, 58], 3: [24, 44, 64], 4: [20, 36, 52, 68] };
@@ -182,7 +184,7 @@ class Component extends DCLogic {
       return {
         title: n.title, sub: n.sub || '', icon: kd[2], kindWord: kd[1],
         pressed: sel ? 'true' : 'false',
-        aria: kd[1] + ': ' + n.title + (step ? ', ' + o.word + (step.count ? ', ' + step.count + ' logregels' : '') : (RUN ? ', niet uitgevoerd' : '')),
+        aria: kd[1] + ': ' + n.title + (step ? ', ' + o.word + (step.count ? ', ' + step.count + (step.count === 1 ? ' logregel' : ' logregels') : '') : (RUN ? ', niet uitgevoerd' : '')),
         box: 'position: absolute; left: ' + n.x + 'px; top: ' + n.y + 'px; width: ' + W + 'px; height: ' + H + 'px',
         card: 'width: 100%; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 6px 10px 6px 14px; border: 1px solid ' + (neutral ? '#e4e6ea' : '#828a95') + '; border-radius: 10px; background: #ffffff; text-align: center; font-family: inherit; cursor: pointer; ' + (sel ? '' : 'box-shadow: inset 5px 0 0 0 ' + edge + (neutral ? '' : ', 0 1px 3px rgba(27,28,29,0.08)') + '; ') + ring,
         kindStyle: 'font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ' + (neutral ? '#8a8e95' : kd[0]),
@@ -193,7 +195,7 @@ class Component extends DCLogic {
         hasWord: RUN, word: step ? o.word : 'Niet uitgevoerd',
         wordStyle: 'font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: ' + (step ? o.fg : '#5e6168'),
         hasBadge: !!step && !!step.count, count: step ? step.count : '', badgeIcon: step ? o.icon : '',
-        badgeLabel: step ? step.count + ' logregels, ' + o.word.toLowerCase() : '',
+        badgeLabel: step ? step.count + (step.count === 1 ? ' logregel, ' : ' logregels, ') + o.word.toLowerCase() : '',
         badgeStyle: step ? 'position: absolute; right: 8px; top: -11px; display: inline-flex; align-items: center; gap: 3px; height: 20px; padding: 0 7px 0 5px; border-radius: 10px; font-size: 12px; font-weight: 700; background: ' + o.bg + '; color: ' + o.fg + '; border: 1px solid ' + o.edge : '',
         hasApp: !!n.app, app: n.app || '',
         appStyle: 'position: absolute; left: 10px; top: -9px; padding: 0 6px; border-radius: 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; background: #f0f1f3; color: #3d4047; border: 1px solid #e4e6ea',
@@ -211,7 +213,7 @@ class Component extends DCLogic {
       valid: p.valid, validIcon: vl[2],
       validStyle: 'margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 15px; font-size: 13px; font-weight: 600; background: ' + vl[0] + '; color: ' + vl[1],
       ariaLabel: (RUN ? 'Uitvoering op het flowcanvas: ' : 'Flowcanvas: ') + (p.title || 'Flow'),
-      canvasStyle: 'position: relative; width: 100%; height: ' + (parseInt(p.height, 10) || 560) + 'px; box-sizing: border-box; overflow: hidden; border: 1px solid #e4e6ea; border-radius: 12px; background-color: #fafbfc; background-image: radial-gradient(circle, #c9ccd1 1px, transparent 1.4px); background-size: 20px 20px',
+      canvasStyle: 'position: relative; width: 100%; height: ' + (parseInt(p.height, 10) || (RY(maxRow) + H + 44 + (messages.length ? 70 * messages.length : 0))) + 'px; box-sizing: border-box; overflow: hidden; border: 1px solid #e4e6ea; border-radius: 12px; background-color: #fafbfc; background-image: radial-gradient(circle, #c9ccd1 1px, transparent 1.4px); background-size: 20px 20px',
       segs, arrows, labels, nodes, legend,
       hasMessages: messages.length > 0, messages,
     };

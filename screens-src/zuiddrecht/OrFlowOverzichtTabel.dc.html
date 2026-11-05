@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Flow: overzichtstabel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<section data-or-flow="overzicht" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+    <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+      <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">{{ title }}</h1>
+      <span style="font-size: 14px; color: #5e6168">{{ intro }}</span>
+    </div>
+    <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+      <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"></path></svg>Downloaden</button>
+      <button type="button" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Acties<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></button>
+      <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>{{ newLabel }}</button>
+    </div>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+    <div role="group" aria-label="Weergaven" style="display: inline-flex; flex-wrap: wrap; gap: 4px">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button type="button" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}<span style="{{ t.countStyle }}">{{ t.count }}</span></button></sc-for>
+    </div>
+    <span style="flex: 1 1 auto"></span>
+    <label for="orfl-ov-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Zoek in deze lijst</label>
+    <input id="orfl-ov-q" type="search" placeholder="Zoek in deze lijst" style="width: 240px; height: 36px; box-sizing: border-box; padding: 0 12px; border: 1px solid #828a95; border-radius: 18px; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+    <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"></path></svg>Filter<span style="min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; background: #3669a5; color: #ffffff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{ filterCount }}</span></button>
+  </div>
+  <sc-if value="{{ hasFilters }}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: #5e6168"><span>Actief:</span><sc-for list="{{ filters }}" as="f" hint-placeholder-count="2"><span style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 4px 0 10px; border-radius: 14px; background: #eaf0f7; color: #234a78; font-weight: 600">{{ f.label }}<button type="button" aria-label="Filter {{ f.label }} weghalen" style="width: 20px; height: 20px; border: 0; border-radius: 10px; background: transparent; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button></span></sc-for><a href="#" style="font-weight: 600">Alles wissen</a></div></sc-if>
+  <sc-if value="{{ hasNotice }}" hint-placeholder-val="{{ false }}"><div role="note" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 10px; background: #fff4de; color: #7a4f00"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path></svg><span style="font-size: 14px; line-height: 1.45">{{ notice }}</span></div></sc-if>
+  <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+      <thead><tr style="text-align: left; background: #f5f6f8; color: #3d4047">
+        <th scope="col" style="padding: 10px 16px; border-bottom: 1px solid #e4e6ea"><input type="checkbox" aria-label="Alles selecteren" style="width: 18px; height: 18px; accent-color: #3669a5"></th>
+        <th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">{{ nameHead }}</th>
+        <th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">Trigger</th>
+        <th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">Laatste uitvoering</th>
+        <sc-if value="{{ withCounts }}" hint-placeholder-val="{{ true }}"><th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea; text-align: right">Deze week</th><th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea; text-align: right">Totaal</th></sc-if>
+        <sc-if value="{{ withOwner }}" hint-placeholder-val="{{ true }}"><th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">Eigenaar</th></sc-if>
+        <th scope="col" style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e4e6ea">Status</th>
+        <th scope="col" style="padding: 10px 16px; font-weight: 600; border-bottom: 1px solid #e4e6ea; text-align: right">Acties</th>
+      </tr></thead>
+      <tbody>
+        <sc-for list="{{ rows }}" as="f" hint-placeholder-count="6">
+          <tr style="{{ f.rowStyle }}">
+            <td style="padding: 14px 16px"><input type="checkbox" aria-label="{{ f.name }} selecteren" style="width: 18px; height: 18px; accent-color: #3669a5"></td>
+            <td style="padding: 12px; max-width: 380px"><a href="{{ f.href }}" style="display: flex; align-items: flex-start; gap: 10px; color: #1b1c1d; text-decoration: none"><span role="img" aria-label="{{ f.healthLabel }}" title="{{ f.healthLabel }}" style="{{ f.healthDot }}"></span><span style="display: flex; flex-direction: column; gap: 3px; min-width: 0"><strong style="font-size: 15px; font-weight: 600">{{ f.name }}</strong><span style="font-size: 13px; color: #5e6168; line-height: 1.4">{{ f.does }}</span></span></a></td>
+            <td style="padding: 12px"><span style="display: flex; flex-direction: column; gap: 2px"><span style="white-space: nowrap; font-weight: 600">{{ f.trigger }}</span><span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ f.trigMeta }}</span></span></td>
+            <td style="padding: 12px"><span style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px"><span style="{{ f.resStyle }}">{{ f.result }}</span><span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ f.when }}</span></span></td>
+            <sc-if value="{{ withCounts }}" hint-placeholder-val="{{ true }}"><td style="padding: 12px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums">{{ f.week }}</td><td style="padding: 12px; text-align: right; font-variant-numeric: tabular-nums; color: #5e6168">{{ f.total }}</td></sc-if>
+            <sc-if value="{{ withOwner }}" hint-placeholder-val="{{ true }}"><td style="padding: 12px; white-space: nowrap">{{ f.owner }}</td></sc-if>
+            <td style="padding: 12px; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 10px"><button type="button" role="switch" aria-checked="{{ f.on }}" aria-label="{{ f.name }} aan of uit" style="{{ f.trackStyle }}"><span style="{{ f.knobStyle }}"></span></button><span style="{{ f.stateStyle }}">{{ f.state }}</span></span></td>
+            <td style="padding: 14px 16px; text-align: right; position: relative"><sc-if value="{{ f.menuOpen }}" hint-placeholder-val="{{ false }}"><div role="menu" aria-label="Acties voor {{ f.name }}" style="position: absolute; right: 16px; top: 44px; z-index: 2; min-width: 240px; background: #ffffff; border: 1px solid #d6d9de; border-radius: 10px; box-shadow: 0 8px 24px rgba(27,28,29,0.16); padding: 6px; display: flex; flex-direction: column; text-align: left"><sc-for list="{{ menu }}" as="m" hint-placeholder-count="5"><button type="button" role="menuitem" style="{{ m.style }}">{{ m.label }}</button></sc-for></div></sc-if><button type="button" aria-label="Acties voor {{ f.name }}" aria-haspopup="menu" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button></td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 16px; border-top: 1px solid #e4e6ea; font-size: 13px; color: #5e6168">
+      <span>{{ footer }}</span>
+      <nav aria-label="Paginering" style="display: inline-flex; gap: 4px"><span aria-current="page" style="display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; border-radius: 8px; background: #3669a5; color: #ffffff; font-weight: 600">1</span><a href="#" style="display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 10px; border-radius: 8px; text-decoration: none; color: #1b1c1d">Volgende<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></a></nav>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"text","default":"Flows"},"intro":{"editor":"text","default":"6 flows · een flow voert stappen uit zodra er iets gebeurt: een record verandert, een schema loopt af, of iemand drukt op Uitvoeren."},"newLabel":{"editor":"text","default":"Nieuwe flow"},"nameHead":{"editor":"text","default":"Flow"},"tabs":{"editor":null,"default":[["Alle",6,true],["Actief",4],["Gepauzeerd",1],["Concept",1]]},"filters":{"editor":null,"default":[]},"filterCount":{"editor":"text","default":"0"},"notice":{"editor":"text","default":""},"rows":{"editor":null,"default":[{"name":"Melding afhandelen","does":"beoordeelt een melding, bevestigt de melder en schrijft werkorders","trigger":"Record aangemaakt","trigMeta":"schema Melding","level":"waiting","result":"Wacht op taak","when":"vandaag 10:12","week":214,"total":"4.812","owner":"Sanne Visser","state":"actief","health":"waiting","menuOpen":true},{"name":"Nachtelijke sync productcatalogus","does":"haalt de KvK-productcatalogus op en schrijft de verschillen","trigger":"Op schema","trigMeta":"elke nacht 02:00","level":"alert","result":"Mislukt","when":"vandaag 02:00","week":7,"total":"391","owner":"Sanne Visser","state":"actief","health":"alert"},{"name":"Beschikking maken bij besluit","does":"maakt het besluitdocument en biedt het ter ondertekening aan","trigger":"Record gewijzigd","trigMeta":"zaak krijgt status Besloten","level":"success","result":"Geslaagd","when":"gisteren 16:40","week":31,"total":"1.206","owner":"Pieter Jansen","state":"actief","health":"success"},{"name":"Herinnering bij te laat","does":"mailt de behandelaar als een termijn verstrijkt","trigger":"Op schema","trigMeta":"elke ochtend 08:00","level":"success","result":"Geslaagd","when":"vandaag 08:00","week":5,"total":"160","owner":"Pieter Jansen","state":"actief","health":"success"},{"name":"Archiveren na bewaartermijn","does":"zet records over naar het e-depot","trigger":"Op schema","trigMeta":"elke maandag 03:00","level":"none","result":"Nog niet gedraaid","when":"gepauzeerd sinds 1 okt","week":0,"total":"12","owner":"Sanne Visser","state":"gepauzeerd","health":"paused"},{"name":"Woo-vraag overdragen aan dossiq","does":"maakt een zaak van een Woo-vraag en koppelt de melder","trigger":"Record aangemaakt","trigMeta":"schema Vraag","level":"none","result":"Nog niet gedraaid","when":"concept, versie 1","week":0,"total":"0","owner":"","state":"concept","health":"none"}]},"menu":{"editor":null,"default":["Bewerken","Overzicht en runs","Pauzeren","Dupliceren","Verwijderen"]},"withCounts":{"editor":null,"default":true},"withOwner":{"editor":null,"default":true},"footer":{"editor":"text","default":"6 van 6 flows · Een gepauzeerde flow houdt zijn stappen en geschiedenis. Hij start weer als u hem aanzet."},"flowHref":{"editor":"text","default":"OrFlowOverzicht.dc.html"},"$preview":{"width":1100,"height":720}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const J = (v, d) => { if (v == null || v === '') return d; if (typeof v === 'string') { try { return JSON.parse(v); } catch (e) { return d; } } return v; };
+    const B = (v) => v === true || v === 'true';
+    const OUT = { success: ['#e7f3ea', '#1e6b2a'], warning: ['#fff4de', '#7a4f00'], alert: ['#fcedec', '#a30000'], waiting: ['#e3f1f3', '#1d5e66'], running: ['#eaf0f7', '#234a78'], none: ['#f0f1f3', '#3d4047'] };
+    const HEALTH = { success: ['#1e6b2a', 'De laatste run is afgerond'], alert: ['#cc0000', 'De laatste run is mislukt'], warning: ['#b27300', 'De laatste run eindigde zonder af te ronden'], waiting: ['#1d5e66', 'De laatste run wacht op een taak'], paused: ['#828a95', 'Uitgeschakeld'], none: ['#c9ccd1', 'Ingeschakeld, nog geen afgeronde run'], noowner: ['#b27300', 'Ingeschakeld, maar zonder eigenaar: start niet'] };
+    const STATE = { actief: ['Actief', '#1e6b2a', true], gepauzeerd: ['Gepauzeerd', '#7a4f00', false], concept: ['Concept', '#234a78', false], uit: ['Uit', '#5e6168', false], afgevoerd: ['Afgevoerd', '#5e6168', false] };
+    const tbase = "display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #e4e6ea; border-radius: 18px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d";
+    const tabs = J(p.tabs, []).map((t) => ({ label: t[0], count: t[1], pressed: t[2] ? 'true' : 'false', style: t[2] ? tbase + '; background: #3669a5; border-color: #3669a5; color: #ffffff' : tbase, countStyle: 'min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; background: ' + (t[2] ? 'rgba(255,255,255,0.25)' : '#e4e6ea') + '; color: ' + (t[2] ? '#ffffff' : '#3d4047') }));
+    const filters = J(p.filters, []).map((f) => ({ label: f }));
+    const rows = J(p.rows, []).map((f) => {
+      const o = OUT[f.level] || OUT.none; const h = HEALTH[f.health] || HEALTH.none; const s = STATE[f.state] || STATE.actief; const on = s[2];
+      return Object.assign({}, f, {
+        href: p.flowHref || '#', owner: f.owner || 'geen eigenaar',
+        rowStyle: 'border-bottom: 1px solid #eef0f3; background: #ffffff', menuOpen: B(f.menuOpen),
+        resStyle: 'display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; background: ' + o[0] + '; color: ' + o[1],
+        healthDot: 'flex: none; margin-top: 5px; width: 10px; height: 10px; border-radius: 5px; background: ' + h[0], healthLabel: h[1],
+        on: on ? 'true' : 'false', state: s[0], stateStyle: 'font-size: 13px; font-weight: 600; color: ' + s[1],
+        trackStyle: 'flex: none; position: relative; width: 40px; height: 22px; border: 7px solid transparent; background-clip: padding-box; box-sizing: content-box; margin: -7px; padding: 0; border-radius: 18px; background-color: ' + (on ? '#3669a5' : '#828a95'),
+        knobStyle: 'position: absolute; top: 3px; left: ' + (on ? 21 : 3) + 'px; width: 16px; height: 16px; border-radius: 8px; background: #ffffff',
+      });
+    });
+    const menu = J(p.menu, []).map((label, i, arr) => ({ label, style: "display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; font: " + (i === arr.length - 1 ? '600' : '400') + " 14px 'Fira Sans', sans-serif; color: " + (i === arr.length - 1 ? '#a3281f' : '#1b1c1d') + '; text-align: left' }));
+    return { title: p.title, intro: p.intro, newLabel: p.newLabel, nameHead: p.nameHead, tabs, hasFilters: filters.length > 0, filters, filterCount: p.filterCount, hasNotice: !!p.notice, notice: p.notice, rows, menu, withCounts: B(p.withCounts), withOwner: B(p.withOwner), footer: p.footer };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Flow: toestand</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div data-or-flow="toestand" role="{{ role }}" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; width: 100%; box-sizing: border-box; min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 32px 24px; text-align: center; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px">
+  <span aria-hidden="true" style="{{ iconStyle }}"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="{{ icon }}"></path></svg></span>
+  <h2 style="margin: 0; font-size: 18px; font-weight: 700">{{ title }}</h2>
+  <p style="margin: 0; max-width: 460px; font-size: 14px; line-height: 1.5; color: #3d4047">{{ text }}</p>
+  <sc-if value="{{ hasAction }}" hint-placeholder-val="{{ true }}"><button type="button" style="{{ actionStyle }}">{{ action }}</button></sc-if>
+  <sc-if value="{{ hasLink }}" hint-placeholder-val="{{ false }}"><a href="#" style="font-size: 14px; font-weight: 600">{{ link }}</a></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"kind":{"editor":"text","default":"leeg"},"title":{"editor":"text","default":""},"text":{"editor":"text","default":""},"action":{"editor":"text","default":""},"link":{"editor":"text","default":""},"$preview":{"width":520,"height":280}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const K = {
+      leeg: { role: 'status', title: 'Nog geen flows', text: 'Een flow voert een reeks stappen uit als er iets gebeurt: een record verandert, een schema loopt af, of iemand drukt op Uitvoeren.', action: 'Nieuwe flow', bg: '#eaf0f7', fg: '#234a78', icon: 'M9,2V8H11V11H5C3.89,11 3,11.9 3,13V16H1V22H7V16H5V13H11V16H9V22H15V16H13V13H19V16H17V22H23V16H21V13C21,11.9 20.11,11 19,11H13V8H15V2H9Z' },
+      geenstappen: { role: 'status', title: 'Nog geen stappen', text: 'Kies een trigger uit het palet om te beginnen. Wat deze flow start, is een stap op het canvas.', action: 'Stap toevoegen', bg: '#eaf0f7', fg: '#234a78', icon: 'M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z' },
+      fout: { role: 'alert', title: 'De flows konden niet worden geladen', text: 'Dat betekent niet dat er geen zijn. Probeer het opnieuw; blijft het misgaan, geef dan de tijd en deze melding door aan de beheerder.', action: 'Opnieuw proberen', bg: '#fcedec', fg: '#a30000', icon: 'M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z' },
+      nietgevonden: { role: 'alert', title: 'Deze flow is er niet', text: 'Hij is mogelijk verwijderd, of u hebt er geen toegang toe. Vraag de eigenaar om toegang of ga terug naar het overzicht.', action: 'Terug naar de flows', bg: '#f0f1f3', fg: '#3d4047', icon: 'M15.5,14H14.71L14.43,13.73C15.41,12.59 16,11.11 16,9.5A6.5,6.5 0 0,0 9.5,3A6.5,6.5 0 0,0 3,9.5A6.5,6.5 0 0,0 9.5,16C11.11,16 12.59,15.41 13.73,14.43L14,14.71V15.5L19,20.5L20.5,19L15.5,14M9.5,14C7,14 5,12 5,9.5C5,7 7,5 9.5,5C12,5 14,7 14,9.5C14,12 12,14 9.5,14Z' },
+      geentoegang: { role: 'alert', title: 'U kunt deze flow lezen, niet wijzigen', text: 'Alleen de eigenaar en beheerders wijzigen een flow. U ziet de stappen en de runs; opslaan, uitvoeren en aan- of uitzetten staan uit.', action: '', link: 'Toegang vragen aan Sanne Visser', bg: '#fff4de', fg: '#7a4f00', icon: 'M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z' },
+      laden: { role: 'status', title: 'De flow wordt geladen', text: 'De stappen en de laatste runs worden opgehaald.', action: '', bg: '#f0f1f3', fg: '#3d4047', icon: 'M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z' },
+      nietgepubliceerd: { role: 'status', title: 'Deze flow heeft nog geen gepubliceerde versie', text: 'Een concept draait niet. Publiceer een versie, dan starten de triggers hem.', action: 'Publiceren', bg: '#eaf0f7', fg: '#234a78', icon: 'M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z' },
+      geeneigenaar: { role: 'status', title: 'Deze flow heeft geen eigenaar', text: 'Een trigger start hem daarom niet. Opslaan maakt u de eigenaar.', action: 'Opslaan en eigenaar worden', bg: '#fff4de', fg: '#7a4f00', icon: 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z' },
+      nooitgedraaid: { role: 'status', title: 'Deze flow heeft nog nooit gedraaid', text: 'Sla hem op en zet hem aan, of druk op Uitvoeren om hem met een record te proberen.', action: 'Uitvoeren', bg: '#f0f1f3', fg: '#3d4047', icon: 'M8,5.14V19.14L19,12.14L8,5.14Z' },
+    };
+    const k = K[p.kind] || K.leeg;
+    const action = p.action || k.action || '';
+    const link = p.link || k.link || '';
+    return {
+      role: k.role, title: p.title || k.title, text: p.text || k.text, icon: k.icon,
+      iconStyle: 'width: 56px; height: 56px; border-radius: 28px; display: inline-flex; align-items: center; justify-content: center; background: ' + k.bg + '; color: ' + k.fg,
+      hasAction: !!action, action, actionStyle: "display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif",
+      hasLink: !!link, link,
+    };
+  }
+}
+</script>
+</body>
+</html>

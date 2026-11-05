@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Flow: testrun</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<section data-or-flow="testrun" aria-label="Testrun" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #d6d9de; border-radius: 12px; box-shadow: 0 8px 24px rgba(27,28,29,0.16); padding: 16px 18px; display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><h2 style="margin: 0; font-size: 15px; font-weight: 700">{{ title }}</h2><span style="font-size: 13px; color: #5e6168">{{ when }}</span></div>
+  <p style="margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.45; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="#234a78" aria-hidden="true" style="flex: none"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg><span>{{ intro }}</span></p>
+  <sc-if value="{{ hasPayload }}" hint-placeholder-val="{{ false }}">
+  <div style="display: flex; flex-direction: column; gap: 5px">
+    <label for="orfl-test-payload" style="font-size: 13px; font-weight: 600">{{ payloadLabel }}</label>
+    <textarea id="orfl-test-payload" rows="6" style="box-sizing: border-box; padding: 8px 10px; border: 1px solid #828a95; border-radius: 8px; background: #f5f6f8; font: 400 12.5px/1.5 ui-monospace, 'Fira Mono', monospace; color: #1b1c1d; resize: vertical">{{ payload }}</textarea>
+  </div>
+  </sc-if>
+  <sc-if value="{{ hasSubjectPick }}" hint-placeholder-val="{{ false }}">
+  <div style="display: flex; flex-direction: column; gap: 5px">
+    <label for="orfl-test-subject" style="font-size: 13px; font-weight: 600">{{ subjectPickLabel }}</label>
+    <select id="orfl-test-subject" style="height: 38px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>{{ subjectPick }}</option></select>
+  </div>
+  </sc-if>
+  <table style="width: 100%; border-collapse: collapse; font-size: 13px">
+    <thead><tr style="text-align: left; color: #5e6168"><th scope="col" style="padding: 6px 8px 6px 0; border-bottom: 1px solid #e4e6ea; font-weight: 600">{{ subjectHead }}</th><th scope="col" style="padding: 6px 8px; border-bottom: 1px solid #e4e6ea; font-weight: 600">Stap</th><th scope="col" style="padding: 6px 0 6px 8px; border-bottom: 1px solid #e4e6ea; font-weight: 600">Zou doen</th></tr></thead>
+    <tbody>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="3">
+        <tr style="vertical-align: top"><td style="padding: 8px 8px 8px 0; border-bottom: 1px solid #eef0f3; white-space: nowrap"><strong>{{ r.subject }}</strong><sc-if value="{{ r.hasSubjectNote }}" hint-placeholder-val="{{ false }}"><br><span style="color: #5e6168">{{ r.subjectNote }}</span></sc-if></td><td style="padding: 8px; border-bottom: 1px solid #eef0f3; white-space: nowrap">{{ r.step }}</td><td style="padding: 8px 0 8px 8px; border-bottom: 1px solid #eef0f3; line-height: 1.45"><sc-if value="{{ r.hasLevel }}" hint-placeholder-val="{{ false }}"><span style="{{ r.pill }}">{{ r.word }}</span> </sc-if>{{ r.would }}</td></tr>
+      </sc-for>
+    </tbody>
+  </table>
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid #eef0f3">
+    <span style="font-size: 13px; color: #5e6168">{{ footer }}</span>
+    <span style="display: inline-flex; gap: 8px">
+      <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,6V9L16,5L12,1V4A8,8 0 0,0 4,12C4,13.57 4.46,15.03 5.24,16.26L6.7,14.8C6.25,13.97 6,13 6,12A6,6 0 0,1 12,6M18.76,7.74L17.3,9.2C17.74,10.04 18,11 18,12A6,6 0 0,1 12,18V15L8,19L12,23V20A8,8 0 0,0 20,12C20,10.43 19.54,8.97 18.76,7.74Z"></path></svg>Opnieuw testen</button>
+      <button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Sluiten</button>
+    </span>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"text","default":"Testen: proefrun zonder iets uit te voeren"},"when":{"editor":"text","default":"vandaag 10:14"},"intro":{"editor":"text","default":"3 records passen nu op de trigger (hoogstens 10 getoond). Er is niets verstuurd of gewijzigd; de opgeslagen flow is doorgerekend, niet het canvas."},"subjectHead":{"editor":"text","default":"Record"},"rows":{"editor":null,"default":[["MOR-2026-04812","Lantaarnpaal kapot","Beoordelen","Taak voor team Openbare ruimte, 8 werkuren","info"],["MOR-2026-04812","","Melder bevestigen","Mail naar f.demir@example.nl, onderwerp \"We hebben uw melding ontvangen\"","success"],["MOR-2026-04815","Zwerfvuil Parkstraat","Melder bevestigen","De melder heeft geen e-mailadres; de flow gaat door naar de volgende stap","warning"]]},"payload":{"editor":"text","default":""},"payloadLabel":{"editor":"text","default":"Voorbeeldpayload (JSON)"},"subjectPick":{"editor":"text","default":""},"subjectPickLabel":{"editor":"text","default":"Testen met een record"},"footer":{"editor":"text","default":"Er is niets gewijzigd of verstuurd."},"$preview":{"width":560,"height":420}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const J = (v, d) => { if (v == null || v === '') return d; if (typeof v === 'string') { try { return JSON.parse(v); } catch (e) { return d; } } return v; };
+    const OUT = { success: ['Zou slagen', '#e7f3ea', '#1e6b2a'], warning: ['Waarschuwing', '#fff4de', '#7a4f00'], info: ['Info', '#eaf0f7', '#234a78'], alert: ['Zou mislukken', '#fcedec', '#a30000'], skipped: ['Overgeslagen', '#f0f1f3', '#3d4047'] };
+    const rows = J(p.rows, []).map((r) => { const o = OUT[r[4]]; return { subject: r[0], subjectNote: r[1] || '', hasSubjectNote: !!r[1], step: r[2], would: r[3], hasLevel: !!o, word: o ? o[0] : '', pill: o ? 'display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 700; background: ' + o[1] + '; color: ' + o[2] : '' }; });
+    return { title: p.title, when: p.when, intro: p.intro, subjectHead: p.subjectHead, rows, hasPayload: !!p.payload, payload: p.payload, payloadLabel: p.payloadLabel, hasSubjectPick: !!p.subjectPick, subjectPick: p.subjectPick, subjectPickLabel: p.subjectPickLabel, footer: p.footer };
+  }
+}
+</script>
+</body>
+</html>

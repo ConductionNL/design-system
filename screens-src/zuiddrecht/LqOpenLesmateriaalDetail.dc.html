@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: open lesmateriaal, licentie en toevoegen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; position: relative; display: flex; flex-direction: column; min-height: 1640px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Docent" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor docenten" primary="Aanwezigheid invullen" active="Lessen en opdrachten" groups="{{ nav }}" hint-size="264px,1572px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Nederlands leerjaar 3 havo/vwo</h1>
+          <nav aria-label="Kruimelpad" style="font-size: 14px; color: #5e6168; display: flex; flex-wrap: wrap; gap: 8px"><a href="LqLessen.dc.html">Lessen en opdrachten</a><span aria-hidden="true">/</span><a href="LqCursus.dc.html">Cursussen</a><span aria-hidden="true">/</span><a href="LqLesmateriaal.dc.html">NE-3HV-2026</a><span aria-hidden="true">/</span><span aria-current="page">Lesmateriaal</span></nav>
+        </section>
+        <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 700">Lesmateriaal</h2>
+          <p style="margin: 0; font-size: 14px; color: #5e6168">8 materialen: 3 eigen bestanden, 5 uit Edurep.</p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div style="position: absolute; inset: 0; background: rgba(27,28,29,0.45); display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 48px 16px 24px; box-sizing: border-box">
+    <sc-for list="{{ panels }}" as="p" hint-placeholder-count="2">
+      <div role="dialog" aria-modal="true" aria-labelledby="{{ p.titleId }}" style="width: 100%; max-width: 860px; background: #ffffff; border-radius: 12px; box-shadow: 0 16px 48px rgba(27,28,29,0.28); display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 22px 24px 4px">
+          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+            <a href="LqOpenLesmateriaal.dc.html" style="font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"></path></svg>Terug naar de resultaten</a>
+            <h2 id="{{ p.titleId }}" style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.3">{{ p.title }}</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><span style="{{ p.badgeStyle }}">{{ p.licence }}</span><span style="font-size: 14px; color: #5e6168">{{ p.meta }}</span></div>
+          </div>
+          <button type="button" aria-label="Sluiten" style="flex: none; width: 36px; height: 36px; border: 0; border-radius: 8px; background: #f0f1f3; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; padding: 16px 24px 24px; align-items: flex-start">
+          <div style="flex: 1 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+            <p style="margin: 0; font-size: 15px; line-height: 1.5">{{ p.desc }}</p>
+            <dl style="margin: 0; display: grid; grid-template-columns: 130px 1fr; gap: 6px 12px; font-size: 14px">
+              <sc-for list="{{ p.facts }}" as="f" hint-placeholder-count="7">
+                <dt style="color: #5e6168">{{ f.k }}</dt><dd style="margin: 0; min-width: 0; overflow-wrap: anywhere">{{ f.v }}</dd>
+              </sc-for>
+            </dl>
+            <a href="#" style="font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"></path></svg>Bekijk bij de bron</a>
+          </div>
+          <div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+            <section style="{{ p.licenceBoxStyle }}">
+              <h3 style="margin: 0; font-size: 15px; font-weight: 700">{{ p.licenceTitle }}</h3>
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.45">
+                <sc-for list="{{ p.rules }}" as="r" hint-placeholder-count="4">
+                  <li style="display: flex; gap: 8px; align-items: flex-start"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="{{ r.iconStyle }}"><path d="{{ r.icon }}"></path></svg><span>{{ r.text }}</span></li>
+                </sc-for>
+              </ul>
+              <a href="#" style="font-size: 13px; font-weight: 600">{{ p.licenceLink }}</a>
+            </section>
+            <section style="border: 1px solid #e4e6ea; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; background: #fafbfc">
+              <h3 style="margin: 0; font-size: 15px; font-weight: 700">{{ p.addTitle }}</h3>
+              <p style="margin: 0; font-size: 14px; line-height: 1.45; color: #3d4047">{{ p.addText }}</p>
+              <p style="margin: 0; font-size: 13px; line-height: 1.45; color: #5e6168">Naamsvermelding op de kaart: {{ p.attribution }}</p>
+              <sc-if value="{{ p.hasWarning }}" hint-placeholder-val="{{ false }}">
+                <p role="note" style="margin: 0; display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 8px; background: #fff4de; color: #7a4f00; font-size: 13px; line-height: 1.45"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path></svg><span>{{ p.warning }}</span></p>
+              </sc-if>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px">
+                <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-radius: 8px; border: 0; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>{{ p.addLabel }}</button>
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 14px"><span style="color: #5e6168">Bij</span><span style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff">{{ p.target }}<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color: #5e6168"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></span></label>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const ok = 'M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z';
+    const no = 'M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z';
+    const info = 'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z';
+    const rule = (icon, text) => ({ icon, text, iconStyle: 'flex: none; margin-top: 2px; color: ' + (icon === ok ? '#1e6b2a' : icon === no ? '#a30000' : '#234a78') });
+    const green = 'border: 1px solid #cfe6d5; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; background: #f2f9f4';
+    const amber = 'border: 1px solid #f0dfb8; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; background: #fffaf0';
+    const panels = [
+      {
+        titleId: 'lq-dlg-titel-1',
+        title: 'Het schrijven van een betoog',
+        licence: 'CC BY 4.0',
+        badgeStyle: 'padding: 3px 10px; border-radius: 12px; background: #e7f3ea; color: #1e6b2a; font-size: 12px; font-weight: 600',
+        meta: 'Wikiwijs Maken, via Edurep',
+        desc: 'Studenten zijn in staat om over een zelf gekozen onderwerp dat past bij de beroepsrichting een betoog te schrijven. Ze kennen het doel en de opbouw van een betoog, zijn bekend met argumentatie en drogredenen.',
+        facts: [{ k: 'Makers', v: 'Kirstin Beekman' }, { k: 'Collectie', v: 'Wikiwijs Maken' }, { k: 'Niveau', v: 'mbo, taalniveau 3F' }, { k: 'Soort', v: 'Wikiwijs-arrangement (webpagina)' }, { k: 'Taal', v: 'Nederlands' }, { k: 'Gepubliceerd', v: '29 januari 2023' }, { k: 'Edurep-id', v: 'urn:wikiwijsmaken:194413' }],
+        licenceBoxStyle: green,
+        licenceTitle: 'Wat CC BY 4.0 betekent',
+        rules: [rule(ok, 'Je mag dit gebruiken in elke les, ook in een betaalde cursus.'), rule(ok, 'Je mag het kopiëren, inkorten en aanpassen.'), rule(ok, 'Je noemt altijd de maker en de licentie. learniq doet dat voor je.'), rule(info, 'Een aangepaste versie is van jou; de naamsvermelding blijft.')],
+        licenceLink: 'De volledige licentietekst op creativecommons.org',
+        addTitle: 'Toevoegen maakt een koppeling',
+        addText: 'Een Wikiwijs-arrangement is een webpagina. learniq kopieert niets: de leerling opent het materiaal bij Wikiwijs. Verandert de maker het arrangement, dan zie je de nieuwe versie.',
+        attribution: 'Kirstin Beekman, CC BY 4.0, via Wikiwijs Maken.',
+        hasWarning: false,
+        warning: '',
+        addLabel: 'Toevoegen als koppeling',
+        target: 'Les 7 · Signaalwoorden in een betoog'
+      },
+      {
+        titleId: 'lq-dlg-titel-2',
+        title: 'Opdrachtomschrijving betoog',
+        licence: 'CC BY-NC 4.0',
+        badgeStyle: 'padding: 3px 10px; border-radius: 12px; background: #fff4de; color: #7a4f00; font-size: 12px; font-weight: 600',
+        meta: 'SURFsharekit, via Edurep',
+        desc: 'Opdrachtomschrijving betoog, horende bij praktijkgericht onderzoek.',
+        facts: [{ k: 'Makers', v: 'J. Roenhorst, Samen Delen Verpleegkunde' }, { k: 'Collectie', v: 'SURFsharekit' }, { k: 'Niveau', v: 'hbo' }, { k: 'Soort', v: 'Word-document, open toegang' }, { k: 'Taal', v: 'Nederlands' }, { k: 'Edurep-id', v: 'urn:uuid:65fc6ffd-be4c-463d-9311-c201479a0c95' }],
+        licenceBoxStyle: amber,
+        licenceTitle: 'Wat CC BY-NC 4.0 betekent',
+        rules: [rule(ok, 'Je mag dit gebruiken, kopiëren en aanpassen.'), rule(no, 'Niet in een betaalde cursus of training. NC staat voor niet-commercieel.'), rule(ok, 'Je noemt altijd de maker en de licentie. learniq doet dat voor je.'), rule(info, 'Twijfel je of een cursus commercieel is? Vraag het je beheerder.')],
+        licenceLink: 'De volledige licentietekst op creativecommons.org',
+        addTitle: 'Toevoegen maakt een kopie in Nextcloud',
+        addText: 'Het bestand is open toegankelijk en de licentie staat kopiëren toe. learniq zet een kopie in de map van deze cursus. Die mag je aanpassen; de bron en de makers blijven bij het materiaal staan.',
+        attribution: 'J. Roenhorst, Samen Delen Verpleegkunde, CC BY-NC 4.0, via SURFsharekit.',
+        hasWarning: true,
+        warning: 'Deze cursus is gratis. Zet je het materiaal later in een betaalde cursus, dan markeert learniq het als niet toegestaan.',
+        addLabel: 'Toevoegen als kopie',
+        target: 'Les 10 · Een betoog schrijven'
+      }
+    ];
+    return { nav, panels };
+  }
+}
+</script>
+</body>
+</html>

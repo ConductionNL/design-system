@@ -8,8 +8,10 @@
 //                 a dialog or the page) that only shows after an action. On by default: a read-only measurement
 //                 never runs the action, so live shows the page without it.
 //   side-states   a panel at the foot of a board that draws other states of the page side by side. Off by default.
+//   state-note    the caption strip and the explaining sentence of one state card in such a panel. Off by default;
+//                 on when --state-card measures that card (region.mjs).
 
-export const EXEMPT_KINDS = ['banner', 'side-states']
+export const EXEMPT_KINDS = ['banner', 'side-states', 'state-note']
 export const DEFAULT_EXEMPT = ['banner']
 
 /**

@@ -19,6 +19,9 @@
 //   [--settle-mode quiet|fixed]   quiet (default): measure once requests and layout hold still for 1.5 s, at most
 //   --settle ms; fixed: wait the full --settle, as before
 //   [--board-frame "<css>"]   measure only that element of the board, as the whole board (one of several frames)
+//   [--board-region "<name>" [--state-card "<title>"] --live-region "<selector>"]   measure one marked region of the
+//   board (a side-state panel, or one state card in it) against one live component, found after the steps put live
+//   into that state (region.mjs); the report is written as <board>~<state>
 //   [--allow-stale-board]   measure a flattened board that no longer matches its source (refused by default)
 //   [--load-wait 30000]   the longest wait for loading indicators to clear after the settle (ms)
 //   [--inject-css <file>] [--inject-js <file>]   lay a proposed fix over the live page after the steps, to prove it
@@ -46,10 +49,13 @@ import { KNOWN_FLAGS, unknownFlags } from './flags.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
 import { collapseExempt, parseExempt } from './exempt.mjs'
+import { cutToRegion, findBoardRegion, parseRegion, regionExemptKinds, regionId } from './region.mjs'
 import { presenceWrite, presentAs } from './presence.mjs'
 import { accountFor, applyInjection, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, logIn, markIgnored, onLoginPage, parkPointer, readInjection, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
+/** A setup error: reported in one line, exit 2. */
+class SetupError extends Error {}
 const require = createRequire(import.meta.url)
 
 const unknown = unknownFlags(process.argv.slice(2))
@@ -71,15 +77,18 @@ const BOARDS = args.boards || path.join(HERE, '..', '..', '..', 'preview', 'scre
 const base = args.base || 'http://localhost:8080'
 const board = args.board
 const out = args.out || path.join(process.cwd(), 'compdiff-out')
-let width, clock, exemptKinds
+let width, clock, exemptKinds, region
 try {
 	width = parseWidth(args.width)
 	clock = parseClock(args.clock)
-	exemptKinds = parseExempt(args.exempt)
+	region = parseRegion(args)
+	exemptKinds = regionExemptKinds(parseExempt(args.exempt), region)
 } catch (e) {
 	console.error(e.message)
 	process.exit(2)
 }
+// A region run is written under its own name, so the states of one board sit side by side in a run.
+const id = regionId(board, region)
 const settle = Number(args.settle || 8000)
 const settleMode = args['settle-mode'] || 'quiet'
 // An element crop above this mismatch % with no property flagged is reported as visually different.
@@ -180,9 +189,15 @@ try {
 	await bpage.setViewportSize({ width, height: boardHeight })
 	await bpage.waitForTimeout(300)
 	await markIgnored(bpage, args.ignore)
-	const boardPng = path.join(out, `${board}-board.png`)
-	await bpage.screenshot({ path: boardPng, clip: { x: 0, y: 0, width, height: boardHeight } })
-	const B = await measure(bpage)
+	let bRegion = null
+	if (region) {
+		const found = await bpage.evaluate(findBoardRegion, { region: region.region, state: region.state })
+		if (found.error) throw new SetupError(found.error)
+		bRegion = found.rect
+	}
+	const boardPng = path.join(out, `${id}-board.png`)
+	await bpage.screenshot({ path: boardPng, clip: bRegion ? { x: bRegion.x, y: bRegion.y, width: bRegion.w, height: bRegion.h } : { x: 0, y: 0, width, height: boardHeight } })
+	const B = bRegion ? cutToRegion(await measure(bpage), bRegion) : await measure(bpage)
 	lap('board')
 
 	// A login kept from an earlier board of the batch is reused; a stale one is replaced below.
@@ -294,18 +309,29 @@ try {
 	// The keyboard focus rings round a field typed into are the theme's, kept in the apps (Ruben, 30 Oct); a board draws
 	// the field without them.
 	await lpage.evaluate(focusRingsOff).catch(() => 0)
-	const livePng = path.join(out, `${board}-live.png`)
-	await lpage.screenshot({ path: livePng, clip: { x: 0, y: 0, width, height: boardHeight } })
+	let lRegion = null
+	if (region) {
+		const target = lpage.locator(region.live).first()
+		if (!(await target.count())) throw new SetupError(`--live-region ${region.live} matches nothing on the live page`)
+		const r = await target.evaluate((el) => { const q = el.getBoundingClientRect(); return { x: Math.round(q.x + window.scrollX), y: Math.round(q.y + window.scrollY), w: Math.round(q.width), h: Math.round(q.height) } })
+		if (r.w < 1 || r.h < 1) throw new SetupError(`--live-region ${region.live} is not shown on the live page`)
+		if (r.y + r.h > boardHeight) console.error(`--live-region ${region.live} reaches below the measured height (${r.y + r.h} > ${boardHeight}); its lower part is cut off`)
+		lRegion = { ...r, h: Math.max(1, Math.min(r.h, boardHeight - r.y)) }
+	}
+	const livePng = path.join(out, `${id}-live.png`)
+	await lpage.screenshot({ path: livePng, clip: lRegion ? { x: lRegion.x, y: lRegion.y, width: lRegion.w, height: lRegion.h } : { x: 0, y: 0, width, height: boardHeight } })
 	lap('screenshot')
-	const L = await measure(lpage)
+	const L = lRegion ? cutToRegion(await measure(lpage), lRegion) : await measure(lpage)
 	lap('extract')
+	// From here on a region run compares two pictures of the region's size, each placed from its own top left.
+	const H = bRegion ? Math.max(bRegion.h, lRegion.h) : boardHeight
 	// Both pages are measured: free them before the crops, which decode two page-sized pictures.
 	await lctx.close().catch(() => {})
 	await presence?.close()
 	await bpage.close().catch(() => {})
 
-	const { pairs, missing, extra } = pairComponents(B.components, L.components, boardHeight)
-	const ep = pairElements(B.elements, L.elements, boardHeight, pairs.filter((p) => p.board.role === 'card' && p.live.role === 'card'))
+	const { pairs, missing, extra } = pairComponents(B.components, L.components, H)
+	const ep = pairElements(B.elements, L.elements, H, pairs.filter((p) => p.board.role === 'card' && p.live.role === 'card'))
 
 	// Per-pair pixel mismatch: the live crop is scaled to the board crop's size. Secondary to the properties.
 	const b64 = (f) => 'data:image/png;base64,' + fs.readFileSync(f).toString('base64')
@@ -333,7 +359,7 @@ try {
 				xb.drawImage(ib, lr.x, lr.y, lr.w, lr.h, 0, 0, w, h)
 				return cropMismatch(xa.getImageData(0, 0, w, h).data, xb.getImageData(0, 0, w, h).data, w, h)
 			})
-		}, { a: b64(boardPng), b: b64(livePng), H: boardHeight, list, fns: cropFns }).catch((e) => {
+		}, { a: b64(boardPng), b: b64(livePng), H, list, fns: cropFns }).catch((e) => {
 			console.error(`crops skipped for ${list.length} pairs: ${e.message.split('\n')[0]}`)
 			return null
 		})
@@ -358,7 +384,8 @@ try {
 		return { name: p.name, role: p.board.role, matchedBy: p.by, board: p.board, live: p.live, cropMismatchPct: crops[i], rows, flagged: rows.filter((r) => r.flag).length, score: scoreComponent(rows) }
 	})
 	const report = {
-		board, url: liveRoute, ...(liveRoute !== args.url ? { urlSpec: args.url } : {}), height: boardHeight, measuredAt: new Date().toISOString(),
+		board: id, url: liveRoute,
+		...(region ? { region: { board, region: region.region, state: region.state, live: region.live, boardRect: bRegion, liveRect: lRegion } } : {}), ...(liveRoute !== args.url ? { urlSpec: args.url } : {}), height: boardHeight, measuredAt: new Date().toISOString(),
 		...(fresh.state === 'stale' ? { staleBoard: true } : {}),
 		...(injection ? { injected: injection.files } : {}),
 		exempted,
@@ -378,22 +405,22 @@ try {
 	pairAcrossKinds(report)
 	report.counts.missingOnLive = report.missingOnLive.length
 	report.counts.extraOnLive = report.extraOnLive.length
-	fs.writeFileSync(path.join(out, `${board}.json`), JSON.stringify(report, null, 1))
-	fs.writeFileSync(path.join(out, `${board}.md`), renderTable(report))
+	fs.writeFileSync(path.join(out, `${id}.json`), JSON.stringify(report, null, 1))
+	fs.writeFileSync(path.join(out, `${id}.md`), renderTable(report))
 	lap('write')
 	timings.total = Date.now() - t0
 	report.timings = timings
-	fs.writeFileSync(path.join(out, `${board}.json`), JSON.stringify(report, null, 1))
-	console.log(JSON.stringify({ board, ...report.counts, ms: timings.total }))
+	fs.writeFileSync(path.join(out, `${id}.json`), JSON.stringify(report, null, 1))
+	console.log(JSON.stringify({ board: id, ...report.counts, ms: timings.total }))
 } catch (e) {
-	console.error('compdiff error:', e.stack || e.message)
+	console.error(e instanceof SetupError ? e.message : `compdiff error: ${e.stack || e.message}`)
 	process.exitCode = 2
 } finally {
 	await browser.close()
 }
 
 function renderTable (r) {
-	const lines = [`# ${r.board}  (${r.url})`, '', ...(r.injected ? [`injected: ${Object.values(r.injected).join(', ')} (a proposed fix, not the live page)`, ''] : []), ...exemptLines(r.exempted), `components: board ${r.counts.boardComponents}, live ${r.counts.liveComponents}, paired ${r.counts.paired}, flagged ${r.counts.flaggedComponents}`, '']
+	const lines = [`# ${r.board}  (${r.url})`, '', ...(r.region ? [`region: ${r.region.state ? `state card "${r.region.state}" in ` : ''}"${r.region.region}" of ${r.region.board}, against live ${r.region.live}`, ''] : []), ...(r.injected ? [`injected: ${Object.values(r.injected).join(', ')} (a proposed fix, not the live page)`, ''] : []), ...exemptLines(r.exempted), `components: board ${r.counts.boardComponents}, live ${r.counts.liveComponents}, paired ${r.counts.paired}, flagged ${r.counts.flaggedComponents}`, '']
 	const sorted = [...r.components].sort((a, b) => b.score - a.score)
 	for (const c of sorted) {
 		lines.push(`## ${c.role}: ${c.name}  [${c.matchedBy}]  flags ${c.flagged}, crop mismatch ${c.cropMismatchPct ?? 'n/a'}%`, '')

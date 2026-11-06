@@ -191,6 +191,8 @@ class Flattener:
                 parts.append([k, None])
                 continue
             val = '' if val is None else str(val)
+            if k.startswith('data-compdiff-') and val == '':
+                continue
             if k == 'src' and val in self.blobs:
                 logo = self.blobs[val]
                 val = f'{self.asset_prefix}{logo}.svg'

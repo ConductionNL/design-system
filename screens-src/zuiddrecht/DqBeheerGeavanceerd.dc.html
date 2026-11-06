@@ -48,7 +48,7 @@ class Component extends DCLogic {
         { pair: [{ label: 'Rijen in de tabellen', value: '48.212' }, { label: 'Rijen in de index', value: '48.212' }] },
         { pair: [{ label: 'Laatste run', value: 'vandaag, 03:10 · 4 min 12 s' }, { label: 'Opnieuw opbouwen met', value: 'occ openregister:tables:search-index rebuild', hint: 'Met snapshot, restore en report als andere werkwoorden van hetzelfde commando.' }] },
         { note: 'Als OpenRegister niet antwoordt, staat hier wat er misging en geen tabel met nullen. Zo ziet dat eruit:', tone: 'plain' },
-        { note: 'OpenRegister antwoordt niet: GET /apps/openregister/api/settings/search-index gaf 503 Service Unavailable. Probeer het straks opnieuw; zoeken in de app werkt zolang de index zelf draait.', tone: 'warn' }
+        { note: 'OpenRegister antwoordt niet: GET /apps/openregister/api/settings/search-index gaf 503 Service Unavailable. Probeer het straks opnieuw; zoeken in de app werkt zolang de index zelf draait.', tone: 'warn', state: 'Als OpenRegister niet antwoordt' }
       ] },
       { name: 'Beslistabellen (DMN)', rows: [
         { para: 'Beslistabellen staan in het register decision-tables van OpenRegister. Dossiq bewaart zijn eigen tabellen daar onder sleutels die met dossiq. beginnen en evalueert ze vanuit workflowstappen en het handhavingsadvies. Open OpenRegister om een tabel te lezen of te wijzigen.' }
@@ -76,7 +76,7 @@ class Component extends DCLogic {
         { buttons: [['Marktplaatsinstellingen opslaan', 'primary']] }
       ] },
       { name: 'Eerste keer', desc: 'Wat deze omgeving nog nodig heeft voordat er een zaak in kan. We melden het, we eisen het niet. Herstel het register met de knop Configuratie opnieuw importeren.', rows: [
-        { items: [['Een organisatie', 'Zaken, documenten en kalenders hangen aan een organisatie. OpenRegister bewaart die.', '', 'Klaar'], ['Een mailaccount', 'Kies de gedeelde mailbox waaruit de app verstuurt en zaakmail leest.', '', 'Nog open'], ['Een gepubliceerd zaaktype', 'Elke zaak volgt een zaaktype. Een concepttype neemt geen zaken aan.', '', 'Klaar'], ['Een rol met een houder', 'Een rol zonder iemand erin beslist niets. Geef minstens één rol een houder.', '', 'Klaar'], ['Een werkkalender', 'Termijnen tellen in werkdagen. Zonder kalender is elke termijn een gok.', '', 'Klaar'], ['DSO-intake', 'Staat uit: integriq is niet geïnstalleerd, dus het pakket dso-intake is geweigerd. Verzoeken uit het Omgevingsloket worden geen zaak.', '', 'Nog open']] }
+        { items: [['Een organisatie', 'Zaken, documenten en kalenders hangen aan een organisatie. OpenRegister bewaart die.', '', 'Klaar'], ['Een mailaccount', 'Kies de gedeelde mailbox waaruit de app verstuurt en zaakmail leest.', '', 'Nog open'], ['Een gepubliceerd zaaktype', 'Elke zaak volgt een zaaktype. Een concepttype neemt geen zaken aan.', '', 'Klaar'], ['Een rol met een houder', 'Een rol zonder iemand erin beslist niets. Geef minstens één rol een houder.', '', 'Klaar'], ['Een werkkalender', 'Termijnen tellen in werkdagen. Zonder kalender is elke termijn een gok.', '', 'Klaar'], ['DSO-intake', 'Staat uit: integriq is niet geïnstalleerd, dus het pakket dso-intake is geweigerd. Verzoeken uit het Omgevingsloket worden geen zaak.', '', 'Nog open', 'DSO-intake']] }
       ] },
       { name: 'Vereisten', desc: 'Wat dossiq nodig heeft om te draaien, en wat deze instantie heeft. Live gelezen, elke keer dat u deze pagina opent.', rows: [
         { table: ['Platform', 'Wat het doet', 'Hier'], lines: [
@@ -203,7 +203,7 @@ class Component extends DCLogic {
         { switch: 'Productie per beoordelaar per dag rapporteren', on: false },
         { switch: 'Verzamelde mail rapporteren per afzender, ontvanger en domein', on: false },
         { buttons: [['Opslaan', 'primary']] },
-        { note: 'Opslaan geweigerd: de lezersgroep ontbreekt. Vul het id van een bestaande Nextcloud-groep in voordat je de productierapportage aanzet.', tone: 'warn' }
+        { note: 'Opslaan geweigerd: de lezersgroep ontbreekt. Vul het id van een bestaande Nextcloud-groep in voordat je de productierapportage aanzet.', tone: 'warn', exempt: 'banner' }
       ] },
       { name: 'Verwerkingen (FG)', desc: 'Het overzicht voor de functionaris gegevensbescherming, beperkt tot de registers van dossiq. Wie de FG-rol mist, krijgt van OpenRegister geen toegang.', rows: [
         { note: 'Je ziet dit onderdeel omdat je de FG-rol hebt. Een beheerder zonder die rol krijgt: Geen toegang tot de verwerkingen van dossiq.', tone: 'plain' },
@@ -225,7 +225,7 @@ class Component extends DCLogic {
         ] },
         { note: 'In gebruik genomen door Anouk Bakker op 3 okt 2026. Voor die datum stond hier: Slapend, met de knop In gebruik nemen; na ongedaan maken staat de set weer slapend.', tone: 'plain' },
         { buttons: [['Ongedaan maken', '']] },
-        { note: 'Ongedaan maken geweigerd: de rol Behandelaar is in gebruik (12 toekenningen). Haal die toekenningen eerst weg.', tone: 'error' }
+        { note: 'Ongedaan maken geweigerd: de rol Behandelaar is in gebruik (12 toekenningen). Haal die toekenningen eerst weg.', tone: 'error', exempt: 'banner' }
       ] }
     ];
     return { apps, tabs, sections };

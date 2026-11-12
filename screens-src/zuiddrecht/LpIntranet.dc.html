@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 2434px">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 2700px">
   <dc-import name="DqKop" app="Launchpad" placeholder="Zoek dashboards, widgets en apps" role="Medewerker" hint-size="100%,68px"></dc-import>
   <div role="alert" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 28px; background: #234a78; color: #ffffff; font-size: 15px">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="flex: none"><path d="M22.7,19L13.6,9.9C14.5,7.6 14,4.9 12.1,3C10.1,1 7.1,0.6 4.7,1.7L9,6L6,9L1.6,4.7C0.4,7.1 0.9,10.1 2.9,12.1C4.8,14 7.5,14.5 9.8,13.6L18.9,22.7C19.3,23.1 19.9,23.1 20.3,22.7L22.6,20.4C23.1,20 23.1,19.3 22.7,19Z"></path></svg>
@@ -184,13 +184,22 @@ a{color:#3669a5}a:hover{color:#234a78}
           </section>
 
           <section aria-labelledby="w-comm" style="grid-column: span 2; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 8px; display: flex; flex-direction: column; gap: 2px">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 6px"><h2 id="w-comm" style="flex: 1; margin: 0; font-size: 16px; font-weight: 700">Community Digitaal werken</h2><span style="font-size: 13px; color: #5e6168">86 leden</span><button type="button" style="height: 32px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 13px 'Fira Sans', sans-serif; color: #1b1c1d">Vraag stellen</button></div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 6px"><h2 id="w-comm" style="flex: 1; margin: 0; font-size: 16px; font-weight: 700">Community Digitaal werken</h2><span style="font-size: 13px; color: #5e6168">86 leden · u doet mee</span><button type="button" style="height: 32px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 13px 'Fira Sans', sans-serif; color: #1b1c1d">Vraag stellen</button></div>
             <sc-for list="{{ questions }}" as="q" hint-placeholder-count="3">
               <a href="#" style="display: flex; align-items: center; gap: 14px; padding: 10px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
                 <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ q.title }}</span><span style="font-size: 13px; color: #5e6168">{{ q.meta }}</span></span>
                 <span style="{{ q.pill }}">{{ q.answers }}</span>
               </a>
             </sc-for>
+            <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 8px; padding-top: 10px; border-top: 1px solid #e4e6ea"><div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px"><h3 style="margin: 0; font-size: 14px; font-weight: 700">Andere communities</h3><span style="font-size: 13px; color: #5e6168">Open gesprekken in Talk waar u bij kunt</span></div>
+              <sc-for list="{{ communities }}" as="c" hint-placeholder-count="3">
+                <div style="display: flex; align-items: center; gap: 14px; padding: 9px 0; border-top: 1px solid #eef0f3">
+                  <span style="flex: none; width: 36px; height: 36px; border-radius: 18px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">{{ c.initials }}</span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ c.name }}</span><span style="font-size: 13px; color: #5e6168">{{ c.members }} leden · {{ c.last }}</span></span>
+                  <button type="button" style="height: 32px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Meedoen</button>
+                </div>
+              </sc-for>
+            </div>
           </section>
         </div>
 
@@ -207,7 +216,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2434}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2700}}'>
 class Component extends DCLogic {
   renderVals() {
     const nav = [
@@ -257,7 +266,12 @@ class Component extends DCLogic {
       ['Goed idee', 'M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z', '2', false]
     ].map(([label, e, n, on]) => ({ label, e, n, on: on ? 'true' : 'false', style: rx(on) }));
     const olddocs = [['Werkinstructie Woo-verzoeken 2026.docx', '8 oktober', 'Anouk Bakker'], ['Declaratieformulier dienstreizen.xlsx', '2 oktober', 'Fatima Ouali'], ['Huisstijlhandboek Zuiddrecht.pdf', '29 september', 'Communicatie']].map(([title, when, who]) => ({ title, when, who }));
-    return { nav, news, newbies, bdays, experts, menu, oldnews, olddocs, questions, reactions };
+    const communities = [
+      { initials: 'WO', name: 'Woo en openbaarheid', members: 41, last: 'vandaag een nieuwe vraag' },
+      { initials: 'DS', name: 'Duurzaam Zuiddrecht', members: 58, last: 'gisteren 3 reacties' },
+      { initials: 'NM', name: 'Nieuwe medewerkers 2026', members: 23, last: 'vorige week' }
+    ];
+    return { nav, news, newbies, bdays, experts, menu, oldnews, olddocs, questions, reactions, communities };
   }
 }
 </script>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>buildiq: goedkeuring voor opslaan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1250px">
+  <dc-import name="DqKop" app="Pipelinq" placeholder="Zoek contacten, organisaties of contracten" role="Teamleider verkoop" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="pipelinq" primary="Nieuw contact" active="Mijn goedkeuringen" groups="{{ nav }}" hint-size="264px,1250px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Contract Gebr. Pols, korting 12 procent</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" aria-label="buildiq" title="Deze regel bewerken in buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+            <span style="padding: 3px 10px; border-radius: 12px; background: #fff4de; color: #7a4f00; font-size: 13px; font-weight: 600">Wacht op goedkeuring</span>
+            <nav aria-label="Kruimelpad" style="font-size: 14px; color: #5e6168; display: flex; gap: 8px"><a href="#">Mijn goedkeuringen</a><span aria-hidden="true">/</span><span aria-current="page">Contract Gebr. Pols</span></nav><span aria-hidden="true" style="color: #5e6168">·</span><span style="font-size: 14px; color: #5e6168">wijziging van Sanne Visser, vandaag 10:12 · regel Korting boven 10 procent vraagt goedkeuring</span>
+          </div>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section aria-labelledby="gk-diff" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+              <div style="padding: 20px 22px 12px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline"><h2 id="gk-diff" style="margin: 0; font-size: 17px; font-weight: 700">Wat verandert</h2><span style="font-size: 13px; color: #5e6168">3 velden anders; de rest blijft zoals het is</span></div>
+              <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+                <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th scope="col" style="padding: 10px 22px; font-weight: 600; width: 180px">Veld</th><th scope="col" style="padding: 10px 12px; font-weight: 600">Nu opgeslagen</th><th scope="col" style="padding: 10px 22px 10px 12px; font-weight: 600">Voorgesteld</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ diff }}" as="d" hint-placeholder-count="5">
+                    <tr style="border-top: 1px solid #eef0f3"><th scope="row" style="padding: 12px 22px; font-weight: 600; text-align: left; vertical-align: top">{{ d.field }}</th><td style="padding: 12px 12px; vertical-align: top; color: {{ d.oldColor }}">{{ d.old }}</td><td style="padding: 12px 22px 12px 12px; vertical-align: top; background: {{ d.newBg }}; font-weight: {{ d.newWeight }}">{{ d.new }}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+              <div style="padding: 14px 22px 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; border-top: 1px solid #eef0f3">
+                <button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg>Goedkeuren en opslaan</button>
+                <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #a30000; font: 600 14px 'Fira Sans', sans-serif">Afwijzen</button>
+                <span style="font-size: 13px; color: #5e6168">Bij afwijzen houdt het contract de waarden in de kolom Nu opgeslagen.</span>
+              </div>
+            </section>
+
+            <section aria-labelledby="gk-nieuw" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline"><h2 id="gk-nieuw" style="margin: 0; font-size: 17px; font-weight: 700">Ook in de wacht: een nieuw record</h2><span style="font-size: 13px; color: #5e6168">bestaat pas na goedkeuring</span></div>
+              <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px 14px; border: 1px dashed #828a95; border-radius: 10px">
+                <span style="width: 34px; height: 34px; flex: none; border-radius: 8px; background: #fff4de; color: #7a4f00; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"></path></svg></span>
+                <span style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 500">Offerte Bouwbedrijf Van Dijk, € 48.500</span><span style="font-size: 13px; color: #5e6168">ingediend door Sanne Visser, gisteren 16:40 · regel Offerte boven € 25.000 vraagt goedkeuring · staat nog nergens in de lijst Offertes</span></span>
+                <div style="display: flex; gap: 8px"><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 13px 'Fira Sans', sans-serif; color: #1b1c1d">Bekijken</button><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 13px 'Fira Sans', sans-serif">Goedkeuren</button><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #a30000; font: 600 13px 'Fira Sans', sans-serif">Afwijzen</button></div>
+              </div>
+              <p style="margin: 0; font-size: 13px; color: #5e6168; line-height: 1.45">Na een afwijzing is er geen record: niets om terug te draaien, en de indiener krijgt de reden.</p>
+            </section>
+          </div>
+
+          <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section aria-labelledby="gk-indiener" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+              <h2 id="gk-indiener" style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Wat de indiener ziet</h2>
+              <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: #fff4de; color: #7a4f00; font-size: 14px; line-height: 1.45"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"></path></svg><span><strong>Wacht op goedkeuring, nog niet opgeslagen.</strong> Uw wijziging gaat naar Pieter Jansen, teamleider verkoop. Tot die tijd ziet iedereen de oude waarden.</span></div>
+              <dl style="margin: 0; display: grid; grid-template-columns: 1fr max-content; gap: 6px 16px; font-size: 14px"><dt style="color: #5e6168">Ingediend</dt><dd style="margin: 0; text-align: right">vandaag, 10:12</dd><dt style="color: #5e6168">Goedkeurder</dt><dd style="margin: 0; text-align: right">Pieter Jansen</dd><dt style="color: #5e6168">Regel</dt><dd style="margin: 0; text-align: right">Korting boven 10 procent</dd></dl>
+              <button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 13px 'Fira Sans', sans-serif; color: #1b1c1d">Wijziging intrekken</button>
+            </section>
+            <section aria-labelledby="gk-afgewezen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 id="gk-afgewezen" style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Na een afwijzing</h2>
+              <div role="alert" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: #fcedec; color: #a30000; font-size: 14px; line-height: 1.45"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"></path></svg><span><strong>Afgewezen door Pieter Jansen.</strong> "12 procent is te veel voor een eerste contract, bied 8 procent." Het contract staat nog op 5 procent; niets is opgeslagen.</span></div>
+              <span style="font-size: 13px; color: #5e6168">De indiener kan het opnieuw proberen met andere waarden. De afwijzing staat in de historie van het record.</span>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Waar de regel staat</h2>
+              <p style="margin: 0; font-size: 14px; line-height: 1.5">De automatisering Korting boven 10 procent vraagt goedkeuring vóór opslaan. Een goedkeuring ná opslaan laat de nieuwe waarden meteen zien; die kiest u in <a href="BqAutomatiseringBewerken.dc.html">de automatisering</a>.</p>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1250}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'dashboard'], ['Mijn werk', 'inbox', 5], ['Mijn goedkeuringen', 'check', 2]] },
+      { title: 'Relaties', items: [['Contacten', 'people'], ['Organisaties', 'org']] },
+      { title: 'Verkoop', items: [['Leads', 'trend'], ['Pipeline', 'pipeline'], ['Offertes', 'doc'], ['Contracten', 'cert']] }
+    ];
+    const diff = [
+      ['Korting', '5 procent', '12 procent', true],
+      ['Looptijd', '12 maanden', '24 maanden', true],
+      ['Opzegtermijn', '1 maand', '3 maanden', true],
+      ['Contractwaarde', '€ 24.000 per jaar', '€ 24.000 per jaar', false],
+      ['Accountmanager', 'Sanne Visser', 'Sanne Visser', false]
+    ].map(([field, o, n, changed]) => ({ field, old: o, new: n, oldColor: changed ? '#3d4047' : '#5e6168', newBg: changed ? '#fff4de' : 'transparent', newWeight: changed ? '600' : '400' }));
+    return { nav, diff };
+  }
+}
+</script>
+</body>
+</html>

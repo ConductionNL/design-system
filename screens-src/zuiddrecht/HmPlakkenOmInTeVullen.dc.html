@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>hermiq: plakken om in te vullen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1150px">
+  <dc-import name="DqKop" app="Pipelinq" placeholder="Zoek contacten, organisaties of contracten" role="Accountmanager" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="pipelinq" primary="Nieuw contact" active="Contacten" groups="{{ nav }}" hint-size="264px,1150px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Nieuw contact</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" aria-pressed="true" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #3669a5; border-radius: 8px; background: #eaf0f7; font: 600 14px 'Fira Sans', sans-serif; color: #234a78"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,20H5V4H7V7H17V4H19M12,2A1,1 0 0,1 13,3A1,1 0 0,1 12,4A1,1 0 0,1 11,3A1,1 0 0,1 12,2M19,2H14.82C14.4,0.84 13.3,0 12,0C10.7,0 9.6,0.84 9.18,2H5A2,2 0 0,0 3,4V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V4A2,2 0 0,0 19,2Z"></path></svg>Plakken om in te vullen</button>
+              <button type="button" aria-label="buildiq" title="Dit formulier bewerken in buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+            </div>
+          </div>
+          <nav aria-label="Kruimelpad" style="font-size: 14px; color: #5e6168; display: flex; gap: 8px"><a href="#">Contacten</a><span aria-hidden="true">/</span><span aria-current="page">Nieuw contact</span></nav>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <form style="flex: 999 1 520px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 16px">
+            <div role="status" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: #fff4de; color: #7a4f00; font-size: 14px; line-height: 1.45"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z"></path></svg><span><strong>5 velden voorgesteld uit de geplakte tekst.</strong> Ze staan als concept in het formulier; niets is opgeslagen tot u op Opslaan klikt. Een voorstel verdwijnt zodra u het veld zelf wijzigt.</span></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 20px">
+              <sc-for list="{{ fields }}" as="f" hint-placeholder-count="7">
+                <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; grid-column: {{ f.span }}">
+                  <label for="{{ f.id }}" style="font-size: 14px; font-weight: 600; display: flex; gap: 8px; align-items: center">{{ f.label }}<sc-if value="{{ f.draft }}" hint-placeholder-val="{{ true }}"><span style="padding: 1px 8px; border-radius: 10px; background: #fff4de; color: #7a4f00; font-size: 12px; font-weight: 600">voorstel</span></sc-if></label>
+                  <input id="{{ f.id }}" type="text" value="{{ f.value }}" placeholder="{{ f.placeholder }}" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: {{ f.border }}; border-radius: 8px; background: {{ f.bg }}; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
+                  <span style="font-size: 12px; color: #5e6168">{{ f.note }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-top: 6px; border-top: 1px solid #eef0f3">
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"></path></svg>Opslaan</button>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Voorstellen weghalen</button>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Annuleren</button>
+            </div>
+          </form>
+
+          <aside style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section aria-labelledby="hp-paste" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 id="hp-paste" style="margin: 0; font-size: 15px; font-weight: 700">Plakken om in te vullen</h2>
+              <label for="hp-text" style="font-size: 13px; color: #5e6168">Plak een e-mail, handtekening of visitekaartje. Hermiq stelt per veld een waarde voor; u kiest wat blijft.</label>
+              <textarea id="hp-text" rows="9" style="box-sizing: border-box; width: 100%; border: 1px solid #828a95; border-radius: 8px; padding: 10px 12px; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; line-height: 1.5; resize: vertical">Met vriendelijke groet,
+
+Sanne Visser
+Hoofd inkoop | Bouwbedrijf Van Dijk BV
+Industrieweg 14, 3521 AB Zuiddrecht
+T 030 123 45 67 | M 06 1234 5678
+s.visser@vandijkbouw.nl | www.vandijkbouw.nl</textarea>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Velden voorstellen</button><span style="font-size: 12px; color: #5e6168">alleen velden die u mag invullen; de tekst wordt niet bewaard</span></div>
+              <ul style="margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; font-size: 13px">
+                <li style="display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-top: 1px solid #eef0f3"><span>Naam, functie, organisatie, telefoon, e-mail</span><span style="color: #1e6b2a; font-weight: 600">voorgesteld</span></li>
+                <li style="display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-top: 1px solid #eef0f3"><span>Adres</span><span style="color: #5e6168">staat op de organisatie, niet op het contact</span></li>
+                <li style="display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-top: 1px solid #eef0f3"><span>Kredietlimiet</span><span style="color: #5e6168">u mag dit veld niet invullen, overgeslagen</span></li>
+              </ul>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Als de beheerder dit nog niet heeft aangezet</h2>
+              <p style="margin: 0; font-size: 14px; line-height: 1.5">De knop Plakken om in te vullen staat dan niet op het formulier. Een beheerder zet Formulier invullen aan in <a href="HmBeheer.dc.html">de instellingen van hermiq</a>, nadat hij heeft gelezen welke tekst naar het model gaat.</p>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1150}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'dashboard'], ['Mijn werk', 'inbox', 5]] },
+      { title: 'Relaties', items: [['Contacten', 'people'], ['Organisaties', 'org']] },
+      { title: 'Verkoop', items: [['Leads', 'trend'], ['Pipeline', 'pipeline'], ['Offertes', 'doc'], ['Contracten', 'cert']] }
+    ];
+    const fields = [
+      ['hp-f1', 'Voornaam', 'Sanne', true, 'uit de handtekening', '1'],
+      ['hp-f2', 'Achternaam', 'Visser', true, 'uit de handtekening', '1'],
+      ['hp-f3', 'Functie', 'Hoofd inkoop', true, 'uit de handtekening', '1'],
+      ['hp-f4', 'Organisatie', 'Bouwbedrijf Van Dijk BV', true, 'bestaat al als organisatie; wordt gekoppeld, niet opnieuw gemaakt', '1'],
+      ['hp-f5', 'Telefoon', '06 1234 5678', true, 'mobiel gekozen boven vast; wijzig als u het vaste nummer wilt', '1'],
+      ['hp-f6', 'E-mail', 's.visser@vandijkbouw.nl', false, 'door u ingevuld; het voorstel is weg', '1'],
+      ['hp-f7', 'Rol in de relatie', '', false, 'niet in de tekst gevonden', '1']
+    ].map(([id, label, value, draft, note, span]) => ({ id, label, value, draft, note, span, placeholder: value ? '' : 'Kies een rol', border: draft ? '1px dashed #e0a100' : '1px solid #828a95', bg: draft ? '#fffbf2' : '#ffffff' }));
+    return { nav, fields };
+  }
+}
+</script>
+</body>
+</html>

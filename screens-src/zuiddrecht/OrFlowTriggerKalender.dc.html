@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Open Register: flow-editor, kalendertrigger</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<!-- Gedeelde flow-delen (decision 379): OrFlowCanvas, OrFlowKop, OrFlowPalet. Het triggerpaneel staat hier uitgeschreven: de kalendertrigger (flow-calendar-and-webhook-triggers, decision 399). -->
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1200px; position: relative">
+  <dc-import name="DqKop" app="Open Register" placeholder="Zoek registers, schema's en records" user="Sanne Visser" initials="SV" role="Functioneel beheerder" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="openregister" primary="Nieuwe flow" active="Flows" groups="{{ nav }}" hint-size="264px,1032px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; width: 100%">
+<dc-import name="OrFlowKop" title="Contract loopt af" state="actief" mode="canvas" crumbs='[["Flows", "OrFlows.dc.html"]]' meta="trigger Op een datum in een record · 5 stappen · versie 2 (live), ingeschakeld op 12 november" pill="Eerstvolgende moment 1 maart 2027 09:00" actions='["check", "test", "versions", "more"]' primary="Nieuwe versie"></dc-import><div style="display: flex; align-items: flex-start; gap: 12px"><div style="flex: 0 0 256px; width: 256px"><dc-import name="OrFlowPalet" selected="Op een datum in een record"></dc-import></div><div style="flex: 1 1 auto; min-width: 0"><dc-import name="OrFlowCanvas" flow="{{ flow }}" direction="down" height="auto" title="{{ title }}" selected="t" messages='[["info", "Bij het inschakelen zijn 3 momenten overgeslagen die al voorbij waren. Een gewijzigde einddatum verschuift het moment; een lege datum of een verwijderd contract haalt het weg."]]' valid="Geldig" valid-level="success"></dc-import></div><div style="flex: 0 0 336px; width: 336px">
+  <aside data-or-flow="trigger" aria-label="Instellingen van de trigger" style="width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 4px 16px rgba(27,28,29,0.12); padding: 16px 18px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: flex-start; gap: 10px">
+      <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 13px; color: #5e6168">Trigger · Op een datum in een record</span>
+        <h2 style="margin: 0; font-size: 17px; font-weight: 700; line-height: 1.25">Een maand voor de einddatum</h2>
+      </div>
+      <button type="button" aria-label="Zijpaneel sluiten" style="flex: none; width: 34px; height: 34px; border: 0; border-radius: 17px; background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <label for="orfl-kal-naam" style="font-size: 13px; font-weight: 600">Naam van de trigger</label>
+      <input id="orfl-kal-naam" type="text" value="Een maand voor de einddatum" style="height: 38px; box-sizing: border-box; padding: 0 10px; border: 1px solid #828a95; border-radius: 8px; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+      <div style="display: flex; flex-direction: column; gap: 5px">
+        <label for="orfl-kal-register" style="font-size: 13px; font-weight: 600">Register</label>
+        <select id="orfl-kal-register" style="height: 38px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Inkoop</option></select>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 5px">
+        <label for="orfl-kal-schema" style="font-size: 13px; font-weight: 600">Schema</label>
+        <select id="orfl-kal-schema" style="height: 38px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Contracten</option></select>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <label for="orfl-kal-veld" style="font-size: 13px; font-weight: 600">Datumveld</label>
+      <select id="orfl-kal-veld" style="height: 38px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>einddatum (datum)</option></select>
+      <span style="font-size: 12px; color: #5e6168; line-height: 1.4">Alleen velden van het type datum of datum en tijd. Een tekstveld zoals omschrijving wordt bij opslaan geweigerd.</span>
+    </div>
+    <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 5px">
+      <legend style="padding: 0; margin-bottom: 5px; font-size: 13px; font-weight: 600">Moment</legend>
+      <div style="display: grid; grid-template-columns: 64px 1fr 1fr; gap: 8px">
+        <label for="orfl-kal-aantal" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Aantal</label>
+        <input id="orfl-kal-aantal" type="number" value="30" style="height: 38px; box-sizing: border-box; padding: 0 10px; border: 1px solid #828a95; border-radius: 8px; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; font-variant-numeric: tabular-nums">
+        <label for="orfl-kal-eenheid" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Eenheid</label>
+        <select id="orfl-kal-eenheid" style="height: 38px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>dagen</option></select>
+        <label for="orfl-kal-richting" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Voor of na</label>
+        <select id="orfl-kal-richting" style="height: 38px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>voor de datum</option></select>
+      </div>
+      <span style="font-size: 12px; color: #5e6168; line-height: 1.4">Op de datum zelf: 0 dagen. Elke datumwaarde start hoogstens één run.</span>
+    </fieldset>
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <label for="orfl-kal-werkkalender" style="font-size: 13px; font-weight: 600">Tellen in</label>
+      <select id="orfl-kal-werkkalender" style="height: 38px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>werkdagen van Gemeente standaard</option></select>
+      <span style="font-size: 12px; color: #5e6168; line-height: 1.4">Kalenderdagen, of de werkdagen van een werkkalender. Een moment buiten de openingstijd schuift naar de eerstvolgende opening.</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <label for="orfl-kal-account" style="font-size: 13px; font-weight: 600">Uitvoeren als</label>
+      <select id="orfl-kal-account" style="height: 38px; box-sizing: border-box; padding: 0 8px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Serviceaccount contractbeheer</option></select>
+      <span style="font-size: 12px; color: #5e6168; line-height: 1.4">Elke run draait onder dit account. Zonder account wordt de flow niet opgeslagen.</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #eef0f3">
+      <h3 style="margin: 0; font-size: 14px; font-weight: 700">Eerstvolgende momenten</h3>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+        <sc-for list="{{ moments }}" as="m" hint-placeholder-count="3">
+          <li style="display: flex; flex-direction: column; gap: 2px; font-size: 13px"><span style="font-weight: 600; font-variant-numeric: tabular-nums">{{ m.when }}</span><span style="color: #5e6168; line-height: 1.4">{{ m.what }}</span></li>
+        </sc-for>
+      </ul>
+      <span style="font-size: 12px; color: #5e6168; line-height: 1.4">41 contracten met een einddatum, 38 momenten gepland, 3 overgeslagen bij het inschakelen.</span>
+    </div>
+    <div style="margin-top: auto; display: flex; justify-content: space-between; gap: 8px; padding-top: 12px; border-top: 1px solid #eef0f3">
+      <button type="button" style="height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; font: 600 14px 'Fira Sans', sans-serif; color: #a30000">Trigger verwijderen</button>
+      <button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Klaar</button>
+    </div>
+  </aside>
+</div></div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'dashboard'], ['Zoeken en weergaven', 'queue'], ['Taken', 'inbox', 4], ['Rapporten', 'chart']] },
+      { title: 'Data', items: [['Registers', 'book'], ["Schema's", 'doc'], ['Bestanden', 'products'], ['Configuraties', 'pipeline']] },
+      { title: 'Integratie', items: [['Organisaties', 'org'], ['Databronnen', 'trend'], ['Webhooks', 'bullhorn'], ['Koppelingen', 'key'], ['Flows', 'pipeline']] },
+      { title: 'Beheer', items: [['Agents', 'chat'], ['AVG-register', 'shield'], ['Entiteiten', 'people'], ['Archivering', 'gavel'], ['Operations', 'chart']] },
+      { title: 'Audit', items: [['Audit trails', 'check'], ['Verwijderd', 'bin']] },
+      { title: 'Datakwaliteit', items: [['Datakwaliteit', 'trend'], ['Dubbele records', 'people'], ['Gouden records', 'cert']] },
+      { title: 'Over de app', items: [['Functies en roadmap', 'bullhorn']] }
+    ];
+    const flow = {"nodes": [{"id": "t", "kind": "trigger", "title": "Een maand voor de einddatum", "sub": "Contracten · einddatum, 30 werkdagen ervoor", "col": 1, "row": 0}, {"id": "m", "kind": "message", "title": "Eigenaar herinneren", "sub": "sjabloon Contract loopt af", "col": 1, "row": 1}, {"id": "h", "kind": "human", "title": "Verlengen of beëindigen", "sub": "contracteigenaar, 10 werkdagen", "col": 1, "row": 2}, {"id": "o", "kind": "object", "title": "Contract bijwerken", "sub": "status en nieuwe einddatum", "col": 1, "row": 3}, {"id": "e", "kind": "end", "title": "Einde", "sub": "sluit de run af", "col": 1, "row": 4}], "edges": [["t", "m"], ["m", "h"], ["h", "o"], ["o", "e"]]};
+    const title = "Contract loopt af";
+    const moments = [["ma 1 maart 2027, 09:00", "Contract 2026-0412, schoonmaak stadhuis, loopt af op 12 april"], ["do 4 maart 2027, 08:30", "Contract 2026-0388, groenonderhoud wijk Noord, loopt af op 15 april"], ["di 16 maart 2027, 08:30", "Contract 2026-0501, drukwerk, loopt af op 28 april"]].map((m) => ({ when: m[0], what: m[1] }));
+
+    return { nav, flow, title, moments };
+  }
+}
+</script>
+</body>
+</html>

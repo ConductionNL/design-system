@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>buildiq: instellingenpagina van een gebouwde app</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; position: relative; display: flex; flex-direction: column; min-height: 1000px">
+  <dc-import name="DqKop" app="Meldingen" placeholder="Zoek meldingen, adressen of melders" role="Beheerder meldkamer" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="meldingen-or" primary="Nieuwe melding" active="Instellingen" groups="{{ nav }}" hint-size="264px,1000px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Instellingen</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" aria-label="buildiq" title="Deze pagina bewerken in buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+            </div>
+          </div>
+          <span style="font-size: 14px; color: #5e6168">Opties van de app Meldingen openbare ruimte. Wat u hier zet, geldt voor iedereen in de gemeente.</span>
+        </section>
+
+        <div role="status" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: #e7f3ea; color: #1e6b2a; font-size: 14px; line-height: 1.45"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg><span>Instellingen opgeslagen om 14:02. Meldkamer Zuiddrecht staat nu boven elke bevestiging.</span></div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <div role="tablist" aria-label="Secties" style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: -20px">
+              <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><button type="button" role="tab" aria-selected="{{ t.sel }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+            </div>
+            <form style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 0 12px 12px 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 18px">
+              <sc-for list="{{ fields }}" as="f" hint-placeholder-count="4">
+                <div style="display: grid; grid-template-columns: minmax(180px, 280px) 1fr; gap: 8px 24px; align-items: start; padding-bottom: 16px; border-bottom: 1px solid #eef0f3">
+                  <div style="display: flex; flex-direction: column; gap: 2px"><label for="{{ f.id }}" style="font-size: 15px; font-weight: 600">{{ f.label }}</label><span style="font-size: 13px; color: #5e6168; line-height: 1.4">{{ f.help }}</span></div>
+                  <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; max-width: 420px">
+                    <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input id="{{ f.id }}" type="text" value="{{ f.value }}" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"></sc-if>
+                    <sc-if value="{{ f.isNumber }}" hint-placeholder-val="{{ false }}"><input id="{{ f.id }}" type="number" value="{{ f.value }}" min="10" max="100" style="box-sizing: border-box; width: 140px; height: 40px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"></sc-if>
+                    <sc-if value="{{ f.isChoice }}" hint-placeholder-val="{{ false }}"><button type="button" id="{{ f.id }}" aria-haspopup="listbox" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; box-sizing: border-box; width: 100%; border: 1px solid #828a95; border-radius: 8px; padding: 0 12px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d; text-align: left"><span>{{ f.value }}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></button></sc-if>
+                    <sc-if value="{{ f.isSwitch }}" hint-placeholder-val="{{ false }}"><label for="{{ f.id }}" style="display: flex; gap: 12px; align-items: center; font-size: 15px; position: relative; min-height: 40px"><input id="{{ f.id }}" type="checkbox" role="switch" style="position: absolute; opacity: 0; width: 36px; height: 20px; margin: 0"><span aria-hidden="true" style="flex: none; position: relative; width: 36px; height: 20px; border-radius: 10px; background: #c4c7cb"><span style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 8px; background: #ffffff"></span></span><span>{{ f.value }}</span></label></sc-if>
+                    <span style="font-size: 13px; color: #5e6168">{{ f.state }}</span>
+                  </div>
+                </div>
+              </sc-for>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+                <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"></path></svg>Opslaan</button>
+                <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Terug naar standaard</button>
+                <span style="font-size: 13px; color: #5e6168">Niets opgeslagen tot u op Opslaan klikt.</span>
+              </div>
+            </form>
+          </div>
+          <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Waar deze opties vandaan komen</h2>
+              <p style="margin: 0; font-size: 14px; line-height: 1.5">De maker van de app heeft deze pagina in buildiq ontworpen: drie secties, negen opties. Een nieuwe optie krijgt zijn standaardwaarde tot iemand hem hier verandert.</p>
+              <a href="BqPaginaOntwerper.dc.html" style="font-size: 14px; font-weight: 600">Pagina in buildiq openen</a>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Laatst gewijzigd</h2>
+              <dl style="margin: 0; display: grid; grid-template-columns: 1fr max-content; gap: 6px 16px; font-size: 14px"><dt style="color: #5e6168">Naam van de meldkamer</dt><dd style="margin: 0; text-align: right">vandaag, 14:02</dd><dt style="color: #5e6168">Meldingen per pagina</dt><dd style="margin: 0; text-align: right">3 oktober</dd><dt style="color: #5e6168">Standaardwijk</dt><dd style="margin: 0; text-align: right">nooit</dd></dl>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'dashboard'], ['Mijn meldingen', 'inbox', 4]] },
+      { title: 'Meldingen', items: [['Alle meldingen', 'queue'], ['Meldingen op de kaart', 'home'], ['Melders', 'people']] },
+      { title: 'Beheer', items: [['Wijken', 'org'], ['Rapportages', 'chart'], ['Instellingen', 'key']] }
+    ];
+    const tabBase = "display: inline-flex; align-items: center; gap: 8px; box-sizing: border-box; min-height: 34px; padding: 8px 12px; margin-bottom: -1px; border: 1px solid #d6d9de; border-bottom: none; border-radius: 8px 8px 0 0; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; background: #eceef1; cursor: pointer; white-space: nowrap;";
+    const tabs = [['Algemeen', true], ['Meldingen', false], ['Koppelingen', false]].map(([label, on]) => ({ label, sel: on ? 'true' : 'false', style: on ? tabBase + ' background: #ffffff; border-bottom: 1px solid #ffffff; font-weight: 700;' : tabBase }));
+    const fields = [
+      ['ap-f1', 'Naam van de meldkamer', 'Staat boven elke bevestiging aan de melder.', 'text', 'Meldkamer Zuiddrecht', 'gewijzigd, standaard was Meldkamer'],
+      ['ap-f2', 'Meldingen per pagina', 'Tussen 10 en 100.', 'number', '25', 'standaardwaarde'],
+      ['ap-f3', 'Standaardwijk', 'De wijk die vooraf gekozen is in Alle meldingen.', 'choice', 'alle wijken', 'standaardwaarde'],
+      ['ap-f4', 'Foto verplicht', 'Alleen voor meldingen over afval.', 'switch', 'Uit', 'standaardwaarde']
+    ].map(([id, label, help, kind, value, state]) => ({ id, label, help, value, state, isText: kind === 'text', isNumber: kind === 'number', isChoice: kind === 'choice', isSwitch: kind === 'switch' }));
+    return { nav, tabs, fields };
+  }
+}
+</script>
+</body>
+</html>

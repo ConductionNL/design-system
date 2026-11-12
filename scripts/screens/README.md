@@ -99,7 +99,7 @@ python3 scripts/screens/component_status.py ~/memcap-work/screens/round6/COMP/co
 
 ## Capabilities, specs and repositories
 
-`capabilities.py` adds to the gallery what each screen delivers, which OpenSpec specs define it and which repository it lives in. `build.py` cannot compute these fields, so it keeps the stored ones for every board whose source did not move. Run `capabilities.py` after adding a board or changing a capability note.
+`capabilities.py` adds to the gallery what each screen delivers, which OpenSpec specs define it and which repository it lives in. `build.py` cannot compute these fields, so it keeps the stored ones for every board whose source did not move. Run `capabilities.py` after adding a board or changing a capability note. A spec also counts as on screen when its own `screens.md`, or the `screens.md` of an open change that carries a delta of it, names a gallery board (`?id=<app>/<Board>`, `<app>/<Board>` or a short name such as `DqZaak`). A line such as `No screen: <why>` there is the spec's no-screen reason; `Design backlog: <Board>` is not. `python3 -m unittest scripts/screens/test_capabilities.py` tests that parser.
 
 ```
 python3 scripts/screens/capabilities.py             # git fetch each app checkout first

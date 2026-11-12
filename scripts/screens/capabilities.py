@@ -6,7 +6,7 @@
 
 Reads, per app, from the local checkout at origin/development (falls back to the checkout's HEAD
 when that ref is missing or the fetch failed, and says so):
-  openspec/specs/<name>/spec.md, openspec/changes/<name>/proposal.md,
+  openspec/specs/<name>/spec.md and screens.md, openspec/changes/<name>/proposal.md and screens.md,
   openspec/parity/capabilities.json, openspec/parity/gap-decisions.json
 and from this repo preview/screens/screens.json (boards[*].caps).
 
@@ -67,6 +67,61 @@ PLACEHOLDER_REASON = re.compile(r'not (yet )?designed|not drawn|no board|missing
                                 r'nog niet ontworpen|niet getekend|geen bord|no (design|screen) (yet|drawn)', re.I)
 INTERNAL = '_internal'  # the group per app for specs the matrix lists as internalSpecs (no user-facing capability)
 NONE_TOKENS = {'', 'geen spec genoemd', 'geen', 'geen spec'}
+# screens.md: a line that says the spec has no screen, in the forms the app repos use
+SCREENS_MD_REASON = re.compile(r'^(no screen\b|none\b|draws nothing new\b|[\w-]+ has no board\b|[\w-]+: no board\b|'
+                               r'[\w-]+/[\w.-]+: no [\w-]+ (page|screen)\b)', re.I)
+# screens.md: a line that says the board is still to be drawn
+SCREENS_MD_PLACEHOLDER = re.compile(r'^design backlog\b|not (yet )?designed|not drawn|missing-boards|design session|'
+                                    r'nog niet ontworpen|niet getekend|no (design|screen) (yet|drawn)', re.I)
+BOARD_URL_ID = re.compile(r'[?&]id=([\w-]+/[A-Za-z0-9]+)')
+BOARD_APP_ID = re.compile(r'(?<![\w/=.-])([a-z][\w-]*)/([A-Z][A-Za-z0-9]*)\b')
+BOARD_SHORT = re.compile(r'\b[A-Z][a-z0-9]+(?:[A-Z][A-Za-z0-9]*)+\b')
+
+
+def parse_screens_md(text, by_name, gallery_ids=()):
+    """Read an openspec screens.md: (board ids, no-screen reason, notes).
+
+    by_name maps a short board name to its id ('DqZaak' -> 'dossiq/DqZaak'); gallery_ids holds
+    every board id, school boards included. A board is named as a '?id=<app>/<Board>' URL, as
+    '<app>/<Board>', or by a short name of at least two capitalised parts; an id whose app part is
+    not a gallery app (an old app name) resolves through its short name. A line may open with
+    'From change `<name>`:'. A line such as 'No screen: ...', 'None. ...', 'Draws nothing new: ...',
+    '<app> has no board of its own for ...', '<app>: no board for row ...' or
+    '<app>/<row>: no <app> page; ...' is a reason, and boards it mentions in passing do not count.
+    A line that says its board is not drawn yet ('Design backlog: <Board>') counts only when the
+    gallery has that board by now.
+    """
+    ids = set(by_name.values()) | set(gallery_ids)
+    gallery_apps = {i.split('/', 1)[0] for i in ids}
+    boards, reasons, notes = [], [], []
+    for raw in (text or '').splitlines():
+        line = re.sub(r'^\s*(?:[-*+]|\d+\.)\s+', '', raw).strip()
+        line = re.sub(r'^from change `[^`]+`\s*:\s*', '', line, flags=re.I)
+        if not line or line.startswith('#') or re.match(r'^components?\s*:', line, re.I):
+            continue
+        if SCREENS_MD_REASON.match(line):
+            reasons.append(line)
+            continue
+        found, unknown = [], []
+        for bid in BOARD_URL_ID.findall(line) + ['/'.join(m) for m in BOARD_APP_ID.findall(line)]:
+            app, short = bid.split('/', 1)
+            if bid in ids:
+                found.append(bid)
+            elif app not in gallery_apps and short in by_name:
+                found.append(by_name[short])
+            else:
+                unknown.append(bid)
+        rest = BOARD_APP_ID.sub(' ', re.sub(r'https?://\S+', ' ', line))
+        found += [by_name[s] for s in BOARD_SHORT.findall(rest) if s in by_name]
+        if not found and SCREENS_MD_PLACEHOLDER.search(line):
+            notes.append(f'screen not drawn yet: {line}')
+            continue
+        notes += [f'screens.md board {u} is not in the gallery' for u in dict.fromkeys(unknown)]
+        boards += [b for b in dict.fromkeys(found) if b not in boards]
+    reason = None
+    if not boards and reasons:
+        reason = re.sub(r'^no screen\s*:\s*', '', reasons[0], flags=re.I).strip() or reasons[0]
+    return boards, reason, notes
 
 
 def log(msg):
@@ -169,7 +224,7 @@ class LocalMatrix:
 
 
 def load_app(co):
-    specs, changes = {}, {}
+    specs, changes, spec_md, change_md, change_specs = {}, {}, {}, {}, {}
     for f in co.files:
         m = re.fullmatch(r'openspec/specs/([^/]+)/spec\.md', f)
         if m:
@@ -181,6 +236,15 @@ def load_app(co):
         m = re.fullmatch(r'openspec/changes/([^/]+)/proposal\.md', f)
         if m and m.group(1) != 'archive':
             changes[m.group(1)] = change_title(m.group(1), co.read(f) or '')
+        m = re.fullmatch(r'openspec/specs/([^/]+)/screens\.md', f)
+        if m:
+            spec_md[m.group(1)] = co.read(f) or ''
+        m = re.fullmatch(r'openspec/changes/([^/]+)/screens\.md', f)
+        if m and m.group(1) != 'archive':
+            change_md[m.group(1)] = co.read(f) or ''
+        m = re.fullmatch(r'openspec/changes/([^/]+)/specs/([^/]+)/spec\.md', f)
+        if m and m.group(1) != 'archive':
+            change_specs.setdefault(m.group(1), set()).add(m.group(2))
     parity = co.json('openspec/parity/capabilities.json') or {}
     decisions = co.json('openspec/parity/gap-decisions.json') or []
     if isinstance(decisions, dict):
@@ -200,7 +264,7 @@ def load_app(co):
             'specScreens': parity.get('specScreens') if isinstance(parity.get('specScreens'), dict) else {},
             'internalSpecs': {x for x in parity.get('internalSpecs', []) if isinstance(x, str)},
             'overlay': {o['slug']: o for o in overlay if isinstance(o, dict) and o.get('slug')} if isinstance(overlay, list) else {},
-            'decisions': latest}
+            'decisions': latest, 'specScreensMd': spec_md, 'changeScreensMd': change_md, 'changeSpecs': change_specs}
 
 
 def spec_rows_of(app, d, caps):
@@ -411,6 +475,7 @@ def main():
     index = json.loads((SCREENS / 'screens.json').read_text())
     boards = index['boards']
     by_name = {}
+    gallery_ids = {b['id'] for b in boards.values()}
     for key, b in boards.items():
         if b['src'].removeprefix('screens-src/').startswith('zuiddrecht/'):  # the Zuiddrecht and OpenProject sets; school keys may carry a prefix
             by_name[key] = b['id']
@@ -593,14 +658,31 @@ def main():
                     c['screens'].append(by_name[b])
                 elif b not in by_name:
                     c['notes'].append(f'specScreens board {b} is not in the gallery')
+            md_boards, md_reason, md_notes = parse_screens_md(d['specScreensMd'].get(name), by_name, gallery_ids)
+            for ch in sorted(ch for ch, names in d['changeSpecs'].items() if name in names and ch in d['changeScreensMd']):
+                md_boards += parse_screens_md(d['changeScreensMd'][ch], by_name, gallery_ids)[0]
+            for sid in md_boards:
+                if sid not in c['screens']:
+                    c['screens'].append(sid)
+            for n in md_notes:
+                if n not in c['notes']:
+                    c['notes'].append(n)
             c['screenReason'] = None
             if not c['screens'] and name in d['internalSpecs']:
                 c['screenReason'] = 'internal: no user-facing capability'
             elif not c['screens']:
                 if isinstance(own.get('reason'), str) and own['reason'].strip() and not PLACEHOLDER_REASON.search(own['reason']):
                     c['screenReason'] = own['reason'].strip()
+                elif md_reason:
+                    c['screenReason'] = md_reason
                 elif rows and all(rc.get('screenReason') for rc in rows):
                     c['screenReason'] = rows[0]['screenReason']
+        for ch, text in d['changeScreensMd'].items():
+            c = caps.get(f'{app}/{ch}')
+            if c and c['kind'] == 'change':
+                for sid in parse_screens_md(text, by_name, gallery_ids)[0]:
+                    if sid not in c['screens']:
+                        c['screens'].append(sid)
 
     # 3. statuses that depend on screens, sorting
     for c in caps.values():

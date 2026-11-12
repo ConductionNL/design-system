@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>humaniq: btw-overzicht declaraties</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1300px">
+  <dc-import name="DqKop" app="Humaniq" placeholder="Zoek medewerkers, verlof of loonstroken" role="Financiële administratie" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="humaniq" primary="Declaratie indienen" active="Declaraties" groups="{{ nav }}" hint-size="264px,1300px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Btw op declaraties</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"></path></svg>Exporteren voor de btw-aangifte</button>
+              <button type="button" aria-label="buildiq" title="Deze pagina bewerken in buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+            </div>
+          </div>
+          <nav aria-label="Kruimelpad" style="font-size: 14px; color: #5e6168; display: flex; gap: 8px"><a href="#">Declaraties</a><span aria-hidden="true">/</span><span aria-current="page">Btw-overzicht</span></nav>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end">
+          <div style="display: flex; flex-direction: column; gap: 6px; flex: 0 1 220px"><label for="btw-per" style="font-size: 14px; font-weight: 600">Periode</label><select id="btw-per" style="box-sizing: border-box; height: 40px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"><option selected>Kwartaal 3, 2026 (juli tot september)</option><option>Kwartaal 2, 2026</option><option>Oktober 2026</option></select></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; flex: 0 1 220px"><label for="btw-adm" style="font-size: 14px; font-weight: 600">Administratie</label><select id="btw-adm" style="box-sizing: border-box; height: 40px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"><option selected>Gemeente Zuiddrecht</option><option>Sportbedrijf Zuiddrecht BV</option><option>Alle administraties</option></select></div>
+          <span style="font-size: 13px; color: #5e6168; padding-bottom: 10px">Alleen vergoede declaraties met een bon tellen mee. Vergoed met het salaris van juli, augustus of september.</span>
+        </div>
+
+        <div role="list" aria-label="Kerngetallen" style="display: flex; flex-wrap: wrap; gap: 12px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4"><div role="listitem" style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 2px; padding: 18px 20px; background: {{ k.bg }}; color: {{ k.fg }}; border: 1px solid #e4e6ea; border-radius: 12px"><span style="font-size: 14px; color: {{ k.muted }}">{{ k.label }}</span><strong style="font-size: 26px; font-weight: 700; line-height: 1.2">{{ k.value }}</strong><span style="font-size: 13px; color: {{ k.muted }}">{{ k.sub }}</span></div></sc-for>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <section aria-labelledby="btw-tabel" style="flex: 999 1 560px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+            <div style="padding: 18px 20px 8px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline"><h2 id="btw-tabel" style="margin: 0; font-size: 17px; font-weight: 700">Vergoede declaraties met btw</h2><span style="font-size: 13px; color: #5e6168">38 declaraties · 61 regels</span></div>
+            <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+              <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th scope="col" style="padding: 10px 20px; font-weight: 600">Declaratie</th><th scope="col" style="padding: 10px 12px; font-weight: 600">Vergoed</th><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: right">Bedrag</th><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: right">Btw 9%</th><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: right">Btw 21%</th><th scope="col" style="padding: 10px 20px 10px 12px; font-weight: 600">Bon</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+                  <tr style="border-top: 1px solid #eef0f3"><td style="padding: 12px 20px"><span style="display: flex; flex-direction: column; gap: 2px"><a href="HuDeclaratie.dc.html" style="font-weight: 600; color: #1b1c1d">{{ r.title }}</a><span style="font-size: 13px; color: #5e6168">{{ r.who }} · {{ r.ref }}</span></span></td><td style="padding: 12px 12px; white-space: nowrap">{{ r.paid }}</td><td style="padding: 12px 12px; text-align: right; white-space: nowrap">{{ r.amount }}</td><td style="padding: 12px 12px; text-align: right; white-space: nowrap">{{ r.vat9 }}</td><td style="padding: 12px 12px; text-align: right; white-space: nowrap">{{ r.vat21 }}</td><td style="padding: 12px 20px 12px 12px"><span style="{{ r.bonStyle }}">{{ r.bon }}</span></td></tr>
+                </sc-for>
+                <tr style="border-top: 2px solid #e4e6ea; background: #fafbfc"><td colspan="2" style="padding: 12px 20px; font-weight: 700">Totaal te vragen over kwartaal 3</td><td style="padding: 12px 12px; text-align: right; font-weight: 700">€ 4.812,40</td><td style="padding: 12px 12px; text-align: right; font-weight: 700">€ 118,36</td><td style="padding: 12px 12px; text-align: right; font-weight: 700">€ 402,15</td><td style="padding: 12px 20px 12px 12px; font-weight: 700">€ 520,51</td></tr>
+              </tbody>
+            </table>
+            <div style="padding: 10px 20px 16px; font-size: 13px; color: #5e6168">Toont 6 van 38 · <a href="#">alle regels</a></div>
+          </section>
+
+          <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: inset 4px 0 0 #3669a5; padding: 20px 22px 20px 26px; display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Terug te vragen</h2>
+              <strong style="font-size: 26px; font-weight: 700">€ 520,51</strong>
+              <dl style="margin: 0; display: grid; grid-template-columns: 1fr max-content; gap: 6px 16px; font-size: 14px"><dt style="color: #5e6168">9 procent, maaltijden en vervoer</dt><dd style="margin: 0; text-align: right">€ 118,36</dd><dt style="color: #5e6168">21 procent, parkeren en materiaal</dt><dd style="margin: 0; text-align: right">€ 402,15</dd><dt style="color: #5e6168">0 procent en vrijgesteld</dt><dd style="margin: 0; text-align: right">€ 0,00</dd></dl>
+              <span style="font-size: 13px; color: #5e6168">Rubriek 5b voorbelasting in de aangifte over kwartaal 3. De export zet elke regel met bonnummer en datum in het bestand.</span>
+            </section>
+            <section aria-labelledby="btw-niet" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 id="btw-niet" style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Telt niet mee</h2>
+              <sc-for list="{{ excluded }}" as="e" hint-placeholder-count="3"><div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-top: 1px solid #eef0f3; font-size: 14px"><span style="display: flex; justify-content: space-between; gap: 8px"><strong style="font-weight: 600">{{ e.title }}</strong><span style="white-space: nowrap">{{ e.vat }}</span></span><span style="font-size: 13px; color: #7a4f00">{{ e.why }}</span></div></sc-for>
+              <span style="font-size: 13px; color: #5e6168">Vraag de medewerker om de bon; zodra die er is, telt de regel in de lopende periode mee.</span>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Eerdere exports</h2>
+              <dl style="margin: 0; display: grid; grid-template-columns: 1fr max-content; gap: 6px 16px; font-size: 14px"><dt>Kwartaal 2, 2026</dt><dd style="margin: 0; text-align: right"><a href="#">€ 488,02 · csv</a></dd><dt>Kwartaal 1, 2026</dt><dd style="margin: 0; text-align: right"><a href="#">€ 455,90 · csv</a></dd></dl>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'dashboard'], ['Mijn HR', 'inbox'], ['Mijn goedkeuringen', 'check', 7]] },
+      { title: 'Mensen', items: [['Medewerkers', 'people'], ['Organisatie', 'org'], ['Werving en selectie', 'pipeline', 3], ['In- en uitdienst', 'people']] },
+      { title: 'Tijd', items: [['Verlof', 'cal'], ['Verzuim', 'heart'], ['Uren', 'queue'], ['Roosters en agenda', 'cal']] },
+      { title: 'Salaris', items: [['Salarisrun', 'chart'], ['Declaraties', 'doc'], ['Aangiften', 'gavel']] },
+      { title: 'Ontwikkeling', items: [['Gesprekken en doelen', 'trend'], ['Opleidingen', 'book']] },
+      { title: 'Beheer', items: [['Rapportages', 'chart'], ['AVG-verzoeken', 'shield'], ['Instellingen', 'key']] }
+    ];
+    const kpis = [
+      ['Terug te vragen', '€ 520,51', 'kwartaal 3, gemeente', '#1b1c1d', '#ffffff', '#c4c7cb'],
+      ['Vergoed met btw', '€ 4.812,40', '38 declaraties', '#ffffff', '#1b1c1d', '#5e6168'],
+      ['Zonder geldige bon', '€ 61,20 btw', '3 regels, tellen niet mee', '#ffffff', '#1b1c1d', '#5e6168'],
+      ['Vorig kwartaal', '€ 488,02', 'geëxporteerd 8 juli', '#ffffff', '#1b1c1d', '#5e6168']
+    ].map(([label, value, sub, bg, fg, muted]) => ({ label, value, sub, bg, fg, muted }));
+    const ok = 'padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; background: #e7f3ea; color: #1e6b2a';
+    const rows = [
+      ['Dienstreis Rotterdam, 2 oktober', 'Lars de Koning', 'DC-2026-0588', 'september', '€ 70,58', '€ 3,19', '€ 2,52', 'uitgelezen'],
+      ['Werkbezoek Utrecht, 18 september', 'Sanne de Vries', 'DC-2026-0571', 'september', '€ 42,10', '€ 2,60', '€ 0,00', 'uitgelezen'],
+      ['Materiaal wijkschouw', 'Pieter Jansen', 'DC-2026-0563', 'september', '€ 128,90', '€ 0,00', '€ 22,37', 'uitgelezen'],
+      ['Lunch sollicitatiecommissie', 'Anouk Bakker', 'DC-2026-0540', 'augustus', '€ 96,40', '€ 7,96', '€ 0,00', 'handmatig'],
+      ['Parkeren rechtbank', 'Lars de Koning', 'DC-2026-0522', 'augustus', '€ 18,00', '€ 0,00', '€ 3,12', 'uitgelezen'],
+      ['Congres gemeentefinanciën', 'Mark de Vries', 'DC-2026-0498', 'juli', '€ 295,00', '€ 0,00', '€ 51,20', 'uitgelezen']
+    ].map(([title, who, ref, paid, amount, vat9, vat21, bon]) => ({ title, who, ref, paid, amount, vat9, vat21, bon, bonStyle: ok }));
+    const excluded = [
+      ['Taxi station, 9 september', '€ 4,10', 'geen bon, alleen een pinbon zonder btw'],
+      ['Koffie overleg aannemer', '€ 1,80', 'bon onleesbaar, btw niet uitgelezen'],
+      ['Kilometers eigen auto', '€ 55,30', 'reiskosten, geen btw te vragen']
+    ].map(([title, vat, why]) => ({ title, vat, why }));
+    return { nav, kpis, rows, excluded };
+  }
+}
+</script>
+</body>
+</html>

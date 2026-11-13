@@ -169,7 +169,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center">
             <div style="display: flex; flex-direction: column; gap: 4px">
               <h2 id="tq-sets" style="margin: 0; font-size: 20px; font-weight: 700">Tokensets</h2>
-              <span style="font-size: 14px; color: #5e6168">9 van 63 tokensets, waarvan 1 eigen set. Ook de volledige sets van Utrecht, Amsterdam, Den Haag en Rotterdam.</span>
+              <span style="font-size: 14px; color: #5e6168">14 van 63 tokensets, waarvan 1 eigen set: Rijkshuisstijl, VNG, een provincie en de vier grote steden, en de ontwerpsystemen NL Design System, La Suite, Cunningham en Hoog contrast. Een set die niet elke token van haar ontwerpsysteem zet, is gemarkeerd als onvolledig.</span>
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 10px">
               <div style="position: relative">
@@ -194,10 +194,10 @@ a{color:#3669a5}a:hover{color:#234a78}
                 </tr>
               </thead>
               <tbody>
-                <sc-for list="{{ sets }}" as="s" hint-placeholder-count="6">
+                <sc-for list="{{ sets }}" as="s" hint-placeholder-count="14">
                   <tr>
                     <td style="padding: 10px 12px 10px 0; border-bottom: 1px solid #eef0f3"><a href="TqTokenSet.dc.html" style="font-weight: 600; text-decoration: none">{{ s.name }}</a></td>
-                    <td style="padding: 10px 12px; border-bottom: 1px solid #eef0f3; color: #3d4047">{{ s.system }}</td>
+                    <td style="padding: 10px 12px; border-bottom: 1px solid #eef0f3; color: #3d4047"><span style="display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px">{{ s.system }}<sc-if value="{{ s.badge }}"><span style="padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #fff4de; color: #7a4f00; white-space: nowrap" title="3 tokens vallen terug op de Rijkshuisstijl">{{ s.badge }}</span></sc-if></span></td>
                     <td style="padding: 10px 12px; border-bottom: 1px solid #eef0f3"><span style="display: inline-flex; align-items: center; gap: 8px; font-family: ui-monospace, Menlo, monospace; font-size: 13px"><span style="{{ s.chip }}"></span>{{ s.primary }}</span></td>
                     <td style="padding: 10px 12px; border-bottom: 1px solid #eef0f3; color: #3d4047">{{ s.layout }}</td>
                     <td style="padding: 10px 12px; border-bottom: 1px solid #eef0f3"><span style="{{ s.pill }}">{{ s.status }}</span></td>
@@ -208,7 +208,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             </table>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px">
-            <span style="font-size: 14px; color: #5e6168">9 van 63</span>
+            <span style="font-size: 14px; color: #5e6168">14 van 63</span>
             <button type="button" style="height: 36px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Meer tonen</button>
           </div>
         </div>
@@ -312,9 +312,14 @@ class Component extends DCLogic {
       ['Gemeente Amsterdam', 'NL Design System', '#EC0000', 'Volgt Nextcloud', 'Beschikbaar', pill('#f0f1f3', '#3d4047')],
       ['Gemeente Den Haag', 'NL Design System', '#1A7A49', 'Volgt Nextcloud', 'Beschikbaar', pill('#f0f1f3', '#3d4047')],
       ['Gemeente Rotterdam', 'NL Design System', '#00811F', 'Volgt Nextcloud', 'Licentie bevestigen', pill('#fff4de', '#7a4f00')],
+      ['Rijkshuisstijl', 'NL Design System', '#154273', 'Volgt Nextcloud', 'Beschikbaar', pill('#f0f1f3', '#3d4047')],
+      ['VNG Vereniging Nederlandse Gemeenten', 'NL Design System', '#00A1E0', 'Volgt Nextcloud', 'Beschikbaar', pill('#f0f1f3', '#3d4047')],
+      ['Provincie Zuid-Holland', 'NL Design System', '#005E8E', 'Volgt Nextcloud', 'Beschikbaar', pill('#f0f1f3', '#3d4047')],
+      ['La Suite numérique', 'La Suite', '#4844AD', 'Volgt Nextcloud', 'Beschikbaar', pill('#f0f1f3', '#3d4047')],
+      ['Cunningham (zacht licht)', 'Cunningham', '#055FD2', 'Volgt Nextcloud', 'Beschikbaar', pill('#f0f1f3', '#3d4047')],
       ['Hoog contrast (WCAG AAA)', 'Hoog contrast', '#000000', 'Volgt Nextcloud', 'Beschikbaar', pill('#f0f1f3', '#3d4047')],
-      ['Zuiddrecht verkiezingen', 'Eigen set', '#3669A5', 'Volgt Nextcloud', 'Gepland 2 mrt', pill('#fff4de', '#7a4f00')]
-    ].map(([name, system, primary, layout, status, p]) => ({ name, system, primary, layout, status, pill: p, chip: sw(primary.toLowerCase()), more: 'Meer acties voor ' + name }));
+      ['Zuiddrecht verkiezingen', 'Eigen set', '#3669A5', 'Volgt Nextcloud', 'Gepland 2 mrt', pill('#fff4de', '#7a4f00'), 'Onvolledige set']
+    ].map(([name, system, primary, layout, status, p, badge]) => ({ name, system, primary, layout, status, pill: p, badge: badge || '', chip: sw(primary.toLowerCase()), more: 'Meer acties voor ' + name }));
     const layoutSel = [
       { id: 'tq-wl', label: 'Werkplekindeling', value: 'Volg het thema (lichte bovenbalk)' },
       { id: 'tq-hs', label: 'Stijl van de bovenbalk', value: 'Volg het thema (werkplek, met naam en rol)' },

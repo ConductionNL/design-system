@@ -36,7 +36,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           <sc-for list="{{ trainings }}" as="t" hint-placeholder-count="3">
             <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 0; border-top: 1px solid #eef0f3">
               <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px 16px">
-                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">Cursus</span><strong style="font-size: 16px">{{ t.name }}</strong><span style="{{ t.dueStyle }}">{{ t.due }}</span></span>
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">Cursus</span><strong style="font-size: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center">{{ t.name }}<sc-if value="{{ t.late }}" hint-placeholder-val="{{ false }}"><span style="display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: #fcedec; color: #a30000">Te laat</span></sc-if></strong><span style="{{ t.dueStyle }}">{{ t.due }}</span><sc-if value="{{ t.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #5e6168">{{ t.note }}</span></sc-if></span>
                 <a href="#" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 17px; background: #eaf0f7; color: #234a78; font-size: 14px; font-weight: 600; text-decoration: none">{{ t.action }}<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></a>
               </div>
               <div style="display: flex; align-items: center; gap: 12px"><span role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ t.pct }}" aria-label="Voortgang {{ t.name }}" style="flex: 1 1 auto; height: 8px; border-radius: 4px; background: #eef0f3; overflow: hidden; display: block"><span style="{{ t.bar }}"></span></span><span style="flex: none; font-size: 13px; color: #3d4047">Voortgang {{ t.pct }}%</span></div>
@@ -49,7 +49,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
           <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
             <sc-for list="{{ parts }}" as="p" hint-placeholder-count="5">
-              <li style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #eef0f3; font-size: 14px"><span>{{ p.name }}</span><span style="{{ p.style }}">{{ p.state }}</span></li>
+              <li style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #eef0f3; font-size: 14px"><span style="display: flex; flex-direction: column; gap: 2px">{{ p.name }}<span style="font-size: 12px; color: #5e6168">{{ p.scope }}</span></span><span style="{{ p.style }}">{{ p.state }}</span></li>
             </sc-for>
           </ul>
           <h3 style="margin: 6px 0 0; font-size: 14px; font-weight: 600; color: #5e6168">Keuzecursussen</h3>
@@ -58,12 +58,34 @@ a{color:#3669a5}a:hover{color:#234a78}
           </ul></section>
         </div>
         <p style="margin: 0; font-size: 14px; color: #5e6168">Mijn leren laat uw eigen leren zien, niet dat van uw leerlingen. Die vindt u onder Leerlingen en Voortgang.</p>
+      
+        <section aria-labelledby="ml-mgr" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px"><h2 id="ml-mgr" style="margin: 0; font-size: 17px; font-weight: 700">Zo stelt de opleidingsmanager een onderdeel per persoon in</h2><span style="font-size: 13px; color: #5e6168">opleiding Basiskwalificatie didactische bekwaamheid, voor Lotte Kramer</span></div>
+          
+          <span style="font-size: 14px; color: #5e6168">Een onderdeel is voor de hele opleiding verplicht of keuze. Per deelnemer kan de manager daarvan afwijken; de andere deelnemers merken daar niets van.</span>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 16px; align-items: start">
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="ml-deel" style="font-size: 14px; font-weight: 600">Deelnemer</label><select id="ml-deel" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"><option selected>Pieter Jansen (docent Nederlands)</option></select></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="ml-ond" style="font-size: 14px; font-weight: 600">Onderdeel</label><select id="ml-ond" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"><option selected>Reflectie en portfolio (keuze in de opleiding)</option></select></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; font-weight: 600">Voor deze deelnemer</span><label style="display: flex; gap: 10px; align-items: center; font-size: 14px; min-height: 40px"><span role="switch" aria-checked="true" aria-label="Verplicht voor Pieter Jansen" style="flex: none; position: relative; width: 40px; height: 22px; border-radius: 11px; background: #3669a5; display: inline-block"><span style="position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff"></span></span>Verplicht</label></div>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 12px 14px; border-radius: 10px; background: #eaf0f7; color: #234a78; font-size: 14px; line-height: 1.5"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"></path></svg><span>Reflectie en portfolio telt nu mee voor de afronding van Pieter Jansen. Voor de 11 andere deelnemers blijft het keuze.</span></div>
+          <div style="display: flex; gap: 10px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Opslaan</button><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap">Annuleren</button></div>
+        </section>
+        <section aria-labelledby="ml-staff" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px"><h2 id="ml-staff" style="margin: 0; font-size: 17px; font-weight: 700">Zo ziet de docent het: voortgang per leerling</h2><span style="font-size: 13px; color: #5e6168">Nederlands 3 havo/vwo, 3HV-B, 28 leerlingen</span></div>
+          
+          <span style="font-size: 14px; color: #5e6168">Per leerling het percentage afgeronde lessen van de cursus, en wie te laat is.</span>
+          <div style="overflow-x: auto"><table style="border-collapse: collapse; width: 100%; font-size: 14px"><thead><tr><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: left; color: #5e6168; background: #fafbfc">Leerling</th><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: left; color: #5e6168; background: #fafbfc; min-width: 260px">Voortgang</th><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: left; color: #5e6168; background: #fafbfc">Laatste les</th><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: left; color: #5e6168; background: #fafbfc">Status</th></tr></thead><tbody>
+            <sc-for list="{{ learners }}" as="l" hint-placeholder-count="5"><tr><td style="padding: 10px 12px; border-top: 1px solid #eef0f3; vertical-align: top; font-weight: 600">{{ l.name }}</td><td style="padding: 10px 12px; border-top: 1px solid #eef0f3; vertical-align: top"><span style="display: flex; align-items: center; gap: 10px"><span role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ l.pct }}" aria-label="{{ l.barLabel }}" style="flex: 1 1 auto; height: 8px; border-radius: 4px; background: #eef0f3; overflow: hidden; display: block"><span style="{{ l.bar }}"></span></span><span style="flex: none; min-width: 40px; text-align: right">{{ l.pct }}%</span></span></td><td style="padding: 10px 12px; border-top: 1px solid #eef0f3; vertical-align: top; color: #5e6168">{{ l.last }}</td><td style="padding: 10px 12px; border-top: 1px solid #eef0f3; vertical-align: top"><span style="{{ l.stateStyle }}">{{ l.state }}</span></td></tr></sc-for>
+          </tbody></table></div>
+          <a href="#" style="font-size: 14px; font-weight: 600">Alle 28 leerlingen</a>
+        </section>
       </main>
     </div>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
 class Component extends DCLogic {
   renderVals() {
     const nav = [
@@ -74,19 +96,27 @@ class Component extends DCLogic {
     const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
     const dueS = (soon) => 'font-size: 13px; ' + (soon ? 'font-weight: 600; color: #a30000' : 'color: #5e6168');
     const trainings = [
-      ['AVG en privacy op school, opfrissing 2026', 'Uiterlijk vrijdag 16 oktober', true, 40, 'Verder gaan'],
-      ['Informatiebeveiliging, bewustwording', 'Uiterlijk maandag 30 november', false, 0, 'Starten'],
-      ['Meldcode huiselijk geweld en kindermishandeling', 'Uiterlijk vrijdag 18 december', false, 75, 'Verder gaan']
-    ].map(([name, due, soon, pct, action]) => ({ name, due, pct, action, dueStyle: dueS(soon), bar: 'display: block; height: 8px; width: ' + pct + '%; background: #3669a5' }));
+      ['AVG en privacy op school, opfrissing 2026', 'Uiterlijk vrijdag 16 oktober', true, 40, 'Verder gaan', false, 'Tweede inschrijving: uw afronding van de opfrissing 2025 (14 november 2025) blijft op uw dossier staan.'],
+      ['Informatiebeveiliging, bewustwording', 'Was uiterlijk woensdag 30 september, 7 dagen te laat', true, 0, 'Starten', true, ''],
+      ['Meldcode huiselijk geweld en kindermishandeling', 'Uiterlijk vrijdag 18 december', false, 75, 'Verder gaan', false, '']
+    ].map(([name, due, soon, pct, action, late, note]) => ({ name, due, pct, action, late, note, hasNote: !!note, dueStyle: dueS(soon), bar: 'display: block; height: 8px; width: ' + pct + '%; background: ' + (late ? '#a30000' : '#3669a5') }));
     const done = pill('#e7f3ea', '#1e6b2a');
     const parts = [
-      ['Pedagogisch handelen in de klas', 'Afgerond', done],
-      ['Didactiek van het eigen vak', 'Afgerond', done],
-      ['Omgaan met verschillen', 'Afgerond', done],
-      ['Toetsen en beoordelen', 'Bezig', pill('#eaf0f7', '#234a78')],
-      ['Reflectie en portfolio', 'Niet gestart', pill('#f0f1f3', '#3d4047')]
-    ].map(([name, state, style]) => ({ name, state, style }));
-    return { nav, trainings, parts };
+      ['Pedagogisch handelen in de klas', 'Afgerond', done, 'verplicht voor iedereen'],
+      ['Didactiek van het eigen vak', 'Afgerond', done, 'verplicht voor iedereen'],
+      ['Omgaan met verschillen', 'Afgerond', done, 'verplicht voor iedereen'],
+      ['Toetsen en beoordelen', 'Bezig', pill('#eaf0f7', '#234a78'), 'verplicht voor iedereen'],
+      ['Reflectie en portfolio', 'Niet gestart', pill('#f0f1f3', '#3d4047'), 'verplicht voor u, keuze voor uw collega\u2019s (ingesteld door Lotte Kramer op 1 september)']
+    ].map(([name, state, style, scope]) => ({ name, state, style, scope }));
+    const st = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const learners = [
+      ['Fenna de Jong', 75, 'Les 9, 6 oktober', 'Op schema', st('#e7f3ea', '#1e6b2a'), false],
+      ['Daan Visser', 42, 'Les 5, 28 september', 'Loopt achter', st('#fff4de', '#7a4f00'), false],
+      ['Noor Bakker', 100, 'Les 12, 5 oktober', 'Afgerond', st('#e7f3ea', '#1e6b2a'), false],
+      ['Ravi Ganpat', 25, 'Les 3, 14 september', 'Te laat', st('#fcedec', '#a30000'), true],
+      ['Eva Smit', 67, 'Les 8, 2 oktober', 'Op schema', st('#e7f3ea', '#1e6b2a'), false]
+    ].map(([name, pct, last, state, stateStyle, late]) => ({ name, pct, last, state, stateStyle, barLabel: 'Voortgang ' + name, bar: 'display: block; height: 8px; width: ' + pct + '%; background: ' + (late ? '#a30000' : '#3669a5') }));
+    return { nav, trainings, parts, learners };
   }
 }
 </script>

@@ -111,12 +111,22 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
         </section>
 
+      
+        <section aria-labelledby="aw-vul" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px"><h2 id="aw-vul" style="margin: 0; font-size: 17px; font-weight: 700">Na goedkeuren: het register vult zich</h2><span style="font-size: 13px; color: #5e6168">ziekmelding van de ouder van Daan Visser, 5 tot en met 7 oktober, goedgekeurd door Anouk Smit op 7 oktober 08:40</span></div>
+          
+          <span style="font-size: 14px; color: #5e6168">Een goedgekeurde melding vult de registerregels van die dagen zelf in. Niemand hoeft per les iets aan te passen; de wijziging staat in de historie van elke regel.</span>
+          <div style="overflow-x: auto"><table style="border-collapse: collapse; width: 100%; font-size: 14px"><thead><tr><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: left; color: #5e6168; background: #fafbfc">Les</th><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: left; color: #5e6168; background: #fafbfc">Voor goedkeuring</th><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: left; color: #5e6168; background: #fafbfc">Na goedkeuring</th><th scope="col" style="padding: 10px 12px; font-weight: 600; text-align: left; color: #5e6168; background: #fafbfc">Door</th></tr></thead><tbody>
+            <sc-for list="{{ registerFill }}" as="r" hint-placeholder-count="5"><tr><td style="padding: 10px 12px; border-top: 1px solid #eef0f3; vertical-align: top; font-weight: 600">{{ r.lesson }}</td><td style="padding: 10px 12px; border-top: 1px solid #eef0f3; vertical-align: top"><span style="{{ r.beforeStyle }}">{{ r.before }}</span></td><td style="padding: 10px 12px; border-top: 1px solid #eef0f3; vertical-align: top"><span style="{{ r.afterStyle }}">{{ r.after }}</span></td><td style="padding: 10px 12px; border-top: 1px solid #eef0f3; vertical-align: top; color: #5e6168">{{ r.by }}</td></tr></sc-for>
+          </tbody></table></div>
+          <div style="display: flex; gap: 12px; padding: 12px 14px; border-radius: 10px; background: #e7f3ea; color: #1e6b2a; font-size: 14px; line-height: 1.5"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg><span>7 lesregels bijgewerkt. Het verzuimsignaal voor Daan Visser (3 dagen zonder reden) is vervallen; de mentor krijgt daar bericht van.</span></div>
+        </section>
       </main>
     </div>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1064}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1650}}'>
 class Component extends DCLogic {
   renderVals() {
     const nav = [
@@ -156,7 +166,15 @@ class Component extends DCLogic {
         ['Lucas van Dijk', '3HV-B', 'Vakantie buiten de schoolvakantie, 12 tot 16 okt', 'no']
       ].map(report(true)) }
     ];
-    return { nav, views, modes, chips, filterCount, rows, reportViews };
+    const rg = (kind) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; ' + ({ none: 'background: #fcedec; color: #a30000', ok: 'background: #e7f3ea; color: #1e6b2a', same: 'background: #f0f1f3; color: #3d4047' }[kind]);
+    const registerFill = [
+      ['ma 5 okt, 1e uur Nederlands', 'Afwezig, geen reden', 'none', 'Afwezig met toestemming, ziek', 'ok', 'learniq, na goedkeuring'],
+      ['ma 5 okt, 3e uur Wiskunde', 'Afwezig, geen reden', 'none', 'Afwezig met toestemming, ziek', 'ok', 'learniq, na goedkeuring'],
+      ['di 6 okt, 2e uur Nederlands', 'Afwezig, geen reden', 'none', 'Afwezig met toestemming, ziek', 'ok', 'learniq, na goedkeuring'],
+      ['di 6 okt, 5e uur Engels', 'Nog niet ingevuld', 'same', 'Afwezig met toestemming, ziek', 'ok', 'learniq, na goedkeuring'],
+      ['wo 7 okt, 2e uur Nederlands', 'Aanwezig (ingevuld door Anouk Smit)', 'same', 'Aanwezig, niet gewijzigd', 'same', 'een ingevulde aanwezigheid blijft staan']
+    ].map(([lesson, before, bk, after, ak, by]) => ({ lesson, before, beforeStyle: rg(bk), after, afterStyle: rg(ak), by }));
+    return { nav, views, modes, chips, filterCount, rows, reportViews, registerFill };
   }
 }
 </script>

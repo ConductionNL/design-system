@@ -53,12 +53,41 @@ a{color:#0b6e7a}a:hover{color:#084f58}
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#084f58" stroke-width="2.2" stroke-linecap="round" style="flex: none; margin-top: 2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg>
         <span style="font-size: 17px; line-height: 1.5">Kan een monteur niet? Open de inschrijving en stuur een collega in zijn plaats. Dat kan tot 12:00 uur op de werkdag voor de cursus.</span>
       </div>
-    </main>
+    
+      <section aria-labelledby="wp-boek" style="display: flex; flex-direction: column; gap: 18px; padding: 24px; border: 1px solid #d3d8df; border-radius: 6px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h2 id="wp-boek" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 32px; font-weight: 700; line-height: 1.15">Plekken boeken: Warmtepompen installeren: basis</h2>
+          <span style="font-size: 17px; color: #4a4a4a">dinsdag 17 en woensdag 18 november · Praktijkhal Zuiddrecht · 4 plekken vrij · [PRIJS] per deelnemer</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; max-width: 420px">
+          <label for="wp-aantal" style="font-size: 17px; font-weight: 600">Aantal plekken voor Installatiebedrijf Van Dam</label>
+          <div style="display: flex; gap: 10px; align-items: center"><input id="wp-aantal" type="number" value="3" min="1" max="4" style="box-sizing: border-box; width: 100%; height: 48px; padding: 0 12px; border: 2px solid #4a4a4a; border-radius: 3px; font: 400 17px 'Barlow', sans-serif; color: #1a1a1a; width: 110px"><span style="font-size: 17px; color: #4a4a4a">van de 4 vrije plekken</span></div>
+          <span style="font-size: 16px; color: #4a4a4a">De plekken staan vast zodra u boekt. Namen mag u later invullen, tot 12:00 uur op de werkdag voor de cursus.</span>
+        </div>
+        <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+          <sc-for list="{{ places }}" as="p" hint-placeholder-count="3">
+            <li style="display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end; padding: 16px 20px; border-radius: 6px; background: #f4f6f9">
+              <span style="flex: 0 0 90px; font-size: 17px; font-weight: 700">Plek {{ p.n }}</span>
+              <span style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 6px"><label for="{{ p.nameId }}" style="font-size: 17px; font-weight: 600">Naam medewerker</label><input id="{{ p.nameId }}" type="text" value="{{ p.name }}" placeholder="Nog niet bekend" style="box-sizing: border-box; width: 100%; height: 48px; padding: 0 12px; border: 2px solid #4a4a4a; border-radius: 3px; font: 400 17px 'Barlow', sans-serif; color: #1a1a1a"></span>
+              <span style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 6px"><label for="{{ p.mailId }}" style="font-size: 17px; font-weight: 600">E-mailadres</label><input id="{{ p.mailId }}" type="email" value="{{ p.mail }}" placeholder="Voor de uitnodiging en het certificaat" style="box-sizing: border-box; width: 100%; height: 48px; padding: 0 12px; border: 2px solid #4a4a4a; border-radius: 3px; font: 400 17px 'Barlow', sans-serif; color: #1a1a1a"></span>
+              <span style="flex: 1 1 100%; font-size: 16px; color: #4a4a4a">{{ p.note }}</span>
+            </li>
+          </sc-for>
+        </ol>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+          <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 20px; border-radius: 3px; background: #0b6e7a; color: #ffffff; font: 600 17px 'Barlow', sans-serif; border: 0">3 plekken boeken</button>
+          <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 20px; border-radius: 3px; background: #ffffff; color: #0b6e7a; font: 600 17px 'Barlow', sans-serif; border: 2px solid #0b6e7a">Later namen invullen</button>
+        </div>
+        <div role="status" style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 3px; background: #e7f3ea; border: 1px solid #b7dcc0; font-size: 17px; line-height: 1.5">
+          <span>Na het boeken: inschrijving I-2026-0440, 3 plekken, status Bevestigd. Tom Verbeek en Sanne Kok krijgen hun uitnodiging; plek 3 staat op Installatiebedrijf Van Dam tot u een naam invult.</span>
+        </div>
+      </section>
+      </main>
   </div>
   <dc-import name="Voet" hint-size="100%,400px"></dc-import>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1273}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
 class Component extends DCLogic {
   renderVals() {
     const tag = (bg, fg) => 'padding: 3px 10px; border-radius: 3px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
@@ -67,7 +96,12 @@ class Component extends DCLogic {
       { day: '20', month: 'okt', number: 'I-2026-0425', when: 'dinsdag 20 en woensdag 21 oktober', title: 'Warmtepompen installeren: basis', who: 'Daan Visser', status: 'Bevestigd', tag: tag('#e7f3ea', '#1e6b2a'), note: 'De plek staat vast' },
       { day: '3', month: 'nov', number: 'I-2026-0431', when: '3, 4 en 10 november', title: 'Lucht-water warmtepomp: ontwerp en inbedrijfstelling', who: 'Tom Verbeek, Sanne Kok', status: 'Ontvangen', tag: tag('#e3f1f3', '#084f58'), note: 'Bevestiging uiterlijk dinsdag 6 oktober' }
     ];
-    return { rows, crumbs: [{ label: 'Home' }, { label: 'Mijn academie', href: 'MijnOverzicht.dc.html' }, { label: 'Inschrijvingen' }] };
+    const places = [
+      { n: '1', name: 'Tom Verbeek', mail: 'tom@vandam-installatie.nl', note: 'Heeft F-gassen al gehaald bij ons; het certificaat komt op zijn naam.' },
+      { n: '2', name: 'Sanne Kok', mail: 'sanne@vandam-installatie.nl', note: '' },
+      { n: '3', name: '', mail: '', note: 'Nog niet bekend. Vul de naam uiterlijk maandag 16 november 12:00 uur in, anders vervalt deze plek niet maar krijgt niemand een uitnodiging.' }
+    ].map((p, i) => Object.assign(p, { nameId: 'wp-naam-' + i, mailId: 'wp-mail-' + i }));
+    return { rows, crumbs: [{ label: 'Home' }, { label: 'Mijn academie', href: 'MijnOverzicht.dc.html' }, { label: 'Inschrijvingen' }], places };
   }
 }
 </script>

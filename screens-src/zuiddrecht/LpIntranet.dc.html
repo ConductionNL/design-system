@@ -30,7 +30,6 @@ a{color:#3669a5}a:hover{color:#234a78}
             <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Intranet Zuiddrecht</h1>
             <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
               <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Widget toevoegen</button>
-              <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #c64e0b; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
               <button type="button" aria-haspopup="menu" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg>Meer</button>
             </div>
           </div>
@@ -53,6 +52,20 @@ a{color:#3669a5}a:hover{color:#234a78}
               <span style="font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #eaf0f7">Gemeente Zuiddrecht</span>
               <strong style="font-size: 30px; font-weight: 700; line-height: 1.2">Goedemorgen, collega's</strong>
               <span style="font-size: 16px; color: #eaf0f7">Week 41 · het stadskantoor is zaterdag open voor paspoorten en rijbewijzen</span>
+            </div>
+          </section>
+
+          <section aria-labelledby="w-tiles" style="grid-column: span 3; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px"><h2 id="w-tiles" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Samenwerken</h2><span style="font-size: 13px; color: #5e6168">Apptegels van Communicatie, één tegel per app</span></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, 104px); gap: 8px">
+              <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="8">
+                <a href="#" title="{{ t.title }}" aria-label="{{ t.title }}" style="{{ t.style }}">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ t.icon }}"></path></svg>
+                  <sc-if value="{{ t.pinned }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="position: absolute; top: 6px; left: 6px; opacity: 0.85"><path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"></path></svg></sc-if>
+                  <sc-if value="{{ t.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; top: 6px; right: 6px; min-width: 20px; height: 20px; box-sizing: border-box; padding: 0 6px; border-radius: 10px; background: #ffffff; color: #1b1c1d; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ t.badge }}</span></sc-if>
+                  <sc-if value="{{ t.down }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; top: 6px; right: 6px; width: 12px; height: 12px; border-radius: 6px; background: #cc0000; border: 2px solid #ffffff"></span></sc-if>
+                </a>
+              </sc-for>
             </div>
           </section>
 
@@ -220,6 +233,28 @@ a{color:#3669a5}a:hover{color:#234a78}
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2700}}'>
 class Component extends DCLogic {
   renderVals() {
+    const TI = {
+      case: 'M10,2H14A2,2 0 0,1 16,4V6H20A2,2 0 0,1 22,8V19A2,2 0 0,1 20,21H4C2.89,21 2,20.1 2,19V8C2,6.89 2.89,6 4,6H8V4C8,2.89 8.89,2 10,2M14,6V4H10V6H14Z',
+      mail: 'M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z',
+      help: 'M12,1C7,1 3,5 3,10V17A3,3 0 0,0 6,20H9V12H5V10A7,7 0 0,1 12,3A7,7 0 0,1 19,10V12H15V20H19V21H12V23H18A3,3 0 0,0 21,20V10C21,5 16.97,1 12,1Z',
+      gavel: 'M2.3,20.28L11.9,10.68L10.5,9.26L9.78,9.97C9.39,10.36 8.76,10.36 8.37,9.97L7.66,9.26C7.27,8.87 7.27,8.24 7.66,7.85L13.32,2.19C13.71,1.8 14.34,1.8 14.73,2.19L15.44,2.9C15.83,3.29 15.83,3.92 15.44,4.31L14.73,5L16.15,6.43C16.54,6.04 17.17,6.04 17.56,6.43C17.95,6.82 17.95,7.46 17.56,7.85L18.97,9.26L19.68,8.55C20.07,8.16 20.71,8.16 21.1,8.55L21.8,9.26C22.19,9.65 22.19,10.29 21.8,10.68L16.15,16.33C15.76,16.72 15.12,16.72 14.73,16.33L14.03,15.63C13.63,15.24 13.63,14.6 14.03,14.21L14.73,13.5L13.32,12.09L3.71,21.7C3.32,22.09 2.69,22.09 2.3,21.7C1.91,21.31 1.91,20.67 2.3,20.28Z',
+      map: 'M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z',
+      chat: 'M15,4V11H5.17L4,12.17V4H15M16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12V3A1,1 0 0,0 16,2M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z',
+      cal: 'M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z',
+      office: 'M3,5V19L11,21V3L3,5M13,5V7H19V17H13V19H21V5H13M5,9H9V11H5V9M5,13H9V15H5V13Z',
+      folder: 'M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z',
+      people: 'M16,13C15.71,13 15.38,13 15.03,13.05C16.19,13.89 17,15 17,16.5V19H23V16.5C23,14.17 18.33,13 16,13M8,13C5.67,13 1,14.17 1,16.5V19H15V16.5C15,14.17 10.33,13 8,13M8,11A3,3 0 0,0 11,8A3,3 0 0,0 8,5A3,3 0 0,0 5,8A3,3 0 0,0 8,11M16,11A3,3 0 0,0 19,8A3,3 0 0,0 16,5A3,3 0 0,0 13,8A3,3 0 0,0 16,11Z',
+      receipt: 'M3,22L4.5,20.5L6,22L7.5,20.5L9,22L10.5,20.5L12,22L13.5,20.5L15,22L16.5,20.5L18,22L19.5,20.5L21,22V2L19.5,3.5L18,2L16.5,3.5L15,2L13.5,3.5L12,2L10.5,3.5L9,2L7.5,3.5L6,2L4.5,3.5L3,2M18,9H6V7H18M18,13H6V11H18M18,17H6V15H18V17Z',
+      plane: 'M20.56,3.91C21.15,4.5 21.15,5.45 20.56,6.03L16.67,9.92L18.79,19.11L17.38,20.53L13.5,13.1L9.6,17L9.96,19.47L8.89,20.53L7.13,17.35L3.94,15.58L5,14.5L7.5,14.87L11.37,11L3.94,7.09L5.36,5.68L14.55,7.8L18.44,3.91C19,3.33 20,3.33 20.56,3.91Z',
+      book: 'M18,2A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H18M6,4V20H18V4H6M8,6H16V8H8V6M8,10H16V12H8V10M8,14H13V16H8V14Z'
+    };
+    const T = { blue: '#3669a5', deep: '#234a78', red: '#cc0000', redDeep: '#a30000', ink: '#1b1c1d', text: '#3d4047', muted: '#5e6168', field: '#828a95' };
+    const tile = (bg) => 'position: relative; aspect-ratio: 1 / 1; border-radius: 8px; background: ' + bg + '; color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none';
+    const tiles = (rows) => rows.map(([name, icon, bg, o]) => ({ name, icon, style: tile(bg), pinned: !!(o && o.pinned), down: !!(o && o.down), hasBadge: !!(o && o.badge), badge: (o && o.badge) || '', title: name + ((o && o.down) ? ', storing sinds 09:12' : ', bereikbaar') }));
+    const tilesData = tiles([
+      ['Talk', TI.chat, T.ink, { badge: '2' }], ['Agenda', TI.cal, T.blue, {}], ['Bestanden', TI.folder, T.muted, {}], ['Word', TI.office, T.deep, {}],
+      ['Smoelenboek', TI.people, T.redDeep, {}], ['Personeelsgids', TI.book, T.text, {}], ['Verlof en rooster', TI.plane, T.red, {}], ['Declaraties', TI.receipt, T.field, {}]
+    ]);
     const news = [
       ['Gemeente Zuiddrecht start proef met deelauto’s in Oosthaven', 'zuiddrecht.nl · vandaag'],
       ['Raad stemt in met nieuw parkeerbeleid binnenstad', 'zuiddrecht.nl · vrijdag'],
@@ -266,7 +301,7 @@ class Component extends DCLogic {
       { initials: 'DS', name: 'Duurzaam Zuiddrecht', members: 58, last: 'gisteren 3 reacties' },
       { initials: 'NM', name: 'Nieuwe medewerkers 2026', members: 23, last: 'vorige week' }
     ];
-    return { news, newbies, bdays, experts, menu, oldnews, olddocs, questions, reactions, communities };
+    return { tiles: tilesData, news, newbies, bdays, experts, menu, oldnews, olddocs, questions, reactions, communities };
   }
 }
 </script>

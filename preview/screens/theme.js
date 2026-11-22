@@ -255,6 +255,8 @@
         var dict = {};
         [res[0], res[1]].forEach(function (d) { if (d) Object.keys(d).forEach(function (k) { if (k.charAt(0) !== '_') dict[k] = d[k]; }); });
         var r = applyCatalogue(dict);
+        var t = dict[norm(document.title || '')];
+        if (typeof t === 'string' && t) document.title = t;
         document.documentElement.setAttribute('lang', 'en');
         return r;
       });

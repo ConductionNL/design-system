@@ -36,7 +36,6 @@ a{color:#3669a5}a:hover{color:#234a78}
           <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
             <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Mijn werkplek</h1>
             <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
-              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"></path></svg>Bewerken</button>
               <button type="button" aria-haspopup="menu" aria-expanded="true" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #3669a5; border-radius: 8px; background: #eaf0f7; font: 600 14px 'Fira Sans', sans-serif; color: #234a78"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg>Meer</button>
             </div>
           </div>
@@ -44,18 +43,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px 3px 8px; border-radius: 14px; background: #eaf0f7; color: #234a78; font-size: 14px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"></path></svg>Persoonlijk dashboard · opent als eerste</span>
             <span>Maandag 5 oktober · laatst aangepast vrijdag</span>
           </div>
-          <div role="menu" aria-label="Meer" style="position: absolute; z-index: 6; top: 48px; right: 0; width: 600px; box-sizing: border-box; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; box-shadow: 0 12px 32px rgba(27,28,29,0.18); padding: 10px 10px 12px">
-            <sc-for list="{{ more }}" as="col" hint-placeholder-count="2">
-              <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
-                <sc-for list="{{ col }}" as="g" hint-placeholder-count="2">
-                  <span style="padding: 10px 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span>
-                  <sc-for list="{{ g.items }}" as="m" hint-placeholder-count="5">
-                    <a href="#" role="{{ m.role }}" aria-checked="{{ m.checked }}" style="{{ m.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex: none"><path d="{{ m.icon }}"></path></svg><span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.label }}</span><sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 12px; color: #5e6168">{{ m.meta }}</span></sc-if></a>
-                  </sc-for>
-                </sc-for>
-              </div>
-            </sc-for>
-          </div>
+          <dc-import name="LpMeer" current="Mijn werkplek" expanded="true" hint-size="600px,860px"></dc-import>
         </section>
 
         <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start">
@@ -293,25 +281,6 @@ class Component extends DCLogic {
       { title: 'Team Vergunningen', meta: 'Gedeeld door Marieke Jansen · 14 widgets', icon: I.dash, sel: 'true' },
       { title: 'Intranet Zuiddrecht', meta: 'Groepsdashboard van Communicatie', icon: I.bullhorn, sel: 'false' }
     ].map((f) => Object.assign(f, { style: 'display: flex; align-items: center; gap: 12px; padding: 8px 16px; color: #1b1c1d; text-decoration: none; ' + (f.sel === 'true' ? 'background: #eaf0f7;' : '') }));
-    const mi = 'display: flex; align-items: center; gap: 10px; min-height: 32px; padding: 0 10px; border-radius: 6px; font-size: 14px; text-decoration: none; ';
-    const item = (label, icon, o) => Object.assign({ label, icon, role: 'menuitem', checked: 'false', hasMeta: false, meta: '', style: mi + 'color: #1b1c1d;' }, o || {});
-    const dash = (label, icon, meta, current) => item(label, icon, { role: 'menuitemradio', checked: current ? 'true' : 'false', hasMeta: !!meta, meta: meta || '', style: mi + (current ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d;') });
-    const more = [
-      [
-        { title: 'Dashboards', items: [
-          dash('Vandaag', I.home, 'standaard', false), dash('Mijn werkplek', I.queue, '', true), dash('Project Havenpark', I.chart, '', false), dash('Havenpark: planning', I.cal, '', false),
-          dash('Team Vergunningen', I.people, 'gedeeld', false), dash('Intranet Zuiddrecht', I.bullhorn, 'groep', false), dash('Managementinformatie', I.chart, 'groep', false), item('Alle dashboards', I.grid)
-        ] },
-        { title: 'Instellingen', items: [item('Persoonlijke instellingen', I.user), item('Beheerinstellingen', I.shield)] }
-      ],
-      [
-        { title: 'Dit dashboard', items: [
-          item('Link naar dit dashboard kopiëren', I.link), item('Kopie maken als nieuw dashboard', I.copy), item('Instellingen', I.cog), item('Versies', I.history),
-          item('Verwijderen', I.bin, { style: mi + 'color: #a30000; border-top: 1px solid #eef0f3; border-radius: 0 0 6px 6px; margin-top: 4px;' })
-        ] },
-        { title: 'Launchpad', items: [item('Marktplaats', I.store), item('Sjablonen', I.template), item('Rapporten', I.report), item('Flows', I.flow), item('Koppelingen', I.link), item('Documentatie', I.book), item('Functies en roadmap', I.road)] }
-      ]
-    ];
     const T = { blue: '#3669a5', deep: '#234a78', red: '#cc0000', redDeep: '#a30000', ink: '#1b1c1d', text: '#3d4047', muted: '#5e6168', field: '#828a95' };
     const tile = (bg) => 'position: relative; aspect-ratio: 1 / 1; border-radius: 8px; background: ' + bg + '; color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none';
     const tiles = (rows) => rows.map(([name, icon, bg, o]) => ({ name, icon, style: tile(bg), pinned: !!(o && o.pinned), down: !!(o && o.down), hasBadge: !!(o && o.badge), badge: (o && o.badge) || '', title: name + ((o && o.down) ? ', storing sinds 09:12' : ', bereikbaar') }));
@@ -364,7 +333,7 @@ class Component extends DCLogic {
       { title: 'Hulp', links: ['IT-servicedesk', 'Facilitaire zaken', 'Vertrouwenspersoon'] }
     ];
     const footer = ['Over Zuiddrecht', 'Personeelsgids', 'Privacy', 'Toegankelijkheid', 'Ondernemingsraad'];
-    return { found, more, tiles: tilesData, tiles2, mail, forecast, agenda, files, bookmarks, quick, orgnav, footer, wikiFav, wikiRecent, workpackages, caseCounts, cases };
+    return { found, tiles: tilesData, tiles2, mail, forecast, agenda, files, bookmarks, quick, orgnav, footer, wikiFav, wikiRecent, workpackages, caseCounts, cases };
   }
 }
 </script>

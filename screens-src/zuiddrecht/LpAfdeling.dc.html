@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>launchpad: afdelingspagina Vergunningen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="position: relative; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1400px">
+  <dc-import name="DqKop" app="Launchpad" placeholder="Zoek dashboards, widgets en apps" role="Medewerker" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 8px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Team Vergunningen</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 16px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #828a95; background: #ffffff; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Widget toevoegen</button>
+              <button type="button" aria-haspopup="menu" aria-expanded="false" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 16px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #828a95; background: #ffffff; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg>Meer</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 15px; color: #5e6168">
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px 3px 8px; border-radius: 14px; background: #eaf0f7; color: #234a78; font-size: 14px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,13C15.71,13 15.38,13 15.03,13.05C16.19,13.89 17,15 17,16.5V19H23V16.5C23,14.17 18.33,13 16,13M8,13C5.67,13 1,14.17 1,16.5V19H15V16.5C15,14.17 10.33,13 8,13M8,11A3,3 0 0,0 11,8A3,3 0 0,0 8,5A3,3 0 0,0 5,8A3,3 0 0,0 8,11M16,11A3,3 0 0,0 19,8A3,3 0 0,0 16,5A3,3 0 0,0 13,8A3,3 0 0,0 16,11Z"></path></svg>Afdelingsdashboard · gedeeld door Marieke Jansen</span>
+            <span>U mag widgets toevoegen · 11 widgets · bijgewerkt vandaag 09:10</span>
+          </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start">
+
+          <section aria-labelledby="w-apps" style="grid-column: span 3; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px"><h2 id="w-apps" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Apps van het team</h2><span style="font-size: 13px; color: #5e6168">Eén tegel per app, door Marieke voor het team geplaatst</span></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, 104px); gap: 8px">
+              <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="7">
+                <a href="#" title="{{ t.title }}" aria-label="{{ t.title }}" style="{{ t.style }}">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ t.icon }}"></path></svg>
+                  <sc-if value="{{ t.pinned }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="position: absolute; top: 6px; left: 6px; opacity: 0.85"><path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"></path></svg></sc-if>
+                  <sc-if value="{{ t.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; top: 6px; right: 6px; min-width: 20px; height: 20px; box-sizing: border-box; padding: 0 6px; border-radius: 10px; background: #ffffff; color: #1b1c1d; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ t.badge }}</span></sc-if>
+                  <sc-if value="{{ t.down }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; top: 6px; right: 6px; width: 12px; height: 12px; border-radius: 6px; background: #cc0000; border: 2px solid #ffffff"></span></sc-if>
+                </a>
+              </sc-for>
+            </div>
+          </section>
+
+          <nav aria-labelledby="w-menu" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 12px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 id="w-menu" style="margin: 0; font-size: 16px; font-weight: 700">Wegwijs Vergunningen</h2><span style="font-size: 13px; color: #5e6168">menuwidget</span></div>
+            <sc-for list="{{ menu }}" as="g" hint-placeholder-count="3">
+              <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 4px">
+                <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; padding-bottom: 4px">{{ g.title }}</span>
+                <sc-for list="{{ g.links }}" as="l" hint-placeholder-count="3"><a href="#" style="display: flex; align-items: center; justify-content: space-between; min-height: 34px; padding: 0 8px; border-radius: 6px; font-size: 14px; color: #1b1c1d; text-decoration: none">{{ l }}<svg width="14" height="14" viewBox="0 0 24 24" fill="#5e6168"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></a></sc-for>
+              </div>
+            </sc-for>
+          </nav>
+
+          <section aria-labelledby="w-text" style="grid-column: span 2; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 12px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 id="w-text" style="margin: 0; font-size: 16px; font-weight: 700">Van de teamleider</h2><span style="font-size: 13px; color: #5e6168">Tekst · Marieke Jansen · maandag 08:40</span></div>
+            <p style="margin: 0; font-size: 15px; line-height: 1.55">Deze week sluiten we de Havenpark-adviezen af. Zet uw welstandsadvies vóór donderdag in de zaak, dan kan het college er vrijdag over besluiten. Vrijdagmiddag is er taart voor de 1.000e omgevingsvergunning van dit jaar.</p>
+            <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; color: #3d4047">
+              <li>Woensdag 7 oktober: casusoverleg om 09:30 in kamer 2.14, agenda in de wiki.</li>
+              <li>Nieuwe collega Yasmina El Amrani start maandag; Pieter is haar buddy.</li>
+              <li>Het zaaksysteem is zaterdag van 08:00 tot 12:00 in onderhoud.</li>
+            </ul>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding-top: 4px; font-size: 13px; color: #5e6168"><span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #828a95; border-radius: 15px; color: #1b1c1d; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23,10C23,8.89 22.1,8 21,8H14.68L15.64,3.43C15.66,3.33 15.67,3.22 15.67,3.11C15.67,2.7 15.5,2.32 15.23,2.05L14.17,1L7.59,7.58C7.22,7.95 7,8.45 7,9V19A2,2 0 0,0 9,21H18C18.83,21 19.54,20.5 19.84,19.78L22.86,12.73C22.95,12.5 23,12.26 23,12V10M1,21H5V9H1V21Z"></path></svg>8</span><span>12 van 14 collega's hebben dit gelezen</span></div>
+          </section>
+
+          <section aria-labelledby="w-zaken" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 12px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 id="w-zaken" style="margin: 0; font-size: 16px; font-weight: 700">Mijn zaken</h2><span style="font-size: 13px; color: #5e6168">dossiq · 14 open</span></div>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px">
+              <sc-for list="{{ caseCounts }}" as="c" hint-placeholder-count="3"><span style="{{ c.style }}"><strong style="margin-right: 4px">{{ c.n }}</strong>{{ c.label }}</span></sc-for>
+            </div>
+            <sc-for list="{{ cases }}" as="z" hint-placeholder-count="4">
+              <a href="#" style="display: flex; flex-direction: column; gap: 4px; padding: 9px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><span style="flex: 1; min-width: 0; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ z.title }}</span><span style="{{ z.dueStyle }}">{{ z.due }}</span></span>
+                <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="{{ z.statusStyle }}">{{ z.status }}</span><span>{{ z.meta }}</span></span>
+              </a>
+            </sc-for>
+            <a href="#" style="padding-top: 6px; font-size: 14px; font-weight: 600">Alle zaken in dossiq</a>
+          </section>
+
+          <section aria-labelledby="w-op" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 12px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 id="w-op" style="margin: 0; font-size: 16px; font-weight: 700">Werkpakketten van het team</h2><span style="font-size: 13px; color: #5e6168">OpenProject · Havenpark</span></div>
+            <sc-for list="{{ workpackages }}" as="w" hint-placeholder-count="4">
+              <a href="#" style="display: flex; flex-direction: column; gap: 4px; padding: 9px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><span style="flex: 1; min-width: 0; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ w.title }}</span><span style="{{ w.dueStyle }}">{{ w.due }}</span></span>
+                <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="{{ w.statusStyle }}">{{ w.status }}</span><span>{{ w.who }}</span></span>
+              </a>
+            </sc-for>
+            <a href="#" style="padding-top: 6px; font-size: 14px; font-weight: 600">Project in OpenProject</a>
+          </section>
+
+          <section aria-labelledby="w-wiki" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 12px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 id="w-wiki" style="margin: 0; font-size: 16px; font-weight: 700">Wiki van het team</h2><span style="font-size: 13px; color: #5e6168">XWiki · ruimte Vergunningen</span></div>
+            <form role="search" style="position: relative">
+              <label for="lp-wiki" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Zoek in de wiki</label>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#5e6168" style="position: absolute; left: 10px; top: 10px"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg>
+              <input id="lp-wiki" type="search" placeholder="Zoek in de wiki" style="width: 100%; height: 36px; box-sizing: border-box; padding: 0 10px 0 34px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif">
+            </form>
+            <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; padding-top: 2px">Favorieten van het team</span>
+            <sc-for list="{{ wikiFav }}" as="p" hint-placeholder-count="3"><a href="#" style="display: flex; align-items: center; gap: 8px; min-height: 26px; font-size: 14px; text-decoration: none"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex: none"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"></path></svg>{{ p }}</a></sc-for>
+            <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; padding-top: 6px">Laatst gewijzigd</span>
+            <sc-for list="{{ wikiRecent }}" as="p" hint-placeholder-count="3"><a href="#" style="display: flex; align-items: center; gap: 8px; padding: 7px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none; font-size: 14px"><span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.title }}</span><span style="flex: none; font-size: 12px; color: #5e6168">{{ p.when }}</span></a></sc-for>
+          </section>
+
+          <section aria-labelledby="w-agenda" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 12px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 id="w-agenda" style="margin: 0; font-size: 16px; font-weight: 700">Teamagenda</h2><span style="font-size: 13px; color: #5e6168">Agenda · deze week</span></div>
+            <sc-for list="{{ agenda }}" as="e" hint-placeholder-count="4">
+              <div style="display: flex; gap: 12px; align-items: center; padding: 8px 0; border-top: 1px solid #eef0f3">
+                <span style="flex: 0 0 70px; display: flex; flex-direction: column; font-size: 12px; font-weight: 600; color: #5e6168"><span style="font-size: 14px; color: #1b1c1d">{{ e.day }}</span>{{ e.time }}</span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 14px; font-weight: 600">{{ e.title }}</span><span style="font-size: 12px; color: #5e6168">{{ e.where }}</span></span>
+              </div>
+            </sc-for>
+          </section>
+
+          <section aria-labelledby="w-team" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 12px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 id="w-team" style="margin: 0; font-size: 16px; font-weight: 700">Collega's</h2><span style="font-size: 13px; color: #5e6168">team Vergunningen · 14</span></div>
+            <sc-for list="{{ team }}" as="p" hint-placeholder-count="5">
+              <div style="display: flex; gap: 12px; align-items: center; padding: 7px 0; border-top: 1px solid #eef0f3">
+                <span style="width: 34px; height: 34px; flex: none; border-radius: 17px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ p.ini }}</span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 600">{{ p.name }}</span><span style="font-size: 12px; color: #5e6168">{{ p.role }}</span></span>
+                <span style="{{ p.dot }}" aria-label="{{ p.status }}"></span>
+              </div>
+            </sc-for>
+            <a href="#" style="padding-top: 6px; font-size: 14px; font-weight: 600">Hele team in Smoelenboek</a>
+          </section>
+
+          <section aria-labelledby="w-files" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 12px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><h2 id="w-files" style="margin: 0; font-size: 16px; font-weight: 700">Teambestanden</h2><span style="font-size: 13px; color: #5e6168">Bestanden · map Vergunningen</span></div>
+            <sc-for list="{{ files }}" as="f" hint-placeholder-count="4">
+              <a href="#" style="display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none; font-size: 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5e6168" style="flex: none"><path d="M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M6,4H13V9H18V20H6V4M8,12V14H16V12H8M8,16V18H13V16H8Z"></path></svg><span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ f.name }}</span><span style="flex: none; font-size: 12px; color: #5e6168">{{ f.when }}</span></a>
+            </sc-for>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const I = {
+      donut: 'M13,2.05V5.08C16.39,5.57 19,8.47 19,12C19,12.9 18.82,13.75 18.5,14.54L21.12,16.07C21.68,14.83 22,13.45 22,12C22,6.82 18.05,2.55 13,2.05M12,19A7,7 0 0,1 5,12C5,8.47 7.61,5.57 11,5.08V2.05C5.94,2.55 2,6.81 2,12A10,10 0 0,0 12,22C15.3,22 18.23,20.39 20,17.92L17.39,16.39C16.12,17.97 14.18,19 12,19Z',
+      line: 'M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z',
+      book: 'M18,2A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H18M6,4V20H18V4H6M8,6H16V8H8V6M8,10H16V12H8V10M8,14H13V16H8V14Z',
+      clip: 'M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z',
+      case: 'M10,2H14A2,2 0 0,1 16,4V6H20A2,2 0 0,1 22,8V19A2,2 0 0,1 20,21H4C2.89,21 2,20.1 2,19V8C2,6.89 2.89,6 4,6H8V4C8,2.89 8.89,2 10,2M14,6V4H10V6H14Z',
+      mail: 'M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z',
+      help: 'M12,1C7,1 3,5 3,10V17A3,3 0 0,0 6,20H9V12H5V10A7,7 0 0,1 12,3A7,7 0 0,1 19,10V12H15V20H19V21H12V23H18A3,3 0 0,0 21,20V10C21,5 16.97,1 12,1Z',
+      gavel: 'M2.3,20.28L11.9,10.68L10.5,9.26L9.78,9.97C9.39,10.36 8.76,10.36 8.37,9.97L7.66,9.26C7.27,8.87 7.27,8.24 7.66,7.85L13.32,2.19C13.71,1.8 14.34,1.8 14.73,2.19L15.44,2.9C15.83,3.29 15.83,3.92 15.44,4.31L14.73,5L16.15,6.43C16.54,6.04 17.17,6.04 17.56,6.43C17.95,6.82 17.95,7.46 17.56,7.85L18.97,9.26L19.68,8.55C20.07,8.16 20.71,8.16 21.1,8.55L21.8,9.26C22.19,9.65 22.19,10.29 21.8,10.68L16.15,16.33C15.76,16.72 15.12,16.72 14.73,16.33L14.03,15.63C13.63,15.24 13.63,14.6 14.03,14.21L14.73,13.5L13.32,12.09L3.71,21.7C3.32,22.09 2.69,22.09 2.3,21.7C1.91,21.31 1.91,20.67 2.3,20.28Z',
+      map: 'M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z',
+      chat: 'M15,4V11H5.17L4,12.17V4H15M16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12V3A1,1 0 0,0 16,2M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z',
+      cal: 'M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z',
+      office: 'M3,5V19L11,21V3L3,5M13,5V7H19V17H13V19H21V5H13M5,9H9V11H5V9M5,13H9V15H5V13Z',
+      folder: 'M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z',
+      people: 'M16,13C15.71,13 15.38,13 15.03,13.05C16.19,13.89 17,15 17,16.5V19H23V16.5C23,14.17 18.33,13 16,13M8,13C5.67,13 1,14.17 1,16.5V19H15V16.5C15,14.17 10.33,13 8,13M8,11A3,3 0 0,0 11,8A3,3 0 0,0 8,5A3,3 0 0,0 5,8A3,3 0 0,0 8,11M16,11A3,3 0 0,0 19,8A3,3 0 0,0 16,5A3,3 0 0,0 13,8A3,3 0 0,0 16,11Z',
+      receipt: 'M3,22L4.5,20.5L6,22L7.5,20.5L9,22L10.5,20.5L12,22L13.5,20.5L15,22L16.5,20.5L18,22L19.5,20.5L21,22V2L19.5,3.5L18,2L16.5,3.5L15,2L13.5,3.5L12,2L10.5,3.5L9,2L7.5,3.5L6,2L4.5,3.5L3,2M18,9H6V7H18M18,13H6V11H18M18,17H6V15H18V17Z',
+      plane: 'M20.56,3.91C21.15,4.5 21.15,5.45 20.56,6.03L16.67,9.92L18.79,19.11L17.38,20.53L13.5,13.1L9.6,17L9.96,19.47L8.89,20.53L7.13,17.35L3.94,15.58L5,14.5L7.5,14.87L11.37,11L3.94,7.09L5.36,5.68L14.55,7.8L18.44,3.91C19,3.33 20,3.33 20.56,3.91Z'
+    };
+    const T = { blue: '#3669a5', deep: '#234a78', red: '#cc0000', redDeep: '#a30000', ink: '#1b1c1d', text: '#3d4047', muted: '#5e6168', field: '#828a95' };
+    const tile = (bg) => 'position: relative; aspect-ratio: 1 / 1; border-radius: 8px; background: ' + bg + '; color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none';
+    const tiles = (rows) => rows.map(([name, icon, bg, o]) => ({ name, icon, style: tile(bg), pinned: !!(o && o.pinned), down: !!(o && o.down), hasBadge: !!(o && o.badge), badge: (o && o.badge) || '', title: name + ((o && o.down) ? ', storing sinds 09:12' : ', bereikbaar') }));
+    const tilesData = tiles([
+      ['Zaaksysteem', I.case, T.blue, { badge: '14', pinned: true }], ['Kadasterviewer', I.map, T.muted, {}], ['TOPdesk', I.help, T.red, {}], ['Raadsinformatie', I.gavel, T.field, { down: true }],
+      ['Word', I.office, T.deep, {}], ['Bestanden', I.folder, T.text, {}], ['Talk', I.chat, T.ink, { badge: '2' }]
+    ]);
+    const menu = [
+      { title: 'Werkafspraken', links: ['Werkinstructies Vergunningen', 'Sjablonen besluiten', 'Legesverordening 2026'] },
+      { title: 'Overleg', links: ['Weekstart maandag 09:00', 'Casusoverleg woensdag', 'Welstandscommissie'] },
+      { title: 'Hulp', links: ['Juridisch advies', 'Teamleider Marieke Jansen', 'Omgevingsdienst'] }
+    ];
+    const pill = (bg, fg) => 'display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const due = (soon) => 'flex: none; font-size: 12px; ' + (soon ? 'font-weight: 700; color: #a30000' : 'color: #5e6168');
+    const caseCounts = [['6', 'in behandeling', pill('#eaf0f7', '#234a78')], ['5', 'wachten op aanvrager', pill('#f0f1f3', '#3d4047')], ['3', 'termijn deze week', pill('#fcedec', '#a30000')]].map(([n, label, style]) => ({ n, label, style }));
+    const cases = [
+      ['Kapvergunning Molenweg 4', 'vandaag', true, 'In behandeling', 'Z-2026-0412 · Omgevingsvergunning'],
+      ['Woo-verzoek bomenkap Lindelaan', 'morgen', true, 'Beslissing opstellen', 'Z-2026-0398 · Woo-verzoek'],
+      ['Evenement Stadshaven', 'do 8 okt', true, 'Wacht op advies', 'Z-2026-0431 · Evenementenvergunning'],
+      ['Dakkapel Kerkstraat 12', '21 okt', false, 'Wacht op aanvrager', 'Z-2026-0440 · Omgevingsvergunning']
+    ].map(([title, d, soon, status, meta]) => ({ title, due: d, dueStyle: due(soon), status, meta, statusStyle: status.startsWith('Wacht') ? pill('#fdf3e1', '#7a4d00') : pill('#eaf0f7', '#234a78') }));
+    const workpackages = [
+      ['Welstandsadvies verwerken', 'vandaag', true, 'In uitvoering', 'Pieter Jansen'],
+      ['Planning inspraakavond 14 oktober', 'morgen', true, 'Nieuw', 'Sanne de Vries'],
+      ['Verkeersbesluit Havenkade', 'vr 9 okt', false, 'Wacht op reactie', 'Thomas Brouwer'],
+      ['Collegevoorstel Havenpark', '13 okt', false, 'In uitvoering', 'Marieke Jansen']
+    ].map(([title, d, soon, status, who]) => ({ title, due: d, dueStyle: due(soon), status, who, statusStyle: status === 'Nieuw' ? pill('#f0f1f3', '#3d4047') : status === 'Wacht op reactie' ? pill('#fdf3e1', '#7a4d00') : pill('#eaf0f7', '#234a78') }));
+    const wikiFav = ['Werkinstructie kapvergunningen', 'Toetsingskader welstand 2026', 'Checklist volledigheid aanvraag'];
+    const wikiRecent = [['Agenda casusoverleg 7 oktober', 'vandaag'], ['Termijnen Omgevingswet', 'gisteren'], ['Onboarding nieuwe collega', 'vrijdag']].map(([title, when]) => ({ title, when }));
+    const agenda = [
+      { day: 'ma 5', time: '09:00', title: 'Weekstart team Vergunningen', where: 'Stadskantoor, kamer 2.14' },
+      { day: 'wo 7', time: '09:30', title: 'Casusoverleg', where: 'Kamer 2.14 · agenda in de wiki' },
+      { day: 'do 8', time: '14:00', title: 'Welstandscommissie', where: 'Raadzaal · 6 dossiers' },
+      { day: 'vr 9', time: '15:30', title: 'Taart: 1.000e omgevingsvergunning', where: 'Kantine' }
+    ];
+    const dot = (c) => 'flex: none; width: 10px; height: 10px; border-radius: 5px; background: ' + c;
+    const team = [
+      ['MJ', 'Marieke Jansen', 'Teamleider', 'Beschikbaar', '#1e6b2a'], ['PJ', 'Pieter Jansen', 'Vergunningverlener', 'Beschikbaar', '#1e6b2a'],
+      ['SV', 'Sanne de Vries', 'Vergunningverlener', 'In overleg', '#cc0000'], ['TB', 'Thomas Brouwer', 'Jurist', 'Beschikbaar', '#1e6b2a'],
+      ['YA', 'Yasmina El Amrani', 'Adviseur, start maandag', 'Afwezig', '#828a95']
+    ].map(([ini, name, role, status, c]) => ({ ini, name, role, status, dot: dot(c) }));
+    const files = [['Besluit kapvergunning Molenweg 4.docx', '10:12'], ['Advies welstand Havenpark.pdf', 'vrijdag'], ['Checklist omgevingsvergunning.xlsx', '28 sep'], ['Planning Havenpark Q4.xlsx', '25 sep']].map(([name, when]) => ({ name, when }));
+    return { tiles: tilesData, menu, caseCounts, cases, workpackages, wikiFav, wikiRecent, agenda, team, files };
+  }
+}
+</script>
+</body>
+</html>

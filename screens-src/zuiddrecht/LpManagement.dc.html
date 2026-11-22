@@ -24,7 +24,6 @@ a{color:#3669a5}a:hover{color:#234a78}
             <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Managementinformatie</h1>
             <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
               <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13,5V11H14.17L12,13.17L9.83,11H11V5H13M15,3H9V9H5L12,16L19,9H15V3M19,18H5V20H19V18Z"></path></svg>Downloaden</button>
-              <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #c64e0b; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
               <button type="button" aria-haspopup="menu" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg>Meer</button>
             </div>
           </div>
@@ -58,6 +57,31 @@ a{color:#3669a5}a:hover{color:#234a78}
                 </div>
               </sc-for>
             </div>
+          </section>
+
+          <section aria-labelledby="w-donut" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 16px; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h2 id="w-donut" style="margin: 0; font-size: 16px; font-weight: 700">Zaken per status</h2><span style="font-size: 13px; color: #5e6168">Cirkeldiagram · bron: register Zaken (dossiq), filter volgt</span></div>
+            <div style="display: flex; align-items: center; gap: 18px">
+              <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="Verdeling van 312 zaken over vier statussen" style="flex: none">
+                <sc-for list="{{ donut }}" as="d" hint-placeholder-count="4"><circle cx="75" cy="75" r="56" fill="none" stroke="{{ d.color }}" stroke-width="22" stroke-dasharray="{{ d.dash }}" stroke-dashoffset="{{ d.offset }}" transform="rotate(-90 75 75)"></circle></sc-for>
+                <text x="75" y="72" text-anchor="middle" font-family="Fira Sans, sans-serif" font-size="28" font-weight="700" fill="#1b1c1d">312</text>
+                <text x="75" y="92" text-anchor="middle" font-family="Fira Sans, sans-serif" font-size="13" fill="#5e6168">zaken</text>
+              </svg>
+              <ul style="flex: 1; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+                <sc-for list="{{ donut }}" as="d" hint-placeholder-count="4"><li style="display: flex; align-items: center; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 3px; background: {{ d.color }}; flex: none"></span><span style="flex: 1; min-width: 0">{{ d.label }}</span><strong style="font-variant-numeric: tabular-nums">{{ d.value }}</strong><span style="width: 36px; text-align: right; font-size: 12px; color: #5e6168; font-variant-numeric: tabular-nums">{{ d.pct }}</span></li></sc-for>
+              </ul>
+            </div>
+          </section>
+
+          <section aria-labelledby="w-graph" style="grid-column: span 2; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 16px; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 12px"><div style="display: flex; flex-direction: column; gap: 2px"><h2 id="w-graph" style="margin: 0; font-size: 16px; font-weight: 700">Aanvragen en besluiten per maand</h2><span style="font-size: 13px; color: #5e6168">Grafiek · staven en lijn · bron: register Zaken (dossiq), april tot september</span></div><span style="display: flex; gap: 14px; font-size: 13px; color: #3d4047"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #3669a5"></span>Aanvragen</span><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 18px; height: 3px; border-radius: 2px; background: #cc0000"></span>Besluiten</span></span></div>
+            <svg width="100%" height="220" viewBox="0 0 640 220" preserveAspectRatio="none" role="img" aria-label="Staafdiagram met aanvragen per maand en een lijn met besluiten per maand, april tot september">
+              <sc-for list="{{ ticks }}" as="k" hint-placeholder-count="4"><line x1="44" x2="620" y1="{{ k.y }}" y2="{{ k.y }}" stroke="#eef0f3"></line><text x="36" y="{{ k.ty }}" text-anchor="end" font-family="Fira Sans, sans-serif" font-size="11" fill="#5e6168">{{ k.label }}</text></sc-for>
+              <line x1="44" x2="620" y1="180" y2="180" stroke="#828a95"></line>
+              <sc-for list="{{ months }}" as="m" hint-placeholder-count="6"><rect x="{{ m.x }}" y="{{ m.y }}" width="40" height="{{ m.h }}" rx="3" fill="#3669a5"><title>{{ m.tip }}</title></rect><text x="{{ m.cx }}" y="200" text-anchor="middle" font-family="Fira Sans, sans-serif" font-size="12" fill="#3d4047">{{ m.label }}</text></sc-for>
+              <polyline points="{{ linePoints }}" fill="none" stroke="#cc0000" stroke-width="3" stroke-linejoin="round"></polyline>
+              <sc-for list="{{ months }}" as="m" hint-placeholder-count="6"><circle cx="{{ m.cx }}" cy="{{ m.ly }}" r="4.5" fill="#ffffff" stroke="#cc0000" stroke-width="3"></circle></sc-for>
+            </svg>
           </section>
 
           <section aria-labelledby="w-bars" style="grid-column: span 2; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 12px">
@@ -182,7 +206,16 @@ class Component extends DCLogic {
       ['Power BI Sociaal domein', 'app.powerbi.com', 'Rapport Sociaal domein', 'vrijdag 17:02', 'vandaag 09:30, token verlopen', 'Storing', 'bad'],
       ['Gebruikersbeheer', 'Nextcloud en Keycloak', 'Beveiliging en toegang', 'vandaag 10:40', 'geen', 'Werkt', 'ok']
     ].map(([name, via, widget, ok, err, status, t]) => ({ name, via, widget, ok, err, status, pill: pill(t), errStyle: 'padding: 12px 18px; ' + (t === 'bad' ? 'color: #a30000; font-weight: 600' : 'color: #3d4047') }));
-    return { periods, kpis, bars, spend, compliance, security, cols, conns };
+    const donutData = [['In behandeling', 138, '#3669a5'], ['Wacht op aanvrager', 74, '#828a95'], ['Wacht op advies', 46, '#234a78'], ['Afgerond deze maand', 54, '#cc0000']];
+    const total = donutData.reduce((n, [, v]) => n + v, 0);
+    const C = 2 * Math.PI * 56;
+    let acc = 0;
+    const donut = donutData.map(([label, value, color]) => { const len = C * value / total; const d = { label, value, color, pct: Math.round(100 * value / total) + '%', dash: len.toFixed(1) + ' ' + (C - len).toFixed(1), offset: (-acc).toFixed(1) }; acc += len; return d; });
+    const yOf = (v) => 180 - v / 150 * 164;
+    const ticks = [0, 50, 100, 150].map((v) => ({ label: String(v), y: yOf(v).toFixed(1), ty: (yOf(v) + 4).toFixed(1) }));
+    const months = [['apr', 112, 95], ['mei', 98, 104], ['jun', 130, 118], ['jul', 121, 110], ['aug', 142, 125], ['sep', 136, 140]].map(([label, bar, line], i) => { const cx = 44 + 96 * i + 48; return { label, cx, x: cx - 20, y: yOf(bar).toFixed(1), h: (180 - yOf(bar)).toFixed(1), ly: yOf(line).toFixed(1), tip: label + ': ' + bar + ' aanvragen, ' + line + ' besluiten' }; });
+    const linePoints = months.map((m) => m.cx + ',' + m.ly).join(' ');
+    return { periods, kpis, bars, spend, compliance, security, cols, conns, donut, ticks, months, linePoints };
   }
 }
 </script>

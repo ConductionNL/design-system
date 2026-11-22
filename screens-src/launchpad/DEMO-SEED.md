@@ -1,0 +1,239 @@
+# Launchpad demo seed
+
+What the demo environment needs so that every launchpad board on
+[identity.conduction.nl/screens](https://identity.conduction.nl/screens/) can be reproduced in a running
+instance. One section per board: the dashboard it shows, the widgets on it with their configuration, and the
+demo data behind them. A build agent implements this as the launchpad demo seed (`occ launchpad:demo:load` or
+the setup wizard step Voorbeelden). Dates are relative to the demo day, Monday 5 October 2026, 10:47.
+
+The boards are the UI canon. Where the seed and a board disagree, the board wins and the seed is amended.
+
+## Rules that every board follows
+
+- No left menu. Launchpad has no app side bar and no "Menu" button. Every destination sits in the Meer menu
+  in the page header: groups Dashboards, Instellingen, Dit dashboard, Launchpad.
+- No buildiq control. The page header holds only launchpad's own actions: Bewerken (or Startpagina aanpassen),
+  Widget toevoegen where the role allows it, and Meer.
+- The grid sits on the page ground (`--sc-work-ground`), widgets are white cards, app tiles are coloured squares.
+- Every application is its own tile: one grid cell, square, solid tile colour, one white icon at about 45% of
+  the tile, no printed label. The app name is the accessible name and the tooltip. Optional overlays: a count
+  badge (white pill, top right), a pin (top left) and a red outage dot (top right, replaces the badge).
+- Tile colours are the eight theme tokens, so they follow the design system: `--sc-primary`,
+  `--sc-primary-deep`, `--sc-accent`, `--sc-accent-deep`, `--sc-work-ink`, `--sc-work-text`,
+  `--sc-work-muted`, `--sc-work-field`. White on each of them meets the 3:1 non-text contrast minimum. The
+  Zuiddrecht token set has no green, teal or purple; when a theme adds those tokens the palette grows.
+- A tile group is a small uppercase heading on the page ground ("Mijn apps", "Samenwerken") followed by tiles.
+- The picker (Widget toevoegen) is the one place where widgets are added. It lists App-tegels with one entry
+  per app.
+- The first dashboard of a new user is called "Mijn werkplek".
+
+## Users and groups
+
+| User | Display name | Groups | Role |
+|---|---|---|---|
+| `pieter` | Pieter Jansen | `vergunningen`, `medewerkers` | Medewerker (default role) |
+| `marieke` | Marieke Jansen | `vergunningen`, `teamleiders`, `medewerkers` | shares Team Vergunningen |
+| `sanne` | Sanne de Vries | `vergunningen`, `medewerkers` | |
+| `thomas` | Thomas Brouwer | `vergunningen`, `bestuurszaken`, `medewerkers` | |
+| `yasmina` | Yasmina El Amrani | `vergunningen`, `medewerkers` | starts next Monday |
+| `hanneke` | Hanneke Visser | `directie`, `medewerkers` | gemeentesecretaris |
+| `communicatie` | Team Communicatie | `communicatie`, `medewerkers` | owns Intranet Zuiddrecht |
+| `beheer` | Functioneel beheerder | `admin`, `launchpad-beheer` | admin boards |
+| `nieuw` | Noor Nieuw | `medewerkers` | no dashboard yet (LpEersteKeer) |
+
+## App tiles (shared catalogue)
+
+Every tile below exists once in the tile catalogue; dashboards reference them. Health pings run against the
+demo stubs; `Raadsinformatie` is configured to fail so the outage dot shows.
+
+| App | Icon (MDI) | Colour token | Target | Badge source | Pinned |
+|---|---|---|---|---|---|
+| Zaaksysteem | briefcase | `--sc-primary` | dossiq, Mijn zaken | open cases: 14 | yes |
+| Outlook web | email | `--sc-primary-deep` | SSO link outlook.office.com | unread mail: 3 | yes |
+| TOPdesk | headset | `--sc-accent` | SSO link | none | |
+| Raadsinformatie | gavel | `--sc-work-field` | web link, health check fails since 09:12 | outage | |
+| Kadasterviewer | map | `--sc-work-muted` | web link | none | |
+| Declaraties | receipt | `--sc-work-text` | web link | none | |
+| Talk | forum | `--sc-work-ink` | Nextcloud Talk | unread conversations: 2 | |
+| Agenda | calendar | `--sc-primary` | Nextcloud Calendar | none | |
+| Word | microsoft-word style office icon | `--sc-primary-deep` | Office tile, new document | none | |
+| Bestanden | folder | `--sc-work-muted` | Nextcloud Files | none | |
+| Smoelenboek | account-group | `--sc-accent-deep` | Nextcloud Contacts | none | |
+| Verlof en rooster | airplane | `--sc-work-text` | web link | none | |
+| Personeelsgids | book | `--sc-work-text` | personeelsgids.zuiddrecht.nl (allowed site) | none | |
+
+## Shared demo data
+
+- **dossiq, register Zaken**: 312 cases. Status split: In behandeling 138, Wacht op aanvrager 74, Wacht op
+  advies 46, Afgerond deze maand 54. Per zaaktype: Omgevingsvergunning 96, Woo-verzoek 54, Melding openbare
+  ruimte 72, Bezwaar 31, Subsidie 25, Parkeervergunning 34. Per month, April to September, applications
+  112, 98, 130, 121, 142, 136 and decisions 95, 104, 118, 110, 125, 140. Assigned to `pieter` (14 open):
+  Z-2026-0412 Kapvergunning Molenweg 4 (Omgevingsvergunning, In behandeling, deadline today),
+  Z-2026-0398 Woo-verzoek bomenkap Lindelaan (Beslissing opstellen, tomorrow),
+  Z-2026-0431 Evenement Stadshaven (Evenementenvergunning, Wacht op advies, Thursday 8 October),
+  Z-2026-0440 Dakkapel Kerkstraat 12 (Omgevingsvergunning, Wacht op aanvrager, 21 October); counts for
+  Pieter: 6 in behandeling, 5 wachten op aanvrager, 3 termijn deze week.
+- **OpenProject**: project Havenpark with work packages Welstandsadvies verwerken (In uitvoering, due today,
+  Pieter), Planning inspraakavond 14 oktober (Nieuw, tomorrow, Sanne), Verkeersbesluit Havenkade (Wacht op
+  reactie, Friday 9 October, Thomas), Collegevoorstel Havenpark (In uitvoering, 13 October, Marieke); project
+  Stadshaven fase 2 with Raming herinrichting Stadshaven (Wacht op reactie, Friday 9 October, Pieter); project
+  Mobiliteit 2026 with Evaluatie pilot deelauto's (In uitvoering, 16 October, Pieter). Pieter has 5 open.
+- **XWiki**, space Kennisbank Zuiddrecht and space Vergunningen: pages Werkinstructie kapvergunningen,
+  Termijnen Omgevingswet, Sjablonen besluiten, Toetsingskader welstand 2026, Checklist volledigheid aanvraag,
+  Welstand: toetsingskader 2026 (edited today), Legesverordening 2026 (yesterday), Onboarding team
+  Vergunningen (Friday), Agenda casusoverleg 7 oktober (today). Favourites of `pieter`: the first three.
+- **Mail** for `pieter`: 3 unread (Marieke Jansen, Welstandsadvies Havenpark 10:21; M. de Graaf, Re:
+  aanvullende stukken kapvergunning Molenweg 4 09:48; Omgevingsdienst Zuid-Holland Zuid, Advies geluid
+  evenement Stadshaven, Friday).
+- **Calendar** for `pieter`, demo day: 09:30 Weekstart team Woo en informatie (kamer 2.14), 11:00 Overleg
+  vergunningverlening Havenpark (Talk, 4 participants), 13:00 Bellen met M. de Graaf, 13:30 Spreekuur bouwen
+  en wonen (balie 3), 15:00 Voorbereiding collegevergadering, 15:30 Bellen met M. de Graaf. Team calendar
+  `vergunningen`: Mon 09:00 Weekstart, Wed 09:30 Casusoverleg, Thu 14:00 Welstandscommissie, Fri 15:30
+  Taart: 1.000e omgevingsvergunning.
+- **Files**, folder Vergunningen shared with `vergunningen`: Besluit kapvergunning Molenweg 4.docx (10:12),
+  Advies welstand Havenpark.pdf (Friday), Checklist omgevingsvergunning.xlsx (28 Sep), Planning Havenpark
+  Q4.xlsx (25 Sep).
+- **Weather**: Zuiddrecht 13°, bewolkt, wind 4 zuidwest, forecast di 15°, wo 12°, do 14°; Utrecht 12°, buien.
+- **Announcements**: Nieuwe werkwijze Woo-verzoeken vanaf 1 november (team Informatie, verplicht,
+  read receipt due Friday 9 October, 128 of 164 confirmed, 24 likes, 6 reactions); maintenance banner
+  Zaaksysteem in onderhoud zaterdag 10 oktober 08:00 tot 12:00.
+
+## Boards
+
+### LpEersteKeer: first visit
+
+- User `nieuw`, no dashboard, tour not yet seen.
+- Empty state offers "Maak mijn eerste dashboard (met startwidgets)" and "Leeg beginnen". The first creates
+  the personal dashboard **Mijn werkplek** with six starter widgets: Apps (one tile per app from the user's
+  tile catalogue), Agenda, Mail, Bestanden, Weer Zuiddrecht, Nieuws van de organisatie.
+- Tour step 1 of 5 points at the Meer button.
+
+### LpVandaag: start page
+
+- Dashboard **Vandaag**, personal dashboard of `pieter`, marked as default (opens first), full-width start
+  page without page scroll at 1440×900.
+- Widgets: Vandaag eerst (attention items from dossiq and pipelinq), Mijn werk (four counters: dossiq 14
+  open, pipelinq 5 open, decidiq 2, and one more), tile group **Mijn apps** with six tiles in a 2 column
+  block (Zaaksysteem, Outlook web, TOPdesk, Raadsinformatie, Kadasterviewer, Talk), Agenda vandaag, Verder
+  waar u was (recent items). Below the frame, as a separate example: dossiq widget Mijn open werk.
+- Meer menu open, with the groups Dashboards, Instellingen, Dit dashboard, Launchpad.
+
+### LpWerkplek: personal workplace
+
+- Dashboard **Mijn werkplek** of `pieter`, 3 column layout, last changed Friday.
+- Tile groups **Mijn apps** (Zaaksysteem, Outlook web, TOPdesk, Raadsinformatie, Kadasterviewer,
+  Declaraties) and **Samenwerken** (Talk, Agenda, Word, Bestanden, Smoelenboek, Verlof en rooster).
+- Widgets: Klok, Zoeken op internet (DuckDuckGo), Mail (3), Weer Zuiddrecht, Agenda, Bestanden (map
+  Vergunningen), Bladwijzers (three groups), **Wiki** (XWiki, space Kennisbank Zuiddrecht: search, three
+  favourites, three recent pages), **Mijn werkpakketten** (OpenProject, assignee = current user, sorted by
+  due date, 4 shown), **Mijn zaken** (dossiq, assignee = current user, counts per status and 4 cases with
+  deadline and status), Assistent, Snelkoppelingen, Notities, Snel beginnen (Word in map Vergunningen),
+  Organisatiemenu (menu widget as a grid widget), footer.
+- Notification toast: Marieke Jansen shared Team Vergunningen.
+
+### LpIntranet: group dashboard
+
+- Dashboard **Intranet Zuiddrecht**, group dashboard of `communicatie`, shared with `medewerkers`, members
+  may add widgets, languages nl and en, two widgets hidden by the user.
+- Widgets in order: welcome header, tile group **Samenwerken** (Talk, Agenda, Bestanden, Word,
+  Smoelenboek, Personeelsgids, Verlof en rooster, Declaraties), announcement with read receipt, Van de
+  gemeentesecretaris (text), Nieuws (zuiddrecht.nl RSS), Video, Afbeelding, Nieuwe collega's, Verjaardagen,
+  Vind een collega op expertise, **Menu** widget (intranet section navigation: Werken bij Zuiddrecht,
+  Faciliteiten, Organisatie), Personeelsgids (embedded page, allowed site), Werken op het stadskantoor
+  (Markdown text), Nieuws van het oude intranet (SharePoint), Community Digitaal werken, reaction bar.
+- Maintenance banner from the announcement data.
+
+### LpAfdeling: department page
+
+- Dashboard **Team Vergunningen**, shared by `marieke` with group `vergunningen`, members may add widgets.
+- Widgets: tile group **Apps van het team** (Zaaksysteem, Kadasterviewer, TOPdesk, Raadsinformatie, Word,
+  Bestanden, Talk), **Menu** widget "Wegwijs Vergunningen" (groups Werkafspraken, Overleg, Hulp, three
+  links each), Van de teamleider (text, with read count 12 of 14 and 8 likes), Mijn zaken (dossiq), Werkpakketten
+  van het team (OpenProject project Havenpark, all assignees), Wiki van het team (XWiki space Vergunningen),
+  Teamagenda (calendar `vergunningen`, this week), Collega's (group members with availability), Teambestanden
+  (folder Vergunningen).
+
+### LpManagement: management information
+
+- Dashboard **Managementinformatie**, group dashboard of `bedrijfsvoering`, view only for `pieter`, period
+  selector, cross filter Zaaktype: Omgevingsvergunning active.
+- Widgets: container Vergunningen deze maand (four KPI tiles from dossiq), **Cirkeldiagram** "Zaken per
+  status" (source: register query dossiq Zaken grouped by status; donut, legend with value and percentage,
+  total 312 in the centre; follows the cross filter), **Grafiek** "Aanvragen en besluiten per maand" (source:
+  register query dossiq Zaken per month April to September; bars = aanvragen, line = besluiten, y axis 0 to
+  150, legend), Lopende zaken per zaaktype (bar rows, clickable, sets the filter), Wachttijd KCC (live value,
+  refresh 5 min), Uitgaven per afdeling, Compliance, Rapport Sociaal domein (Power BI embed), Beveiliging en
+  toegang, Meldingen (map widget, PDOK), Koppelingen van dit dashboard.
+- Both chart widgets also accept manual values (label, value, colour) as an alternative source.
+
+### LpBewerken: edit mode
+
+- Dashboard Mijn werkplek of `pieter` in edit mode, 12 columns, `marieke` editing at the same time (edit lock
+  notice). Twelve app tiles in rows 1 and 2 (columns 1 to 6), Klok and Weer Zuiddrecht in columns 7 to 12,
+  then Mail, Weer Utrecht, Agenda, Assistent (selected, keyboard move panel), Bestanden (actions menu open),
+  Notities, Snelkoppelingen, and the free spot for a new widget.
+
+### LpMobiel: on the phone
+
+- Mijn werkplek of `pieter` at 390 px: PWA install banner, notice that two widgets are hidden on a phone,
+  tile group Mijn apps with four tiles per row (Zaaksysteem, Outlook web, TOPdesk, Raadsinformatie, Talk,
+  Agenda, Bestanden, Verlof en rooster), Agenda, Mail, Klok, Weer, Bestanden, Notities.
+
+### LpWidgetKiezen: widget picker
+
+- Opened from Mijn werkplek. Categories with counts: Alles 51, Inhoud 11, Tegels en links 17, Mensen 3,
+  Gegevens en grafieken 8, Uit andere apps 10, Office 4.
+- Widgets van Launchpad: Tekst, Afbeelding, Nieuws, Weer, Live gegevens, Ingesloten pagina (not allowed for
+  role Medewerker), Power BI-rapport (not allowed), Collega's, **Cirkeldiagram**, **Grafiek**.
+- **App-tegels**: one entry per app from the tile catalogue, drawn in the tile colour, plus "Eigen tegel".
+- Uit andere Nextcloud-apps: Bestanden, Agenda, Talk, Deck, Recente activiteit (legacy), **Wiki**, **Mijn
+  werkpakketten**, **Mijn zaken**.
+- Assistant suggestion: Weer for Zuiddrecht, 3 columns, top right next to Agenda.
+
+### LpTegelBewerken: edit a tile
+
+- Tile Zaaksysteem: kind, internal address, open target, icon, **colour** (radio group of the eight theme
+  tokens, white icon preview), sort order, health check.
+
+### LpWidgetInstellen, LpZichtbaarheid, LpTegelToevoegen, LpDashboardInstellingen, LpDelen, LpVersies, LpAankondiging, LpLeesbevestigingen
+
+- All open over Mijn werkplek of `pieter`. LpDashboardInstellingen shows the tabs Details, Talen, Delen,
+  Publicatie and Exports; there are no saved views. The data they need is the shared demo data above plus:
+  three dashboard versions (Friday by Pieter, Thursday by Marieke, 28 September by Pieter), one public link
+  with password and expiry, one scheduled PDF export per Monday 07:00 by mail, and the announcement with its
+  read receipts (164 recipients, 128 confirmed).
+
+### LpPersoonlijk and LpInstellen
+
+- LpPersoonlijk: the user settings dialog of launchpad, opened over Intranet Zuiddrecht, section
+  Samenvatting per e-mail active. LpInstellen: the setup wizard at step 3 of 5 (Voorbeelden) for `beheer`.
+
+### LpBeheerAlgemeen, LpBeheerSjablonen, LpBeheerRollen, LpBeheerDelen, LpBeheerOnderhoud, LpBeheerAnalyse, LpBeheerNavigatie
+
+- The admin pages of launchpad for `beheer`, full width with tabs, no left navigation. Settings: default
+  permission level Alleen toevoegen, personal dashboards on, maximum 10 dashboards per person and 40
+  widgets per dashboard, launchpad as default app, allowed sites www.zuiddrecht.nl, app.powerbi.com,
+  kcc-api.zuiddrecht.nl, www.youtube-nocookie.com, personeelsgids.zuiddrecht.nl; two templates rolled out to
+  groups; roles Medewerker, Teamleider, Communicatie, Beheer; usage data for 30 days; the organisation menu
+  tree (Organisatie, Werken bij, Hulp) and the footer (Over Zuiddrecht, Personeelsgids, Privacy,
+  Toegankelijkheid, Ondernemingsraad, service desk line).
+
+### LpPubliek, LpKiosk, LpStore
+
+- LpPubliek: public start page of dashboard Openbare startpagina without login. LpKiosk: dashboard Vandaag in
+  Zuiddrecht in kiosk mode, rotation 2 of 4. LpStore: the marketplace with the connected VNG dashboard
+  register and four template cards. These need the public dashboard, the kiosk dashboard set and the store
+  registry stub.
+
+## What the app must build to match the boards
+
+1. Remove the left navigation and the Menu button; move every destination into the Meer menu.
+2. Remove the buildiq header control from every launchpad page.
+3. App tiles as individual grid widgets (one cell, square, token colour, white icon, no label, accessible
+   name and tooltip, badge, pin and outage overlays), tile groups with a heading on the page ground, and the
+   colour setting with the eight token swatches in the tile settings.
+4. New widgets: Wiki (XWiki), Mijn werkpakketten (OpenProject), Mijn zaken (dossiq), Cirkeldiagram, Grafiek,
+   each with a picker entry and a settings form that names its data source.
+5. Picker section App-tegels with one entry per app and the entry Eigen tegel.
+6. Menu widget on group and department dashboards, drawn as a card on the grid.
+7. The demo seed above, including the department dashboard Team Vergunningen and the first-run user `nieuw`.

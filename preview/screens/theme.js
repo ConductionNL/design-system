@@ -30,7 +30,9 @@
 
    API: window.screensTheme.set(id), .get(), .ready (Promise
    resolving to the parsed design-systems.json), and a
-   "screens-theme" event on window after every change.
+   "screens-theme" event on window after every change. Its
+   detail carries the text nodes step 5 wrote (nodes), so the
+   language runtime can translate them again.
    ============================================================ */
 (function () {
   'use strict';
@@ -103,16 +105,18 @@
       var role = img.getAttribute('data-sc-logo');
       if (logos[role]) img.src = new URL(logos[role], base).href;
     });
+    var written = [];
     document.querySelectorAll('[data-sc-org]').forEach(function (el) {
       if (!el.hasAttribute('data-sc-org-default')) el.setAttribute('data-sc-org-default', el.textContent);
       el.textContent = sys.orgName || el.getAttribute('data-sc-org-default');
+      if (el.firstChild) written.push(el.firstChild);
     });
     var org = sys.orgName || data.boardOrg;
-    boardOrgNodes().forEach(function (n) { n.node.nodeValue = n.text.replace(data.boardOrg, org); });
+    boardOrgNodes().forEach(function (n) { n.node.nodeValue = n.text.replace(data.boardOrg, org); written.push(n.node); });
     root.setAttribute('data-sc-header', sys.headerStyle || 'default');
     root.setAttribute('data-sc-look', sys.look || 'default');
     root.setAttribute('data-sc-ds', current);
-    window.dispatchEvent(new CustomEvent('screens-theme', { detail: { id: current, system: sys } }));
+    window.dispatchEvent(new CustomEvent('screens-theme', { detail: { id: current, system: sys, nodes: written } }));
   }
 
   var ready = fetch(dataUrl.href, { credentials: 'omit' })
@@ -164,6 +168,12 @@
    .translateBoard(key) (resolves to the catalogue coverage, or
    null when the board has none), and in a board document .done
    (resolves the same way once the board's own translation ran).
+   The board is translated after the theme's first apply, and every
+   later "screens-theme" event has the text nodes the theme wrote
+   (the organisation name) translated again, so a design-system
+   switch keeps the board in English. Only those nodes: translating
+   the whole board twice would turn an English value that is also a
+   Dutch key ("Past", "Map") into something else.
    ============================================================ */
 (function () {
   'use strict';
@@ -214,6 +224,16 @@
 
   var ATTRS = ['placeholder', 'title', 'aria-label', 'alt'];
   function norm(s) { return s.replace(/\s+/g, ' ').trim(); }
+  /* The dictionary of the board this document shows, once translated. */
+  var boardDict = null;
+
+  function translateNode(n, dict) {
+    var v = dict[norm(n.nodeValue)];
+    if (typeof v !== 'string' || !v) return false;
+    /* keep the surrounding whitespace so inline layout does not shift */
+    n.nodeValue = n.nodeValue.replace(/^(\s*)[\s\S]*?(\s*)$/, '$1' + v.replace(/\$/g, '$$$$') + '$2');
+    return true;
+  }
 
   function applyCatalogue(dict) {
     var hits = 0, total = 0;
@@ -227,14 +247,8 @@
     var nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
     nodes.forEach(function (n) {
-      var key = norm(n.nodeValue);
       total++;
-      var v = dict[key];
-      if (typeof v === 'string' && v) {
-        /* keep the surrounding whitespace so inline layout does not shift */
-        n.nodeValue = n.nodeValue.replace(/^(\s*)[\s\S]*?(\s*)$/, '$1' + v.replace(/\$/g, '$$$$') + '$2');
-        hits++;
-      }
+      if (translateNode(n, dict)) hits++;
     });
     ATTRS.forEach(function (a) {
       document.querySelectorAll('[' + a + ']').forEach(function (el) {
@@ -255,6 +269,7 @@
         if (!res[1]) return null;
         var dict = {};
         [res[0], res[1]].forEach(function (d) { if (d) Object.keys(d).forEach(function (k) { if (k.charAt(0) !== '_') dict[k] = d[k]; }); });
+        boardDict = dict;
         var r = applyCatalogue(dict);
         var t = dict[norm(document.title || '')];
         if (typeof t === 'string' && t) document.title = t;
@@ -262,6 +277,11 @@
         return r;
       });
   }
+
+  window.addEventListener('screens-theme', function (e) {
+    if (!boardDict || !e.detail || !e.detail.nodes) return;
+    e.detail.nodes.forEach(function (n) { if (n && n.nodeType === 3) translateNode(n, boardDict); });
+  });
 
   window.screensI18n = { lang: lang, applyGallery: applyGallery, translateBoard: translateBoard, fetchJson: fetchJson };
 
@@ -276,8 +296,10 @@
   window.screensI18n.done = Promise.resolve(null);
   if (key && lang === 'en') {
     window.screensI18n.done = new Promise(function (resolve) {
+      /* After the theme's first apply, which writes the Dutch organisation name. */
+      var themed = window.screensTheme ? window.screensTheme.ready.catch(function () { return null; }) : Promise.resolve(null);
       var run = function () {
-        translateBoard(key).then(function (r) {
+        themed.then(function () { return translateBoard(key); }).then(function (r) {
           window.dispatchEvent(new CustomEvent('screens-i18n', { detail: r }));
           resolve(r);
         }, function () { resolve(null); });

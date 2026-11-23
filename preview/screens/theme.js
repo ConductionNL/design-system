@@ -265,9 +265,10 @@
 
   window.screensI18n = { lang: lang, applyGallery: applyGallery, translateBoard: translateBoard, fetchJson: fetchJson };
 
-  /* Inside a board document (no gallery script present) translate on load. */
+  /* Inside a board document (no gallery script present) translate on load. The host serves
+     boards both as boards/<Key>.html and, without the extension, as boards/<Key>. */
   function boardKey() {
-    var m = /\/boards\/([^\/?#]+)\.html(?:[?#]|$)/.exec(window.location.pathname + window.location.search);
+    var m = /\/boards\/([^\/?#.]+)(?:\.html)?$/.exec(window.location.pathname);
     return m ? decodeURIComponent(m[1]) : null;
   }
   var key = boardKey();

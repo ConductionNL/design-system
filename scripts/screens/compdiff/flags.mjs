@@ -3,8 +3,8 @@
  * with a typo) is never measured with part of its state silently dropped.
  */
 export const KNOWN_FLAGS = [
-	'allow-stale-board', 'base', 'board', 'board-frame', 'board-region', 'boards', 'click', 'clicks', 'clock', 'crop-flag', 'exempt', 'fills', 'ignore',
-	'inject-css', 'inject-js', 'keep-scroll', 'list-flags', 'live-region', 'load-wait', 'login', 'out', 'present-as', 'read-methods', 'read-post', 'session', 'settle',
+	'allow-stale-board', 'base', 'board', 'board-frame', 'board-region', 'boards', 'click', 'clicks', 'clock', 'crop-flag', 'ds', 'exempt', 'fills', 'ignore',
+	'inject-css', 'inject-js', 'keep-scroll', 'lang', 'list-flags', 'live-region', 'load-wait', 'login', 'out', 'present-as', 'read-methods', 'read-post', 'session', 'settle',
 	'settle-mode', 'skip-first-run', 'state-card', 'steps', 'storage', 'url', 'wait-for', 'width',
 ]
 

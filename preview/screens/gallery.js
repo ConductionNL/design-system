@@ -140,6 +140,15 @@
     return el('span', { class: 'sc-id', title: t('screens.idTitle', 'Stable screen id') }, [el('code', { text: id }), btn]);
   }
 
+  /* Opens the board with its Download PNG menu open: the PNG is rendered there. */
+  function pngLink(name, href) {
+    var b = S.boards[name];
+    var a = el('a', { class: 'png', href: href + (href.indexOf('?') === -1 ? '?' : '&') + 'png=1',
+      'aria-label': t('screens.png.tile', 'Download PNG of {title}', { title: b.title || name }), title: t('screens.png.button', 'Download PNG') });
+    a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>';
+    return a;
+  }
+
   function tile(name, set, row) {
     var b = S.boards[name];
     var href = boardHref(name);
@@ -163,7 +172,7 @@
         el('a', { class: 'title', href: href, text: b.title || name }),
         b.caps ? el('p', { class: 'caps', text: shortCaps(b.caps), title: b.caps }) : null,
         bsTile(name),
-        el('div', { class: 'foot' }, [idChip(b.id || name), el('span', { class: 'size', text: (b.w || '?') + ' × ' + (b.h || '?') })])
+        el('div', { class: 'foot' }, [idChip(b.id || name), el('span', { class: 'foot-r' }, [el('span', { class: 'size', text: (b.w || '?') + ' × ' + (b.h || '?') }), pngLink(name, href)])])
       ])
     ]);
     return art;

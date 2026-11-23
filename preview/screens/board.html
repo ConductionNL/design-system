@@ -29,6 +29,20 @@
   .sc-chrome .btn.primary { background: var(--c-blue-cobalt); color: white; border-color: var(--c-blue-cobalt); }
   .sc-chrome .btn[aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
   .sc-chrome .btn:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .sc-chrome .btn[aria-busy="true"] { cursor: progress; opacity: 0.7; }
+  .sc-chrome .btn svg { width: 16px; height: 16px; flex: none; }
+  /* Download PNG: a menu button with one item per language */
+  .png { position: relative; display: inline-flex; }
+  .png-menu { position: absolute; top: calc(100% + 4px); right: 0; z-index: 20; min-width: 180px; margin: 0; padding: 4px; list-style: none;
+    background: white; border: 1px solid var(--c-cobalt-200); border-radius: var(--radius-md); box-shadow: var(--shadow-2); }
+  .png-menu[hidden] { display: none; }
+  .png-menu button { display: block; width: 100%; text-align: left; min-height: 36px; padding: 6px 12px; font: inherit; font-size: 14px;
+    color: var(--c-cobalt-900); background: transparent; border: 0; border-radius: var(--radius-sm); cursor: pointer; }
+  .png-menu button:hover, .png-menu button:focus { background: var(--c-cobalt-50); color: var(--c-blue-cobalt); }
+  .png-menu button:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: -2px; }
+  .png-status { font-size: 13px; color: var(--c-cobalt-700); }
+  .png-status[data-kind="error"] { color: var(--conduction-color-status-error-ink); }
+  .png-frame { position: fixed; left: -100000px; top: 0; border: 0; pointer-events: none; }
   .bar .label { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); }
 
   /* Board and sidebar: side by side on wide screens, stacked below 1100 px */
@@ -141,6 +155,16 @@
         <a class="btn" id="prev" href="#" rel="prev"><span aria-hidden="true">&larr;</span> <span data-i18n="screens.board.prev">Previous</span></a>
         <a class="btn" id="next" href="#" rel="next"><span data-i18n="screens.board.next">Next</span> <span aria-hidden="true">&rarr;</span></a>
         <a class="btn primary" id="full" href="#" target="_blank" rel="noopener" data-i18n="screens.board.full">Open full size</a>
+        <div class="png" id="png">
+          <button class="btn" id="png-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="png-menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+            <span data-i18n="screens.png.button">Download PNG</span>
+          </button>
+          <ul class="png-menu" id="png-menu" role="menu" aria-labelledby="png-btn" hidden>
+            <li role="none"><button type="button" role="menuitem" tabindex="-1" data-png-lang="en" lang="en">English</button></li>
+            <li role="none"><button type="button" role="menuitem" tabindex="-1" data-png-lang="nl" lang="nl">Nederlands</button></li>
+          </ul>
+        </div>
         <span data-lang-slot></span>
       </nav>
     </div>
@@ -152,6 +176,7 @@
       <span class="sc-badge" id="lang-nl" hidden lang="nl" title="This screen has no English catalogue yet">Nederlands</span>
       <span class="hint" id="lang-note" hidden>Names, addresses and dates are those of the Dutch demo municipality and stay in Dutch.</span>
       <span class="hint" data-i18n="screens.board.keys"><kbd>&larr;</kbd> and <kbd>&rarr;</kbd> step through all screens, <kbd>Home</kbd> and <kbd>End</kbd> jump to the first and last</span>
+      <span class="png-status" id="png-status" role="status" aria-live="polite"></span>
     </div>
   </div>
 </header>
@@ -376,6 +401,7 @@
     var u = new URL(location.href);
     u.searchParams.delete('name');
     u.searchParams.delete('start');
+    u.searchParams.delete('png');
     u.searchParams.set('id', board.id || name);
     if (dsId) u.searchParams.set('ds', dsId);
     history.replaceState(null, '', u.pathname + u.search.replace(/%2F/g, '/') + u.hash);
@@ -811,6 +837,7 @@
     board = S.boards[n];
     set = setOf(board);
     realH = null;
+    pngSay('');
     var row = set.rows.filter(function (r) { return r.id === board.row; })[0] || { id: board.row, title: '' };
     var id = board.id || n;
 
@@ -858,6 +885,188 @@
     frame.src = url;
   }
 
+  /* ---------- download the board as a PNG, in English or Dutch ----------
+     Rendered in the browser with modern-screenshot, loaded on first use into
+     the board document itself, at twice the pixel density and at the board's
+     full width and height. The board on screen is used when it shows the
+     chosen language; otherwise the board loads in an off-screen frame. */
+  var MS_URL = 'https://cdn.jsdelivr.net/npm/modern-screenshot@4.7.0/dist/index.js';
+  var MS_SRI = 'sha384-5Ua3TI0kiMYH8QdNy+vc5IWS3MTa2DzQEm/uKFDQ+/biJctek9hiSP6moIm2PVog';
+  var MAX_SIDE = 32000, MAX_AREA = 2.4e8;   /* stay under Chrome's canvas limits */
+  var pngBtn = document.getElementById('png-btn');
+  var pngMenu = document.getElementById('png-menu');
+  var pngStatus = document.getElementById('png-status');
+  var pngItems = Array.prototype.slice.call(pngMenu.querySelectorAll('[role="menuitem"]'));
+  var pngBusy = false;
+
+  function pngSay(text, kind) { pngStatus.textContent = text || ''; pngStatus.setAttribute('data-kind', kind || ''); }
+  function menuOpen(focusIdx) {
+    pngMenu.hidden = false;
+    pngBtn.setAttribute('aria-expanded', 'true');
+    var i = focusIdx != null ? focusIdx : Math.max(0, pngItems.findIndex(function (b) { return b.getAttribute('data-png-lang') === LANG; }));
+    pngItems[(i + pngItems.length) % pngItems.length].focus();
+  }
+  function menuClose(refocus) {
+    if (pngMenu.hidden) return;
+    pngMenu.hidden = true;
+    pngBtn.setAttribute('aria-expanded', 'false');
+    if (refocus) pngBtn.focus();
+  }
+  pngBtn.addEventListener('click', function () { if (pngMenu.hidden) menuOpen(); else menuClose(false); });
+  pngBtn.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); e.stopPropagation(); menuOpen(e.key === 'ArrowUp' ? -1 : 0); }
+  });
+  pngMenu.addEventListener('keydown', function (e) {
+    var i = pngItems.indexOf(document.activeElement);
+    var keys = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: pngItems.length - 1 };
+    if (e.key in keys) { e.preventDefault(); pngItems[(keys[e.key] + pngItems.length) % pngItems.length].focus(); }
+    else if (e.key === 'Escape') { e.preventDefault(); menuClose(true); }
+    else if (e.key === 'Tab') menuClose(false);
+    /* the page's own keys (arrows, Home, End) step through the screens; not while the menu has focus */
+    e.stopPropagation();
+  });
+  pngItems.forEach(function (b) {
+    b.addEventListener('click', function () { menuClose(true); downloadPng(b.getAttribute('data-png-lang')); });
+  });
+  document.addEventListener('click', function (e) { if (!document.getElementById('png').contains(e.target)) menuClose(false); });
+
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function within(p, ms) { return Promise.race([p, wait(ms)]); }
+  function pngName(lang) {
+    var ds = set.themable && dsId ? dsId : 'own';
+    return [(board.id || name).replace(/\//g, '-'), lang, ds].join('-').replace(/[^A-Za-z0-9._-]/g, '_') + '.png';
+  }
+  function boardUrl(lang) {
+    var u = new URL(board.file, location.href);
+    if (set.themable && dsId) u.searchParams.set('ds', dsId);
+    u.searchParams.set('lang', lang);
+    return u.href;
+  }
+  function loadLib(win) {
+    if (win.modernScreenshot) return Promise.resolve(win.modernScreenshot);
+    return new Promise(function (resolve, reject) {
+      var s = win.document.createElement('script');
+      s.src = MS_URL; s.integrity = MS_SRI; s.crossOrigin = 'anonymous';
+      s.setAttribute('data-png-lib', '');
+      s.onload = function () { win.modernScreenshot ? resolve(win.modernScreenshot) : reject(new Error('library')); };
+      s.onerror = function () { reject(new Error('library')); };
+      win.document.head.appendChild(s);
+    });
+  }
+  /* The renderer can only embed web fonts from style sheets it may read, so a
+     cross-origin sheet (Google Fonts) is loaded again with CORS in its place. */
+  function corsFonts(doc) {
+    var links = Array.prototype.filter.call(doc.querySelectorAll('link[rel="stylesheet"][href]'), function (l) {
+      try { return !l.crossOrigin && new URL(l.href).origin !== doc.location.origin; } catch (e) { return false; }
+    });
+    return Promise.all(links.map(function (old) {
+      return new Promise(function (resolve) {
+        var l = doc.createElement('link');
+        l.rel = 'stylesheet';
+        l.crossOrigin = 'anonymous';
+        l.onload = function () { var id = old.id; old.remove(); if (id) l.id = id; resolve(); };
+        l.onerror = function () { l.remove(); resolve(); };
+        l.href = old.href;
+        old.parentNode.insertBefore(l, old.nextSibling);
+      });
+    }));
+  }
+  /* Resolves when the board shows its final text, theme, fonts and images,
+     with the catalogue coverage (null when the board stayed in Dutch). */
+  function settle(win) {
+    var doc = win.document;
+    var tr = null;
+    return Promise.all([
+      win.screensTheme ? within(win.screensTheme.ready, 8000) : null,
+      win.screensI18n && win.screensI18n.done ? within(win.screensI18n.done, 8000) : null
+    ]).then(function (res) {
+      tr = res[1] || null;
+      var link = doc.getElementById('sc-font-link');
+      if (!link || link.sheet) return null;
+      return within(new Promise(function (r) { link.addEventListener('load', r); link.addEventListener('error', r); }), 6000);
+    }).then(function () {
+      return within(corsFonts(doc), 6000);
+    }).then(function () {
+      void doc.body.offsetHeight;
+      return doc.fonts ? within(doc.fonts.ready, 8000) : null;
+    }).then(function () {
+      return within(Promise.all(Array.prototype.map.call(doc.images, function (img) {
+        if (img.loading === 'lazy') img.loading = 'eager';
+        if (img.complete && img.naturalWidth) return null;
+        return img.decode ? img.decode().catch(function () {}) : null;
+      })), 10000);
+    }).then(function () { return wait(150); }).then(function () { return tr; });
+  }
+  function heightOf(doc) {
+    return Math.max(doc.documentElement.scrollHeight, doc.body ? doc.body.scrollHeight : 0);
+  }
+  function offscreen(lang, w) {
+    return new Promise(function (resolve, reject) {
+      var f = document.createElement('iframe');
+      f.className = 'png-frame';
+      f.setAttribute('aria-hidden', 'true');
+      f.tabIndex = -1;
+      f.title = '';
+      f.style.width = w + 'px';
+      f.style.height = (board.h || 900) + 'px';
+      f.addEventListener('load', function () { resolve(f); }, { once: true });
+      f.addEventListener('error', function () { reject(new Error('frame')); }, { once: true });
+      f.src = boardUrl(lang);
+      document.body.appendChild(f);
+    });
+  }
+  function save(blob, file) {
+    var url = URL.createObjectURL(blob);
+    var a = el('a', { href: url, download: file });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+  }
+
+  function downloadPng(lang) {
+    if (pngBusy || !board) return;
+    pngBusy = true;
+    pngBtn.setAttribute('aria-busy', 'true');
+    var w = board.w || 1440;
+    var file = pngName(lang);
+    var temp = null;
+    var langName = lang === 'en' ? 'English' : 'Nederlands';
+    pngSay(t('screens.png.busy', 'Making the PNG ({lang}).', { lang: langName }));
+    var onScreen = lang === LANG && frame.contentDocument && frame.contentDocument.readyState === 'complete';
+    (onScreen ? Promise.resolve(frame) : offscreen(lang, w).then(function (f) { temp = f; return f; }))
+      .then(function (f) {
+        var win = f.contentWindow;
+        var translated = null;
+        return settle(win).then(function (r) {
+          translated = r;
+          if (temp) { temp.style.height = heightOf(win.document) + 'px'; return wait(100); }
+          return null;
+        }).then(function () { return loadLib(win); }).then(function (ms) {
+          var doc = win.document;
+          var h = heightOf(doc);
+          var scale = Math.min(2, MAX_SIDE / w, MAX_SIDE / h, Math.sqrt(MAX_AREA / (w * h)));
+          return ms.domToBlob(doc.documentElement, {
+            width: w, height: h, scale: scale, type: 'image/png', backgroundColor: '#ffffff', timeout: 20000,
+            filter: function (n) { return !(n.hasAttribute && n.hasAttribute('data-png-lib')); }
+          }).then(function (blob) {
+            if (!blob || !blob.size) throw new Error('empty');
+            save(blob, file);
+            var untranslated = lang === 'en' && !set.gallery && !translated;
+            pngSay(t(untranslated ? 'screens.png.doneDutch' : 'screens.png.done', untranslated
+              ? 'Saved {file}. This screen has no English text yet, so it is in Dutch.' : 'Saved {file} ({w} × {h} px).',
+              { file: file, w: Math.round(w * scale), h: Math.round(h * scale) }));
+          });
+        });
+      })
+      .catch(function () {
+        pngSay(t('screens.png.error', 'Could not make a PNG of this screen. Use Open full size and take a screenshot instead.'), 'error');
+      })
+      .then(function () {
+        if (temp) temp.remove();
+        pngBusy = false;
+        pngBtn.removeAttribute('aria-busy');
+      });
+  }
+
   document.getElementById('prev').addEventListener('click', function (e) { if (S && board) { e.preventDefault(); step(-1); } });
   document.getElementById('next').addEventListener('click', function (e) { if (S && board) { e.preventDefault(); step(1); } });
   document.getElementById('side-prev').addEventListener('click', function (e) { if (S && board) { e.preventDefault(); step(-1); } });
@@ -902,7 +1111,9 @@
     }
     dsId = window.screensTheme.get() || (DS && DS.default) || null;
     if (DS) buildSeg();
+    var openPng = params.get('png') != null;
     show(n);
+    if (openPng) menuOpen();
   }).catch(function (err) {
     document.getElementById('layout').hidden = true;
     var m = document.getElementById('missing'); m.hidden = false;

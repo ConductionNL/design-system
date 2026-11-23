@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, applyInjection, browserEnv, focusRingsOff, markIgnored, parkPointer, readInjection, readPosts, resetScroll, routeId, sessionEntries, tableShape, leaveClosedSelect, loadingIndicators, retryOnce, chunks, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
+import { accountFor, applyInjection, browserEnv, focusRingsOff, markIgnored, parkPointer, readInjection, readMethods, readPosts, resetScroll, routeId, sessionEntries, tableShape, leaveClosedSelect, loadingIndicators, retryOnce, chunks, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -129,6 +129,20 @@ test('--read-post lets a POST that only reads through, by path glob; every other
 	assert.equal(allowed('POST', 'http://localhost:8080/index.php/apps/openregister/api/objects/dossiq/case'), false)
 	assert.equal(allowed('PUT', 'http://localhost:8080/index.php/apps/openregister/api/objects/dossiq/case/dedup-check'), false)
 	assert.equal(readPosts(undefined)('POST', 'http://localhost:8080/apps/dossiq/api/search'), false)
+})
+
+test('--read-methods lets CalDAV reads through under /remote.php/dav/ only; every write stays refused', () => {
+	const allowed = readMethods('PROPFIND|report')
+	assert.equal(allowed('PROPFIND', 'http://localhost:8080/remote.php/dav/calendars/admin/'), true)
+	assert.equal(allowed('REPORT', 'http://localhost:8080/remote.php/dav/calendars/admin/personal/'), true)
+	assert.equal(allowed('PROPFIND', 'http://localhost:8080/apps/dossiq/api/cases'), false)
+	assert.equal(allowed('PROPFIND', 'http://localhost:8080/index.php/remote.php/dav/calendars/admin/'), false)
+	for (const write of ['PUT', 'POST', 'DELETE', 'PROPPATCH', 'MKCOL', 'MKCALENDAR', 'MOVE', 'COPY', 'LOCK']) {
+		assert.equal(allowed(write, 'http://localhost:8080/remote.php/dav/calendars/admin/personal/x.ics'), false, write)
+	}
+	assert.equal(readMethods(undefined)('PROPFIND', 'http://localhost:8080/remote.php/dav/calendars/admin/'), false)
+	assert.throws(() => readMethods('PROPFIND|PROPPATCH'), /PROPPATCH/)
+	assert.throws(() => readMethods('MKCOL'), /--read-methods/)
 })
 
 test('the document and an inner scroll area scrolled by a hash are scrolled back to the top', { skip }, async () => {

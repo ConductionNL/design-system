@@ -26,6 +26,9 @@
 //   [--load-wait 30000]   the longest wait for loading indicators to clear after the settle (ms)
 //   [--inject-css <file>] [--inject-js <file>]   lay a proposed fix over the live page after the steps, to prove it
 //   before it is built; the report records the files and runall.sh refuses them (off by default)
+//   [--read-post "<path>|<path>"]   POST paths that only read (live.mjs readPosts)
+//   [--read-methods "PROPFIND|REPORT"]   WebDAV read methods let through under /remote.php/dav/, for CalDAV and
+//   CardDAV (live.mjs readMethods); a method that can write is refused with exit 2
 //   [--list-flags]   print the flags this compdiff reads and exit; any other flag is refused (exit 2), and runall.sh
 //   refuses a spec row that names one, so a row is never measured with part of its state dropped
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
@@ -51,7 +54,7 @@ import { cropToFrame } from './frame.mjs'
 import { collapseExempt, parseExempt } from './exempt.mjs'
 import { cutToRegion, findBoardRegion, parseRegion, regionExemptKinds, regionId } from './region.mjs'
 import { presenceWrite, presentAs } from './presence.mjs'
-import { accountFor, applyInjection, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, logIn, markIgnored, onLoginPage, parkPointer, readInjection, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
+import { accountFor, applyInjection, browserEnv, chunks, focusRingsOff, leaveClosedSelect, loadingIndicators, logIn, markIgnored, onLoginPage, parkPointer, readInjection, readMethods, readPosts, resetScroll, retryOnce, routeId, sessionEntries, trackRequests, waitForLoaded, waitForQuiet, waitForTables, waitForTransitions } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 /** A setup error: reported in one line, exit 2. */
@@ -77,8 +80,9 @@ const BOARDS = args.boards || path.join(HERE, '..', '..', '..', 'preview', 'scre
 const base = args.base || 'http://localhost:8080'
 const board = args.board
 const out = args.out || path.join(process.cwd(), 'compdiff-out')
-let width, clock, exemptKinds, region
+let width, clock, exemptKinds, region, readMethod
 try {
+	readMethod = readMethods(args['read-methods'])
 	width = parseWidth(args.width)
 	clock = parseClock(args.clock)
 	region = parseRegion(args)
@@ -218,7 +222,7 @@ try {
 	}
 	const readPost = readPosts(args['read-post'])
 	// With a second reader the measuring user beats too: the beat's answer is how its page learns who else is there.
-	const mayRead = (m, u) => readPost(m, u) || (presentAccount !== null && presenceWrite(m, u))
+	const mayRead = (m, u) => readPost(m, u) || readMethod(m, u) || (presentAccount !== null && presenceWrite(m, u))
 	const blocked = []
 	// Read-only: refuse any write request to the live instance (login is the one allowed POST).
 	const origin = new URL(base).origin

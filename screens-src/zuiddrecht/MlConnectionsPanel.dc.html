@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Connections panel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<aside aria-label="Connections" style="{{ asideStyle }}">
+  <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 52px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+    <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Connections</span>
+    <button type="button" aria-label="Close the connections panel" title="Close" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 16px; padding: 16px">
+    <h2 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">{{ subject }}</h2>
+
+    <section aria-labelledby="{{ id }}-connected" style="display: flex; flex-direction: column; gap: 8px">
+      <h3 id="{{ id }}-connected" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; line-height: 18px">Connected to</h3>
+      <sc-if value="{{ hasCards }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ cards }}" as="c" hint-placeholder-count="1">
+          <article aria-label="{{ c.aria }}" style="{{ c.style }}">
+            <div style="display: flex; align-items: center; gap: 8px; min-width: 0">
+              <span style="flex: none; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #234a78">{{ c.kind }}</span>
+              <a href="#" style="flex: none; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">{{ c.number }}</a>
+              <span style="flex: 1 1 auto"></span>
+              <button type="button" aria-label="{{ c.removeAria }}" title="Remove" style="flex: none; width: 28px; height: 28px; margin: -4px -6px -4px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+            </div>
+            <a href="#" style="font-size: 15px; font-weight: 600; line-height: 20px; color: #1b1c1d; text-decoration: none">{{ c.title }}</a>
+            <p style="margin: 0; font-size: 13px; line-height: 18px; color: #3d4047; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">{{ c.text }}</p>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 18px; color: #5e6168; white-space: nowrap; overflow: hidden">
+              <span style="{{ c.dot }}"></span><span>{{ c.status }}</span><span aria-hidden="true">·</span><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">{{ c.handler }}</span>
+            </div>
+            <sc-if value="{{ c.drop }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; padding: 8px 10px; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #234a78; font-size: 13px; font-weight: 600; line-height: 18px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                <span>Drop an attachment here to add it</span>
+              </div>
+            </sc-if>
+          </article>
+        </sc-for>
+      </sc-if>
+      <sc-if value="{{ isDrop }}" hint-placeholder-val="{{ false }}">
+        <div aria-hidden="true" style="position: absolute; right: 28px; top: 176px; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; box-shadow: 0 8px 20px rgba(27,28,29,0.18); font-size: 13px; color: #1b1c1d; white-space: nowrap; transform: rotate(-3deg); z-index: 5">
+          <span style="flex: none; padding: 1px 6px; border-radius: 4px; background: #cc0000; color: #ffffff; font-size: 10px; font-weight: 700; letter-spacing: 0.04em">PDF</span>photo-report-lindelaan.pdf<span style="color: #5e6168">975 B</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <p style="margin: 0; padding: 2px 0; font-size: 14px; line-height: 20px; color: #5e6168">Not connected to anything yet.</p>
+      </sc-if>
+      <sc-if value="{{ isConnected }}" hint-placeholder-val="{{ false }}">
+        <div role="status" style="display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 18px; color: #3d4047">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #234a78"><path d="M20 6 9 17l-5-5"></path></svg>
+          <span style="flex: 1 1 auto">Connected to case #2026-4833</span>
+          <button type="button" style="flex: none; height: 28px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif">Undo</button>
+        </div>
+      </sc-if>
+    </section>
+
+    <sc-for list="{{ kinds }}" as="k" hint-placeholder-count="2">
+      <section style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px">
+        <label for="{{ k.fieldId }}" style="font-size: 14px; font-weight: 600; line-height: 20px">{{ k.label }}</label>
+        <div style="position: relative; display: flex; align-items: center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+          <input id="{{ k.fieldId }}" type="search" value="{{ k.typed }}" placeholder="Number or words" aria-describedby="{{ k.fieldId }}-help" style="{{ k.fieldStyle }}">
+          <sc-if value="{{ k.hasTyped }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="Clear the search" style="position: absolute; right: 6px; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></sc-if>
+        </div>
+        <span id="{{ k.fieldId }}-help" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap">{{ k.help }}</span>
+        <sc-if value="{{ k.hasRows }}" hint-placeholder-val="{{ true }}">
+          <div role="listbox" aria-label="{{ k.listLabel }}" style="display: flex; flex-direction: column; gap: 2px">
+            <sc-for list="{{ k.rows }}" as="r" hint-placeholder-count="3">
+              <button type="button" role="option" aria-selected="{{ r.selected }}" style="{{ r.style }}">
+                <span style="display: flex; align-items: center; gap: 8px; min-width: 0; line-height: 20px">
+                  <sc-if value="{{ r.busy }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="M21 12a9 9 0 1 1-6.22-8.56"></path></svg></sc-if>
+                  <span style="flex: none; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #234a78">{{ r.kind }}</span>
+                  <span style="flex: none; font-weight: 600; color: var(--sc-link, #3669a5)">{{ r.number }}</span>
+                  <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.titleHtml }}</span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 18px; color: #5e6168; white-space: nowrap">
+                  <span style="{{ r.dot }}"></span><span style="flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis">{{ r.status }} · {{ r.handler }}</span>
+                  <sc-if value="{{ r.hasNote }}" hint-placeholder-val="{{ false }}"><span style="flex: none">{{ r.note }}</span></sc-if>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ k.isNone }}" hint-placeholder-val="{{ false }}">
+          <p role="status" style="margin: 0; padding: 2px 10px 0; font-size: 14px; line-height: 20px; color: #3d4047">{{ k.noneText }}</p>
+        </sc-if>
+        <button type="button" style="display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 500 14px 'Fira Sans', sans-serif; text-align: left; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 5v14M5 12h14"></path></svg>{{ k.newLabel }}</button>
+      </section>
+    </sc-for>
+
+    <section style="display: flex; flex-direction: column; gap: 2px; margin: 0 -6px; padding-top: 12px; border-top: 1px solid #e4e6ea">
+      <button type="button" aria-expanded="{{ foundAria }}" aria-controls="{{ id }}-found" style="display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 0 6px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M3 6h12M3 12h8M3 18h6M20 20l-2.5-2.5M19 15.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"></path></svg>
+        <span style="flex: none; font-weight: 600">Found in this mail</span>
+        <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #5e6168">{{ foundSummary }}</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="{{ foundChevron }}"></path></svg>
+      </button>
+      <ul id="{{ id }}-found" style="{{ foundStyle }}">
+        <sc-for list="{{ found }}" as="e" hint-placeholder-count="3">
+          <li style="display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 6px 0 34px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="{{ e.icon }}"></path></svg>
+            <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ e.text }}</span>
+            <span style="flex: none; font-size: 12px; color: #5e6168">{{ e.kind }}</span>
+            <button type="button" aria-label="{{ e.aria }}" style="flex: none; height: 28px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif">Search</button>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+  </div>
+</aside>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"text","default":"full"},"edge":{"editor":"text","default":"left"},"$preview":{"width":400,"height":1013}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // The connections panel of a mail: what the mail is connected to in OpenRegister (a case, a work queue item), one search per kind,
+    // and the entities found in the mail. state draws one moment: full (connected, the found list open), empty (nothing connected),
+    // typing (matches under the case field), none (no match), connecting (the picked row with a spinner), connected (just done),
+    // drop (an attachment dragged over the case card). edge="none" leaves out the left border for a framed specimen.
+    const state = this.props.state || 'full';
+    const id = 'mlc-' + state;
+    const STATUS = { 'received': ['#f5f6f8', '#828a95'], 'in progress': ['#eaf0f7', '#3669a5'], 'closed': ['#e4e6ea', '#828a95'] };
+    const dot = (status) => 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + STATUS[status][0] + '; border: 1.5px solid ' + STATUS[status][1];
+    const mark = (text, word) => word ? text.replace(new RegExp('(' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark style="background: #eaf0f7; color: inherit; border-radius: 2px; padding: 0 1px">$1</mark>') : text;
+    const rowBase = 'display: flex; flex-direction: column; width: 100%; min-height: 40px; padding: 6px 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); font: 400 14px \'Fira Sans\', sans-serif; color: #1b1c1d; text-align: left; ';
+    const lindelaan = ['Case', '#2026-4833', 'Street lighting Lindelaan: lights out on the cycle path', 'Report from a resident: light post 14-03 on the Lindelaan cycle path has been out for three weeks.', 'in progress', 'Pieter Jansen'];
+    const isDrop = state === 'drop';
+    const card = ([kind, number, title, text, status, handler]) => ({
+      kind, number, title, text, status, handler, dot: dot(status), drop: isDrop,
+      aria: kind + ' ' + number + ', ' + title,
+      removeAria: 'Remove the connection to ' + kind.toLowerCase() + ' ' + number,
+      style: 'position: relative; display: flex; flex-direction: column; gap: 4px; padding: 12px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); ' + (isDrop ? 'background: #eaf0f7; border: 1px dashed #3669a5' : 'background: #ffffff; border: 1px solid #e4e6ea')
+    });
+    const cards = ['full', 'connected', 'drop'].includes(state) ? [card(lindelaan)] : [];
+    const row = (word) => ([kind, number, title, status, handler, note, selected, busy]) => ({
+      kind, number, status, handler, note: note || '', hasNote: !!note, busy: !!busy,
+      titleHtml: mark(title, word), selected: selected ? 'true' : 'false', dot: dot(status),
+      style: rowBase + (selected ? 'background: #eaf0f7;' : 'background: transparent;')
+    });
+    const matches = (word, busy) => [
+      ['Case', '#2026-4833', 'Street lighting Lindelaan: lights out on the cycle path', 'in progress', 'Pieter Jansen', busy ? 'Connecting' : '', true, busy],
+      ['Case', '#2026-4791', 'Leaf blower nuisance on the Lindelaan', 'received', 'Anouk Bakker', '', false, false],
+      ['Case', '#2025-3310', 'Tree felling permit Lindelaan 27', 'closed', 'Mark de Wit', '', false, false]
+    ].map(row(word));
+    const kind = (label, fieldId, typed, rows, noneText, newLabel, focused) => ({
+      label, fieldId, typed, rows, hasRows: rows.length > 0, isNone: !!noneText, noneText: noneText || '', newLabel,
+      listLabel: label + ' matches', hasTyped: typed !== '',
+      help: 'Type a ' + label.toLowerCase() + ' number or words from its title. Matches appear below the field.',
+      fieldStyle: 'width: 100%; height: 40px; box-sizing: border-box; padding: 0 ' + (typed ? '38px' : '12px') + ' 0 38px; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px \'Fira Sans\', sans-serif; color: #1b1c1d; ' +
+        (focused ? 'border: 1px solid #3669a5; outline: 2px solid #eaf0f7' : 'border: 1px solid #828a95; outline: 0')
+    });
+    let caseRows = [];
+    let typed = '';
+    let noneText = '';
+    if (state === 'typing') { typed = 'Lindelaan'; caseRows = matches(typed, false); }
+    if (state === 'connecting') { typed = 'Lindelaan'; caseRows = matches(typed, true).slice(0, 1); }
+    if (state === 'none') { typed = 'parking garage'; noneText = 'No case matches “parking garage”.'; }
+    const kinds = [
+      kind('Case', id + '-case', typed, caseRows, noneText, 'New case from this mail', ['typing', 'none', 'connecting'].includes(state)),
+      kind('Work queue', id + '-queue', '', [], '', 'New work queue item from this mail', false)
+    ];
+    const foundOpen = state === 'full';
+    const found = [
+      ['Jana Koehler', 'sender', 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z'],
+      ['Lindelaan 14, Zuiddrecht', 'address', 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0zM12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'],
+      ['light post 14-03', 'asset number', 'M4 9h16M4 15h16M10 3 8 21M16 3l-2 18']
+    ].map(([text, kindName, icon]) => ({ text, kind: kindName, icon, aria: 'Search cases for ' + text }));
+    return {
+      id, subject: 'Street light on Lindelaan still broken',
+      asideStyle: 'position: relative; font-family: \'Fira Sans\', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; width: 400px; box-sizing: border-box; min-height: 100%; display: flex; flex-direction: column; background: #ffffff; overflow: hidden; ' + (this.props.edge === 'none' ? 'border-left: 0' : 'border-left: 1px solid #e4e6ea'),
+      cards, hasCards: cards.length > 0, isEmpty: cards.length === 0, isConnected: state === 'connected', isDrop,
+      kinds,
+      found, foundSummary: 'Names, addresses and numbers', foundAria: foundOpen ? 'true' : 'false',
+      foundChevron: foundOpen ? 'm18 15-6-6-6 6' : 'm6 9 6 6 6-6',
+      foundStyle: 'margin: 0; padding: 0; list-style: none; flex-direction: column; display: ' + (foundOpen ? 'flex' : 'none')
+    };
+  }
+}
+</script>
+</body>
+</html>

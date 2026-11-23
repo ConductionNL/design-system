@@ -82,11 +82,18 @@ class Component extends DCLogic {
     const isFolded = String(this.props.folded ?? '') === 'true';
     // Round 7: level 0 shows this 410 px list beside the empty reading pane, never a table. The wide prop is accepted and ignored.
     const isStd = !isFolded;
-    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
-    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'] };
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', CASE: '#234a78' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'], 'received': ['#f5f6f8', '#828a95'], 'in progress': ['#eaf0f7', '#3669a5'] };
     const ICON = { clip: 'm21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48', image: 'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M21 15l-5-5L5 21', calendar: 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z' };
     // from, initials, subject, count, date, snippet, options {unread, starred, attach:[icon,count], wp:[type, number, status], bundled, op}
-    const data = [
+    // set="zuiddrecht" draws the municipal inbox of the case boards (mail connected to OpenRegister cases) instead of Olivia's project mail.
+    const data = String(this.props.set ?? '') === 'zuiddrecht' ? [
+      ['Lars de Koning', 'LK', 'Minutes of the mobility consultation, 19 November', 1, '09:05', 'Hi Pieter, here are the minutes of Thursday\'s consultation with the two action points for us.', { unread: true, attach: ['clip', ''] }],
+      ['Team Communication', 'TC', 'Staff newsletter: the new workplace goes live', 1, '09:05', 'From Monday the new workplace is live for everyone. This is what changes for you.', { unread: true }],
+      ['Mark de Wit', 'MW', 'Planning: replacing the street lights on Havenweg', 1, '09:05', 'Hello Pieter, as agreed, attached is our planning for the Havenweg. Two evenings of work.', { attach: ['clip', ''] }],
+      ['Jana Koehler', 'JK', 'Street light on Lindelaan still broken', 1, '09:05', 'Dear Sir or Madam, the street light in front of Lindelaan 14 has been out for three weeks now.', { attach: ['clip', ''], wp: ['CASE', '#2026-4833', 'in progress'] }],
+      ['Ahmed Bakker', 'AB', 'Freedom of information request: Havenpark permit documents', 1, '09:05', 'Dear municipality of Zuiddrecht, under the Open Government Act I request all documents about the permit.', { attach: ['clip', ''], wp: ['CASE', '#2026-4840', 'received'] }]
+    ] : [
       ['Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', 1, '07:00', 'We are evaluating OpenProject for all of Malmö Energi, about 1,200 users. Could you show us the Nextcloud link?', { unread: true, starred: true }],
       ['Marc Dubois', 'MD', 'Rollout plan phase 2, Lyon', 6, '06:00', 'Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?', { attach: ['clip', ''], wp: ['FEATURE', '#58412', 'in development'] }],
       ['Jana Köhler', 'JK', 'Gantt export cuts off the last week', 3, '04:00', 'The last week of the plan is missing on the PDF, see the two screenshots. We need the export for the board on Thursday.', { unread: true, attach: ['image', '2'], wp: ['BUG', '#58231', 'in development'] }],

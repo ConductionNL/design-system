@@ -26,7 +26,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       <sc-if value="{{ it.hasCount }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="{{ it.badge }}">{{ it.count }}</span></sc-if>
     </a>
   </sc-for>
-  <button type="button" aria-haspopup="menu" aria-label="Account: Olivia Brandt, olivia@northwind-projects.test" title="Olivia Brandt" style="flex: none; order: 10; margin-top: 6px; width: 40px; height: 40px; border: 0; border-radius: var(--sc-radius, 8px); background: #f5f6f8; display: inline-flex; align-items: center; justify-content: center"><span style="width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; font-family: 'Fira Sans', system-ui, sans-serif">OB</span></button>
+  <button type="button" aria-haspopup="menu" aria-label="Account: {{ user }}, {{ mail }}" title="{{ user }}" style="flex: none; order: 10; margin-top: 6px; width: 40px; height: 40px; border: 0; border-radius: var(--sc-radius, 8px); background: #f5f6f8; display: inline-flex; align-items: center; justify-content: center"><span style="width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; font-family: 'Fira Sans', system-ui, sans-serif">{{ initials }}</span></button>
 </nav>
 </sc-if>
 <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ true }}">
@@ -37,9 +37,9 @@ a{color:#3669a5}a:hover{color:#234a78}
     </button>
     <button type="button" aria-label="Fold the folder list" aria-expanded="true" title="Fold the folder list" style="flex: none; width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
   </div>
-  <button type="button" aria-haspopup="menu" aria-label="Account: Olivia Brandt, olivia@northwind-projects.test" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 8px; border: 0; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #1b1c1d; text-align: left; font-family: 'Fira Sans', system-ui, sans-serif">
-    <span style="width: 28px; height: 28px; border-radius: 14px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none">OB</span>
-    <span style="display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; line-height: 1.25"><strong style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Olivia Brandt</strong><span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">olivia@northwind-projects.test</span></span>
+  <button type="button" aria-haspopup="menu" aria-label="Account: {{ user }}, {{ mail }}" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 8px; border: 0; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #1b1c1d; text-align: left; font-family: 'Fira Sans', system-ui, sans-serif">
+    <span style="width: 28px; height: 28px; border-radius: 14px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none">{{ initials }}</span>
+    <span style="display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; line-height: 1.25"><strong style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ user }}</strong><span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ mail }}</span></span>
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg>
   </button>
   <div style="display: flex; flex-direction: column; gap: 1px; margin-top: -8px">
@@ -165,7 +165,9 @@ class Component extends DCLogic {
         style: railBase + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #3d4047;')
       };
     });
-    return { groups, views, viewsIcon, viewsCount, rail, isFolded, isOpen };
+    // user, mail and initials fill the account button; the municipal boards pass Pieter Jansen.
+    const user = this.props.user ?? 'Olivia Brandt';
+    return { groups, views, viewsIcon, viewsCount, rail, isFolded, isOpen, user, mail: this.props.mail ?? 'olivia@northwind-projects.test', initials: this.props.initials ?? 'OB' };
   }
 }
 </script>

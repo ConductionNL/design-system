@@ -13,11 +13,15 @@ The boards are the UI canon. Where the seed and a board disagree, the board wins
 - No left menu. Launchpad has no app side bar, no "Menu" button, no "Startpagina aanpassen" and no Bewerken
   button in the page header. The header holds one action: Meer.
 - One Meer menu, identical on every dashboard (board LpMeer):
-  - Dashboards: every dashboard the user can open, marked standaard, gedeeld or groep; then Alle dashboards.
-  - Instellingen: one expandable item that unfolds in place: Persoonlijke instellingen, Beheerinstellingen,
-    Marktplaats, Sjablonen, Rapporten, Flows, Koppelingen, Documentatie, Functies en roadmap.
-  - Dit dashboard: Bewerken (enters edit mode), Widget toevoegen, Delen, Link naar dit dashboard kopiëren,
-    Kopie maken als nieuw dashboard, Als standaard instellen, and Verwijderen last in the error colour.
+  - Left column, Dashboards: every dashboard the user can open, marked standaard, gedeeld or groep; then
+    Alle dashboards.
+  - Right column, Dit dashboard: Bewerken (enters edit mode), Widget toevoegen, Delen, Link naar dit dashboard
+    kopiëren, Kopie maken als nieuw dashboard, Als standaard instellen, then Verwijderen in the error colour
+    above a rule.
+  - Instellingen: one expandable item at the bottom of the right column, under Verwijderen and a second rule,
+    that unfolds in place: Persoonlijke instellingen, Beheerinstellingen, Marktplaats, Sjablonen, Rapporten,
+    Flows, Koppelingen, Documentatie, Functies en roadmap. Under 960 px the menu is one column: Dashboards,
+    Dit dashboard, Instellingen last.
   - Not in the menu: Versies (a tab of the dashboard settings), Inplannen and Publicatie intrekken (tab
     Publicatie), and a separate Instellingen entry under Dit dashboard.
 - Edit mode shows the edit bar (LpBewerken): Kolommen, Widget toevoegen, Dashboardinstellingen (opens the

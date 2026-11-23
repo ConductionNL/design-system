@@ -49,6 +49,7 @@ import { cropMismatch, pixelsFlag, wholePixels } from './crop.mjs'
 import { parseClock, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { parseLookups, resolveRoute } from './lookup.mjs'
 import { KNOWN_FLAGS, unknownFlags } from './flags.mjs'
+import { boardUrl } from './boardurl.mjs'
 import { boardFreshness } from './freshness.mjs'
 import { cropToFrame } from './frame.mjs'
 import { collapseExempt, parseExempt } from './exempt.mjs'
@@ -172,13 +173,16 @@ const measure = async (page) => {
 const t0 = Date.now(), timings = {}
 let tLast = t0
 const lap = (name) => { const t = Date.now(); timings[name] = (timings[name] || 0) + (t - tLast); tLast = t }
-const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/google/chrome/chrome', headless: true, args: ['--no-sandbox', '--hide-scrollbars', '--lang=nl-NL'], env: browserEnv(process.env) })
+const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/google/chrome/chrome', headless: true, args: ['--no-sandbox', '--hide-scrollbars', '--lang=nl-NL', ...(args.lang ? ['--allow-file-access-from-files'] : [])], env: browserEnv(process.env) })
 try {
 	lap('launch')
 	const bctx = await browser.newContext({ viewport: { width, height: 1200 }, deviceScaleFactor: 1 })
 	const bpage = await bctx.newPage()
 	// The board is a local file, but its fonts and images load slowly on a busy box: 90 seconds, and once more.
-	await retryOnce(() => bpage.goto('file://' + boardFile, { waitUntil: 'load', timeout: 90000 }), (e) => console.error(`board load failed, trying once more: ${e.message.split('\n')[0]}`))
+	// --lang and --ds: the board translates itself from the query; reading its catalogue over file:// needs file access.
+	const boardHref = boardUrl(boardFile, { lang: args.lang, ds: args.ds })
+	await retryOnce(() => bpage.goto(boardHref, { waitUntil: 'load', timeout: 90000 }), (e) => console.error(`board load failed, trying once more: ${e.message.split('\n')[0]}`))
+	if (args.lang) await bpage.evaluate(() => (window.screensI18n && window.screensI18n.done) || null).catch(() => null)
 	await bpage.waitForTimeout(800)
 	// --board-frame: a board that draws several frames side by side (three phone screens on one canvas) is measured on
 	// one of them, as if it were the whole board.

@@ -20,7 +20,10 @@ extract  reads the flattened boards (`preview/screens/boards/<Key>.html`) of
          board of every set: a string that occurs on at least COMMON_MIN boards
          lives there and is left out of the per-board files, unless a board
          catalogue already holds it: then it is an override for that board
-         (its value wins over _common.json, "" keeps the Dutch). Each catalogue
+         (its value wins over _common.json, "" keeps the Dutch). A string stays
+         in `_common.json` while any board uses it, also when fewer than
+         COMMON_MIN do. A string that becomes common takes its translation from
+         the board catalogues that had it. Each catalogue
          also carries `_title` and `_note`: the board's title and capability
          note from screens.json, translated the same way.
 index    writes `preview/screens/i18n/en/index.json`: per board with a
@@ -146,40 +149,49 @@ def all_strings(data):
     return per
 
 
-def common_set(per):
+def common_set(per, common_old=None):
+    """The strings _common.json holds: those on COMMON_MIN or more boards, and
+    every string it already holds that a board still uses. A shared string never
+    leaves _common.json while it is on a board, so its translation is never lost
+    and boards outside an `extract --app` run, which have no own entry for it,
+    keep getting it."""
     count = Counter()
     for strings in per.values():
         count.update(strings)
-    return {s for s, n in count.items() if n >= COMMON_MIN}
+    kept = {k for k in (common_old or {}) if not k.startswith('_') and count[k] > 0}
+    return {s for s, n in count.items() if n >= COMMON_MIN} | kept
 
 
 def catalogue_path(key):
     return os.path.join(OUT, key + '.json')
 
 
-def cmd_extract(args):
-    data = screens()
-    per = all_strings(data)
-    common = common_set(per)
-    apps = None if args.all else set(args.app or [])
-    if not apps and not args.all:
-        sys.exit('name --app <app> (repeatable) or --all')
+def seed_value(s, cats):
+    """The translation the board catalogues most often give s, or ""."""
+    values = Counter(c[s] for c in cats.values() if isinstance(c.get(s), str) and c[s])
+    return values.most_common(1)[0][0] if values else ''
 
-    common_old = load_json(os.path.join(OUT, '_common.json'), {})
+
+def plan(data, per, common_old, olds, apps):
+    """The new _common.json and the board catalogues to write.
+
+    `olds` holds every board catalogue on disk by board key, `apps` the apps to
+    write catalogues for (None for all). A string that becomes common takes its
+    translation from the board catalogues; a board entry for it stays only as an
+    override, when it is translated differently. A string that is not common
+    takes its translation from the board's catalogue, else from _common.json.
+    """
+    common = common_set(per, common_old)
     common_new = {'_comment': 'Strings shared by %d or more boards. Applied to every board that has its own catalogue.' % COMMON_MIN}
     for s in sorted(common):
-        common_new[s] = common_old.get(s, '')
-    write_json(os.path.join(OUT, '_common.json'), common_new)
+        common_new[s] = common_old[s] if s in common_old else seed_value(s, olds)
 
-    written = 0
+    written = {}
     for key, strings in sorted(per.items()):
         board = data['boards'][key]
         if apps is not None and board['app'] not in apps:
             continue
-        old = load_json(catalogue_path(key), {})
-        # A common string that a board catalogue already holds is an override:
-        # that board means something else by it, so it keeps its own value.
-        own = [s for s in strings if s not in common or s in old]
+        old = olds.get(key, {})
         cat = {
             '_board': key,
             '_app': board['app'],
@@ -188,11 +200,31 @@ def cmd_extract(args):
             '_title_nl': board.get('title', ''),
             '_note_nl': board.get('note', ''),
         }
-        for s in own:
-            cat[s] = old.get(s, '')
+        for s in strings:
+            if s not in common:
+                cat[s] = old.get(s) or common_old.get(s, '')
+            elif s in old and (s in common_old or (old[s] and old[s] != common_new[s])):
+                # A common string that a board catalogue already holds is an
+                # override: that board means something else by it, so it keeps
+                # its own value ("" keeps the Dutch).
+                cat[s] = old[s]
+        written[key] = cat
+    return common, common_new, written
+
+
+def cmd_extract(args):
+    data = screens()
+    per = all_strings(data)
+    apps = None if args.all else set(args.app or [])
+    if not apps and not args.all:
+        sys.exit('name --app <app> (repeatable) or --all')
+
+    common_old = load_json(os.path.join(OUT, '_common.json'), {})
+    common, common_new, written = plan(data, per, common_old, catalogues(), apps)
+    write_json(os.path.join(OUT, '_common.json'), common_new)
+    for key, cat in written.items():
         write_json(catalogue_path(key), cat)
-        written += 1
-    print('common strings: %d (of %d unique over all boards); catalogues written: %d' % (len(common), len({s for v in per.values() for s in v}), written))
+    print('common strings: %d (of %d unique over all boards); catalogues written: %d' % (len(common), len({s for v in per.values() for s in v}), len(written)))
 
 
 def catalogues():
@@ -225,9 +257,9 @@ def cmd_index(args):
 def cmd_stats(args):
     data = screens()
     per = all_strings(data)
-    common = common_set(per)
-    cats = catalogues()
     common_cat = load_json(os.path.join(OUT, '_common.json'), {})
+    common = common_set(per, common_cat)
+    cats = catalogues()
     by_app = defaultdict(lambda: {'boards': 0, 'strings': set(), 'chars': 0, 'with_cat': 0, 'done': 0, 'total': 0})
     for key, strings in per.items():
         app = data['boards'][key]['app']

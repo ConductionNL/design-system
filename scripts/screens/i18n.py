@@ -35,7 +35,10 @@ A string is every text node with at least two letters outside <script> and
 <style>, with whitespace collapsed, and the values of placeholder, title,
 aria-label and alt. Numbers, dates, prices and codes have no letters and are
 left out; names and addresses are extracted but stay untranslated by decision
-(the demo municipality is Dutch).
+(the demo municipality is Dutch). One exception: in English the organisation is
+"Municipality of Zuiddrecht" everywhere ("the Municipality of Zuiddrecht" after
+of, for, to and from), as the workplace's own brand line reads. A thematiq token
+set keeps its name, "Gemeente Zuiddrecht", on the thematiq (Tq) boards.
 """
 import argparse
 import json

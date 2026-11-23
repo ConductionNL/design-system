@@ -162,7 +162,8 @@
 
    API: window.screensI18n.lang, .applyGallery(screens, overlay),
    .translateBoard(key) (resolves to the catalogue coverage, or
-   null when the board has none).
+   null when the board has none), and in a board document .done
+   (resolves the same way once the board's own translation ran).
    ============================================================ */
 (function () {
   'use strict';
@@ -270,8 +271,17 @@
     return m ? decodeURIComponent(m[1]) : null;
   }
   var key = boardKey();
+  /* .done resolves once the board text is final, so a PNG export can wait for it. */
+  window.screensI18n.done = Promise.resolve(null);
   if (key && lang === 'en') {
-    var run = function () { translateBoard(key).then(function (r) { window.dispatchEvent(new CustomEvent('screens-i18n', { detail: r })); }); };
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+    window.screensI18n.done = new Promise(function (resolve) {
+      var run = function () {
+        translateBoard(key).then(function (r) {
+          window.dispatchEvent(new CustomEvent('screens-i18n', { detail: r }));
+          resolve(r);
+        }, function () { resolve(null); });
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+    });
   }
 })();

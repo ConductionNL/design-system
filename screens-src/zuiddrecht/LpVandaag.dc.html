@@ -16,14 +16,16 @@ a{color:#3669a5}a:hover{color:#234a78}
 .lp-grid{display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto;gap:14px;min-height:0}
 .lp-first{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .lp-work{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.lp-main{display:grid;grid-template-columns:232px minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:14px 20px;min-height:0}
-.lp-tiles{display:grid;grid-template-columns:repeat(2,104px);gap:8px;align-content:start}
+.lp-main{display:grid;grid-template-columns:104px 104px minmax(0,1fr) minmax(0,1fr);grid-template-rows:104px 104px 104px minmax(0,1fr);gap:8px;min-height:0}
+.lp-agenda{grid-column:3;grid-row:1 / -1;margin-left:12px}
+.lp-recent{grid-column:4;grid-row:1 / -1}
 .lp-scroll{overflow:auto;min-height:0;scrollbar-width:thin}
 @media (max-width: 960px){
   .lp-frame{height:auto;min-height:100vh}
   .lp-grid{grid-template-rows:none}
-  .lp-first,.lp-main{grid-template-columns:minmax(0,1fr)}
-  .lp-main{grid-template-rows:none}
+  .lp-first{grid-template-columns:minmax(0,1fr)}
+  .lp-main{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:none}
+  .lp-agenda,.lp-recent{grid-column:1 / -1;grid-row:auto;margin-left:0}
   .lp-work{grid-template-columns:repeat(2,minmax(0,1fr))}
   .lp-scroll{max-height:260px}
 }
@@ -73,9 +75,6 @@ a{color:#3669a5}a:hover{color:#234a78}
     </section>
 
     <div class="lp-main">
-      <section aria-labelledby="lp-apps" class="lp-apps" style="display: flex; flex-direction: column; gap: 8px; min-height: 0">
-        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px"><h2 id="lp-apps" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Mijn apps</h2><a href="#" style="font-size: 13px; font-weight: 600">Alle apps</a></div>
-        <div class="lp-tiles">
           <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="6">
             <a href="#" title="{{ t.title }}" aria-label="{{ t.title }}" style="{{ t.style }}">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ t.icon }}"></path></svg>
@@ -84,10 +83,8 @@ a{color:#3669a5}a:hover{color:#234a78}
               <sc-if value="{{ t.down }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; top: 6px; right: 6px; width: 12px; height: 12px; border-radius: 6px; background: #cc0000; border: 2px solid #ffffff"></span></sc-if>
             </a>
           </sc-for>
-        </div>
-      </section>
 
-      <section aria-labelledby="lp-agenda" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 14px 18px 8px; display: flex; flex-direction: column; min-height: 0">
+      <section aria-labelledby="lp-agenda" class="lp-agenda" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 14px 18px 8px; display: flex; flex-direction: column; min-height: 0">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px"><h2 id="lp-agenda" style="margin: 0; font-size: 16px; font-weight: 700">Agenda vandaag</h2><a href="#" style="font-size: 13px; font-weight: 600">Open agenda</a></div>
         <div class="lp-scroll" style="flex: 1 1 auto">
           <sc-for list="{{ agenda }}" as="e" hint-placeholder-count="4">
@@ -100,7 +97,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
       </section>
 
-      <section aria-labelledby="lp-recent" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 14px 18px 8px; display: flex; flex-direction: column; min-height: 0">
+      <section aria-labelledby="lp-recent" class="lp-recent" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 14px 18px 8px; display: flex; flex-direction: column; min-height: 0">
         <h2 id="lp-recent" style="margin: 0 0 4px; font-size: 16px; font-weight: 700">Verder waar u was</h2>
         <div class="lp-scroll" style="flex: 1 1 auto">
           <sc-for list="{{ recent }}" as="r" hint-placeholder-count="4">
@@ -113,7 +110,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       </section>
     </div>
 
-    <p style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="flex: none; padding: 1px 8px; border: 1px dashed #828a95; border-radius: 10px; font-weight: 600; color: #3d4047">Ontwerpnotitie</span><span>De pagina scrolt niet: de rijen verdelen de hoogte onder de bovenbalk, op 1440×900 en op 1366×768. Agenda en recent werk scrollen in hun eigen kaart. De apptegels zijn elk één cel van het grid, zonder kaart eromheen; de kleur is een instelling van de tegel. Op een smal scherm staan de kaarten onder elkaar en scrolt de pagina wel.</span></p>
+    <p style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="flex: none; padding: 1px 8px; border: 1px dashed #828a95; border-radius: 10px; font-weight: 600; color: #3d4047">Ontwerpnotitie</span><span>De pagina scrolt niet: de rijen verdelen de hoogte onder de bovenbalk, op 1440×900 en op 1366×768. Agenda en recent werk scrollen in hun eigen kaart. Elke apptegel is een eigen widget van één cel op het grid, zonder kop, kaart of link eromheen; de kleur is een instelling van de tegel. Op een smal scherm staan de kaarten onder elkaar en scrolt de pagina wel.</span></p>
   </main>
 </div>
 <section aria-labelledby="lp-werk-t" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; box-sizing: border-box; width: 100%; padding: 18px 28px 24px; display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #e4e6ea; background: #f5f6f8">

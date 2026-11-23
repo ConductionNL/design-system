@@ -61,6 +61,8 @@ ROW_APP = {
     'rowLearniqRollen': 'learniq', 'rowDecidiq': 'decidiq', 'rowThematiq': 'thematiq', 'rowBuildiq': 'buildiq',
     'rowKeepiq': 'keepiq', 'rowOnderdelen2': 'werkplek',
 }
+# row key -> row it is shown in on /screens; the canvas-2 copies of the shared parts are one werkplek section
+MERGE_ROWS = {'rowOnderdelen2': 'rowWerkplek'}
 
 
 def load(path):
@@ -107,10 +109,15 @@ def build_index():
         app = row_app.get(key, key.removeprefix('row').lower())
         set_id = app if app in own_sets else 'zuiddrecht'
         names = [b[:-8] for col in columns for b in col]
-        row = {'id': key, 'app': app, 'title': title, 'boards': names}
-        if rest and rest[0]:
-            row['blurb'] = rest[0]
-        (own_sets[app] if set_id == app else zset)['rows'].append(row)
+        target = next((r for r in zset['rows'] if r['id'] == MERGE_ROWS.get(key)), None)
+        if target is not None:
+            target['boards'] += [n for n in names if n not in target['boards']]
+            key = target['id']
+        else:
+            row = {'id': key, 'app': app, 'title': title, 'boards': names}
+            if rest and rest[0]:
+                row['blurb'] = rest[0]
+            (own_sets[app] if set_id == app else zset)['rows'].append(row)
         for name in names:
             if name in index['boards']:
                 continue  # a shared component copied into a second row keeps its first row

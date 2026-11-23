@@ -15,12 +15,13 @@ a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; width: 1440px; height: {{ frameHeight }}; position: relative; overflow: hidden">
-  <dc-import name="DqKop" hint-size="100%,68px"></dc-import>
+  <dc-import name="DqKop" hint-size="100%,68px" pins="{{ pins }}" drag="{{ drag }}"></dc-import>
   <div style="position: absolute; left: 244px; top: 60px; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid #ffffff"></div>
-  <div role="menu" aria-label="Apps" style="position: absolute; left: 160px; top: 70px; width: 640px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 8px 24px rgba(27,28,29,0.12); padding: 18px 20px 16px; display: flex; flex-direction: column; gap: 8px">
+  <div role="menu" aria-labelledby="appmenu-titel" style="position: absolute; left: 160px; top: 70px; width: 640px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 8px 24px rgba(27,28,29,0.12); padding: 16px 20px 16px; display: flex; flex-direction: column; gap: 8px">
+    <h2 id="appmenu-titel" style="margin: 0 0 4px; font-size: 16px; font-weight: 700; line-height: 1.2">Apps</h2>
     <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
       <sc-for list="{{ first }}" as="a" hint-placeholder-count="9">
-        <a href="#" role="menuitem" aria-current="{{ a.current }}" style="{{ a.style }}">
+        <a href="#" role="menuitem" draggable="true" aria-current="{{ a.current }}" style="{{ a.style }}">
           <span style="{{ a.ring }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="{{ a.icon }}"></path></svg></span>
           <span style="{{ a.labelStyle }}">{{ a.name }}</span>
           <sc-if value="{{ a.hasSub }}" hint-placeholder-val="{{ true }}">
@@ -30,20 +31,20 @@ a{color:#3669a5}a:hover{color:#234a78}
       </sc-for>
     </div>
     <div style="display: flex; justify-content: flex-start">
-      <button type="button" aria-expanded="{{ expanded }}" style="min-height: 34px; margin: 0; padding: 4px 12px; border: 0; border-radius: 8px; background: transparent; color: #3669a5; font: 600 14px 'Fira Sans', system-ui, sans-serif; cursor: pointer">{{ toggle }}</button>
+      <button type="button" aria-expanded="{{ expanded }}" style="min-height: 34px; margin: 0 0 0 -4px; padding: 4px 12px 4px 10px; border: 0; border-radius: 8px; background: transparent; color: #3669a5; font: 600 14px 'Fira Sans', system-ui, sans-serif; cursor: pointer; display: flex; align-items: center; gap: 4px"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ chevron }}"></path></svg>{{ toggle }}</button>
     </div>
     <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
       <div style="height: 0; margin: 4px 0; border-top: 1px solid #e4e6ea"></div>
       <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
         <sc-for list="{{ rest }}" as="a" hint-placeholder-count="5">
-          <a href="#" role="menuitem" style="{{ a.style }}">
+          <a href="#" role="menuitem" draggable="true" style="{{ a.style }}">
             <span style="{{ a.ring }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="{{ a.icon }}"></path></svg></span>
             <span style="{{ a.labelStyle }}">{{ a.name }}</span>
           </a>
         </sc-for>
       </div>
       <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 10px 0 0">
-        <h2 style="margin: 0; font-size: 13px; font-weight: 700; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Externe apps</h2>
+        <h3 style="margin: 0; font-size: 13px; font-weight: 700; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Externe apps</h3>
         <span aria-hidden="true" style="font-size: 13px; color: #5e6168">opent in een nieuw tabblad</span>
       </div>
       <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
@@ -56,20 +57,46 @@ a{color:#3669a5}a:hover{color:#234a78}
         </sc-for>
       </div>
     </sc-if>
-    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 6px; padding-top: 12px; border-top: 1px solid #e4e6ea; font-size: 14px">
+    <div style="height: 0; margin: 4px 0 0; border-top: 1px solid #e4e6ea"></div>
+    <h3 style="margin: 4px 0 0; font-size: 13px; font-weight: 700; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Nieuw maken</h3>
+    <div role="group" aria-label="Nieuw maken" style="display: flex; align-items: flex-start; gap: 8px">
+      <sc-for list="{{ actions }}" as="c" hint-placeholder-count="5">
+        <button type="button" style="flex: 1 1 0; min-width: 0; margin: 0; padding: 8px 4px 6px; border: 0; border-radius: 10px; background: transparent; color: #1b1c1d; display: flex; flex-direction: column; align-items: center; gap: 6px; font: 500 13px 'Fira Sans', system-ui, sans-serif; line-height: 1.2; cursor: pointer">
+          <span style="width: 40px; height: 40px; border-radius: 20px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ c.icon }}"></path></svg></span>
+          <span style="max-width: 100%; text-align: center">{{ c.name }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 2px; padding-top: 12px; border-top: 1px solid #e4e6ea; font-size: 14px">
       <div style="display: flex; flex-direction: column; gap: 2px; color: #5e6168">
-        <span>Sleep een app om de volgorde te wijzigen.</span>
-        <span>Alt met een pijltjestoets verplaatst de app.</span>
+        <span>Sleep een app om te ordenen of vast te zetten in de bovenbalk.</span>
+        <span>Alt met een pijltjestoets verplaatst, Alt+P zet vast of maakt los.</span>
       </div>
-      <a href="#" style="font-weight: 600; display: flex; align-items: center; gap: 6px; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M10,22C9.75,22 9.54,21.82 9.5,21.58L9.13,18.93C8.5,18.68 7.96,18.34 7.44,17.94L4.95,18.95C4.73,19.03 4.46,18.95 4.34,18.73L2.34,15.27C2.21,15.05 2.27,14.78 2.46,14.63L4.57,12.97L4.5,12L4.57,11L2.46,9.37C2.27,9.22 2.21,8.95 2.34,8.73L4.34,5.27C4.46,5.05 4.73,4.96 4.95,5.05L7.44,6.05C7.96,5.66 8.5,5.32 9.13,5.07L9.5,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.5,2.42L14.87,5.07C15.5,5.32 16.04,5.66 16.56,6.05L19.05,5.05C19.27,4.96 19.54,5.05 19.66,5.27L21.66,8.73C21.79,8.95 21.73,9.22 21.54,9.37L19.43,11L19.5,12L19.43,13L21.54,14.63C21.73,14.78 21.79,15.05 21.66,15.27L19.66,18.73C19.54,18.95 19.27,19.04 19.05,18.95L16.56,17.95C16.04,18.34 15.5,18.68 14.87,18.93L14.5,21.58C14.46,21.82 14.25,22 14,22H10M11.25,4L10.88,6.61C9.68,6.86 8.62,7.5 7.85,8.39L5.44,7.35L4.69,8.65L6.8,10.2C6.4,11.37 6.4,12.64 6.8,13.8L4.68,15.36L5.43,16.66L7.86,15.62C8.63,16.5 9.68,17.14 10.87,17.38L11.24,20H12.76L13.13,17.39C14.32,17.14 15.37,16.5 16.14,15.62L18.57,16.66L19.32,15.36L17.2,13.81C17.6,12.64 17.6,11.37 17.2,10.2L19.31,8.65L18.56,7.35L16.15,8.39C15.38,7.5 14.32,6.86 13.12,6.62L12.75,4H11.25Z"></path></svg>Apps beheren</a>
+      <button type="button" aria-haspopup="dialog" style="flex: none; display: flex; align-items: center; gap: 6px; min-height: 40px; margin: 0; padding: 0 12px 0 10px; border: 1px solid #e4e6ea; border-radius: 8px; background: #ffffff; color: #3669a5; font: 600 14px 'Fira Sans', system-ui, sans-serif; white-space: nowrap; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ cog }}"></path></svg>Menu-instellingen</button>
     </div>
   </div>
+  <sc-if value="{{ dragPin }}" hint-placeholder-val="{{ false }}">
+    <div aria-hidden="true" style="position: absolute; left: 506px; top: 16px; z-index: 4; display: flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 26px; background: #ffffff; border: 1px solid #e4e6ea; box-shadow: 0 10px 28px rgba(27,28,29,0.24); transform: rotate(-3deg)">
+      <span style="width: 40px; height: 40px; border-radius: 20px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="{{ dragged.icon }}"></path></svg></span>
+      <span style="font-size: 14px; font-weight: 600">{{ dragged.name }}</span>
+    </div>
+  </sc-if>
+  <sc-if value="{{ dragUnpin }}" hint-placeholder-val="{{ false }}">
+    <div aria-hidden="true" style="position: absolute; left: 430px; top: 332px; z-index: 4; display: flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 26px; background: #ffffff; border: 1px solid #e4e6ea; box-shadow: 0 10px 28px rgba(27,28,29,0.24); transform: rotate(3deg)">
+      <span style="width: 40px; height: 40px; border-radius: 20px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="{{ dragged.icon }}"></path></svg></span>
+      <span style="font-size: 14px; font-weight: 600">{{ dragged.name }}</span>
+    </div>
+    <span role="status" style="position: absolute; left: 574px; top: 346px; z-index: 4; white-space: nowrap; padding: 6px 10px; border-radius: 6px; background: #1b1c1d; color: #ffffff; font-size: 13px; font-weight: 500; line-height: 1.2">Laat los om te verwijderen</span>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":460},"state":"dicht"}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":660},"state":"dicht","drag":"","pins":"Launchpad,Pipelinq,Agenda"}'>
 class Component extends DCLogic {
   renderVals() {
     const open = this.props.state === 'alles';
+    const drag = this.props.drag ?? '';
+    const pins = this.props.pins ?? 'Launchpad,Pipelinq,Agenda';
+    const dragName = drag === 'pin' ? 'Decidiq' : (drag === 'unpin' ? 'Agenda' : '');
     const entry = 'display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 12px; row-gap: 2px; align-content: center; padding: 12px 6px; border-radius: 10px; color: #1b1c1d; text-decoration: none; min-height: 44px; position: relative; ';
     const ring = (kind) => 'grid-row: 1 / span 2; grid-column: 1; width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; ' + ({
       current: 'background: #cc0000; color: #ffffff;',
@@ -79,7 +106,9 @@ class Component extends DCLogic {
     const label = (withSub, on) => (withSub ? 'grid-row: 1; align-self: end; ' : 'grid-row: 1 / span 2; align-self: center; ') + 'grid-column: 2; font-size: 13px; font-weight: ' + (on ? 600 : 500) + '; line-height: 1.2; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
     const app = ([name, sub, icon, kind]) => {
       const on = kind === 'current';
-      return { name, sub, icon, hasSub: Boolean(sub), current: on ? 'page' : 'false', ring: ring(kind), labelStyle: label(Boolean(sub), on), style: entry + (on ? 'background: #fcedec;' : '') };
+      const grabbed = drag === 'pin' && name === dragName;
+      const extra = (on ? 'background: #fcedec; ' : '') + (grabbed ? 'opacity: 0.45; outline: 2px solid #3669a5; outline-offset: 2px; box-shadow: inset 0 0 0 1px #828a95; ' : '');
+      return { name, sub, icon, hasSub: Boolean(sub), current: on ? 'page' : 'false', ring: ring(kind), labelStyle: label(Boolean(sub), on), style: entry + extra };
     };
     const files = 'M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z';
     const first = [
@@ -107,12 +136,25 @@ class Component extends DCLogic {
       ['Vergaderingen', 'OpenProject', 'M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z', 'core'],
       ['XWiki', 'Kennisbank', 'M21,5C19.89,4.65 18.67,4.5 17.5,4.5C15.55,4.5 13.45,4.9 12,6C10.55,4.9 8.45,4.5 6.5,4.5C4.55,4.5 2.45,4.9 1,6V20.65C1,20.9 1.25,21.15 1.5,21.15C1.6,21.15 1.65,21.1 1.75,21.1C3.1,20.45 5.05,20 6.5,20C8.45,20 10.55,20.4 12,21.5C13.35,20.65 15.8,20 17.5,20C19.15,20 20.85,20.3 22.25,21.05C22.35,21.1 22.4,21.1 22.5,21.1C22.75,21.1 23,20.85 23,20.6V6C22.4,5.55 21.75,5.25 21,5M21,18.5C19.9,18.15 18.7,18 17.5,18C15.8,18 13.35,18.65 12,19.5V8C13.35,7.15 15.8,6.5 17.5,6.5C18.7,6.5 19.9,6.65 21,7V18.5Z', 'core']
     ].map(app);
+    const actions = [
+      ['Nieuw document', 'M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M6,4H13V9H18V20H6V4M8,12V14H16V12H8M8,16V18H13V16H8Z'],
+      ['Nieuwe spreadsheet', 'M4,3H20A2,2 0 0,1 22,5V19A2,2 0 0,1 20,21H4A2,2 0 0,1 2,19V5A2,2 0 0,1 4,3M4,7V10H8V7H4M10,7V10H14V7H10M20,10V7H16V10H20M4,12V15H8V12H4M4,20H8V17H4V20M10,12V15H14V12H10M10,20H14V17H10V20M20,20V17H16V20H20M20,12H16V15H20V12Z'],
+      ['Nieuwe presentatie', 'M2,3H10A2,2 0 0,1 12,1A2,2 0 0,1 14,3H22V5H21V16H15.25L17,22H15L13.25,16H10.75L9,22H7L8.75,16H3V5H2V3M5,5V14H19V5H5Z'],
+      ['Nieuw whiteboard', 'M20.71,4.63L19.37,3.29C19,2.9 18.35,2.9 17.96,3.29L9,12.25L11.75,15L20.71,6.04C21.1,5.65 21.1,5 20.71,4.63M7,14A3,3 0 0,0 4,17C4,18.31 2.84,19 2,19C2.92,20.22 4.5,21 6,21A4,4 0 0,0 10,17A3,3 0 0,0 7,14Z'],
+      ['Meer', 'M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z']
+    ].map(([name, icon]) => ({ name, icon }));
+    const all = [...first, ...rest];
+    const dragged = all.find((a) => a.name === dragName) ?? first[0];
     return {
       open,
       expanded: open ? 'true' : 'false',
       toggle: open ? 'Apps verbergen' : 'Alle apps',
-      frameHeight: open ? '800px' : '460px',
-      first, rest, external
+      chevron: open ? 'M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z' : 'M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z',
+      cog: 'M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z',
+      frameHeight: open ? '1000px' : '660px',
+      first, rest, external, actions,
+      pins, drag, dragged,
+      dragPin: drag === 'pin', dragUnpin: drag === 'unpin'
     };
   }
 }

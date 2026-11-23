@@ -97,6 +97,32 @@ export function readPosts(raw) {
 	}
 }
 
+/** The WebDAV methods that only read, the ones --read-methods may name. */
+export const DAV_READ_METHODS = ['PROPFIND', 'REPORT', 'SEARCH']
+
+/**
+ * The WebDAV read methods a spec lets through (--read-methods, joined by `|`), only under `/remote.php/dav/`. CalDAV
+ * and CardDAV list with PROPFIND and REPORT, so Nextcloud Calendar loads empty when they are refused. A method that
+ * can write (PROPPATCH, MKCOL, PUT, MOVE, COPY, LOCK, ...) is not accepted, so every write stays refused.
+ *
+ * @param {string|undefined} raw The --read-methods value, such as `PROPFIND|REPORT`.
+ * @return {(method: string, url: string) => boolean} Whether a request may pass as a read.
+ * @throws {Error} When the value names a method that is not a WebDAV read.
+ */
+export function readMethods(raw) {
+	const methods = (raw || '').split('|').map((x) => x.trim().toUpperCase()).filter(Boolean)
+	const bad = methods.filter((m) => !DAV_READ_METHODS.includes(m))
+	if (bad.length) throw new Error(`--read-methods takes only WebDAV reads (${DAV_READ_METHODS.join('|')}), not ${bad.join('|')}`)
+	return (method, url) => {
+		if (!methods.includes(String(method).toUpperCase())) return false
+		try {
+			return new URL(url).pathname.startsWith('/remote.php/dav/')
+		} catch {
+			return false
+		}
+	}
+}
+
 /**
  * Scrolls the document and every scrolled container back to the top-left, so the capture starts where the board
  * does. A spec hash (`#section-kadaster`) or a step can scroll an app's inner scroll area (Nextcloud's settings

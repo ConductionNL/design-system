@@ -4,7 +4,7 @@
  */
 export const KNOWN_FLAGS = [
 	'allow-stale-board', 'base', 'board', 'board-frame', 'board-region', 'boards', 'click', 'clicks', 'clock', 'crop-flag', 'exempt', 'fills', 'ignore',
-	'inject-css', 'inject-js', 'keep-scroll', 'list-flags', 'live-region', 'load-wait', 'login', 'out', 'present-as', 'read-post', 'session', 'settle',
+	'inject-css', 'inject-js', 'keep-scroll', 'list-flags', 'live-region', 'load-wait', 'login', 'out', 'present-as', 'read-methods', 'read-post', 'session', 'settle',
 	'settle-mode', 'skip-first-run', 'state-card', 'steps', 'storage', 'url', 'wait-for', 'width',
 ]
 

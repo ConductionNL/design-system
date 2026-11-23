@@ -24,6 +24,26 @@ a{color:#3669a5}a:hover{color:#234a78}
     <button type="button" aria-label="Alle apps" aria-haspopup="menu" style="flex: none; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #f5f6f8; color: #1b1c1d; display: flex; align-items: center; justify-content: center">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16,20H20V16H16M16,14H20V10H16M10,8H14V4H10M16,8H20V4H16M10,14H14V10H10M4,14H8V10H4M4,20H8V16H4M10,20H14V16H10M4,8H8V4H4V8Z"></path></svg>
     </button>
+    <sc-if value="{{ hasPins }}" hint-placeholder-val="{{ false }}">
+      <nav aria-label="Vastgezette apps" style="display: flex; align-items: center; gap: 8px">
+        <sc-for list="{{ pinList }}" as="p" hint-placeholder-count="3">
+          <sc-if value="{{ p.ghost }}" hint-placeholder-val="{{ false }}">
+            <span aria-hidden="true" style="flex: none; width: 40px; height: 40px; box-sizing: border-box; border: 2px dashed #828a95; border-radius: 8px; background: #eef0f3"></span>
+          </sc-if>
+          <sc-if value="{{ p.shown }}" hint-placeholder-val="{{ true }}">
+            <a href="#" aria-label="{{ p.name }}" draggable="true" style="flex: none; width: 40px; height: 40px; border-radius: 8px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center; text-decoration: none">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="{{ p.icon }}"></path></svg>
+            </a>
+          </sc-if>
+        </sc-for>
+        <sc-if value="{{ dropPin }}" hint-placeholder-val="{{ false }}">
+          <span style="position: relative; flex: none; width: 40px; height: 40px">
+            <span aria-hidden="true" style="position: absolute; inset: 0; box-sizing: border-box; border: 2px dashed #3669a5; border-radius: 8px; background: #eaf0f7"></span>
+            <span role="status" style="position: absolute; left: 50%; top: 46px; z-index: 3; transform: translateX(-50%); white-space: nowrap; padding: 6px 10px; border-radius: 6px; background: #1b1c1d; color: #ffffff; font-size: 13px; font-weight: 500; line-height: 1.2">Laat los om vast te zetten</span>
+          </span>
+        </sc-if>
+      </nav>
+    </sc-if>
   </div>
   <form role="search" style="flex: 0 1 560px; min-width: 240px; position: relative">
     <label for="dq-zoek" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Zoeken</label>
@@ -47,10 +67,24 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </header>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"placeholder":{"editor":"text","default":"Zoek zaken, documenten of contacten"},"role":{"editor":"text","default":"Woo-coördinator"},"user":{"editor":"text","default":"Pieter Jansen"},"initials":{"editor":"text","default":"PJ"},"$preview":{"width":1440,"height":68}}'>
+<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"placeholder":{"editor":"text","default":"Zoek zaken, documenten of contacten"},"role":{"editor":"text","default":"Woo-coördinator"},"user":{"editor":"text","default":"Pieter Jansen"},"initials":{"editor":"text","default":"PJ"},"pins":{"editor":"text","default":""},"drag":{"editor":"text","default":""},"$preview":{"width":1440,"height":68}}'>
 class Component extends DCLogic {
   renderVals() {
-    return { app: this.props.app ?? 'Dossiq', placeholder: this.props.placeholder ?? 'Zoek zaken, documenten of contacten', role: this.props.role ?? 'Woo-coördinator', user: this.props.user ?? 'Pieter Jansen', initials: this.props.initials ?? 'PJ' };
+    const icons = {
+      Launchpad: 'M19,5V7H15V5H19M9,5V11H5V5H9M19,13V19H15V13H19M9,17V19H5V17H9M21,3H13V9H21V3M11,3H3V13H11V3M21,11H13V21H21V11M11,15H3V21H11V15Z',
+      Pipelinq: 'M12,1C7,1 3,5 3,10V17A3,3 0 0,0 6,20H9V12H5V10A7,7 0 0,1 12,3A7,7 0 0,1 19,10V12H15V20H19V21H12V23H18A3,3 0 0,0 21,20V10C21,5 16.97,1 12,1Z',
+      Agenda: 'M7 11H9V13H7V11M21 5V19C21 20.11 20.11 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H6V1H8V3H16V1H18V3H19C20.11 3 21 3.9 21 5M5 7H19V5H5V7M19 19V9H5V19H19M15 13V11H17V13H15M11 13V11H13V13H11M7 15H9V17H7V15M15 17V15H17V17H15M11 17V15H13V17H11Z'
+    };
+    const drag = this.props.drag ?? '';
+    const names = String(this.props.pins ?? '').split(',').map((n) => n.trim()).filter(Boolean);
+    const pinList = names.map((name, i) => {
+      const ghost = drag === 'unpin' && i === names.length - 1;
+      return { name, icon: icons[name] ?? icons.Launchpad, ghost, shown: !ghost };
+    });
+    return {
+      app: this.props.app ?? 'Dossiq', placeholder: this.props.placeholder ?? 'Zoek zaken, documenten of contacten', role: this.props.role ?? 'Woo-coördinator', user: this.props.user ?? 'Pieter Jansen', initials: this.props.initials ?? 'PJ',
+      hasPins: pinList.length > 0 || drag === 'pin', pinList, dropPin: drag === 'pin'
+    };
   }
 }
 </script>

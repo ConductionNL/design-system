@@ -59,11 +59,16 @@ The boards are the UI canon. Where the seed and a board disagree, the board wins
   and Tabbladen. Default tiles (Conduction, Nextcloud, sendent) show the white logo on the brand colour,
   without payoff.
 - The first dashboard of a new user is called "Mijn werkplek".
+- Launchpad's admin page is /settings/admin/launchpad, inside Nextcloud's settings framework (ADR-004,
+  ADR-079; boards LpBeheer*): Nextcloud's admin menu on the left, the version card first, then one settings
+  section per feature; every former admin tab is a tab of that page. It is not launchpad's app shell: no
+  launchpad header, no menu Meer, nothing buildiq can customise. /apps/launchpad/admin is gone. Users who
+  manage announcements without being admins reach it as a delegated admin setting.
 - Announcements are managed from settings, not from the widget (boards LpAankondiging, LpLeesbevestigingen):
-  one window Aankondigingen, opened from Instellingen in the menu Meer (entry Aankondigingen) by users who
-  may manage them and from the Aankondigingen widget by those same users, does all create, edit, schedule,
-  end and delete of news and maintenance notices, and shows per announcement who saw it and who confirmed
-  reading it. A reader confirms by pressing the check or the x on the announcement, or on the notice banner
+  the tab Aankondigingen of that admin page, linked from Instellingen in the menu Meer (entry Aankondigingen)
+  for users who may manage them and from the Aankondigingen widget (link Beheren) for those same users, does
+  all create, edit, schedule, end and delete of news and maintenance notices, and shows per announcement who
+  saw it and who confirmed reading it. There is no separate window. A reader confirms by pressing the check or the x on the announcement, or on the notice banner
   at the top; both count. The widget shows announcements with the check and the x only; likes, comments
   and follow live in the announcement's own view behind Openen.
 

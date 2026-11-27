@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<title>launchpad: aankondigingen beheren</title>
+<title>launchpad: beheer, aankondigingen</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -11,163 +11,50 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
 <style>
 body{margin:0}
-a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; position: relative; display: flex; flex-direction: column; min-height: 1160px">
-  <dc-import name="DqKop" app="Launchpad" placeholder="Zoek dashboards, widgets en apps" role="Medewerker" hint-size="100%,68px"></dc-import>
-  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
-    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
-      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
-        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
-          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
-            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Intranet Zuiddrecht</h1>
-            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 16px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ I.dots }}"></path></svg>Meer</button></div>
-          </div>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 15px; color: #5e6168"><span>Groepsdashboard van Communicatie</span><span aria-hidden="true">·</span><span>u mag widgets toevoegen</span></div>
-        </section>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px">
-          <sc-for list="{{ pageCards }}" as="c" hint-placeholder-count="9">
-            <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px"><span style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700"><span style="color: #3669a5; display: inline-flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ c.icon }}"></path></svg></span>{{ c.title }}</span><sc-for list="{{ c.lines }}" as="w" hint-placeholder-count="3"><span style="display: block; height: 10px; border-radius: 5px; background: #eef0f3; width: {{ w }}%"></span></sc-for></div>
-          </sc-for>
-        </div>
-      </main>
-    </div>
-  </div>
-  <div style="position: absolute; inset: 0; background: rgba(27,28,29,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 88px 16px 24px; box-sizing: border-box">
-    <div role="dialog" aria-modal="true" aria-labelledby="lpaankondiging-titel" style="flex: 0 1 1120px; min-width: 0; max-width: 1120px; background: #ffffff; border-radius: 12px; box-shadow: 0 16px 48px rgba(27,28,29,0.28); display: flex; flex-direction: column">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 22px 24px 4px">
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <span style="font-size: 13px; font-weight: 600; color: #5e6168">Instellingen · Launchpad</span>
-          <h2 id="lpaankondiging-titel" style="margin: 0; font-size: 20px; font-weight: 700">Aankondigingen</h2>
-        </div>
-        <button type="button" aria-label="Sluiten" style="flex: none; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 18px; background: transparent; color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ I.close }}"></path></svg></button>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 0; padding: 14px 0 0; border-top: 1px solid #eef0f3; margin-top: 14px">
-        <aside aria-label="Alle aankondigingen" style="display: flex; flex-direction: column; gap: 10px; padding: 10px 18px 22px 24px; border-right: 1px solid #eef0f3">
-          <button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 16px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 0; background: #3669a5; color: #ffffff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ I.plus }}"></path></svg>Nieuwe aankondiging</button>
-          <div role="group" aria-label="Toon" style="display: inline-flex; gap: 2px; padding: 3px; border-radius: 8px; background: #eef0f3"><sc-for list="{{ filters }}" as="f" hint-placeholder-count="3"><button type="button" aria-pressed="{{ f.on }}" style="{{ f.style }}">{{ f.label }}</button></sc-for></div>
-          <div role="listbox" aria-label="Aankondigingen" style="display: flex; flex-direction: column; gap: 6px">
-            <sc-for list="{{ items }}" as="a" hint-placeholder-count="4">
-              <div role="option" aria-selected="{{ a.selected }}" style="{{ a.style }}">
-                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="{{ a.kindStyle }}">{{ a.kind }}</span><span style="{{ a.stateStyle }}">{{ a.state }}</span></span>
-                <strong style="font-size: 14px; line-height: 1.3">{{ a.title }}</strong>
-                <span style="font-size: 12px; color: #5e6168">{{ a.meta }}</span>
-                <span style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: #3d4047"><span style="display: inline-flex; align-items: center; gap: 4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="#5e6168" aria-hidden="true"><path d="{{ I.eye }}"></path></svg>{{ a.seen }}</span><span style="display: inline-flex; align-items: center; gap: 4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="#1d6b3a" aria-hidden="true"><path d="{{ I.check }}"></path></svg>{{ a.confirmed }}</span></span>
-              </div>
-            </sc-for>
-          </div>
-        </aside>
-
-        <section aria-label="Aankondiging bewerken" style="display: flex; flex-direction: column; gap: 16px; padding: 10px 24px 22px 22px; min-width: 0">
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px">
-            <h3 style="margin: 0; font-size: 16px; font-weight: 700; flex: 1 1 320px; min-width: 0">Nieuwe werkwijze Woo-verzoeken vanaf 1 november</h3>
-            <span style="display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 12px; background: #e3f1e8; color: #1d6b3a; font-size: 13px; font-weight: 600">Gepubliceerd maandag 12 oktober 08:00</span>
-          </div>
-
-          <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(280px, 1fr); gap: 18px 22px; align-items: start">
-            <div style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
-              <div style="display: flex; flex-direction: column; gap: 6px"><label for="lp-titel" style="font-size: 14px; font-weight: 600">Titel</label><input id="lp-titel" type="text" value="Nieuwe werkwijze Woo-verzoeken vanaf 1 november" style="{{ field }}"></div>
-              <div style="display: flex; flex-direction: column; gap: 6px"><label for="lp-tekst" style="font-size: 14px; font-weight: 600">Tekst</label><textarea id="lp-tekst" rows="4" style="{{ field }} height: auto; padding: 10px 12px; resize: vertical; line-height: 1.5">Vanaf 1 november registreren we elk Woo-verzoek in dossiq. Lees de nieuwe werkinstructie en bevestig dat u die gelezen hebt.</textarea></div>
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 18px">
-                <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><label for="lp-doel" style="font-size: 14px; font-weight: 600">Doelgroep</label><button type="button" id="lp-doel" aria-haspopup="listbox" style="{{ field }} display: flex; align-items: center; justify-content: space-between; text-align: left"><span>Alle medewerkers, Team informatie</span><svg width="18" height="18" viewBox="0 0 24 24" fill="#5e6168" aria-hidden="true"><path d="{{ I.down }}"></path></svg></button></div>
-                <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0"><legend style="font-size: 14px; font-weight: 600; padding: 0; margin-bottom: 6px">Soort</legend><div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{ kinds }}" as="k" hint-placeholder-count="2"><label style="{{ k.style }}"><input type="radio" name="lp-soort" checked="{{ k.on }}" style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5">{{ k.label }}</label></sc-for></div></fieldset>
-              </div>
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 18px">
-                <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><label for="lp-pub" style="font-size: 14px; font-weight: 600">Publiceren op</label><input id="lp-pub" type="text" value="maandag 12 oktober 2026, 08:00" style="{{ field }}"></div>
-                <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><label for="lp-tot" style="font-size: 14px; font-weight: 600">Tonen tot <span style="color: #5e6168">(verplicht)</span></label><input id="lp-tot" type="text" value="vrijdag 30 oktober 2026, 17:00" style="{{ field }}"><span style="font-size: 13px; color: #5e6168">Daarna verdwijnt het bericht vanzelf van elk dashboard. Beëindigen zet dit moment op nu.</span></div>
-              </div>
-              <label for="lp-ack" style="display: flex; align-items: center; gap: 12px; cursor: pointer"><input id="lp-ack" type="checkbox" role="switch" checked style="position: absolute; opacity: 0; width: 1px; height: 1px"><span aria-hidden="true" style="width: 40px; height: 24px; border-radius: 12px; background: #3669a5; position: relative; flex: none"><span style="position: absolute; top: 3px; left: 19px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff"></span></span><span style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 14px; font-weight: 600">Leesbevestiging vragen</span><span style="font-size: 13px; color: #5e6168">Iedereen in de doelgroep ziet een vinkje en een kruisje op de aankondiging; allebei tellen als gelezen.</span></span></label>
-              <div style="display: flex; flex-direction: column; gap: 6px; max-width: 320px"><label for="lp-voor" style="font-size: 14px; font-weight: 600">Bevestigen voor</label><input id="lp-voor" type="text" value="vrijdag 30 oktober 2026" style="{{ field }}"></div>
-              <label for="lp-react" style="display: flex; align-items: center; gap: 12px; cursor: pointer"><input id="lp-react" type="checkbox" role="switch" checked style="position: absolute; opacity: 0; width: 1px; height: 1px"><span aria-hidden="true" style="width: 40px; height: 24px; border-radius: 12px; background: #3669a5; position: relative; flex: none"><span style="position: absolute; top: 3px; left: 19px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff"></span></span><span style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 14px; font-weight: 600">Leuk vinden, reageren en volgen toestaan</span><span style="font-size: 13px; color: #5e6168">Dat gebeurt in de aankondiging zelf, niet in de widget. Nu 24 keer leuk gevonden, 6 reacties, 41 volgers.</span></span></label>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
-              <section aria-labelledby="lp-bereik" style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; border-radius: 10px; background: #f5f6f8; border: 1px solid #e4e6ea">
-                <h4 id="lp-bereik" style="margin: 0; font-size: 14px; font-weight: 600">Gezien en bevestigd</h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
-                  <span style="display: flex; flex-direction: column; gap: 2px; line-height: 1.1"><strong style="font-size: 26px">151</strong><span style="font-size: 12px; color: #5e6168">van 164 gezien</span></span>
-                  <span style="display: flex; flex-direction: column; gap: 2px; line-height: 1.1"><strong style="font-size: 26px">128</strong><span style="font-size: 12px; color: #5e6168">bevestigd · 121 vinkje, 7 kruisje</span></span>
-                </div>
-                <span aria-hidden="true" style="height: 10px; border-radius: 5px; background: #e4e6ea; overflow: hidden; display: flex"><span style="display: block; width: 78%; height: 100%; background: #3669a5"></span><span style="display: block; width: 14%; height: 100%; background: #c5c9d1"></span></span>
-                <span style="font-size: 13px; color: #3d4047">Nog 36 niet bevestigd, 13 nog niet gezien · deadline vrijdag 30 oktober</span>
-                <a href="LpLeesbevestigingen.dc.html" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ I.list }}"></path></svg>Wie heeft gezien en bevestigd?</a>
-              </section>
-
-              <div style="display: flex; flex-direction: column; gap: 8px">
-                <span style="font-size: 14px; font-weight: 600">Zo staat het in de widget</span>
-                <article style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: inset 4px 0 0 #3669a5; padding: 14px 16px 12px 18px; display: flex; flex-direction: column; gap: 8px">
-                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><span style="padding: 2px 10px; border-radius: 12px; background: #eaf0f7; color: #234a78; font-size: 12px; font-weight: 600">Aankondiging</span><span style="font-size: 12px; color: #5e6168">Team informatie · maandag 12 oktober</span></span>
-                  <strong style="font-size: 15px; line-height: 1.3">Nieuwe werkwijze Woo-verzoeken vanaf 1 november</strong>
-                  <span style="font-size: 13px; line-height: 1.5; color: #3d4047">Vanaf 1 november registreren we elk Woo-verzoek in dossiq. Lees de nieuwe werkinstructie en bevestig dat u die gelezen hebt.</span>
-                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid #eef0f3"><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 13px 'Fira Sans', sans-serif"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ I.check }}"></path></svg>Gelezen</button><button type="button" aria-label="Gelezen, niet meer tonen" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ I.close }}"></path></svg></button><span style="font-size: 12px; color: #5e6168">Vóór 30 oktober</span><a href="#" style="margin-left: auto; font-size: 12px; font-weight: 600; text-decoration: none">Openen</a></span>
-                </article>
-                <span style="font-size: 13px; color: #5e6168">De widget toont de aankondiging en het vinkje of kruisje. Leuk vinden, reacties en volgen staan achter Openen. Wie aankondigingen mag beheren komt vanuit de widget in dit venster.</span>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef0f3">
-        <span style="flex: 1 1 auto; display: flex; flex-wrap: wrap; gap: 6px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 0; background: transparent; color: #a30000;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ I.bin }}"></path></svg>Verwijderen</button><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 0; background: transparent; color: #1b1c1d;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ I.stop }}"></path></svg>Nu beëindigen</button></span>
-        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 16px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #828a95; background: #ffffff; color: #1b1c1d;">Annuleren</button>
-        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 18px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 0; background: #3669a5; color: #ffffff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ I.check }}"></path></svg>Opslaan</button>
-      </div>
-    </div>
-  </div>
-</div>
+<dc-import name="LpBeheer" section="Aankondigingen" title="Launchpad-beheer: aankondigingen" scope="nieuws en onderhoudsmeldingen voor iedereen" role="Communicatie, gedelegeerd beheer" user="Femke de Wit" initials="FW" sections="{{ sections }}" hint-size="100%,1800px"></dc-import>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1160}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
 class Component extends DCLogic {
   renderVals() {
-    // The one announcements window, opened from Instellingen in the menu Meer (entry Aankondigingen) by
-    // users who may manage announcements, and from the Aankondigingen widget by those same users (review
-    // 27 Nov 2026, items 15 and 16). It does everything: create, edit, schedule, end and delete news and
-    // maintenance notices, and shows per announcement who saw it and who confirmed reading it. The widget
-    // itself only shows announcements with the check and the x; likes, comments and follow live in the
-    // announcement's own view behind Openen.
-    const I = {
-      dots: 'M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z',
-      close: 'M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z',
-      plus: 'M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z',
-      down: 'M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z',
-      check: 'M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z',
-      eye: 'M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z',
-      list: 'M3,5H21V7H3V5M3,9H21V11H3V9M3,13H21V15H3V13M3,17H21V19H3V17Z',
-      bin: 'M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z',
-      stop: 'M18,18H6V6H18V18Z',
-      bullhorn: 'M12,8H4A2,2 0 0,0 2,10V14A2,2 0 0,0 4,16H5V20A1,1 0 0,0 6,21H8A1,1 0 0,0 9,20V16H12L17,20V4L12,8M15,15.6L13,14H4V10H13L15,8.4V15.6M21.5,12C21.5,13.71 20.54,15.26 19,16V8C20.53,8.75 21.5,10.3 21.5,12Z',
-      mail: 'M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z',
-      cal: 'M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z',
-      news: 'M20,11H4V8H20M20,15H13V13H20M20,19H13V17H20M11,19H4V13H11M20.33,4.67L18.67,3L17,4.67L15.33,3L13.67,4.67L12,3L10.33,4.67L8.67,3L7,4.67L5.33,3L3.67,4.67L2,3V19A2,2 0 0,0 4,21H20A2,2 0 0,0 22,19V3L20.33,4.67Z',
-      people: 'M16,13C15.71,13 15.38,13 15.03,13.05C16.19,13.89 17,15 17,16.5V19H23V16.5C23,14.17 18.33,13 16,13M8,13C5.67,13 1,14.17 1,16.5V19H15V16.5C15,14.17 10.33,13 8,13M8,11A3,3 0 0,0 11,8A3,3 0 0,0 8,5A3,3 0 0,0 5,8A3,3 0 0,0 8,11M16,11A3,3 0 0,0 19,8A3,3 0 0,0 16,5A3,3 0 0,0 13,8A3,3 0 0,0 16,11Z',
-      text: 'M5,4V7H10.5V19H13.5V7H19V4H5Z',
-      file: 'M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z'
-    };
-    const pageCards = [
-      ['Aankondiging', I.bullhorn, [90, 70, 80]], ['Nieuws', I.news, [85, 60, 75]], ['Van de gemeentesecretaris', I.text, [90, 75]],
-      ['Agenda', I.cal, [70, 90, 60]], ['Collega\'s', I.people, [50, 40]], ['Mail', I.mail, [85, 60, 75]],
-      ['Bestanden', I.file, [80, 65, 70]], ['Jarigen', I.people, [60, 70]], ['Kantinemenu', I.text, [70, 50]]
-    ].map(([title, icon, lines]) => ({ title, icon, lines }));
-    const field = "box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d;";
-    const seg = (on) => 'height: 32px; padding: 0 10px; border: 0; border-radius: 6px; font: 600 13px \'Fira Sans\', sans-serif; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.15);' : 'background: transparent; color: #3d4047;');
-    const filters = [['Actief', true], ['Ingepland', false], ['Beëindigd', false]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', style: seg(on) }));
-    const pill = (bg, fg) => 'display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px; background: ' + bg + '; color: ' + fg + '; font-size: 11px; font-weight: 600; white-space: nowrap';
-    const kindOf = { Nieuws: pill('#eaf0f7', '#234a78'), Onderhoud: pill('#fff4de', '#7a4f00') };
-    const stateOf = { Actief: pill('#e3f1e8', '#1d6b3a'), Ingepland: pill('#f0f1f3', '#3d4047'), 'Beëindigd': pill('#f0f1f3', '#5e6168') };
-    const item = (kind, state, title, meta, seen, confirmed, selected) => ({
-      kind, state, title, meta, seen, confirmed, selected: selected ? 'true' : 'false', kindStyle: kindOf[kind], stateStyle: stateOf[state],
-      style: 'display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 8px; cursor: pointer; ' + (selected ? 'border: 1px solid #3669a5; background: #eaf0f7;' : 'border: 1px solid #e4e6ea; background: #ffffff;')
-    });
-    const items = [
-      item('Nieuws', 'Actief', 'Nieuwe werkwijze Woo-verzoeken vanaf 1 november', 'Team informatie · 12 okt tot 30 okt 17:00 · bevestigen voor 30 okt', '151 van 164', '128', true),
-      item('Onderhoud', 'Actief', 'Zaaksysteem in onderhoud zaterdag 10 oktober 08:00 tot 12:00', 'IT · bovenaan elk dashboard tot za 12:00', '164 van 164', '97', false),
-      item('Nieuws', 'Ingepland', 'Kantine gesloten op donderdag 16 oktober', 'Facilitair · publiceren 14 okt 08:00, tonen tot 16 okt', '0', '0', false),
-      item('Nieuws', 'Beëindigd', 'Nieuwe parkeerregeling stadskantoor', 'Facilitair · 1 sep tot 30 sep', '160 van 164', '149', false)
+    // /settings/admin/launchpad, tab Aankondigingen (review 27 Nov 2026, items 15, 16 and 19): a section of the
+    // admin settings page, not a window. It does everything: create, edit, schedule, end and delete news and
+    // maintenance notices, and shows per announcement who saw it and who confirmed reading it. Femke de Wit
+    // manages announcements without being a Nextcloud admin, so she reaches this tab as a delegated admin
+    // setting and sees only the tabs her role allows. The widget only shows announcements with the check and the
+    // x; for her it links here. Likes, comments and follow live in the announcement's own view.
+    const sections = [
+      { name: 'Aankondigingen', help: true, desc: 'Nieuws en onderhoudsmeldingen, actief, ingepland of beëindigd. Gezien telt zodra een aankondiging in beeld was; bevestigd telt bij het vinkje of het kruisje.', rows: [
+        { radios: 'Toon', options: [['Actief', '', true], ['Ingepland', ''], ['Beëindigd', ''], ['Alles', '']] },
+        { table: ['Aankondiging', 'Soort', 'Status', 'Gezien', 'Bevestigd', ''], lines: [
+          [{ strong: 'Nieuwe werkwijze Woo-verzoeken vanaf 1 november' }, 'Nieuws', { pill: 'Actief · 12 okt tot 30 okt', tone: 'success' }, '151 van 164', '128', { buttons: [['Bewerken', ''], ['Gezien en bevestigd', '']] }],
+          [{ strong: 'Zaaksysteem in onderhoud zaterdag 10 oktober 08:00 tot 12:00' }, 'Onderhoudsmelding', { pill: 'Actief · tot za 12:00', tone: 'success' }, '164 van 164', '97', { buttons: [['Bewerken', ''], ['Gezien en bevestigd', '']] }],
+          [{ strong: 'Kantine gesloten op donderdag 16 oktober' }, 'Nieuws', { pill: 'Ingepland · 14 okt 08:00', tone: 'warning' }, '0', '0', { buttons: [['Bewerken', '']] }],
+          [{ strong: 'Nieuwe parkeerregeling stadskantoor' }, 'Nieuws', { pill: 'Beëindigd · 30 sep' }, '160 van 164', '149', { buttons: [['Gezien en bevestigd', '']] }]
+        ] },
+        { buttons: [['Nieuwe aankondiging', 'primary']] }
+      ] },
+      { name: 'Bewerken: Nieuwe werkwijze Woo-verzoeken vanaf 1 november', desc: 'Gepubliceerd maandag 12 oktober 08:00 door Team informatie.', rows: [
+        { text: 'Titel', value: 'Nieuwe werkwijze Woo-verzoeken vanaf 1 november' },
+        { area: 'Tekst', rows: 4, value: 'Vanaf 1 november registreren we elk Woo-verzoek in dossiq. Lees de nieuwe werkinstructie en bevestig dat u die gelezen hebt.' },
+        { pair: [{ label: 'Doelgroep', value: 'Alle medewerkers, Team informatie', select: true }, { label: 'Soort', value: 'Nieuws', select: true, hint: 'Een onderhoudsmelding staat bovenaan elk dashboard tot de eindtijd' }] },
+        { pair: [{ label: 'Publiceren op', value: 'maandag 12 oktober 2026, 08:00' }, { label: 'Tonen tot (verplicht)', value: 'vrijdag 30 oktober 2026, 17:00', hint: 'Daarna verdwijnt het bericht vanzelf van elk dashboard. Nu beëindigen zet dit moment op nu.' }] },
+        { switch: 'Leesbevestiging vragen', on: true, hint: 'Iedereen in de doelgroep ziet een vinkje en een kruisje op de aankondiging en in de melding bovenaan; allebei tellen als gelezen.' },
+        { text: 'Bevestigen voor', value: 'vrijdag 30 oktober 2026' },
+        { switch: 'Leuk vinden, reageren en volgen toestaan', on: true, hint: 'Dat gebeurt in de aankondiging zelf, achter Openen in de widget, niet in de widget. Nu 24 keer leuk gevonden, 6 reacties, 41 volgers.' },
+        { buttons: [['Opslaan', 'primary'], ['Annuleren', ''], ['Nu beëindigen', ''], ['Verwijderen', 'danger']] }
+      ] },
+      { name: 'Gezien en bevestigd', desc: 'Nieuwe werkwijze Woo-verzoeken vanaf 1 november, doelgroep 164 mensen.', rows: [
+        { figures: [['Gezien', '151 van 164'], ['Bevestigd', '128'], ['Met het vinkje', '121'], ['Met het kruisje', '7'], ['Nog niet bevestigd', '36'], ['Nog niet gezien', '13']] },
+        { para: 'Deadline vrijdag 30 oktober. Wie nog niet bevestigde krijgt de aankondiging op elk dashboard tot de deadline.' },
+        { link: 'Wie heeft gezien en bevestigd?' }
+      ] },
+      { name: 'Zo staat het in de widget', desc: 'De widget Aankondigingen toont alleen de aankondiging met het vinkje en het kruisje en de link Openen. Leuk vinden, reacties en volgen staan achter Openen. Wie aankondigingen mag beheren ziet in de widget de link Beheren, die hierheen leidt.', rows: [
+        { note: 'Aankondiging · Team informatie · maandag 12 oktober. Nieuwe werkwijze Woo-verzoeken vanaf 1 november. Vanaf 1 november registreren we elk Woo-verzoek in dossiq. Lees de nieuwe werkinstructie en bevestig dat u die gelezen hebt. [Gelezen] [x] Vóór 30 oktober · Openen · Beheren' }
+      ] }
     ];
-    const kinds = [['Nieuws', true], ['Onderhoudsmelding', false]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', style: 'display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14px; cursor: pointer; ' + (on ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78; font-weight: 600;' : 'border: 1px solid #828a95; background: #ffffff;') }));
-    return { I, pageCards, field, filters, items, kinds };
+    return { sections };
   }
 }
 </script>

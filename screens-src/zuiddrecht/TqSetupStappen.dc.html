@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Onderdeel: stappen van de eerste keer instellen van thematiq</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="padding: 14px 24px 4px; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d">
+  <ol aria-label="Stappen van de setup" style="list-style: none; margin: 0; padding: 0; display: flex; gap: 4px">
+    <sc-for list="{{ steps }}" as="s" hint-placeholder-count="6">
+      <li aria-current="{{ s.current }}" style="position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center">
+        <sc-if value="{{ s.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ s.line }}"></span></sc-if>
+        <span style="{{ s.dot }}"><sc-if value="{{ s.done }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></sc-if><sc-if value="{{ s.todo }}" hint-placeholder-val="{{ true }}">{{ s.n }}</sc-if></span>
+        <span style="{{ s.labelStyle }}">{{ s.label }}</span>
+      </li>
+    </sc-for>
+  </ol>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":720,"height":70},"current":"1"}'>
+class Component extends DCLogic {
+  renderVals() {
+    const cur = Number(this.props.current || 1);
+    const steps = ['Welkom', 'Huisstijl', 'Nextcloud-thema', 'Inlogpagina', 'Appmenu', 'Klaar'].map((label, i, all) => {
+      const n = i + 1;
+      const st = n < cur ? 'done' : n === cur ? 'now' : '';
+      return {
+        label, n: String(n), done: st === 'done', todo: st !== 'done', current: st === 'now' ? 'step' : 'false', hasLine: i < all.length - 1,
+        line: 'position: absolute; top: 14px; left: calc(50% + 18px); right: calc(-50% + 18px); height: 2px; background: ' + (st === 'done' ? '#1e6b2a' : '#d6d9de'),
+        dot: 'width: 28px; height: 28px; flex: none; box-sizing: border-box; border-radius: 14px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; ' + (st === 'done' ? 'background: #1e6b2a; color: #ffffff;' : st === 'now' ? 'background: #3669a5; color: #ffffff;' : 'border: 2px solid #828a95; background: #ffffff; color: #3d4047;'),
+        labelStyle: 'font-size: 12px; line-height: 1.3; ' + (st === 'now' ? 'font-weight: 700; color: #1b1c1d' : 'color: #5e6168')
+      };
+    });
+    return { steps };
+  }
+}
+</script>
+</body>
+</html>

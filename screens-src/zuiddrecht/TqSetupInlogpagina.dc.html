@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>thematiq: eerste keer instellen, stap 4, de inlogpagina</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; position: relative; width: 1440px; height: 1000px; overflow: hidden">
+  <dc-import name="DqNextcloudDashboard" hint-size="100%,1000px"></dc-import>
+  <div style="position: absolute; inset: 0; z-index: 50; background: rgba(27,28,29,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 72px 24px 24px; box-sizing: border-box">
+    <div role="dialog" aria-modal="true" aria-labelledby="tq-setup-title" style="width: 100%; max-width: 720px; background: #ffffff; border-radius: 12px; box-shadow: 0 16px 48px rgba(27,28,29,0.28); display: flex; flex-direction: column">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 22px 24px 4px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 700; color: #234a78">Thematiq instellen, stap 4 van 6</span><h2 id="tq-setup-title" style="margin: 0; font-size: 20px; font-weight: 700">De inlogpagina</h2></div>
+        <button type="button" aria-label="Later, bij de volgende pagina verder" title="Later, bij de volgende pagina verder" style="flex: none; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 18px; background: transparent; color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
+      </div>
+      <dc-import name="TqSetupStappen" current="4" hint-size="720px,70px"></dc-import>
+      <div style="display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 22px">
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #3d4047">De inlogpagina is het eerste wat iedereen ziet. Kies of ze de huisstijl volgt of blijft zoals Nextcloud haar tekent.</p>
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; align-items: start">
+          <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px">
+            <legend style="padding: 0; margin-bottom: 8px; font-size: 14px; font-weight: 600">Stijl van de inlogpagina</legend>
+            <sc-for list="{{ styles }}" as="s" hint-placeholder-count="2">
+              <label style="{{ s.style }}"><input type="radio" name="tq-login" checked="{{ s.checked }}" style="margin: 2px 0 0; width: 18px; height: 18px; accent-color: #3669a5; flex: none"><span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 14px">{{ s.name }}</strong><span style="font-size: 12px; color: #5e6168; line-height: 1.35">{{ s.note }}</span></span></label>
+            </sc-for>
+            <p style="margin: 4px 0 0; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.45"><input type="checkbox" id="tq-slogan" checked style="width: 18px; height: 18px; margin: 1px 0 0; accent-color: #3669a5; flex: none"><label for="tq-slogan">Slogan van Nextcloud verbergen<span style="display: block; font-size: 12px; color: #5e6168">Samen werken aan Zuiddrecht blijft in het thema staan, maar niet onder het logo.</span></label></p>
+          </fieldset>
+          <div role="img" aria-label="Voorbeeld van de inlogpagina in de huisstijl van Gemeente Zuiddrecht" style="border: 1px solid #e4e6ea; border-radius: 10px; background: #eaf0f7; padding: 18px 16px; display: flex; flex-direction: column; align-items: center; gap: 10px">
+            <img src="/_blob/fd901beaf169b6dc7e7c38a8ff489d4b" alt="" style="height: 28px; width: auto">
+            <div aria-hidden="true" style="width: 100%; box-sizing: border-box; background: #ffffff; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 16px rgba(27,28,29,0.10)">
+              <span style="font-size: 12px; font-weight: 700">Inloggen</span>
+              <span style="height: 28px; border: 1px solid #828a95; border-radius: 6px; padding: 0 8px; font-size: 11px; color: #5e6168; display: flex; align-items: center">Gebruikersnaam of e-mail</span>
+              <span style="height: 28px; border: 1px solid #828a95; border-radius: 6px; padding: 0 8px; font-size: 11px; color: #5e6168; display: flex; align-items: center">Wachtwoord</span>
+              <span style="height: 30px; border-radius: 6px; background: #3669a5; color: #ffffff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">Inloggen</span>
+              <span style="font-size: 11px; color: #3669a5; text-align: center">Wachtwoord vergeten?</span>
+            </div>
+            <span aria-hidden="true" style="font-size: 11px; color: #5e6168">Privacyverklaring · Gemeente Zuiddrecht</span>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef0f3">
+        <button type="button" style="margin-right: auto; border: 0; background: transparent; color: #3669a5; font: 600 14px 'Fira Sans', sans-serif; text-decoration: underline; padding: 0">Overslaan, Nextcloud blijft zoals het is</button>
+        <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Later</button>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"></path></svg>Terug</button>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Volgende<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const styles = [
+      ['Volg de huisstijl', 'Effen achtergrond in de kleur van de set, het logo erboven, de inlogkaart met de primaire knop.', true],
+      ['Nextcloud-standaard', 'De achtergrondafbeelding en de opmaak van Nextcloud zelf. Alleen het logo wisselt.', false]
+    ].map(([name, note, on]) => ({ name, note, checked: on ? 'checked' : null,
+      style: 'display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 8px; ' + (on ? 'border: 2px solid #3669a5; background: #eaf0f7;' : 'border: 1px solid #828a95; background: #ffffff;') }));
+    return { styles };
+  }
+}
+</script>
+</body>
+</html>

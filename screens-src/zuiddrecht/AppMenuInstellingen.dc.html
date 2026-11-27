@@ -197,10 +197,10 @@ a{color:#3669a5}a:hover{color:#234a78}
           <sc-for list="{{ looks }}" as="t" hint-placeholder-count="2">
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
               <span style="display: flex; flex-direction: column; gap: 2px">
-                <span id="{{ t.id }}" style="font-size: 14px; font-weight: 500">{{ t.name }}</span>
-                <span style="font-size: 12px; color: #5e6168; line-height: 1.2">{{ t.help }}</span>
+                <span id="{{ t.id }}" style="{{ t.nameStyle }}">{{ t.name }}</span>
+                <span id="{{ t.helpId }}" style="font-size: 12px; color: #5e6168; line-height: 1.2">{{ t.help }}</span>
               </span>
-              <button type="button" role="switch" aria-checked="{{ t.on }}" aria-labelledby="{{ t.id }}" style="{{ t.switchStyle }}"><span style="{{ t.knobStyle }}"></span></button>
+              <button type="button" role="switch" aria-checked="{{ t.on }}" aria-disabled="{{ t.disabled }}" aria-labelledby="{{ t.id }}" aria-describedby="{{ t.helpId }}" style="{{ t.switchStyle }}"><span style="{{ t.knobStyle }}"></span></button>
             </div>
           </sc-for>
         </section>
@@ -230,12 +230,14 @@ a{color:#3669a5}a:hover{color:#234a78}
         <div aria-hidden="true" style="box-sizing: border-box; padding: 12px; border: 1px solid #e4e6ea; border-radius: 10px; background: #ffffff; box-shadow: 0 4px 12px rgba(27,28,29,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
           <sc-for list="{{ sample }}" as="a" hint-placeholder-count="4">
             <span style="{{ a.style }}">
-              <span style="{{ a.ring }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="{{ a.icon }}"></path></svg></span>
+              <span style="{{ a.ring }}"><svg width="{{ a.iconSize }}" height="{{ a.iconSize }}" viewBox="0 0 24 24" fill="currentColor"><path d="{{ a.icon }}"></path></svg></span>
+              <sc-if value="{{ a.titled }}" hint-placeholder-val="{{ true }}">
               <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 13px; font-weight: {{ a.weight }}; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ a.name }}</span><span style="font-size: 12px; line-height: 1.2; color: #5e6168; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ a.sub }}</span></span>
+              </sc-if>
             </span>
           </sc-for>
         </div>
-        <span style="font-size: 12px; color: #5e6168; line-height: 1.3">Rond, grote pictogrammen in de huisstijlkleur, met payoff en zonder tegels.</span>
+        <span style="font-size: 12px; color: #5e6168; line-height: 1.3">{{ sampleCaption }}</span>
       </figure>
     </div>
     </sc-if>
@@ -297,7 +299,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1060},"tab":"items","form":""}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1060},"tab":"items","form":"","titels":"aan"}'>
 class Component extends DCLogic {
   renderVals() {
     const tab = this.props.tab ?? 'items';
@@ -305,7 +307,8 @@ class Component extends DCLogic {
     const isItems = tab === 'items';
     const isConfig = tab === 'configuratie';
     const isThema = tab === 'thema';
-    const frameHeight = (isConfig ? 1150 : (isThema ? 800 : 1060)) + 'px';
+    const titled = (this.props.titels ?? 'aan') !== 'uit';
+    const frameHeight = (isConfig ? 1200 : (isThema ? 850 : 1060)) + 'px';
 
     const seg = (on) => 'min-height: 36px; margin: 0; padding: 0 14px; border: 0; border-radius: 8px; cursor: pointer; font: 600 14px \'Fira Sans\', system-ui, sans-serif; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 3px rgba(27,28,29,0.16);' : 'background: transparent; color: #3d4047;');
     const scopes = [['Voor iedereen', true], ['Alleen voor mij', false]].map(([name, on]) => ({ name, checked: on ? 'true' : 'false', style: seg(on) }));
@@ -379,23 +382,31 @@ class Component extends DCLogic {
     const toggles = [
       ['knop', 'Knop Nieuw in de bovenbalk', 'De plus naast de meldingen, met het menu voor een nieuw document, spreadsheet, presentatie of whiteboard.'],
       ['rij', 'Rij Nieuw maken in het appmenu', 'Dezelfde snelacties als rij onderaan het menu. Knop en rij staan los van elkaar.'],
+      ['contacten', 'Knop Contacten in de bovenbalk', 'Het adresboek naast de meldingen. Uit: de knop verdwijnt, de app Contacten blijft in het menu.'],
       ['extern', 'Externe apps tonen', 'De sectie Externe apps onder de apps.']
     ].map(([id, name, help]) => ({ id: 'menuinst-sectie-' + id, name, help, switchStyle: sw(true), knobStyle: knob }));
 
     const shapeSample = (round, kind) => 'width: 28px; height: 28px; border-radius: ' + (round ? '14px' : '6px') + '; ' + ({ current: 'background: #cc0000;', work: 'background: #eaf0f7; border: 1px solid #c9d6e6; box-sizing: border-box;', core: 'background: #f0f1f3; border: 1px solid #e4e6ea; box-sizing: border-box;' })[kind];
     const shapes = [['Rond', true], ['Vierkant', false]].map(([name, on]) => ({ name, checked: on, unchecked: !on, style: card(on), sample1: shapeSample(on, 'work'), sample2: shapeSample(on, 'current'), sample3: shapeSample(on, 'core') }));
     const looks = [
-      ['tegels', 'Items als tegels tonen', 'Elk item krijgt een kaart met rand en achtergrond.', false],
-      ['payoff', 'Payoff tonen', 'De regel onder de naam, bijvoorbeeld Zaken en Woo.', true]
-    ].map(([id, name, help, on]) => ({ id: 'menuinst-look-' + id, name, help, on: on ? 'true' : 'false', switchStyle: sw(on), knobStyle: knob }));
+      ['tegels', 'Items als tegels tonen', 'Elk item krijgt een kaart met rand en achtergrond.', false, false],
+      ['titels', 'Titels tonen', 'De naam van de app onder of naast het pictogram. Uit: alleen pictogrammen, de naam verschijnt als tooltip.', titled, false],
+      ['payoff', 'Payoff tonen', titled ? 'De regel onder de naam, bijvoorbeeld Zaken en Woo.' : 'Niet beschikbaar zonder titels: de payoff staat onder de naam.', titled, !titled]
+    ].map(([id, name, help, on, disabled]) => ({
+      id: 'menuinst-look-' + id, helpId: 'menuinst-look-' + id + '-hulp', name, help,
+      on: on ? 'true' : 'false', disabled: disabled ? 'true' : 'false',
+      nameStyle: 'font-size: 14px; font-weight: 500;' + (disabled ? ' color: #5e6168;' : ''),
+      switchStyle: sw(on) + (disabled ? ' opacity: 0.45; cursor: default;' : ''), knobStyle: knob
+    }));
     const sizes = [['Klein', false], ['Groot', true]].map(([name, on]) => ({ name, checked: on ? 'true' : 'false', style: seg(on) }));
     const swatch = (brand) => 'width: 22px; height: 22px; border-radius: 6px; box-sizing: border-box; ' + (brand ? 'background: #eaf0f7; border: 2px solid #234a78;' : 'background: #f0f1f3; border: 2px solid #3d4047;');
     const colours = [['Huisstijlkleur', true], ['Neutraal', false]].map(([name, on]) => ({ name, checked: on, unchecked: !on, swatch: swatch(on) }));
-    const sampleRing = (kind) => 'flex: none; width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; ' + ({ current: 'background: #cc0000; color: #ffffff;', work: 'background: #eaf0f7; color: #234a78;', core: 'background: #f0f1f3; color: #3d4047;' })[kind];
+    const sampleRing = (kind) => 'flex: none; ' + (titled ? 'width: 40px; height: 40px; border-radius: 20px; ' : 'width: 48px; height: 48px; border-radius: 10px; ') + 'display: flex; align-items: center; justify-content: center; ' + ({ current: 'background: #cc0000; color: #ffffff;', work: 'background: #eaf0f7; color: #234a78;', core: 'background: #f0f1f3; color: #3d4047;' })[kind];
     const sample = [['Launchpad', 'Mijn werkdag', 'work'], ['Dossiq', 'Zaken en Woo', 'current'], ['Pipelinq', 'Klantcontact', 'work'], ['Bestanden', 'Documenten', 'core']].map(([name, sub, kind]) => ({
-      name, sub, icon: ic[name], ring: sampleRing(kind), weight: kind === 'current' ? 600 : 500,
-      style: 'display: flex; align-items: center; gap: 10px; min-width: 0; padding: 8px 6px; border-radius: 10px;' + (kind === 'current' ? ' background: #fcedec;' : '')
+      name, sub, icon: ic[name], iconSize: titled ? 22 : 26, titled, ring: sampleRing(kind), weight: kind === 'current' ? 600 : 500,
+      style: 'display: flex; align-items: center; ' + (titled ? 'gap: 10px; ' : 'justify-content: center; ') + 'min-width: 0; padding: 8px 6px; border-radius: 10px;' + (kind === 'current' ? ' background: #fcedec;' : '')
     }));
+    const sampleCaption = titled ? 'Rond, grote pictogrammen in de huisstijlkleur, met payoff en zonder tegels.' : 'Alleen pictogrammen: vierkant en groot, in de huisstijlkleur. De naam verschijnt als tooltip.';
 
     const fields = [
       ['titel', 'Titel', 'text', 'Intranet', 'De naam in het menu.'],
@@ -428,7 +439,7 @@ class Component extends DCLogic {
       frameHeight, isItems, isConfig, isThema, formOpen, dialogHidden: formOpen ? 'true' : 'false',
       scopes, scopeHelp, tabs, apps, external,
       styles, steppers, previewAbove, previewBelow, toggles,
-      shapes, looks, sizes, colours, sample,
+      shapes, looks, sizes, colours, sample, sampleCaption,
       fields, icons, chosenIcon
     };
   }

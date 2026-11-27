@@ -51,7 +51,7 @@ a{color:#3669a5}a:hover{color:#234a78}
     <input id="dq-zoek" type="search" placeholder="{{ placeholder }}" style="width: 100%; height: 44px; box-sizing: border-box; padding: 0 14px 0 42px; border: 1px solid #828a95; border-radius: 22px; background: #f5f6f8; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
   </form>
   <div style="flex: 1 1 0; display: flex; align-items: center; justify-content: flex-end; gap: 6px; min-width: max-content">
-    <sc-if value="{{ createBar }}" hint-placeholder-val="{{ false }}">
+    <sc-if value="{{ createBar }}" hint-placeholder-val="{{ true }}">
       <button type="button" aria-label="Nieuw maken" aria-haspopup="menu" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>
       </button>
@@ -72,7 +72,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </header>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"placeholder":{"editor":"text","default":"Zoek zaken, documenten of contacten"},"role":{"editor":"text","default":"Woo-coördinator"},"user":{"editor":"text","default":"Pieter Jansen"},"initials":{"editor":"text","default":"PJ"},"pins":{"editor":"text","default":""},"drag":{"editor":"text","default":""},"create":{"editor":"text","default":""},"$preview":{"width":1440,"height":68}}'>
+<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"placeholder":{"editor":"text","default":"Zoek zaken, documenten of contacten"},"role":{"editor":"text","default":"Woo-coördinator"},"user":{"editor":"text","default":"Pieter Jansen"},"initials":{"editor":"text","default":"PJ"},"pins":{"editor":"text","default":""},"drag":{"editor":"text","default":""},"create":{"editor":"text","default":"aan"},"$preview":{"width":1440,"height":68}}'>
 class Component extends DCLogic {
   renderVals() {
     const icons = {
@@ -89,7 +89,7 @@ class Component extends DCLogic {
     return {
       app: this.props.app ?? 'Dossiq', placeholder: this.props.placeholder ?? 'Zoek zaken, documenten of contacten', role: this.props.role ?? 'Woo-coördinator', user: this.props.user ?? 'Pieter Jansen', initials: this.props.initials ?? 'PJ',
       hasPins: pinList.length > 0 || drag === 'pin', pinList, dropPin: drag === 'pin',
-      createBar: (this.props.create ?? '') === 'bovenbalk'
+      createBar: String(this.props.create ?? 'aan') !== 'uit'
     };
   }
 }

@@ -24,7 +24,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
       <dc-import name="TqSetupStappen" current="5" hint-size="720px,70px"></dc-import>
       <div style="display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 22px">
-        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #3d4047">Het appmenu van thematiq vervangt het standaardmenu: apps met een payoff, vastzetten in de bovenbalk, Nieuw maken en een eigen volgorde per persoon. Dit is de standaard voor iedereen; iedereen past daarna de eigen volgorde en vastgezette apps aan.</p>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #3d4047">Het appmenu van thematiq vervangt het standaardmenu: apps met titel en payoff, vastzetten in de bovenbalk, Nieuw maken en een eigen volgorde per persoon. Dit is de standaard voor iedereen; iedereen past daarna de eigen volgorde en vastgezette apps aan.</p>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid #e4e6ea; border-radius: 8px">
           <span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 14px">Appmenu van thematiq gebruiken</strong><span style="font-size: 13px; color: #5e6168">Aan of uit, meer keuze is er niet. Uit: Nextcloud houdt zijn eigen menu, de rest van de huisstijl blijft.</span></span>
           <button type="button" role="switch" aria-checked="true" aria-label="Appmenu van thematiq gebruiken" style="flex: none; width: 44px; height: 24px; border: 0; border-radius: 12px; background: #3669a5; position: relative; cursor: pointer"><span style="position: absolute; top: 2px; left: 22px; width: 20px; height: 20px; border-radius: 10px; background: #ffffff"></span></button>
@@ -39,14 +39,19 @@ a{color:#3669a5}a:hover{color:#234a78}
             <select id="tq-rijen" style="height: 38px; padding: 0 10px; border: 1px solid #828a95; border-radius: 8px; font: 400 14px 'Fira Sans', sans-serif; background: #ffffff; color: #1b1c1d"><option>1</option><option selected>2</option><option>3</option></select>
           </div>
         </div>
-        <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
-          <sc-for list="{{ toggles }}" as="t" hint-placeholder-count="4">
-            <li style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: 8px">
-              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><strong style="font-size: 13px">{{ t.name }}</strong><span style="font-size: 12px; color: #5e6168; line-height: 1.3">{{ t.note }}</span></span>
-              <button type="button" role="switch" aria-checked="true" aria-label="{{ t.name }}" style="flex: none; width: 44px; height: 24px; border: 0; border-radius: 12px; background: #3669a5; position: relative; cursor: pointer"><span style="position: absolute; top: 2px; left: 22px; width: 20px; height: 20px; border-radius: 10px; background: #ffffff"></span></button>
-            </li>
-          </sc-for>
-        </ul>
+        <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+          <section aria-labelledby="{{ g.id }}" style="display: flex; flex-direction: column; gap: 8px">
+            <h3 id="{{ g.id }}" style="margin: 0; font-size: 13px; font-weight: 600; color: #5e6168; text-transform: uppercase; letter-spacing: 0.02em">{{ g.name }}</h3>
+            <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+              <sc-for list="{{ g.toggles }}" as="t" hint-placeholder-count="4">
+                <li style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: 8px">
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><strong id="{{ t.id }}" style="{{ t.nameStyle }}">{{ t.name }}</strong><span id="{{ t.helpId }}" style="font-size: 12px; color: #5e6168; line-height: 1.3">{{ t.note }}</span></span>
+                  <button type="button" role="switch" aria-checked="{{ t.on }}" aria-disabled="{{ t.disabled }}" aria-labelledby="{{ t.id }}" aria-describedby="{{ t.helpId }}" style="{{ t.switchStyle }}"><span style="{{ t.knobStyle }}"></span></button>
+                </li>
+              </sc-for>
+            </ul>
+          </section>
+        </sc-for>
         <span style="font-size: 13px; color: #5e6168">Later aanpassen: in het menu zelf, onder Menu-instellingen, tab Configuratie.</span>
       </div>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef0f3">
@@ -59,16 +64,31 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000},"titels":"aan"}'>
 class Component extends DCLogic {
   renderVals() {
-    const toggles = [
-      ['Payoff tonen', 'Onder elke app één regel wat hij doet'],
-      ['Knop Nieuw in de bovenbalk', 'De plus naast de meldingen'],
-      ['Rij Nieuw maken in het appmenu', 'Document, spreadsheet, presentatie, whiteboard'],
-      ['Externe apps tonen', 'OpenProject, XWiki en wat je zelf toevoegt']
-    ].map(([name, note]) => ({ name, note }));
-    return { toggles };
+    const titled = (this.props.titels ?? 'aan') !== 'uit';
+    const sw = (on) => 'flex: none; width: 44px; height: 24px; padding: 2px; box-sizing: border-box; border: 0; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: ' + (on ? 'flex-end' : 'flex-start') + '; background: ' + (on ? '#3669a5' : '#828a95') + ';';
+    const knob = 'width: 20px; height: 20px; border-radius: 10px; background: #ffffff; display: block;';
+    const toggle = ([id, name, note, on, disabled]) => ({
+      id: 'tq-setup-' + id, helpId: 'tq-setup-' + id + '-hulp', name, note,
+      on: on ? 'true' : 'false', disabled: disabled ? 'true' : 'false',
+      nameStyle: 'font-size: 13px;' + (disabled ? ' color: #5e6168;' : ''),
+      switchStyle: sw(on) + (disabled ? ' opacity: 0.45; cursor: default;' : ''), knobStyle: knob
+    });
+    const groups = [
+      ['weergave', 'Weergave', [
+        ['titels', 'Titels tonen', 'De naam van elke app onder het pictogram. Uit: alleen pictogrammen, de naam als tooltip.', titled, false],
+        ['payoff', 'Payoff tonen', titled ? 'Onder elke app één regel wat hij doet' : 'Niet beschikbaar zonder titels', titled, !titled],
+        ['rij', 'Rij Nieuw maken in het appmenu', 'Document, spreadsheet, presentatie, whiteboard', true, false],
+        ['extern', 'Externe apps tonen', 'OpenProject, XWiki en wat je zelf toevoegt', true, false]
+      ]],
+      ['bovenbalk', 'Bovenbalk', [
+        ['knop', 'Knop Nieuw in de bovenbalk', 'De plus naast de meldingen', true, false],
+        ['contacten', 'Knop Contacten in de bovenbalk', 'Het adresboek naast de meldingen. Uit: de app Contacten blijft in het menu.', true, false]
+      ]]
+    ].map(([id, name, toggles]) => ({ id: 'tq-setup-groep-' + id, name, toggles: toggles.map(toggle) }));
+    return { groups };
   }
 }
 </script>

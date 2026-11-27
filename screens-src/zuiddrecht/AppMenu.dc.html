@@ -15,7 +15,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; width: 1440px; height: {{ frameHeight }}; position: relative; overflow: hidden">
-  <dc-import name="DqKop" hint-size="100%,68px" pins="{{ pins }}" drag="{{ drag }}" create="{{ create }}"></dc-import>
+  <dc-import name="DqKop" hint-size="100%,68px" pins="{{ pins }}" drag="{{ drag }}" create="{{ create }}" balktitels="{{ balktitels }}" hover="{{ hover }}"></dc-import>
   <div style="position: absolute; left: 244px; top: 60px; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid #ffffff"></div>
   <div role="menu" aria-labelledby="appmenu-titel" style="position: absolute; left: 160px; top: 70px; width: 720px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 8px 24px rgba(27,28,29,0.12); padding: 16px 20px 16px; display: flex; flex-direction: column; gap: 8px">
     <h2 id="appmenu-titel" style="margin: 0 0 4px; font-size: 16px; font-weight: 700; line-height: 1.2">Apps</h2>
@@ -96,7 +96,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":660},"state":"dicht","drag":"","pins":"Launchpad,Pipelinq,Agenda","knop":"aan","rij":"aan","titels":"aan"}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":660},"state":"dicht","drag":"","pins":"Launchpad,Pipelinq,Agenda","knop":"aan","rij":"aan","titels":"aan","balktitels":"uit","hover":""}'>
 class Component extends DCLogic {
   renderVals() {
     const open = this.props.state === 'alles';
@@ -176,6 +176,7 @@ class Component extends DCLogic {
       first, rest, external, actions,
       inMenu, create: inBar ? 'aan' : 'uit',
       pins, drag, dragged,
+      balktitels: this.props.balktitels ?? 'uit', hover: this.props.hover ?? '',
       dragPin: drag === 'pin', dragUnpin: drag === 'unpin'
     };
   }

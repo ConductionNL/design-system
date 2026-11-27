@@ -15,7 +15,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; width: 1440px; height: {{ frameHeight }}; position: relative; overflow: hidden">
-  <dc-import name="DqKop" hint-size="100%,68px" pins="{{ pins }}" drag="{{ drag }}"></dc-import>
+  <dc-import name="DqKop" hint-size="100%,68px" pins="{{ pins }}" drag="{{ drag }}" create="{{ create }}"></dc-import>
   <div style="position: absolute; left: 244px; top: 60px; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid #ffffff"></div>
   <div role="menu" aria-labelledby="appmenu-titel" style="position: absolute; left: 160px; top: 70px; width: 720px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 8px 24px rgba(27,28,29,0.12); padding: 16px 20px 16px; display: flex; flex-direction: column; gap: 8px">
     <h2 id="appmenu-titel" style="margin: 0 0 4px; font-size: 16px; font-weight: 700; line-height: 1.2">Apps</h2>
@@ -58,16 +58,18 @@ a{color:#3669a5}a:hover{color:#234a78}
         </sc-for>
       </div>
     </sc-if>
-    <div style="height: 0; margin: 4px 0 0; border-top: 1px solid #e4e6ea"></div>
-    <h3 style="margin: 4px 0 0; font-size: 13px; font-weight: 700; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Nieuw maken</h3>
-    <div role="group" aria-label="Nieuw maken" style="display: flex; align-items: flex-start; gap: 8px">
-      <sc-for list="{{ actions }}" as="c" hint-placeholder-count="5">
-        <button type="button" style="flex: 1 1 0; min-width: 0; margin: 0; padding: 8px 4px 6px; border: 0; border-radius: 10px; background: transparent; color: #1b1c1d; display: flex; flex-direction: column; align-items: center; gap: 6px; font: 500 13px 'Fira Sans', system-ui, sans-serif; line-height: 1.2; cursor: pointer">
-          <span style="width: 40px; height: 40px; border-radius: 20px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ c.icon }}"></path></svg></span>
-          <span style="max-width: 100%; text-align: center">{{ c.name }}</span>
-        </button>
-      </sc-for>
-    </div>
+    <sc-if value="{{ inMenu }}" hint-placeholder-val="{{ false }}">
+      <div style="height: 0; margin: 4px 0 0; border-top: 1px solid #e4e6ea"></div>
+      <h3 style="margin: 4px 0 0; font-size: 13px; font-weight: 700; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Nieuw maken</h3>
+      <div role="group" aria-label="Nieuw maken" style="display: flex; align-items: flex-start; gap: 8px">
+        <sc-for list="{{ actions }}" as="c" hint-placeholder-count="5">
+          <button type="button" style="flex: 1 1 0; min-width: 0; margin: 0; padding: 8px 4px 6px; border: 0; border-radius: 10px; background: transparent; color: #1b1c1d; display: flex; flex-direction: column; align-items: center; gap: 6px; font: 500 13px 'Fira Sans', system-ui, sans-serif; line-height: 1.2; cursor: pointer">
+            <span style="width: 40px; height: 40px; border-radius: 20px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ c.icon }}"></path></svg></span>
+            <span style="max-width: 100%; text-align: center">{{ c.name }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
     <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 2px; padding-top: 12px; border-top: 1px solid #e4e6ea; font-size: 14px">
       <div style="display: flex; flex-direction: column; gap: 2px; color: #5e6168">
         <span>Sleep een app om te ordenen of vast te zetten in de bovenbalk.</span>
@@ -91,11 +93,12 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":660},"state":"dicht","drag":"","pins":"Launchpad,Pipelinq,Agenda"}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":660},"state":"dicht","drag":"","pins":"Launchpad,Pipelinq,Agenda","snelacties":"bovenbalk"}'>
 class Component extends DCLogic {
   renderVals() {
     const open = this.props.state === 'alles';
     const drag = this.props.drag ?? '';
+    const inMenu = (this.props.snelacties ?? 'bovenbalk') === 'appmenu';
     const pins = this.props.pins ?? 'Launchpad,Pipelinq,Agenda';
     const dragName = drag === 'pin' ? 'Decidiq' : (drag === 'unpin' ? 'Agenda' : '');
     const entry = 'display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 12px; row-gap: 2px; align-content: center; padding: 12px 6px; border-radius: 10px; color: #1b1c1d; text-decoration: none; min-height: 44px; position: relative; ';
@@ -154,6 +157,7 @@ class Component extends DCLogic {
       cog: 'M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z',
       frameHeight: open ? '920px' : '660px',
       first, rest, external, actions,
+      inMenu, create: inMenu ? '' : 'bovenbalk',
       pins, drag, dragged,
       dragPin: drag === 'pin', dragUnpin: drag === 'unpin'
     };

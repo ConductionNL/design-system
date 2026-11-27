@@ -165,6 +165,17 @@ a{color:#3669a5}a:hover{color:#234a78}
             <button type="button" role="switch" aria-checked="true" aria-labelledby="{{ t.id }}" style="{{ t.switchStyle }}"><span style="{{ t.knobStyle }}"></span></button>
           </div>
         </sc-for>
+        <fieldset style="margin: 0; padding: 0; border: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px">
+          <legend style="float: left; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 14px; font-weight: 500; line-height: 1.2">Plaats van snelacties</span>
+            <span style="font-size: 12px; color: #5e6168; line-height: 1.2">In de bovenbalk als knop naast de meldingen, of als rij onderaan het menu.</span>
+          </legend>
+          <span role="radiogroup" aria-label="Plaats van snelacties" style="flex: none; display: inline-flex; padding: 3px; border-radius: 10px; background: #eef0f3">
+            <sc-for list="{{ places }}" as="p" hint-placeholder-count="2">
+              <button type="button" role="radio" aria-checked="{{ p.checked }}" style="{{ p.style }}">{{ p.name }}</button>
+            </sc-for>
+          </span>
+        </fieldset>
       </section>
       <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 8px; background: #eef0f3">
         <a href="#" target="_blank" rel="noopener noreferrer" style="flex: none; display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; white-space: nowrap">Apps beheren<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"></path></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)"> (opent in een nieuw tabblad)</span></a>
@@ -305,7 +316,7 @@ class Component extends DCLogic {
     const isItems = tab === 'items';
     const isConfig = tab === 'configuratie';
     const isThema = tab === 'thema';
-    const frameHeight = (isConfig ? 1100 : (isThema ? 800 : 1060)) + 'px';
+    const frameHeight = (isConfig ? 1160 : (isThema ? 800 : 1060)) + 'px';
 
     const seg = (on) => 'min-height: 36px; margin: 0; padding: 0 14px; border: 0; border-radius: 8px; cursor: pointer; font: 600 14px \'Fira Sans\', system-ui, sans-serif; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 3px rgba(27,28,29,0.16);' : 'background: transparent; color: #3d4047;');
     const scopes = [['Voor iedereen', true], ['Alleen voor mij', false]].map(([name, on]) => ({ name, checked: on ? 'true' : 'false', style: seg(on) }));
@@ -377,9 +388,10 @@ class Component extends DCLogic {
     const previewAbove = Array.from({ length: 8 }, (_, i) => ({ style: cell + (i === 1 ? ' background: #fcedec;' : ''), dot: dot(i === 1) }));
     const previewBelow = Array.from({ length: 16 }, () => ({ style: cell, dot: dot(false) }));
     const toggles = [
-      ['acties', 'Acties voor nieuw tonen', 'De rij Nieuw maken onderaan het menu.'],
+      ['acties', 'Acties voor nieuw tonen', 'De knop Nieuw maken in de bovenbalk of de rij onderaan het menu.'],
       ['extern', 'Externe apps tonen', 'De sectie Externe apps onder de apps.']
     ].map(([id, name, help]) => ({ id: 'menuinst-sectie-' + id, name, help, switchStyle: sw(true), knobStyle: knob }));
+    const places = [['In de bovenbalk', true], ['In het appmenu', false]].map(([name, on]) => ({ name, checked: on ? 'true' : 'false', style: seg(on) }));
 
     const shapeSample = (round, kind) => 'width: 28px; height: 28px; border-radius: ' + (round ? '14px' : '6px') + '; ' + ({ current: 'background: #cc0000;', work: 'background: #eaf0f7; border: 1px solid #c9d6e6; box-sizing: border-box;', core: 'background: #f0f1f3; border: 1px solid #e4e6ea; box-sizing: border-box;' })[kind];
     const shapes = [['Rond', true], ['Vierkant', false]].map(([name, on]) => ({ name, checked: on, unchecked: !on, style: card(on), sample1: shapeSample(on, 'work'), sample2: shapeSample(on, 'current'), sample3: shapeSample(on, 'core') }));
@@ -426,7 +438,7 @@ class Component extends DCLogic {
     return {
       frameHeight, isItems, isConfig, isThema, formOpen, dialogHidden: formOpen ? 'true' : 'false',
       scopes, scopeHelp, tabs, apps, external,
-      styles, steppers, previewAbove, previewBelow, toggles,
+      styles, steppers, previewAbove, previewBelow, toggles, places,
       shapes, looks, sizes, colours, sample,
       fields, icons, chosenIcon
     };

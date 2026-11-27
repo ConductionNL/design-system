@@ -13,19 +13,27 @@ The boards are the UI canon. Where the seed and a board disagree, the board wins
 - No left menu. Launchpad has no app side bar, no "Menu" button, no "Startpagina aanpassen" and no Bewerken
   button in the page header. The header holds one action: Meer.
 - One Meer menu, identical on every dashboard (board LpMeer):
-  - Left column, Dashboards: every dashboard the user can open, marked standaard, gedeeld or groep; then
-    Alle dashboards.
+  - Left column, Dashboards: the user's favourite dashboards, marked standaard, gedeeld or groep, each with
+    a filled yellow star; at the bottom Meer, which turns the column in place into the scrolling list of
+    every dashboard the user can open (board LpMeerAlle), each row with a star: filled yellow is a
+    favourite, empty is not, a click toggles it, stored per user; Minder closes the list again. Als
+    standaard instellen stays a separate action on the right.
   - Right column, Dit dashboard: Bewerken (enters edit mode), Widget toevoegen, Delen, Link naar dit dashboard
-    kopiëren, Kopie maken als nieuw dashboard, Als standaard instellen, then Verwijderen in the error colour
-    above a rule.
+    kopiëren, Kopie maken als nieuw dashboard, Downloaden, Als standaard instellen, then Verwijderen in the
+    error colour above a rule.
+  - Footer under both columns: the logos Powered by sendent and Conduction. No left side bar with
+    dashboards and no Downloaden button in the page header: both live in this menu only.
   - Instellingen: one expandable item at the bottom of the right column, under Verwijderen and a second rule,
     that unfolds in place: Persoonlijke instellingen, Beheerinstellingen, Marktplaats, Sjablonen, Rapporten,
     Flows, Koppelingen, Documentatie, Functies en roadmap. Under 960 px the menu is one column: Dashboards,
     Dit dashboard, Instellingen last.
   - Not in the menu: Versies (a tab of the dashboard settings), Inplannen and Publicatie intrekken (tab
     Publicatie), and a separate Instellingen entry under Dit dashboard.
-- Edit mode shows the edit bar (LpBewerken): Kolommen, Widget toevoegen, Dashboardinstellingen (opens the
-  settings modal with the tabs Details, Talen, Delen, Publicatie, Exports, Versies) and Klaar.
+- Edit mode shows the edit bar (LpBewerken): the draft pill (Concept · n wijzigingen), Kolommen, Widget
+  toevoegen (tiles too: there is no separate Tegels toevoegen button), Dashboardinstellingen (opens the
+  settings modal with the tabs Details, Talen, Delen, Publicatie, Exports, Versies), Annuleren and
+  Opslaan. Changes stay a draft until Opslaan; leaving edit mode with unsaved changes asks Wijzigingen
+  opslaan? with Niet opslaan, Verder bewerken and Opslaan. There is no hint that changes are saved at once.
 - No buildiq control anywhere.
 - The grid sits on the page ground (`--sc-work-ground`), widgets are white cards, app tiles are coloured squares.
 - Every application is its own widget on the dashboard grid: one grid cell, square, solid tile colour, one
@@ -41,9 +49,23 @@ The boards are the UI canon. Where the seed and a board disagree, the board wins
 - A heading above tiles or widgets is a **Tussenkop** widget: its own full-width grid placement with a title and
   one line of explanation, no card. Tile groups ("Mijn apps", "Samenwerken") are a Tussenkop placement
   followed by one tile placement per app.
-- The picker (Widget toevoegen) is the one place where widgets are added. It lists App-tegels with one entry
-  per app.
+- The picker (Widget toevoegen, board LpWidgetKiezen) is the one place where widgets are added, tiles
+  included. It is 1120 px wide and every card carries a miniature of the widget: its real parts, scaled
+  down, with sample data, never a static image. One widget App- of linktegel (LpTegelToevoegen,
+  LpTegelBewerken) replaces the app tile and the link tile: its form opens with the choice app (pick the
+  app, with its icon and count of new items) or link (webadres, titel, pictogram); tile colour, text colour
+  (theme colours plus white and black, white by default, with a WCAG AA contrast check), what is on the
+  tile and pin apply to both. The multi-tile widget is gone: tiles are grouped with the widgets Container
+  and Tabbladen. Default tiles (Conduction, Nextcloud, sendent) show the white logo on the brand colour,
+  without payoff.
 - The first dashboard of a new user is called "Mijn werkplek".
+- Announcements are managed from settings, not from the widget (boards LpAankondiging, LpLeesbevestigingen):
+  one window Aankondigingen, opened from Instellingen in the menu Meer (entry Aankondigingen) by users who
+  may manage them and from the Aankondigingen widget by those same users, does all create, edit, schedule,
+  end and delete of news and maintenance notices, and shows per announcement who saw it and who confirmed
+  reading it. A reader confirms by pressing the check or the x on the announcement, or on the notice banner
+  at the top; both count. The widget shows announcements with the check and the x only; likes, comments
+  and follow live in the announcement's own view behind Openen.
 
 ## Users and groups
 

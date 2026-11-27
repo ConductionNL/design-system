@@ -17,34 +17,52 @@ body{margin:0}
 }
 </style>
 </helmet>
-<div role="menu" aria-label="Meer" class="lp-meer" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; position: absolute; z-index: 6; top: 48px; right: 0; width: 600px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; box-shadow: 0 12px 32px rgba(27,28,29,0.18); padding: 10px 10px 12px">
+<div role="menu" aria-label="Meer" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; position: absolute; z-index: 6; top: 48px; right: 0; width: 600px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; box-shadow: 0 12px 32px rgba(27,28,29,0.18); padding: 10px 10px 0">
+  <div class="lp-meer">
   <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
-    <span style="padding: 10px 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Dashboards</span>
-    <sc-for list="{{ dashboards }}" as="m" hint-placeholder-count="8">
-      <a href="#" role="{{ m.role }}" aria-checked="{{ m.checked }}" style="{{ m.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ m.icon }}"></path></svg><span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.label }}</span><sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 12px; color: #5e6168">{{ m.meta }}</span></sc-if></a>
-    </sc-for>
+    <span style="padding: 10px 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ listTitle }}</span>
+    <div style="position: relative">
+    <sc-if value="{{ isAllBool }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; top: 2px; right: 0; width: 6px; height: 300px; border-radius: 3px; background: #eef0f3"><span style="position: absolute; top: 0; left: 0; width: 6px; height: 210px; border-radius: 3px; background: #c5c9d1"></span></span></sc-if>
+    <div role="group" aria-label="{{ listTitle }}" style="{{ listStyle }}">
+      <sc-for list="{{ dashboards }}" as="m" hint-placeholder-count="8">
+        <div role="menuitemradio" aria-checked="{{ m.checked }}" aria-label="{{ m.label }}" style="{{ m.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ m.icon }}"></path></svg><a href="#" style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit; text-decoration: none">{{ m.label }}</a><sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 12px; color: #5e6168">{{ m.meta }}</span></sc-if><button type="button" aria-pressed="{{ m.fav }}" aria-label="{{ m.favLabel }}" title="{{ m.favTitle }}" style="{{ m.starStyle }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ m.star }}"></path></svg></button></div>
+      </sc-for>
+    </div>
+    </div>
+    <a href="#" role="menuitem" aria-expanded="{{ isAll }}" style="{{ toggleStyle }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ toggleIcon }}"></path></svg><span style="flex: 1; min-width: 0">{{ toggleLabel }}</span><span style="flex: none; font-size: 12px; color: #5e6168">{{ toggleMeta }}</span></a>
   </div>
   <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
     <span style="padding: 10px 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Dit dashboard</span>
-    <sc-for list="{{ actions }}" as="a" hint-placeholder-count="7">
+    <sc-for list="{{ actions }}" as="a" hint-placeholder-count="8">
       <a href="#" role="menuitem" style="{{ a.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ a.icon }}"></path></svg><span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ a.label }}</span></a>
     </sc-for>
     <a href="#" role="menuitem" aria-haspopup="true" aria-expanded="{{ expanded }}" style="{{ settingsStyle }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ cog }}"></path></svg><span style="flex: 1; min-width: 0">Instellingen</span><svg width="18" height="18" viewBox="0 0 24 24" fill="#5e6168" aria-hidden="true" style="flex: none"><path d="{{ chevron }}"></path></svg></a>
     <sc-if value="{{ isExpanded }}" hint-placeholder-val="{{ true }}">
       <div role="group" aria-label="Instellingen" style="display: flex; flex-direction: column; gap: 2px; margin: 0 0 4px 18px; padding-left: 8px; border-left: 2px solid #e4e6ea">
-        <sc-for list="{{ settings }}" as="s" hint-placeholder-count="9">
+        <sc-for list="{{ settings }}" as="s" hint-placeholder-count="10">
           <a href="#" role="menuitem" style="{{ s.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ s.icon }}"></path></svg><span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.label }}</span></a>
         </sc-for>
       </div>
     </sc-if>
   </div>
+  </div>
+  <div style="margin-top: 10px; padding: 10px 10px 12px; border-top: 1px solid #eef0f3; display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 12px; color: #5e6168">
+    <span>Powered by</span>
+    <img src="../../../brand/assets/partners/sendent.png" alt="sendent" style="height: 15px; width: auto">
+    <span aria-hidden="true" style="width: 1px; height: 14px; background: #e4e6ea"></span>
+    <img src="../../../brand/assets/wordmark-conduction-gold.svg" alt="Conduction" style="height: 13px; width: auto">
+  </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"current":{"editor":"text","default":"Vandaag"},"expanded":{"editor":"text","default":"true"},"$preview":{"width":600,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"current":{"editor":"text","default":"Vandaag"},"expanded":{"editor":"text","default":"true"},"lijst":{"editor":"text","default":"favorieten"},"$preview":{"width":600,"height":900}}'>
 class Component extends DCLogic {
   renderVals() {
-    // The one action menu of launchpad. Every board draws the same menu; only the current dashboard
-    // and whether Instellingen (last in the right column, under Verwijderen) is unfolded differ per board.
+    // The one action menu of launchpad. Every board draws the same menu; only the current dashboard,
+    // whether Instellingen (last in the right column, under Verwijderen) is unfolded and which list the
+    // left column shows differ per board. lijst="favorieten" is the short list of favourite dashboards
+    // the menu opens with, closed by Meer; lijst="alle" is that column after Meer: every dashboard the
+    // user can open in a scrolling list, closed by Minder. Every row has a star: filled yellow is a
+    // favourite, empty is not. Review 27 Nov 2026, items 5 to 8.
     const I = {
       home: 'M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z',
       queue: 'M3,5H21V7H3V5M3,9H21V11H3V9M3,13H21V15H3V13M3,17H21V19H3V17Z',
@@ -70,31 +88,63 @@ class Component extends DCLogic {
       star: 'M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z',
       bin: 'M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z',
       down: 'M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z',
-      right: 'M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z'
+      up: 'M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z',
+      right: 'M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z',
+      starOutline: 'M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z',
+      download: 'M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z',
+      building: 'M17,11V3H7V7H3V21H11V17H13V21H21V11H17M7,19H5V17H7V19M7,15H5V13H7V15M7,11H5V9H7V11M11,15H9V13H11V15M11,11H9V9H11V11M11,7H9V5H11V7M15,15H13V13H15V15M15,11H13V9H15V11M15,7H13V5H15V7M19,19H17V17H19V19M19,15H17V13H19V15Z',
+      car: 'M5,11L6.5,6.5H17.5L19,11M17.5,16A1.5,1.5 0 0,1 16,14.5A1.5,1.5 0 0,1 17.5,13A1.5,1.5 0 0,1 19,14.5A1.5,1.5 0 0,1 17.5,16M6.5,16A1.5,1.5 0 0,1 5,14.5A1.5,1.5 0 0,1 6.5,13A1.5,1.5 0 0,1 8,14.5A1.5,1.5 0 0,1 6.5,16M18.92,6C18.72,5.42 18.16,5 17.5,5H6.5C5.84,5 5.28,5.42 5.08,6L3,12V20A1,1 0 0,0 4,21H5A1,1 0 0,0 6,20V19H18V20A1,1 0 0,0 19,21H20A1,1 0 0,0 21,20V12L18.92,6Z',
+      school: 'M12,3L1,9L12,15L21,10.09V17H23V9M5,13.18V17.18L12,21L19,17.18V13.18L12,17L5,13.18Z',
+      anchor: 'M12,2A3,3 0 0,1 15,5A3,3 0 0,1 12,8A3,3 0 0,1 9,5A3,3 0 0,1 12,2M12,4A1,1 0 0,0 11,5A1,1 0 0,0 12,6A1,1 0 0,0 13,5A1,1 0 0,0 12,4M11,9H13V22H11V9M4,13H8V15H6.32C7,17.4 9.36,19.21 12,19.85C14.64,19.21 17,17.4 17.68,15H16V13H20V15H19.75C19,18.76 15.87,21.5 12,21.95C8.13,21.5 5,18.76 4.25,15H4V13Z'
     };
     const current = this.props.current || 'Vandaag';
     const isExpanded = String(this.props.expanded) === 'true';
+    const isAll = String(this.props.lijst) === 'alle';
     const mi = 'display: flex; align-items: center; gap: 10px; min-height: 32px; padding: 0 10px; border-radius: 6px; font-size: 14px; text-decoration: none; ';
     const plain = mi + 'color: #1b1c1d;';
-    const dash = (label, icon, meta) => ({ label, icon, role: 'menuitemradio', checked: label === current ? 'true' : 'false', hasMeta: !!meta, meta: meta || '', style: mi + (label === current ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d;') });
-    const dashboards = [
-      dash('Vandaag', I.home, 'standaard'), dash('Mijn werkplek', I.queue, ''), dash('Project Havenpark', I.chart, ''), dash('Havenpark: planning', I.cal, ''),
-      dash('Team Vergunningen', I.people, 'gedeeld'), dash('Intranet Zuiddrecht', I.bullhorn, 'groep'), dash('Managementinformatie', I.chart, 'groep'),
-      { label: 'Alle dashboards', icon: I.grid, role: 'menuitem', checked: 'false', hasMeta: false, meta: '', style: plain }
+    const starBtn = 'flex: none; width: 28px; height: 28px; margin-right: -6px; padding: 0; border: 0; border-radius: 6px; background: transparent; display: flex; align-items: center; justify-content: center; ';
+    const dash = (label, icon, meta, fav) => ({
+      label, icon, checked: label === current ? 'true' : 'false', hasMeta: !!meta, meta: meta || '',
+      style: mi + 'padding-right: 4px; ' + (label === current ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d;'),
+      fav: fav ? 'true' : 'false', star: fav ? I.star : I.starOutline,
+      favLabel: (fav ? 'Favoriet, verwijderen uit favorieten: ' : 'Geen favoriet, toevoegen aan favorieten: ') + label,
+      favTitle: fav ? 'Uit favorieten halen' : 'Aan favorieten toevoegen',
+      starStyle: starBtn + (fav ? 'color: #f0b400;' : 'color: #828a95;')
+    });
+    // Every dashboard Pieter can open, favourites first in the order he starred them. Vandaag is the
+    // organisation's start page, so it stays a favourite and keeps its standaard marker.
+    const all = [
+      dash('Vandaag', I.home, 'standaard', true), dash('Mijn werkplek', I.queue, '', true),
+      dash('Team Vergunningen', I.people, 'gedeeld', true), dash('Intranet Zuiddrecht', I.bullhorn, 'groep', true),
+      dash('Project Havenpark', I.chart, '', false), dash('Havenpark: planning', I.cal, '', false),
+      dash('Managementinformatie', I.chart, 'groep', false), dash('Stadshaven fase 2', I.anchor, '', false),
+      dash('Mobiliteit 2026', I.car, '', false), dash('Onboarding nieuwe collega\'s', I.school, 'gedeeld', false),
+      dash('Directie', I.building, 'groep', false), dash('Communicatie', I.bullhorn, 'groep', false)
     ];
+    const favourites = all.filter((d) => d.fav === 'true');
+    const dashboards = isAll ? all : favourites;
+    const rest = all.length - favourites.length;
     const settings = [
-      ['Persoonlijke instellingen', I.user], ['Beheerinstellingen', I.shield], ['Marktplaats', I.store], ['Sjablonen', I.template], ['Rapporten', I.report],
+      ['Persoonlijke instellingen', I.user], ['Beheerinstellingen', I.shield], ['Aankondigingen', I.bullhorn], ['Marktplaats', I.store], ['Sjablonen', I.template], ['Rapporten', I.report],
       ['Flows', I.flow], ['Koppelingen', I.link], ['Documentatie', I.book], ['Functies en roadmap', I.road]
     ].map(([label, icon]) => ({ label, icon, style: plain }));
     const actions = [
       ['Bewerken', I.pencil], ['Widget toevoegen', I.plus], ['Delen', I.share], ['Link naar dit dashboard kopiëren', I.link],
-      ['Kopie maken als nieuw dashboard', I.copy], ['Als standaard instellen', I.star]
+      ['Kopie maken als nieuw dashboard', I.copy], ['Downloaden', I.download], ['Als standaard instellen', I.star]
     ].map(([label, icon]) => ({ label, icon, style: plain }));
     actions.push({ label: 'Verwijderen', icon: I.bin, style: mi + 'color: #a30000; border-top: 1px solid #eef0f3; border-radius: 0; margin-top: 4px;' });
     return {
       dashboards, settings, actions, cog: I.cog, isExpanded,
       expanded: isExpanded ? 'true' : 'false',
       chevron: isExpanded ? I.down : I.right,
+      isAll: isAll ? 'true' : 'false', isAllBool: isAll,
+      listTitle: isAll ? 'Alle dashboards' : 'Dashboards',
+      // After Meer the column scrolls in place: nine rows fit, the rest scrolls, the menu keeps its size.
+      listStyle: 'display: flex; flex-direction: column; gap: 2px; ' + (isAll ? 'max-height: 304px; overflow-y: auto; padding-right: 14px;' : ''),
+      toggleLabel: isAll ? 'Minder' : 'Meer',
+      toggleMeta: isAll ? 'alleen favorieten' : 'nog ' + rest + ' dashboards',
+      toggleIcon: isAll ? I.up : I.down,
+      toggleStyle: mi + 'margin-top: 4px; border-top: 1px solid #eef0f3; border-radius: 0; padding-top: 4px; min-height: 38px; color: #1b1c1d;',
       settingsStyle: mi + 'margin-top: 4px; border-top: 1px solid #eef0f3; border-radius: 0; padding-top: 4px; min-height: 38px; ' + (isExpanded ? 'color: #1b1c1d; font-weight: 600;' : 'color: #1b1c1d;')
     };
   }

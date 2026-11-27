@@ -156,7 +156,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       </section>
       <section aria-labelledby="menuinst-secties" style="display: flex; flex-direction: column; gap: 4px">
         <h3 id="menuinst-secties" style="margin: 0 0 4px; font-size: 15px; font-weight: 700; line-height: 1.2">Secties</h3>
-        <sc-for list="{{ toggles }}" as="t" hint-placeholder-count="2">
+        <sc-for list="{{ toggles }}" as="t" hint-placeholder-count="3">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
             <span style="display: flex; flex-direction: column; gap: 2px">
               <span id="{{ t.id }}" style="font-size: 14px; font-weight: 500">{{ t.name }}</span>
@@ -305,7 +305,7 @@ class Component extends DCLogic {
     const isItems = tab === 'items';
     const isConfig = tab === 'configuratie';
     const isThema = tab === 'thema';
-    const frameHeight = (isConfig ? 1100 : (isThema ? 800 : 1060)) + 'px';
+    const frameHeight = (isConfig ? 1150 : (isThema ? 800 : 1060)) + 'px';
 
     const seg = (on) => 'min-height: 36px; margin: 0; padding: 0 14px; border: 0; border-radius: 8px; cursor: pointer; font: 600 14px \'Fira Sans\', system-ui, sans-serif; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 3px rgba(27,28,29,0.16);' : 'background: transparent; color: #3d4047;');
     const scopes = [['Voor iedereen', true], ['Alleen voor mij', false]].map(([name, on]) => ({ name, checked: on ? 'true' : 'false', style: seg(on) }));
@@ -377,7 +377,8 @@ class Component extends DCLogic {
     const previewAbove = Array.from({ length: 8 }, (_, i) => ({ style: cell + (i === 1 ? ' background: #fcedec;' : ''), dot: dot(i === 1) }));
     const previewBelow = Array.from({ length: 16 }, () => ({ style: cell, dot: dot(false) }));
     const toggles = [
-      ['acties', 'Acties voor nieuw tonen', 'De rij Nieuw maken onderaan het menu.'],
+      ['knop', 'Knop Nieuw in de bovenbalk', 'De plus naast de meldingen, met het menu voor een nieuw document, spreadsheet, presentatie of whiteboard.'],
+      ['rij', 'Rij Nieuw maken in het appmenu', 'Dezelfde snelacties als rij onderaan het menu. Knop en rij staan los van elkaar.'],
       ['extern', 'Externe apps tonen', 'De sectie Externe apps onder de apps.']
     ].map(([id, name, help]) => ({ id: 'menuinst-sectie-' + id, name, help, switchStyle: sw(true), knobStyle: knob }));
 
